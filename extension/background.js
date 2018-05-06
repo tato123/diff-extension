@@ -60,16 +60,30 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 14:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+/**
+ * Handle user event when a Tab is clicked
+ */
+chrome.browserAction.onClicked.addListener(function (tab) {
+  chrome.tabs.executeScript({
+    file: "contentScript.js"
+  });
+  chrome.tabs.executeScript({
+    file: "watcher.js"
+  });
+});
+
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=background.js.map

@@ -1,4 +1,11 @@
 {
-  "presets": ["env"],
-  "plugins": ["babel-plugin-add-module-exports"]
+  "presets": [
+    "react",
+    ["env",
+    {
+      "targets": {
+        "node": "current" // or '7.10.0'
+      }
+    }]
+  ]
 }

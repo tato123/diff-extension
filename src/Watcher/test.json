@@ -1,0 +1,8 @@
+{
+    "https://www.forage.ai" : [
+        {
+            "selector" : "h1",
+            "type": "border"
+        }
+    ]
+}
