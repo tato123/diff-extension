@@ -6,3 +6,7 @@ import Shadow from "./Components/Shadow";
 const element = render("div");
 
 // ReactDOM.render(<Shadow />, element);
+
+const script = document.createElement("script");
+script.src = chrome.runtime.getURL("watcher.js");
+document.body.appendChild(script);

@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 14:
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77,9 +77,6 @@
 chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.executeScript({
     file: "contentScript.js"
-  });
-  chrome.tabs.executeScript({
-    file: "watcher.js"
   });
 });
 

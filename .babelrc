@@ -1,11 +1,4 @@
 {
-  "presets": [
-    "react",
-    ["env",
-    {
-      "targets": {
-        "node": "current" // or '7.10.0'
-      }
-    }]
-  ]
+  "presets": ["env", "react-app"],
+  "plugins": ["transform-decorators-legacy"]
 }

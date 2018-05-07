@@ -2,12 +2,10 @@
   "name": "Design Tools",
   "description": "Continuous collaboration tools for web apps",
   "version": "2.0",
-  "permissions": [
-    "activeTab",
-    "tabs",
-    "http://*/",
-    "https://*/"
-  ],
+  "permissions": ["activeTab", "tabs", "http://*/", "https://*/"],
+  "content_security_policy":
+    "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": ["watcher.js"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
