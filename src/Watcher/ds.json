@@ -1,0 +1,18 @@
+{
+  "selectors": {
+    ".h2[": {
+      "type": "border",
+      "notes": [],
+      "screenshots": [],
+      "designs": []
+    }
+  },
+  "notes": {
+    "12324": {
+      "type": "note"
+    },
+    "12324": {
+      "type": "boxer"
+    }
+  }
+}

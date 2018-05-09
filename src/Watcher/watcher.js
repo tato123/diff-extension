@@ -1,13 +1,14 @@
 import { observable, computed, reaction, autorun, action, spy } from "mobx";
 import { log } from "./log";
 import selector from "./models/selector";
-import { renderSelectors } from "./ui";
+import renderUI from "./ui";
 import Store from "./models/store";
 
 export default class Watcher {
   @observable store;
 
   constructor() {
+    // create our observable store
     this.store = new Store();
   }
 
@@ -15,8 +16,7 @@ export default class Watcher {
     console.log("---------------------");
     console.log("Starting watcher");
     console.log("---------------------");
-
-    autorun(() => console.log(this.store.selectors.toJSON()));
+    renderUI(this.store);
     return this;
   }
 
@@ -41,30 +41,4 @@ export default class Watcher {
   static getInstance() {
     return window.watcher;
   }
-
-  @action
-  addSelector(key, metadata) {
-    selector.create(key, metadata);
-  }
 }
-
-// select(selector, type) {
-//   const element = document.querySelector(selector);
-//   console.log("selecting", selector, element);
-//   const styles = readStyles([element])[0]
-//     .map(
-//       rule => `<div><pre><code class="css">${rule.cssText}</code></pre></div>`
-//     )
-//     .join("");
-//   if (element) {
-//     Components[type](element);
-//     addNotes(
-//       element,
-//       cssbeautify(styles, {
-//         indent: "  ",
-//         openbrace: "separate-line",
-//         autosemicolon: true
-//       })
-//     );
-//   }
-// }

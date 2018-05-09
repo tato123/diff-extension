@@ -4511,6 +4511,8 @@ var _selector2 = _interopRequireDefault(_selector);
 
 var _ui = __webpack_require__(72);
 
+var _ui2 = _interopRequireDefault(_ui);
+
 var _store = __webpack_require__(74);
 
 var _store2 = _interopRequireDefault(_store);
@@ -4568,21 +4570,17 @@ var Watcher = (_class = function () {
 
     _initDefineProp(this, "store", _descriptor, this);
 
+    // create our observable store
     this.store = new _store2.default();
   }
 
   _createClass(Watcher, [{
     key: "start",
     value: function start() {
-      var _this = this;
-
       console.log("---------------------");
       console.log("Starting watcher");
       console.log("---------------------");
-
-      (0, _mobx.autorun)(function () {
-        return console.log(_this.store.selectors.toJSON());
-      });
+      (0, _ui2.default)(this.store);
       return this;
     }
   }, {
@@ -4593,11 +4591,6 @@ var Watcher = (_class = function () {
       console.log("---------------------");
       this.debug = true;
       return this;
-    }
-  }, {
-    key: "addSelector",
-    value: function addSelector(key, metadata) {
-      _selector2.default.create(key, metadata);
     }
   }], [{
     key: "init",
@@ -4621,29 +4614,7 @@ var Watcher = (_class = function () {
 }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "store", [_mobx.observable], {
   enumerable: true,
   initializer: null
-}), _applyDecoratedDescriptor(_class.prototype, "addSelector", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "addSelector"), _class.prototype)), _class);
-
-// select(selector, type) {
-//   const element = document.querySelector(selector);
-//   console.log("selecting", selector, element);
-//   const styles = readStyles([element])[0]
-//     .map(
-//       rule => `<div><pre><code class="css">${rule.cssText}</code></pre></div>`
-//     )
-//     .join("");
-//   if (element) {
-//     Components[type](element);
-//     addNotes(
-//       element,
-//       cssbeautify(styles, {
-//         indent: "  ",
-//         openbrace: "separate-line",
-//         autosemicolon: true
-//       })
-//     );
-//   }
-// }
-
+})), _class);
 exports.default = Watcher;
 
 /***/ }),
@@ -30135,21 +30106,25 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _descriptor, _descriptor2;
+var _dec, _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _desc2, _value2, _class3, _descriptor4;
 
 var _mobx = __webpack_require__(11);
 
-var _firebase = __webpack_require__(53);
+var _persitable = __webpack_require__(79);
 
-var firebase = _interopRequireWildcard(_firebase);
+var _persitable2 = _interopRequireDefault(_persitable);
 
 var _location = __webpack_require__(70);
 
 var _location2 = _interopRequireDefault(_location);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _firebase = __webpack_require__(53);
+
+var firebase = _interopRequireWildcard(_firebase);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -30196,50 +30171,106 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var Selector = (_class = function () {
+var Selector = (_dec = _mobx.action.bound, (_class = function () {
   function Selector() {
-    var _this = this;
-
     _classCallCheck(this, Selector);
 
-    _initDefineProp(this, "key", _descriptor, this);
+    _initDefineProp(this, "selector", _descriptor, this);
 
-    _initDefineProp(this, "annotations", _descriptor2, this);
+    _initDefineProp(this, "annotationIds", _descriptor2, this);
 
-    (0, _mobx.autorun)(function () {
-      console.log("Tasks left: " + _this.key);
-    });
+    _initDefineProp(this, "metadata", _descriptor3, this);
+
+    this.firebaseRef = null;
+    this.storageKey = "selectors";
   }
 
-  _createClass(Selector, null, [{
-    key: "create",
-    value: function create(key, data) {
-      var ref = firebase.database().ref("" + _location2.default.domain).child("selectors").child(key);
+  _createClass(Selector, [{
+    key: "save",
+    value: function save() {
+      if (this.firebaseRef) {
+        return this.firebaseRef.update(this.toFirebaseJs());
+      }
+
+      var ref = firebase.database().ref("" + _location2.default.domain).child(this.storageKey);
+
       // this new, empty ref only exists locally
-      var newChildRef = ref.set(data);
+      var newChildRef = this.firebaseRef = ref.push();
+
+      //
+      newChildRef.set(this.toFirebaseJs());
     }
   }, {
-    key: "fromSnapshot",
-    value: function fromSnapshot(snapshot) {
-      var annotation = new Selector();
-      annotation.key = snapshot.key;
-      return annotation;
+    key: "merge",
+    value: function merge(values) {
+      // change to only accept a whitelist
+      Object.assign(this, values);
+    }
+  }, {
+    key: "toFirebaseJs",
+    value: function toFirebaseJs() {
+      return {
+        selector: this.selector,
+        annotationIds: this.annotationIds,
+        metadata: this.metadata
+      };
     }
   }]);
 
   return Selector;
-}(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "key", [_mobx.observable], {
+}(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "selector", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
-    return "";
+    return null;
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "annotations", [_mobx.observable], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "annotationIds", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return [];
   }
-})), _class);
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "metadata", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return {};
+  }
+}), _applyDecoratedDescriptor(_class.prototype, "save", [_dec], Object.getOwnPropertyDescriptor(_class.prototype, "save"), _class.prototype)), _class));
 exports.default = Selector;
+var SelectorStore = (_class3 = function () {
+  function SelectorStore() {
+    _classCallCheck(this, SelectorStore);
+
+    _initDefineProp(this, "selectors", _descriptor4, this);
+  }
+
+  _createClass(SelectorStore, [{
+    key: "fetchSelectors",
+    value: function fetchSelectors() {}
+  }, {
+    key: "upsertSelector",
+    value: function upsertSelector() {
+      // first try to see if we have a selector that matches
+      if (this.selectors.has(selectorKey)) {
+        console.log("found value");
+        var _selector = this.selectors.get(selectorKey);
+        _selector.merge(values);
+        return _selector.save();
+      }
+
+      // if we don't have a value
+      console.log("inserting new value");
+      var selector = new Selector();
+      selector.merge(Object.assign({}, values, { selector: selectorKey }));
+      selector.save();
+    }
+  }]);
+
+  return SelectorStore;
+}(), (_descriptor4 = _applyDecoratedDescriptor(_class3.prototype, "selectors", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return _mobx.observable.map();
+  }
+}), _applyDecoratedDescriptor(_class3.prototype, "fetchSelectors", [_mobx.action], Object.getOwnPropertyDescriptor(_class3.prototype, "fetchSelectors"), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, "upsertSelector", [_mobx.action], Object.getOwnPropertyDescriptor(_class3.prototype, "upsertSelector"), _class3.prototype)), _class3);
 
 /***/ }),
 /* 72 */
@@ -30252,16 +30283,46 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.renderSelectors = undefined;
+exports.default = render;
 
 var _mobx = __webpack_require__(11);
 
-var renderSelectors = exports.renderSelectors = function renderSelectors(selectors) {
-  (0, _mobx.reaction)(function () {
-    return selectors && selectors.values();
-  }, function (selector) {
-    return console.log(selector);
+var selectElements = function selectElements(selector) {
+  document.querySelectorAll(selector).forEach(function (element) {
+    element.style.border = "3px solid black";
   });
 };
+
+var renderSelectors = exports.renderSelectors = function renderSelectors(store) {
+  store.selectors.observe(function (change) {
+    change.object.forEach(function (value, key) {
+      selectElements(key);
+    });
+  });
+};
+
+// select(selector, type) {
+//   const element = document.querySelector(selector);
+//   console.log("selecting", selector, element);
+//   const styles = readStyles([element])[0]
+//     .map(
+//       rule => `<div><pre><code class="css">${rule.cssText}</code></pre></div>`
+//     )
+//     .join("");
+//   if (element) {
+//     Components[type](element);
+//     addNotes(
+//       element,
+//       cssbeautify(styles, {
+//         indent: "  ",
+//         openbrace: "separate-line",
+//         autosemicolon: true
+//       })
+//     );
+//   }
+// }
+
+function render(store) {}
 
 /***/ }),
 /* 73 */
@@ -30281,11 +30342,11 @@ var _desc, _value, _class, _descriptor, _descriptor2;
 
 var _mobx = __webpack_require__(11);
 
-var _firebase = __webpack_require__(53);
+var _persitable = __webpack_require__(79);
 
-var firebase = _interopRequireWildcard(_firebase);
+var _persitable2 = _interopRequireDefault(_persitable);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _initDefineProp(target, property, descriptor, context) {
   if (!descriptor) return;
@@ -30298,6 +30359,10 @@ function _initDefineProp(target, property, descriptor, context) {
 }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
@@ -30332,35 +30397,32 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var Annotation = (_class = function () {
+var Annotation = (_class = function (_Persistable) {
+  _inherits(Annotation, _Persistable);
+
   function Annotation() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, Annotation);
 
-    _initDefineProp(this, "key", _descriptor, this);
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-    _initDefineProp(this, "value", _descriptor2, this);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Annotation.__proto__ || Object.getPrototypeOf(Annotation)).call.apply(_ref, [this].concat(args))), _this), _initDefineProp(_this, "key", _descriptor, _this), _initDefineProp(_this, "value", _descriptor2, _this), _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Annotation, null, [{
-    key: "create",
-    value: function create(key, data) {
-      var ref = firebase.database().ref("" + domain()).child("annotations");
-      // this new, empty ref only exists locally
-      var newChildRef = ref.push();
-      // now it is appended at the end of data at the server
-      newChildRef.set(annotation);
-    }
-  }, {
-    key: "fromSnapshot",
-    value: function fromSnapshot(snapshot) {
-      var annotation = new Annotation();
-      annotation.key = snapshot.key;
-      return annotation;
+    key: "storageKey",
+    value: function storageKey() {
+      return "annotations";
     }
   }]);
 
   return Annotation;
-}(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "key", [_mobx.observable], {
+}(_persitable2.default), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "key", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
@@ -30401,13 +30463,17 @@ var _firebase = __webpack_require__(53);
 
 var firebase = _interopRequireWildcard(_firebase);
 
-var _selector = __webpack_require__(71);
+var _selector2 = __webpack_require__(71);
 
-var _selector2 = _interopRequireDefault(_selector);
+var _selector3 = _interopRequireDefault(_selector2);
 
 var _annotation = __webpack_require__(73);
 
 var _annotation2 = _interopRequireDefault(_annotation);
+
+var _page = __webpack_require__(80);
+
+var _page2 = _interopRequireDefault(_page);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -30458,10 +30524,6 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-var debugLog = function debugLog(snapshot) {
-  if (snapshot && snapshot.val) (0, _log.log)("[Watcher - firebase] received new value", snapshot.key, snapshot.val());
-};
-
 var Store = (_class = function () {
   function Store() {
     var _this = this;
@@ -30472,25 +30534,55 @@ var Store = (_class = function () {
 
     _initDefineProp(this, "annotations", _descriptor2, this);
 
-    this.observeSelectors = function (selectors) {
-      if (selectors) {
-        debugLog(selectors);
-        _this.selectors.merge(selectors.val());
-        _this.atom.reportChanged();
+    this.actions = {
+      upsertSelector: function upsertSelector(selectorKey, values) {
+        // first try to see if we have a selector that matches
+        if (_this.selectors.has(selectorKey)) {
+          console.log("found value");
+          var _selector = _this.selectors.get(selectorKey);
+          _selector.merge(values);
+          return _selector.save();
+        }
+
+        // if we don't have a value
+        console.log("inserting new value");
+        var selector = new _selector3.default();
+        selector.merge(Object.assign({}, values, { selector: selectorKey }));
+        selector.save();
+      },
+      addAnnotation: function addAnnotation() {
+        return _annotation2.default.create.apply(_annotation2.default, arguments);
+      },
+      addPage: function addPage() {
+        return _page2.default.create.apply(_page2.default, arguments);
       }
     };
 
-    this.observeAnnotations = function (annotations) {
-      if (annotations) {
-        debugLog(annotations);
-        _this.annotations.merge(annotations.val());
-        _this.atom.reportChanged();
-      }
+    this.debugLog = function (snapshot) {
+      if (snapshot && snapshot.val) (0, _log.log)("[Watcher - firebase] received new value", snapshot.key, snapshot.val());
+    };
+
+    this.observeRemoteVal = function (key) {
+      var selectorRef = firebase.database().ref(_location2.default.domain + "/" + key);
+      selectorRef.on("value", function (snapshot) {
+        _this.debugLog(snapshot);
+        if (snapshot) {
+          _this[key].merge(snapshot.val());
+        }
+      });
     };
 
     this.atom = (0, _mobx.createAtom)("Store");
     this.connect();
   }
+
+  // --------------------------------------------------------
+  // From firebase
+  // --------------------------------------------------------
+
+  // API Actions that can be invoked directly from
+  // the console or from the watcher
+
 
   _createClass(Store, [{
     key: "connect",
@@ -30506,14 +30598,8 @@ var Store = (_class = function () {
       };
       firebase.initializeApp(config);
 
-      this.observeSelectors();
-      this.observeAnnotations();
-
-      var selectorRef = firebase.database().ref(_location2.default.domain + "/selectors");
-      selectorRef.on("value", this.observeSelectors);
-
-      var annotationRef = firebase.database().ref(_location2.default.domain + "/annotations");
-      annotationRef.on("value", this.observeAnnotations);
+      this.observeRemoteVal("selectors");
+      this.observeRemoteVal("annotations");
     }
   }]);
 
@@ -30530,6 +30616,182 @@ var Store = (_class = function () {
   }
 })), _class);
 exports.default = Store;
+
+/***/ }),
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _mobx = __webpack_require__(11);
+
+var _firebase = __webpack_require__(53);
+
+var firebase = _interopRequireWildcard(_firebase);
+
+var _location = __webpack_require__(70);
+
+var _location2 = _interopRequireDefault(_location);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Persitable = function () {
+  function Persitable() {
+    _classCallCheck(this, Persitable);
+  }
+
+  _createClass(Persitable, null, [{
+    key: "create",
+    value: function create(key, data) {
+      var ref = firebase.database().ref("" + _location2.default.domain).child(this.storageKey()).child(key);
+      // this new, empty ref only exists locally
+      var newChildRef = ref.set(data);
+    }
+  }, {
+    key: "fromSnapshot",
+    value: function fromSnapshot(snapshot) {
+      var annotation = new Selector();
+      annotation.key = snapshot.key;
+      return annotation;
+    }
+  }, {
+    key: "storageKey",
+    value: function storageKey() {
+      throw new Error("Storage key not defined");
+    }
+  }]);
+
+  return Persitable;
+}();
+
+exports.default = Persitable;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _desc, _value, _class, _descriptor, _descriptor2;
+
+var _mobx = __webpack_require__(11);
+
+var _persitable = __webpack_require__(79);
+
+var _persitable2 = _interopRequireDefault(_persitable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _initDefineProp(target, property, descriptor, context) {
+  if (!descriptor) return;
+  Object.defineProperty(target, property, {
+    enumerable: descriptor.enumerable,
+    configurable: descriptor.configurable,
+    writable: descriptor.writable,
+    value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+  });
+}
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+function _initializerWarningHelper(descriptor, context) {
+  throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+}
+
+var Page = (_class = function (_Persistable) {
+  _inherits(Page, _Persistable);
+
+  function Page() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, Page);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Page.__proto__ || Object.getPrototypeOf(Page)).call.apply(_ref, [this].concat(args))), _this), _initDefineProp(_this, "key", _descriptor, _this), _initDefineProp(_this, "value", _descriptor2, _this), _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(Page, null, [{
+    key: "storageKey",
+    value: function storageKey() {
+      return "pages";
+    }
+  }]);
+
+  return Page;
+}(_persitable2.default), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "key", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "value", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+})), _class);
+exports.default = Page;
 
 /***/ })
 /******/ ]);
