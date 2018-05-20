@@ -1,4 +1,4 @@
 {
   "presets": ["env", "react-app"],
-  "plugins": ["transform-decorators-legacy"]
+  "plugins": ["transform-custom-element-classes", "transform-decorators-legacy"]
 }

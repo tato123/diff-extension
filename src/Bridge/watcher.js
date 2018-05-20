@@ -1,12 +1,6 @@
-import { observable, computed, reaction, autorun, action, spy } from "mobx";
-import { log } from "./log";
 import selector from "./models/selector";
-import renderUI from "./ui";
-import Store from "./models/store";
 
 export default class Watcher {
-  @observable store;
-
   constructor() {
     // create our observable store
     this.store = new Store();

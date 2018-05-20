@@ -1,12 +1,17 @@
-import { render } from "./browser";
-import React from "react";
-import ReactDOM from "react-dom";
-import Shadow from "./Components/Shadow";
+const addScriptToPage = async scriptName => {
+  return new Promise((resolve, reject) => {
+    // Add our page bridge
+    const script = document.createElement("script");
+    script.src = chrome.runtime.getURL(scriptName);
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+};
 
-const element = render("div");
+const loadScripts = async () => {
+  //await addScriptToPage("bridge.js");
+  await addScriptToPage("app.js");
+};
 
-// ReactDOM.render(<Shadow />, element);
-
-const script = document.createElement("script");
-script.src = chrome.runtime.getURL("watcher.js");
-document.body.appendChild(script);
+loadScripts();
