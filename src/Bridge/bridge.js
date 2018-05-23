@@ -1,17 +1,24 @@
-import selector from "./models/selector";
+import { connect } from "./firebase";
+import { publish, subscribe } from "./messagebus";
+import "./app";
 
-export default class Watcher {
+export default class Bridge {
   constructor() {
     // create our observable store
-    this.store = new Store();
+    this.firebaseRef = connect();
+    subscribe(this.onEvent);
   }
 
   start() {
     console.log("---------------------");
     console.log("Starting watcher");
     console.log("---------------------");
-    renderUI(this.store);
+    document.body.insertAdjacentHTML("beforeend", `<df-app />`);
     return this;
+  }
+
+  onEvent(data) {
+    console.log("[Bridge received]", data);
   }
 
   debug() {
@@ -23,16 +30,15 @@ export default class Watcher {
   }
 
   static init() {
-    if (window.watcher) {
+    if (window.diffApp) {
       console.error("watcher already initailized");
-      return window.watcher;
+      return window.diffApp;
     }
 
-    const watcher = (window.watcher = new Watcher());
-    return watcher;
+    return (window.diffApp = new Bridge());
   }
 
   static getInstance() {
-    return window.watcher;
+    return window.diffApp;
   }
 }

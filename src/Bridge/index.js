@@ -1,6 +1,6 @@
-import watcher from "./watcher";
+import bridge from "./bridge";
 
-watcher
+bridge
   .init()
   .start()
   .debug();

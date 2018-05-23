@@ -1,8 +1,19 @@
+const whitelist = ["storage.googleapis.com"];
+
 /**
- * Handle user event when a Tab is clicked
+ * Handles messages from our content scripts
  */
-chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript({
-    file: "contentScript.js"
-  });
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  const { hostname } = new URL(sender.tab.url);
+
+  // is whitelisted
+  const whitelisted = !!whitelist.find(x => x === hostname);
+  if (request.type === "diff:is_whitelisted" && whitelisted) {
+    sendResponse({ whitelisted });
+
+    // load the appropriate scripts
+    chrome.tabs.executeScript({
+      file: "contentScript.js"
+    });
+  }
 });
