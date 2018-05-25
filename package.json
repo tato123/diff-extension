@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --env dev && webpack --env build && npm run test",
+    "build:prod": "cross-env NODE_ENV=\"production\" webpack --progress --colors --watch --env dev",
     "dev": "cross-env NODE_ENV=\"development\" webpack --progress --colors --watch --env dev",
     "start": "npm run dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
@@ -14,14 +15,6 @@
     "type": "git",
     "url": "git+https://github.com/tato123/designr-extension.git"
   },
-  "keywords": [
-    "Simple",
-    "way",
-    "to",
-    "communicate",
-    "between",
-    "projects"
-  ],
   "author": "Jonathan Fontanez <jfontanez@forage.ai>",
   "license": "ISC",
   "bugs": {
@@ -78,10 +71,15 @@
     "@polymer/polymer": "^3.0.0",
     "@vaadin/vaadin-combo-box": "^4.0.1-pre.2",
     "@vaadin/vaadin-tabs": "^2.0.0-pre.3",
+    "date-fns": "^1.29.0",
     "dotenv-webpack": "^1.5.5",
     "firebase": "^5.0.1",
     "lodash": "^4.17.10",
     "popper.js": "^1.14.3",
-    "pwa-helpers": "^0.8.2"
+    "pwa-helpers": "^0.8.2",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.3.2",
+    "redux-saga": "^0.16.0",
+    "reselect": "^3.0.1"
   }
 }

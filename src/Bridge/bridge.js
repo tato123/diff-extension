@@ -1,5 +1,5 @@
 import { connect } from "./firebase";
-import { publish, subscribe } from "./messagebus";
+import { subscribe } from "./messagebus";
 import "./app";
 
 export default class Bridge {
@@ -18,7 +18,7 @@ export default class Bridge {
   }
 
   onEvent(data) {
-    console.log("[Bridge received]", data);
+    // console.log("[Bridge received]", data);
   }
 
   debug() {

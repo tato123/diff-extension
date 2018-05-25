@@ -1,36 +1,36 @@
 import { LitElement, html } from "@polymer/lit-element";
 import firebase from "firebase";
 
-export default class Modal extends LitElement {
-  static get properties() {
-    return {
-      kick: Function
-    };
+import { newValue } from "../../actions/firebase";
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { store } from "../../store";
+
+export default class Modal extends connect(store)(LitElement) {
+  _render() {
+    return html`<slot />`;
   }
 
   _firstRendered() {
     const db = firebase.firestore();
     const settings = { /* your settings... */ timestampsInSnapshots: true };
     db.settings(settings);
-    const docs = db
+    db
       .collection("domains")
       .doc("storage.googleapis.com")
       .collection("node")
       .where("type", "==", "selector")
       .get()
       .then(querySnapshot => {
-        this.dispatchEvent(
-          new CustomEvent("counter-incremented", { detail: querySnapshot })
-        );
+        querySnapshot.forEach(doc => {
+          store.dispatch(newValue(doc.data()));
+        });
       })
       .catch(err => {
         console.error("[fb err]", err);
       });
   }
 
-  _render() {
-    return html``;
-  }
+  _stateChanged(state) {}
 }
 
-window.customElements.define("df-firebase", Modal);
+window.customElements.define("df-firebase-app", Modal);

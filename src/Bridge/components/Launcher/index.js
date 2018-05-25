@@ -22,6 +22,7 @@ export default class Launcher extends LitElement {
         right: var(--offset);
 
         --blue: #191b3b;
+        --blue-2: #191b3bef;
         --pink: #e5397c;
         --offset: 64px;
       }
@@ -45,7 +46,7 @@ export default class Launcher extends LitElement {
       }
 
       .launcher:hover {
-        background-color: color(var(--blue) alpha(-10%));
+        background-color: var(--blue-2);
       }
 
       .launcher img {
@@ -80,24 +81,31 @@ export default class Launcher extends LitElement {
         flex: 1;
         justify-content: center;
       }
+
+      [x-unfocus] {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        outline: none;
+      }
       </style>
       <div class="launcher">
-          <div class="logo">
-              <img src="${img}" />
+          <div class="logo" x-unfocus>
+              <img src="${img}" x-unfocus/>
           </div>
-          <div class="number">
+          <div class="number" x-unfocus>
               <label>5</label>
           </div>
       </div>
     `;
   }
 
-  _onClick() {
-    console.log("Hey, I was clicked");
+  get launcher() {
+    return this.shadowRoot.querySelector(".launcher");
   }
 
   _firstRendered() {
-    this.shadowRoot.querySelector(".launcher").classList.add("md-appear");
+    this.launcher.classList.add("md-appear");
   }
 }
 

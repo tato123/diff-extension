@@ -1,24 +1,11 @@
 import { LitElement, html } from "@polymer/lit-element";
 import theme from "../Theme";
+import Popper from "popper.js";
 
 import "../Modal";
 
 export default class Callout extends LitElement {
-  static get properties() {
-    return {
-      alerts: {
-        type: Number,
-        value: 0
-      }
-    };
-  }
-
-  constructor() {
-    super();
-    this.modal = false;
-  }
-
-  _render({ alerts }) {
+  _render({ count }) {
     return html`
     ${theme}
       <style>
@@ -68,14 +55,33 @@ export default class Callout extends LitElement {
         onmouseleave="${() => this._mouseLeave()}"
         onclick="${() => this._onClick()}"
         >
-         <label>${alerts}</label>
+         <label>${count}</label>
          <div class="box-region"></div>
       </div>
     `;
   }
 
+  static get properties() {
+    return {
+      count: Number,
+      element: String
+    };
+  }
+
   get boxRegionRef() {
     return this.shadowRoot.querySelector(".box-region");
+  }
+
+  get targetElement() {
+    return document.querySelector(this.element);
+  }
+
+  _didRender({ element }, changedProps) {
+    if (element) {
+      this.popper = new Popper(this.targetElement, this, {
+        placement: "left-start"
+      });
+    }
   }
 
   _mouseOver() {

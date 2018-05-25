@@ -1,48 +1,48 @@
-import "@polymer/polymer";
 import { LitElement, html } from "@polymer/lit-element";
 import "./components/Launcher";
 import "./components/Firebase/listener";
-import Popper from "popper.js";
+import "./components/Route";
+import "./components/Callout/selectors";
+import { navigateTo } from "./actions/location";
 
-export default class Callout extends LitElement {
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { store } from "./store.js";
+
+export default class App extends connect(store)(LitElement) {
+  _render({ selectRoute }) {
+    return html`
+      <df-firebase-app>
+        <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
+        <df-element-route path="${selectRoute}">
+          <df-selectors />
+        </df-element-route>                        
+      </df-firebase-app>      
+    `;
+  }
+
   static get properties() {
-    return {};
+    return {
+      selectRoute: String,
+      route: String
+    };
   }
 
   constructor() {
     super();
-    this._onKick = this._onKick.bind(this);
+    this.onLauncherClick = this.onLauncherClick.bind(this);
+    this.selectRoute = "/selector";
   }
 
-  _render({}) {
-    return html`
-      <div>
-      <df-firebase on-counter-incremented=${this._onKick}></df-firebase>
-      <df-launcher></df-launcher>
-      </div>
-    `;
+  onLauncherClick() {
+    const routeTo = this.selectRoute === this.route ? "/" : this.selectRoute;
+    store.dispatch(navigateTo(routeTo));
   }
 
-  _onKick({ detail: querySnapshot }) {
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      console.log("[fb snapshot]", data);
-      const elm = document.querySelector(data.selector);
-
-      const callout = document.createElement("df-callout");
-      callout.alerts = 1;
-
-      document.body.appendChild(callout);
-
-      new Popper(elm, callout, {
-        placement: "left-start"
-      });
-    });
-  }
-
-  _onSelector(selector) {
-    this.pageSelectors.push(selector);
+  _stateChanged(state) {
+    if (state) {
+      this.route = state.location.route;
+    }
   }
 }
 
-window.customElements.define("df-app", Callout);
+window.customElements.define("df-app", App);
