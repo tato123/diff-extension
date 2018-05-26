@@ -1,5 +1,6 @@
 import { LitElement, html } from "@polymer/lit-element";
 import img from "../resources/logo.png";
+import "ui/diff";
 
 export default class Launcher extends LitElement {
   _render() {
@@ -62,24 +63,11 @@ export default class Launcher extends LitElement {
       }
 
       .number {
-        background-color: var(--pink);
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
         color: white;
-        justify-items: center;
-        align-items: center;
         display: flex;
-        font-weight: bold;
         position: absolute;
-        right: -16px;
+        right: 16px;
         flex: 1;
-      }
-
-      .number label {
-        display: flex;
-        flex: 1;
-        justify-content: center;
       }
 
       [x-unfocus] {
@@ -88,14 +76,13 @@ export default class Launcher extends LitElement {
         user-select: none;
         outline: none;
       }
+
       </style>
       <div class="launcher">
           <div class="logo" x-unfocus>
               <img src="${img}" x-unfocus/>
           </div>
-          <div class="number" x-unfocus>
-              <label>5</label>
-          </div>
+          <df-bubble value="5" class="number" x-unfocus />
       </div>
     `;
   }

@@ -1,5 +1,4 @@
 import firebase from "firebase";
-import "./components/Callout";
 
 export const connect = () => {
   const config = {

@@ -3,15 +3,19 @@ import "./components/Launcher";
 import "./components/Firebase/listener";
 import "./components/Route";
 import "./components/Callout/selectors";
+import "./components/Modal";
 import { navigateTo } from "./actions/location";
 
 import { connect } from "pwa-helpers/connect-mixin.js";
 import { store } from "./store.js";
 
+import "ui/diff";
+
 export default class App extends connect(store)(LitElement) {
   _render({ selectRoute }) {
-    return html`
+    return html`    
       <df-firebase-app>
+        
         <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
         <df-element-route path="${selectRoute}">
           <df-selectors />
