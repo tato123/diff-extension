@@ -12,13 +12,24 @@ import { store } from "./store.js";
 import "ui/diff";
 
 export default class App extends connect(store)(LitElement) {
-  _render({ selectRoute }) {
+  selectorWidgetFactory(route) {
+    if (route && route.startsWith("/selector")) {
+      return html`<df-selectors />`;
+    }
+  }
+
+  modalWidgetFactory(route) {
+    if (route && route.startsWith("/selector/view")) {
+      return html`<df-action-menu />`;
+    }
+  }
+
+  _render({ route }) {
     return html`    
       <df-firebase-app>        
         <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
-        <df-element-route path="${selectRoute}">
-          <df-selectors />
-        </df-element-route>                        
+        ${this.selectorWidgetFactory(route)}
+        ${this.modalWidgetFactory(route)}                       
       </df-firebase-app>      
     `;
   }
@@ -37,7 +48,7 @@ export default class App extends connect(store)(LitElement) {
   }
 
   onLauncherClick() {
-    const routeTo = this.selectRoute === this.route ? "/" : this.selectRoute;
+    const routeTo = this.route !== "/" ? "/" : this.selectRoute;
     store.dispatch(navigateTo(routeTo));
   }
 

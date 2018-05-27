@@ -10,8 +10,8 @@ export default class Selectors extends connect(store)(LitElement) {
       ${selectors.map(({ selector, count }, idx) => {
         return html`          
           <df-popper 
-            duration="250"
-            delay=${idx * 350}
+            duration="150"
+            delay="0"
             element="${selector}" 
             count="${count}" />
         `;
@@ -31,5 +31,3 @@ export default class Selectors extends connect(store)(LitElement) {
     }
   }
 }
-
-window.customElements.define("df-selectors", Selectors);

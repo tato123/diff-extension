@@ -1,70 +1,66 @@
 import { LitElement, html } from "@polymer/lit-element";
-import theme from "../Theme";
 import Popper from "popper.js";
 
-export default class Callout extends LitElement {
-  _render({ count }) {
-    return html`
-    ${theme}
-      <style>
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { navigateTo } from "Bridge/actions/location";
+import { store } from "Bridge/store";
 
-        :host {
-          opacity: 0;
-        }
-        .callout {
-          position: relative;
-          
-        }
-        label {
-            color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            align-items: center;
-            justify-content: center;
-            display: flex;
-            flex: 1;
-            background:#e63a7d;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            opacity: 1;
-            position: absolute;
-            left: -16px;
-            top: -16px;
-        }
+export default class PopperHandler extends connect(store)(LitElement) {
+  _render({ count, delay, duration, element }) {
+    if (!element || this.pop) {
+      return;
+    }
 
-        .box-region {
-            opacity:0;
-            border-radius: 32px;
-            border: 4px dashed #8c8da0;
-            display: block;
-            cursor: pointer;
-            z-index: -1;
-            transition: all 100ms ease-in;
-        }
+    // create an outline element
+    const outliner = (this.outliner = document.createElement(
+      "df-popper-outline"
+    ));
+    outliner.style.opacity = 0;
+    this.appendChild(outliner);
 
-        .appear {
-            opacity: 1;
-        }
+    // create our bubble element
+    const popper = (this.popper = document.createElement("df-bubble"));
+    popper.value = count;
+    popper.classList.add("pop");
+    popper.style.opacity = 0;
+    this.appendChild(popper);
 
-        .selected {
-          border-color: #1e1e3e;
-          opacity: 1;
-        }
+    // create our reference
+    const reference = document.querySelector(element);
 
-        .box-region:hover {
-          opacity: 1;
-        }
-      </style>
-      <div class="callout"         
-        onclick="${this._onClick}"
-        >
-         <label>${count}</label>
-         <div class="box-region"></div>
-      </div>
+    const updateImg = data => {
+      const width = window.getComputedStyle(reference, null).width;
+      const height = window.getComputedStyle(reference, null).height;
+      outliner.style.width = width;
+      outliner.style.height = height;
+      outliner.style.top = data.offsets.popper.top + "px";
+      outliner.style.left = data.offsets.popper.left + "px";
+      outliner.style.position = data.offsets.popper.position;
+      return outliner;
+    };
 
-     
-    `;
+    const timings = {
+      easing: "cubic-bezier(0.2, 0.0, 0.2, 1)",
+      fill: "forwards",
+      duration,
+      delay
+    };
+
+    const animateImg = (data, outliner) => {
+      popper.animate([{ opacity: 0 }, { opacity: 1 }], timings);
+      outliner.animate([{ opacity: 0 }, { opacity: 1 }], timings);
+    };
+
+    this.pop = new Popper(reference, popper, {
+      placement: "left-start",
+      onCreate: data => {
+        const outliner = updateImg(data);
+        animateImg(data, outliner);
+      },
+      onUpdate: updateImg
+    });
+
+    return html`<slot></slot>`;
   }
 
   static get properties() {
@@ -76,82 +72,39 @@ export default class Callout extends LitElement {
     };
   }
 
-  constructor() {
-    super();
-    this._onClick = this._onClick.bind(this);
-  }
-
-  get boxRegionRef() {
-    return this.shadowRoot.querySelector(".box-region");
-  }
-
-  get targetElement() {
-    return document.querySelector(this.element);
-  }
-
-  get poplabel() {
-    return this.shadowRoot.querySelector("label");
-  }
-
-  get timings() {
-    return {
-      easing: "cubic-bezier(0.2, 0.0, 0.2, 1)",
-      fill: "forwards",
-      duration: this.duration,
-      delay: this.delay
-    };
-  }
-
   _didRender() {
-    if (this.targetElement && !this.popper) {
-      this.targetElement.addEventListener("mouseover", () => {
-        this.boxRegionRef.style.opacity = 1;
-      });
-
-      this.targetElement.addEventListener("mouseleave", () => {
-        this.boxRegionRef.style.opacity = 0;
-      });
-
-      this.popper = new Popper(this.targetElement, this, {
-        placement: "left-start",
-        onCreate: data => {
-          this.updateOutline(data);
-          this.animateEnter(data);
-        },
-        onUpdate: this.updateOutline
-      });
+    if (!this.outliner) {
+      return;
     }
+
+    this.outliner.addEventListener("mouseover", () => {
+      console.log("mousing over");
+    });
+
+    this.outliner.addEventListener("mouseleave", () => {
+      console.log("mousing leave");
+    });
+
+    this.outliner.addEventListener("click", evt => {
+      this.outliner.classList.toggle("selected");
+      this.onClick(evt);
+    });
   }
 
-  animateEnter(data) {
-    this.animate([{ opacity: 0 }, { opacity: 1 }], this.timings);
-  }
+  onClick(evt) {
+    // dont bubble
+    evt.preventDefault();
 
-  updateOutline(data) {
-    /* eslint-disable */
-    if (this.targetElement) {
-      const width = window.getComputedStyle(this.targetElement, null).width;
-      const height = window.getComputedStyle(this.targetElement, null).height;
-
-      // modify box-region
-      this.boxRegionRef.style.width = width;
-      this.boxRegionRef.style.height = height;
-      this.boxRegionRef.style.top = "0";
-    }
-  }
-
-  _onClick() {
-    if (this.modal) {
-      document.querySelector("df-action-menu").remove();
-      this.modal = false;
-      this.boxRegionRef.classList.remove("selected");
+    if (this.outliner.classList.contains("selected")) {
+      store.dispatch(
+        navigateTo("/selector/view", {
+          element: this.element
+        })
+      );
     } else {
-      this.boxRegionRef.classList.add("selected");
-      const actionMenu = document.createElement("df-action-menu");
-      document.body.appendChild(actionMenu);
-      this.modal = true;
+      store.dispatch(navigateTo("/selector"));
     }
   }
-}
 
-window.customElements.define("df-popper", Callout);
+  _stateChanged() {}
+}
