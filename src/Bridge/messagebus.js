@@ -1,7 +1,7 @@
 const DIFF_MESSAGES = "diff:messages";
 
 const filter = cb => evt => {
-  console.log("evt", evt);
+  //  console.log("evt", evt);
   cb(evt.data);
 };
 

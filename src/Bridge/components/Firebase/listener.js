@@ -18,7 +18,6 @@ export default class Modal extends connect(store)(LitElement) {
       .collection("domains")
       .doc("storage.googleapis.com")
       .collection("node")
-      .where("type", "==", "selector")
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {

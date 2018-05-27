@@ -1,9 +1,12 @@
 import { LitElement, html } from "@polymer/lit-element";
 import img from "../resources/logo.png";
-import "ui/diff";
 
-export default class Launcher extends LitElement {
-  _render() {
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { store } from "../../store";
+import { cssRulesLengthSelector } from "Bridge/selectors/selector";
+
+export default class Launcher extends connect(store)(LitElement) {
+  _render({ rules }) {
     return html`
       <style>
       @keyframes appear {
@@ -82,9 +85,15 @@ export default class Launcher extends LitElement {
           <div class="logo" x-unfocus>
               <img src="${img}" x-unfocus/>
           </div>
-          <df-bubble value="5" class="number" x-unfocus />
+          <df-bubble value="${rules}" class="number" x-unfocus />
       </div>
     `;
+  }
+
+  static get properties() {
+    return {
+      rules: Number
+    };
   }
 
   get launcher() {
@@ -93,6 +102,12 @@ export default class Launcher extends LitElement {
 
   _firstRendered() {
     this.launcher.classList.add("md-appear");
+  }
+
+  _stateChanged(state) {
+    if (state) {
+      this.rules = cssRulesLengthSelector(state);
+    }
   }
 }
 

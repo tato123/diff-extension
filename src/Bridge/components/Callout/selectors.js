@@ -2,16 +2,18 @@ import { LitElement, html } from "@polymer/lit-element";
 import "./popper";
 import { connect } from "pwa-helpers/connect-mixin.js";
 import { store } from "../../store.js";
+import { threadCountForSelectors } from "Bridge/selectors/selector";
 
 export default class Selectors extends connect(store)(LitElement) {
   _render({ selectors = [] }) {
     return html`
-      ${selectors.map((data, idx) => {
+      ${selectors.map(({ selector, count }, idx) => {
         return html`          
           <df-popper 
             duration="250"
             delay=${idx * 350}
-            element="${data.selector}" count="${idx + 1}" />
+            element="${selector}" 
+            count="${count}" />
         `;
       })}
     `;
@@ -25,7 +27,7 @@ export default class Selectors extends connect(store)(LitElement) {
 
   _stateChanged(state) {
     if (state) {
-      this.selectors = state.entities.selectors;
+      this.selectors = threadCountForSelectors(state);
     }
   }
 }

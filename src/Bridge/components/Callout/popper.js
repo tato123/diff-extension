@@ -104,7 +104,6 @@ export default class Callout extends LitElement {
 
   _didRender() {
     if (this.targetElement && !this.popper) {
-      console.log(this.delay);
       this.targetElement.addEventListener("mouseover", () => {
         this.boxRegionRef.style.opacity = 1;
       });
@@ -125,7 +124,6 @@ export default class Callout extends LitElement {
   }
 
   animateEnter(data) {
-    console.log("animate enter", this.timings);
     this.animate([{ opacity: 0 }, { opacity: 1 }], this.timings);
   }
 
