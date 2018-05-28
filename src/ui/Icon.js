@@ -1,20 +1,14 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element.js";
-import { afterNextRender } from "@polymer/polymer/lib/utils/render-status.js";
 
 import fontawesome from "@fortawesome/fontawesome";
 import solid from "@fortawesome/fontawesome-free-solid";
 import regular from "@fortawesome/fontawesome-free-regular";
 import brands from "@fortawesome/fontawesome-free-brands";
 
-fontawesome.library.add(solid);
-fontawesome.library.add(regular);
-fontawesome.library.add(brands);
-
 export default class Icon extends PolymerElement {
   // Define optional shadow DOM template
   static get template() {
-    return html`
-      <style id="placeholder"></style>
+    return html`   
       <span id="icon"></span>
     `;
   }
@@ -40,11 +34,16 @@ export default class Icon extends PolymerElement {
     this.appendChild(dom);
   }
 
-  constructor() {
-    super();
+  ready() {
+    super.ready();
 
-    afterNextRender(this, function() {
-      this.$.placeholder.innerHTML = fontawesome.dom.css();
-    });
+    fontawesome.library.add(solid);
+    fontawesome.library.add(regular);
+    fontawesome.library.add(brands);
+    const css = fontawesome.dom.css();
+
+    const style = document.createElement("style");
+    style.innerHTML = css;
+    this.appendChild(style);
   }
 }

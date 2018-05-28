@@ -1,6 +1,8 @@
-// import "@webcomponents/webcomponentsjs/webcomponents-loader.js";
 import Bubble from "./Bubble";
 import Icon from "./Icon";
+import Button from "./Button";
+import Tabs from "./Tabs";
+import DateSelector from "./DateSelector";
 
 const NameSpacedComponent = (ns, components) => {
   Object.keys(components).forEach(name => {
@@ -10,5 +12,8 @@ const NameSpacedComponent = (ns, components) => {
 
 NameSpacedComponent("df", {
   bubble: Bubble,
-  icon: Icon
+  icon: Icon,
+  button: Button,
+  "date-select": DateSelector,
+  tabs: Tabs
 });

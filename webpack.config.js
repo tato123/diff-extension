@@ -11,7 +11,10 @@ const config = {
   entry: {
     background: path.resolve(__dirname, "src/Background/index.js"),
     contentScript: path.resolve(__dirname, "src/Content/contentScript.js"),
-    bridge: path.resolve(__dirname, "src/Bridge/index.js"),
+    bridge: [
+      "./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js",
+      path.resolve(__dirname, "src/Bridge/index.js")
+    ],
     inject: path.resolve(__dirname, "src/Content/inject.js")
   },
   devtool: ENV === "development" ? "source-map" : "none",

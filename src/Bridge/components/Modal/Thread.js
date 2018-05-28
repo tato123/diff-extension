@@ -1,37 +1,36 @@
 import { LitElement, html } from "@polymer/lit-element";
-import theme from "../Theme";
-import placeholder from "./profilepic.png";
 import format from "date-fns/format";
+import { threadForIdSelector } from "Bridge/selectors/selector";
 
-class ModalThread extends LitElement {
-  constructor() {
-    super();
-    this.items = [
-      {
-        date: Date.now(),
-        type: "comment",
-        val: `“Looking good! One small change. 
-        The border radius should be 3px. The 
-        JIRA story is linked.”`,
-        pic: placeholder
-      },
-      {
-        date: Date.now(),
-        type: "comment",
-        val: `“Looking good! One small change. 
-        The border radius should be 3px. The 
-        JIRA story is linked.”`,
-        pic: placeholder
-      },
-      {
-        date: Date.now(),
-        type: "comment",
-        val: `“Looking good! One small change. 
-        The border radius should be 3px. The 
-        JIRA story is linked.”`,
-        pic: placeholder
-      }
-    ];
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { store } from "../../store.js";
+
+export default class ThreadView extends connect(store)(LitElement) {
+  _render({ items }) {
+    if (!items) {
+      return html``;
+    }
+    return html`
+      <style>
+        .thread-container:last-child {
+            box-shadow: none;
+        }
+      </style>
+      <div class="modal">        
+        ${items.map(item => {
+          if (item.type === "comment") {
+            return this._renderComment(item);
+          }
+        })}
+      </div>
+    `;
+  }
+
+  static get properties() {
+    return {
+      threadId: String,
+      items: Array
+    };
   }
 
   _renderComment(item) {
@@ -81,33 +80,19 @@ class ModalThread extends LitElement {
             <div class="gutter">
                 <img src="${item.pic}"/>
             </div>
-            <div class="comment thread">
+            <div class="comment thread">                
                 <span>COMMENT</span>
                 <span>${date}</span>
-                <span>${item.val}</span>
+                <span>${item.comment}</span>
             </div>
         </div>
 
       `;
   }
 
-  _render({ page }) {
-    return html`
-      ${theme}
-      <style>
-        .thread-container:last-child {
-            box-shadow: none;
-        }
-      </style>
-      <div class="modal">
-        ${this.items.map(item => {
-          if (item.type === "comment") {
-            return this._renderComment(item);
-          }
-        })}
-      </div>
-    `;
+  _stateChanged(state) {
+    if (state) {
+      this.items = threadForIdSelector(this.threadId)(state);
+    }
   }
 }
-
-window.customElements.define("df-modal-thread", ModalThread);
