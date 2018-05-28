@@ -25,7 +25,21 @@ export default class App extends connect(store)(LitElement) {
   }
 
   _render({ route }) {
-    return html`    
+    return html`
+      <style>
+        @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700');
+        @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,700');
+        
+        :root {          
+          font-family: 'Roboto', wingdings;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+
+          box-sizing: border-box;
+          line-height: 1.6;
+        }
+        
+      </style>    
       <df-firebase-app>        
         <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
         ${this.selectorWidgetFactory(route)}
@@ -36,7 +50,6 @@ export default class App extends connect(store)(LitElement) {
 
   static get properties() {
     return {
-      selectRoute: String,
       route: String
     };
   }
@@ -44,11 +57,10 @@ export default class App extends connect(store)(LitElement) {
   constructor() {
     super();
     this.onLauncherClick = this.onLauncherClick.bind(this);
-    this.selectRoute = "/selector";
   }
 
   onLauncherClick() {
-    const routeTo = this.route !== "/" ? "/" : this.selectRoute;
+    const routeTo = this.route !== "/" ? "/" : "/selector";
     store.dispatch(navigateTo(routeTo));
   }
 

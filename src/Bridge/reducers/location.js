@@ -4,11 +4,14 @@ import { navigateTo } from "../actions/location";
 const reducer = handleActions(
   {
     [navigateTo.toString()]: (state, action) => ({
-      route: action.payload.route
+      route: action.payload.route,
+      params: {
+        ...(action.payload.params || {})
+      }
     })
   },
   {
-    route: ""
+    route: "/"
   }
 );
 

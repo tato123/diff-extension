@@ -5,6 +5,8 @@ import { connect } from "pwa-helpers/connect-mixin.js";
 import { navigateTo } from "Bridge/actions/location";
 import { store } from "Bridge/store";
 
+import { threadIdSelector } from "Bridge/selectors/location";
+
 export default class PopperHandler extends connect(store)(LitElement) {
   _render({ count, delay, duration, element }) {
     if (!element || this.pop) {
@@ -86,7 +88,6 @@ export default class PopperHandler extends connect(store)(LitElement) {
     });
 
     this.outliner.addEventListener("click", evt => {
-      this.outliner.classList.toggle("selected");
       this.onClick(evt);
     });
   }
@@ -95,16 +96,21 @@ export default class PopperHandler extends connect(store)(LitElement) {
     // dont bubble
     evt.preventDefault();
 
-    if (this.outliner.classList.contains("selected")) {
-      store.dispatch(
-        navigateTo("/selector/view", {
-          element: this.element
-        })
-      );
-    } else {
-      store.dispatch(navigateTo("/selector"));
-    }
+    store.dispatch(
+      navigateTo("/selector/view", {
+        element: this.element
+      })
+    );
   }
 
-  _stateChanged() {}
+  _stateChanged(state) {
+    if (state) {
+      this.threadId = threadIdSelector(state);
+      if (this.outliner && this.threadId === this.element) {
+        this.outliner.classList.add("selected");
+      } else if (this.outliner) {
+        this.outliner.classList.remove("selected");
+      }
+    }
+  }
 }
