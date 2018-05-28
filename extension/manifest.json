@@ -1,11 +1,20 @@
 {
-  "name": "Design Tools",
-  "description": "Continuous collaboration tools for web apps",
-  "version": "2.0",
+  "manifest_version": 2,
+  "name": "Diff.app",
+  "description": "Collaboration design tools",
+  "minimum_chrome_version": "49",
+
+  "version": "0.0.1",
+
   "permissions": ["activeTab", "tabs", "http://*/", "https://*/"],
   "content_security_policy":
     "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["watcher.js"],
+  "web_accessible_resources": [
+    "bridge.js",
+    "app.js",
+    "inject.js",
+    "webcomponents-loader.js"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -13,6 +22,11 @@
   "browser_action": {
     "default_title": "Collaboration"
   },
-  "devtools_page": "devtools.html",
-  "manifest_version": 2
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["inject.js"],
+      "run_at": "document_start"
+    }
+  ]
 }

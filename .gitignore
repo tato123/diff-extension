@@ -31,3 +31,10 @@ node_modules
 .vscode
 
 .DS_Store
+
+
+extension/app*
+extension/bridge*
+extension/watcher*
+extension/contentScript*
+extension/background*

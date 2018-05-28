@@ -66,40 +66,23 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/Background/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/Content/inject.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/Background/index.js":
-/*!*********************************!*\
-  !*** ./src/Background/index.js ***!
-  \*********************************/
+/***/ "./src/Content/inject.js":
+/*!*******************************!*\
+  !*** ./src/Content/inject.js ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-const whitelist = ["storage.googleapis.com"];
-
-/**
- * Handles messages from our content scripts
- */
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  const { hostname } = new URL(sender.tab.url);
-
-  // is whitelisted
-  const whitelisted = !!whitelist.find(x => x === hostname);
-  if (request.type === "diff:is_whitelisted" && whitelisted) {
-    sendResponse({ whitelisted });
-
-    // load the appropriate scripts
-    chrome.tabs.executeScript({
-      file: "contentScript.js"
-    });
-  }
-});
+// perform our check at document_start
+chrome.runtime.sendMessage({ type: "diff:is_whitelisted" });
 
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=background.js.map
+//# sourceMappingURL=inject.js.map

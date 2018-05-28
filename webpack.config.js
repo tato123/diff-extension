@@ -1,45 +1,45 @@
-/* global __dirname, require, module*/
-
-const webpack = require("webpack");
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+/* global __dirname, require, module */
+const Dotenv = require("dotenv-webpack");
 const path = require("path");
-const env = require("yargs").argv.env; // use --env with webpack 2
-const pkg = require("./package.json");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
-let libraryName = pkg.name;
-
-let plugins = [],
-  outputFile;
-
-if (env === "build") {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
-  outputFile = libraryName + ".min.js";
-} else {
-  outputFile = libraryName + ".js";
-}
+const OUTPUT_PATH = path.resolve(__dirname, "./extension");
+const ENV = process.env.NODE_ENV || "development";
 
 const config = {
+  mode: ENV,
   entry: {
     background: path.resolve(__dirname, "src/Background/index.js"),
-    contentScript: path.resolve(__dirname, "src/Content/index.js"),
-    watcher: path.resolve(__dirname, "src/Watcher/index.js")
+    contentScript: path.resolve(__dirname, "src/Content/contentScript.js"),
+    bridge: [
+      "./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js",
+      path.resolve(__dirname, "src/Bridge/index.js")
+    ],
+    inject: path.resolve(__dirname, "src/Content/inject.js")
   },
-  devtool: "source-map",
+  devtool: ENV === "development" ? "source-map" : "none",
   output: {
     filename: "[name].js",
-    path: path.resolve(__dirname, "./extension")
+    path: OUTPUT_PATH
   },
   module: {
     rules: [
       {
-        test: /(\.jsx|\.js)$/,
-        loader: "babel-loader",
-        exclude: /(node_modules|bower_components)/
+        test: /\.html$/,
+        use: ["html-loader"]
       },
       {
-        test: /(\.jsx|\.js)$/,
-        loader: "eslint-loader",
-        exclude: /node_modules/
+        test: /\.css$/,
+        use: ["text-loader", "postcss-loader"]
+      },
+      { test: /\.jpg$/, use: ["file-loader"] },
+      { test: /\.png$/, use: ["url-loader?mimetype=image/png"] },
+      {
+        test: /\.svg$/,
+        use: {
+          loader: "text-loader",
+          options: {}
+        }
       }
     ]
   },
@@ -47,7 +47,13 @@ const config = {
     modules: [path.resolve("./node_modules"), path.resolve("./src")],
     extensions: [".json", ".js"]
   },
-  plugins: plugins
+  plugins: [
+    new Dotenv(),
+    new CleanWebpackPlugin(["dist"], {
+      verbose: true,
+      root: path.resolve(__dirname, "..")
+    })
+  ]
 };
 
 module.exports = config;
