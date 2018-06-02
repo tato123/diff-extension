@@ -28,10 +28,6 @@ const config = {
         test: /\.html$/,
         use: ["html-loader"]
       },
-      {
-        test: /\.css$/,
-        use: ["text-loader", "postcss-loader"]
-      },
       { test: /\.jpg$/, use: ["file-loader"] },
       { test: /\.png$/, use: ["url-loader?mimetype=image/png"] },
       {

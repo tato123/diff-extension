@@ -10,22 +10,47 @@ export default class Modal extends connect(store)(LitElement) {
     return html`<slot />`;
   }
 
-  _firstRendered() {
+  constructor() {
+    super();
     const db = firebase.firestore();
     const settings = { /* your settings... */ timestampsInSnapshots: true };
     db.settings(settings);
-    db
+    this.db = db;
+  }
+
+  _firstRendered() {
+    this._comments();
+
+    firebase
+      .auth()
+      .signInWithEmailAndPassword("fontanezj1@gmail.com", "password")
+      .then(credential => {
+        const { user } = credential;
+        const userRef = this.db.doc(`users/${user.uid}`);
+
+        const data = {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL
+        };
+
+        return userRef.set(data, { merge: true });
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }
+
+  _comments() {
+    this.db
       .collection("domains")
       .doc("storage.googleapis.com")
       .collection("node")
-      .get()
-      .then(querySnapshot => {
+      .onSnapshot(querySnapshot => {
         querySnapshot.forEach(doc => {
           store.dispatch(newValue(doc.data()));
         });
-      })
-      .catch(err => {
-        console.error("[fb err]", err);
       });
   }
 

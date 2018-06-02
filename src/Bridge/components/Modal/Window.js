@@ -256,8 +256,7 @@ export default class Window extends connect(store)(LitElement) {
     return html`
       <style>
         .placeholder {
-          height: 100%;
-          width: 100%;
+          flex: 1;
           display: flex;
           text-align: center;
           color: #fff;

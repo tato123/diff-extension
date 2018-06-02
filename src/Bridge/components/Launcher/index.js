@@ -45,8 +45,6 @@ export default class Launcher extends connect(store)(LitElement) {
         flex: 1;
         cursor: pointer;
         position: relative;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       }
 
       .launcher:hover {

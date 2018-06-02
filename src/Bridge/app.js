@@ -37,6 +37,8 @@ export default class App extends connect(store)(LitElement) {
 
           box-sizing: border-box;
           line-height: 1.6;
+          letter-spacing: 0.2px;
+          text-rendering: geometricPrecision;
         }
         
       </style>    
