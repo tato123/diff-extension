@@ -42,11 +42,11 @@ export default class App extends connect(store)(LitElement) {
         }
         
       </style>    
-      <df-firebase-app>        
+        <df-firebase-app>        </df-firebase-app>
         <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
         ${this.selectorWidgetFactory(route)}
         ${this.modalWidgetFactory(route)}                       
-      </df-firebase-app>      
+      
     `;
   }
 
