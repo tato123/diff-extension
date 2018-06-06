@@ -1,20 +1,8 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { all } from "redux-saga/effects";
 
-function* fetchUser(action) {
-  window.postMessage(
-    {
-      type: "INVOKE_CALL",
-      payload: {
-        hello: "butter"
-      },
-      source: "@diff"
-    },
-    "*"
-  );
+import postMessageSagas from "./postmessage";
+import authenticationSagas from "./authentication";
+
+export default function* rootSaga() {
+  yield all([...authenticationSagas, ...postMessageSagas]);
 }
-
-function* mySaga() {
-  yield takeLatest("@diff/firebase/querySnapshot", fetchUser);
-}
-
-export default mySaga;

@@ -15,18 +15,20 @@ const reduceObjectSelector = key => (state, doc) => {
   return state[key];
 };
 
+const handleFirebaseValue = (state, action) => {
+  const {
+    payload: { doc }
+  } = action;
+  return {
+    ...state,
+    selectors: reduceSelectors(state, doc),
+    threads: reduceObjectSelector("threads")(state, doc)
+  };
+};
+
 const reducer = handleActions(
   {
-    [newValue.toString()]: (state, action) => {
-      const {
-        payload: { doc }
-      } = action;
-      return {
-        ...state,
-        selectors: reduceSelectors(state, doc),
-        threads: reduceObjectSelector("threads")(state, doc)
-      };
-    }
+    [newValue.toString()]: handleFirebaseValue
   },
   {
     selectors: [],

@@ -71,12 +71,41 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./common/keys.js":
+/*!************************!*\
+  !*** ./common/keys.js ***!
+  \************************/
+/*! exports provided: CONTENT_SCRIPT_PORT_NAME, CONTENT_SCRIPT_SOURCE_KEY */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_PORT_NAME", function() { return CONTENT_SCRIPT_PORT_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_SOURCE_KEY", function() { return CONTENT_SCRIPT_SOURCE_KEY; });
+const CONTENT_SCRIPT_PORT_NAME = "@diff/portname/contentScript";
+
+const CONTENT_SCRIPT_SOURCE_KEY = "@diff/content";
+
+
+/***/ }),
+
 /***/ "./content/index.js":
 /*!**************************!*\
   !*** ./content/index.js ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
+
+
+const port = chrome.runtime.connect({ name: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"] });
+
+port.onMessage.addListener(msg => {
+  console.log("got a new message", msg);
+});
 
 /**
  * @param {*} scriptName
@@ -93,29 +122,80 @@ const addScriptToPage = async (scriptName, scriptId) => {
     // Add our page bridge
     const script = document.createElement("script");
     script.src = chrome.runtime.getURL(scriptName);
-    script.onload = () => {
-      resolve();
-    };
+    script.onload = resolve;
     script.onerror = reject;
     script.id = scriptId;
     document.body.appendChild(script);
-    document.body.insertAdjacentHTML("beforeend", `<df-app />`);
   });
+};
+
+function sendMessage(message, cb) {
+  port.postMessage(message, cb);
+}
+
+const handleUnknownmessageSource = evt => {
+  if (true) {
+    // console.warn("Unknown message source", evt);
+  }
+};
+
+const handleMessageFromBackend = evt => {
+  console.log("message received from backend", evt);
+};
+
+const handleMessageFromFrontend = (evt, sendResponse) => {
+  const { data } = evt;
+  switch (data.type) {
+    case "@diff/user/get/request":
+      sendMessage({ type: "GET_AUTH_TOKEN", source: "diff" }, response => {
+        sendResponse({
+          payload: response,
+          type: `@diff/user/get/${response === "" ? "success" : "failed"}`
+        });
+      });
+      break;
+    default:
+      if (true) {
+        console.warn("Unhandled message type from frontend", data.type);
+      }
+  }
+};
+
+const respondToSource = source => data => {
+  const modifiedData = {
+    ...data,
+    source
+  };
+  window.postMessage(modifiedData, "*");
+};
+
+const handleMessagesReceived = evt => {
+  const { data } = evt;
+
+  if (data.source) {
+    switch (data.source) {
+      case "@diff/frontend":
+        handleMessageFromFrontend(
+          evt,
+          respondToSource(_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_KEY"])
+        );
+        break;
+      case "@diff/backend":
+        handleMessageFromBackend(
+          evt,
+          respondToSource(_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_KEY"])
+        );
+        break;
+      default:
+        handleUnknownmessageSource(evt);
+    }
+  }
 };
 
 /**
  * Configure our messaging
  */
-window.addEventListener(
-  "message",
-  evt => {
-    const data = evt.data;
-    if (data.source && data.source === "@diff") {
-      console.log(data);
-    }
-  },
-  false
-);
+window.addEventListener("message", handleMessagesReceived, false);
 
 /**
  *
@@ -126,23 +206,10 @@ const loadScripts = async () => {
 
 const getDomainsList = async () => {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(
-      { type: "GET_DOMAIN_LIST", source: "diff" },
-      response => {
-        resolve(response);
-      }
-    );
-  });
-};
-
-const getUserToken = async () => {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(
-      { type: "GET_AUTH_TOKEN", source: "diff" },
-      response => {
-        resolve(response);
-      }
-    );
+    sendMessage({ type: "GET_DOMAIN_LIST", source: "diff" }, response => {
+      console.log("whitelist response", response);
+      resolve(response);
+    });
   });
 };
 
@@ -155,9 +222,6 @@ const isWhitelistedDomain = domains => {
  */
 const startup = async () => {
   try {
-    // check if we are still authenticated
-    const userToken = await getUserToken();
-
     // check if we can run on this domain
     const domains = await getDomainsList();
 

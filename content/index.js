@@ -1,3 +1,14 @@
+import {
+  CONTENT_SCRIPT_PORT_NAME,
+  CONTENT_SCRIPT_SOURCE_KEY
+} from "../common/keys";
+
+const port = chrome.runtime.connect({ name: CONTENT_SCRIPT_PORT_NAME });
+
+port.onMessage.addListener(msg => {
+  console.log("got a new message", msg);
+});
+
 /**
  * @param {*} scriptName
  * @param {*} scriptId
@@ -13,29 +24,80 @@ const addScriptToPage = async (scriptName, scriptId) => {
     // Add our page bridge
     const script = document.createElement("script");
     script.src = chrome.runtime.getURL(scriptName);
-    script.onload = () => {
-      resolve();
-    };
+    script.onload = resolve;
     script.onerror = reject;
     script.id = scriptId;
     document.body.appendChild(script);
-    document.body.insertAdjacentHTML("beforeend", `<df-app />`);
   });
+};
+
+function sendMessage(message, cb) {
+  port.postMessage(message, cb);
+}
+
+const handleUnknownmessageSource = evt => {
+  if (process.env.NODE_ENV === "development") {
+    // console.warn("Unknown message source", evt);
+  }
+};
+
+const handleMessageFromBackend = evt => {
+  console.log("message received from backend", evt);
+};
+
+const handleMessageFromFrontend = (evt, sendResponse) => {
+  const { data } = evt;
+  switch (data.type) {
+    case "@diff/user/get/request":
+      sendMessage({ type: "GET_AUTH_TOKEN", source: "diff" }, response => {
+        sendResponse({
+          payload: response,
+          type: `@diff/user/get/${response === "" ? "success" : "failed"}`
+        });
+      });
+      break;
+    default:
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Unhandled message type from frontend", data.type);
+      }
+  }
+};
+
+const respondToSource = source => data => {
+  const modifiedData = {
+    ...data,
+    source
+  };
+  window.postMessage(modifiedData, "*");
+};
+
+const handleMessagesReceived = evt => {
+  const { data } = evt;
+
+  if (data.source) {
+    switch (data.source) {
+      case "@diff/frontend":
+        handleMessageFromFrontend(
+          evt,
+          respondToSource(CONTENT_SCRIPT_SOURCE_KEY)
+        );
+        break;
+      case "@diff/backend":
+        handleMessageFromBackend(
+          evt,
+          respondToSource(CONTENT_SCRIPT_SOURCE_KEY)
+        );
+        break;
+      default:
+        handleUnknownmessageSource(evt);
+    }
+  }
 };
 
 /**
  * Configure our messaging
  */
-window.addEventListener(
-  "message",
-  evt => {
-    const data = evt.data;
-    if (data.source && data.source === "@diff") {
-      console.log(data);
-    }
-  },
-  false
-);
+window.addEventListener("message", handleMessagesReceived, false);
 
 /**
  *
@@ -46,23 +108,10 @@ const loadScripts = async () => {
 
 const getDomainsList = async () => {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(
-      { type: "GET_DOMAIN_LIST", source: "diff" },
-      response => {
-        resolve(response);
-      }
-    );
-  });
-};
-
-const getUserToken = async () => {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(
-      { type: "GET_AUTH_TOKEN", source: "diff" },
-      response => {
-        resolve(response);
-      }
-    );
+    sendMessage({ type: "GET_DOMAIN_LIST", source: "diff" }, response => {
+      console.log("whitelist response", response);
+      resolve(response);
+    });
   });
 };
 
@@ -75,9 +124,6 @@ const isWhitelistedDomain = domains => {
  */
 const startup = async () => {
   try {
-    // check if we are still authenticated
-    const userToken = await getUserToken();
-
     // check if we can run on this domain
     const domains = await getDomainsList();
 
