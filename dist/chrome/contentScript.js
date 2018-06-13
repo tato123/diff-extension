@@ -75,16 +75,17 @@
 /*!************************!*\
   !*** ./common/keys.js ***!
   \************************/
-/*! exports provided: CONTENT_SCRIPT_PORT_NAME, CONTENT_SCRIPT_SOURCE_KEY */
+/*! exports provided: CONTENT_SCRIPT_PORT_NAME, CONTENT_SCRIPT_SOURCE_NAME, BACKGROUND_SCRIPT_PORT_NAME */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_PORT_NAME", function() { return CONTENT_SCRIPT_PORT_NAME; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_SOURCE_KEY", function() { return CONTENT_SCRIPT_SOURCE_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_SOURCE_NAME", function() { return CONTENT_SCRIPT_SOURCE_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BACKGROUND_SCRIPT_PORT_NAME", function() { return BACKGROUND_SCRIPT_PORT_NAME; });
 const CONTENT_SCRIPT_PORT_NAME = "@diff/portname/contentScript";
-
-const CONTENT_SCRIPT_SOURCE_KEY = "@diff/content";
+const CONTENT_SCRIPT_SOURCE_NAME = "@diff/content";
+const BACKGROUND_SCRIPT_PORT_NAME = "@diff/background";
 
 
 /***/ }),
@@ -100,12 +101,6 @@ const CONTENT_SCRIPT_SOURCE_KEY = "@diff/content";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
 
-
-const port = chrome.runtime.connect({ name: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"] });
-
-port.onMessage.addListener(msg => {
-  console.log("got a new message", msg);
-});
 
 /**
  * @param {*} scriptName
@@ -128,6 +123,16 @@ const addScriptToPage = async (scriptName, scriptId) => {
     document.body.appendChild(script);
   });
 };
+
+const port = chrome.runtime.connect({ name: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"] });
+
+port.onMessage.addListener(async msg => {
+  if (msg.source === _common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]) {
+    await addScriptToPage("frontend.js", "df-bridge-0123");
+    const element = document.createElement("df-login");
+    document.body.appendChild(element);
+  }
+});
 
 function sendMessage(message, cb) {
   port.postMessage(message, cb);
@@ -177,13 +182,13 @@ const handleMessagesReceived = evt => {
       case "@diff/frontend":
         handleMessageFromFrontend(
           evt,
-          respondToSource(_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_KEY"])
+          respondToSource(_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"])
         );
         break;
       case "@diff/backend":
         handleMessageFromBackend(
           evt,
-          respondToSource(_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_KEY"])
+          respondToSource(_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"])
         );
         break;
       default:

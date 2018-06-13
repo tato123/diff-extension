@@ -1,13 +1,8 @@
 import {
   CONTENT_SCRIPT_PORT_NAME,
-  CONTENT_SCRIPT_SOURCE_KEY
+  CONTENT_SCRIPT_SOURCE_NAME,
+  BACKGROUND_SCRIPT_PORT_NAME
 } from "../common/keys";
-
-const port = chrome.runtime.connect({ name: CONTENT_SCRIPT_PORT_NAME });
-
-port.onMessage.addListener(msg => {
-  console.log("got a new message", msg);
-});
 
 /**
  * @param {*} scriptName
@@ -30,6 +25,16 @@ const addScriptToPage = async (scriptName, scriptId) => {
     document.body.appendChild(script);
   });
 };
+
+const port = chrome.runtime.connect({ name: CONTENT_SCRIPT_PORT_NAME });
+
+port.onMessage.addListener(async msg => {
+  if (msg.source === BACKGROUND_SCRIPT_PORT_NAME) {
+    await addScriptToPage("frontend.js", "df-bridge-0123");
+    const element = document.createElement("df-login");
+    document.body.appendChild(element);
+  }
+});
 
 function sendMessage(message, cb) {
   port.postMessage(message, cb);
@@ -79,13 +84,13 @@ const handleMessagesReceived = evt => {
       case "@diff/frontend":
         handleMessageFromFrontend(
           evt,
-          respondToSource(CONTENT_SCRIPT_SOURCE_KEY)
+          respondToSource(CONTENT_SCRIPT_SOURCE_NAME)
         );
         break;
       case "@diff/backend":
         handleMessageFromBackend(
           evt,
-          respondToSource(CONTENT_SCRIPT_SOURCE_KEY)
+          respondToSource(CONTENT_SCRIPT_SOURCE_NAME)
         );
         break;
       default:

@@ -66,15 +66,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./backend/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./background/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./backend/index.js":
-/*!**************************!*\
-  !*** ./backend/index.js ***!
-  \**************************/
+/***/ "./background/index.js":
+/*!*****************************!*\
+  !*** ./background/index.js ***!
+  \*****************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -127,7 +127,7 @@ const portMessageForTab = (tabId, message) => {
     Object.assign(
       {},
       {
-        source: "@diff/backend"
+        source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]
       },
       message
     )
@@ -196,16 +196,17 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 /*!************************!*\
   !*** ./common/keys.js ***!
   \************************/
-/*! exports provided: CONTENT_SCRIPT_PORT_NAME, CONTENT_SCRIPT_SOURCE_KEY */
+/*! exports provided: CONTENT_SCRIPT_PORT_NAME, CONTENT_SCRIPT_SOURCE_NAME, BACKGROUND_SCRIPT_PORT_NAME */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_PORT_NAME", function() { return CONTENT_SCRIPT_PORT_NAME; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_SOURCE_KEY", function() { return CONTENT_SCRIPT_SOURCE_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTENT_SCRIPT_SOURCE_NAME", function() { return CONTENT_SCRIPT_SOURCE_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BACKGROUND_SCRIPT_PORT_NAME", function() { return BACKGROUND_SCRIPT_PORT_NAME; });
 const CONTENT_SCRIPT_PORT_NAME = "@diff/portname/contentScript";
-
-const CONTENT_SCRIPT_SOURCE_KEY = "@diff/content";
+const CONTENT_SCRIPT_SOURCE_NAME = "@diff/content";
+const BACKGROUND_SCRIPT_PORT_NAME = "@diff/background";
 
 
 /***/ })

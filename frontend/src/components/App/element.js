@@ -10,6 +10,7 @@ import "components/Route";
 import "components/Callout";
 import "components/Modal";
 import "components/Context";
+import "components/Login";
 import "components/ui";
 
 export default class App extends connect(store)(LitElement) {
