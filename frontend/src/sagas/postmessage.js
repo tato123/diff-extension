@@ -1,8 +1,6 @@
 import { take, put, call, fork } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 
-const INCOMING_POSTMESSAGE = "@diff/postmessage/received";
-
 function createPostMessageListener() {
   return eventChannel(emit => {
     const handlePostMessage = evt => {

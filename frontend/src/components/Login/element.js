@@ -1,6 +1,10 @@
 import { LitElement, html } from "@polymer/lit-element";
 
-export default class Login extends LitElement {
+import { loginRequest } from "actions/user";
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { store } from "store";
+
+export default class Login extends connect(store)(LitElement) {
   _render() {
     return html`
       <style>
@@ -36,7 +40,6 @@ export default class Login extends LitElement {
         border: 1px solid #888;
         width: 50%;
         max-width: 300px;
-        height: 50vh;
         color: #fff;
         overflow: auto;
     }
@@ -69,14 +72,14 @@ export default class Login extends LitElement {
       <div class="modal">
         <div class="modal-content">
           <h1>Welcome to the world of diff</h1>
-          <form>
+          <form onsubmit=${this.onLoginRequest}>
             <div class="form-control">
                 <label>Username</label>
-                <input type="text" />
+                <input name="user" type="text" />
             </div>
             <div class="form-control">
                 <label>Password</label>
-                <input type="password" />
+                <input name="password" type="password" />
             </div>
             <button type="submit">Submit</button>
           </form>
@@ -85,4 +88,18 @@ export default class Login extends LitElement {
       </div>
     `;
   }
+  constructor() {
+    super();
+    this.onLoginRequest = this.onLoginRequest.bind(this);
+  }
+
+  onLoginRequest(evt) {
+    evt.preventDefault();
+    const username = evt.target.user.value;
+    const password = evt.target.password.value;
+    store.dispatch(loginRequest(username, password));
+    return false;
+  }
+
+  _stateChanged(state) {}
 }

@@ -1,19 +1,19 @@
 import {
   CONTENT_SCRIPT_PORT_NAME,
-  BACKGROUND_SCRIPT_PORT_NAME
+  BACKGROUND_SCRIPT_PORT_NAME,
+  CONTENT_SCRIPT_SOURCE_NAME,
+  ACTIONS
 } from "../common/keys";
-
-const whitelist = ["storage.googleapis.com"];
 
 const ports = {};
 
-function getUserToken() {
+const getUserToken = () => {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["_diff_userToken_"], (result = "") => {
-      resolve(Object.keys(result).length === 0 ? "" : result);
+      resolve(Object.keys(result).length === 0 ? null : result);
     });
   });
-}
+};
 
 const registerPort = port => {
   const id = port.sender.tab.id;
@@ -25,7 +25,43 @@ const registerPort = port => {
   return port.sender.tab.id;
 };
 
-const messageListener = tabId => msg => {};
+const messageListener = tabId => msg => {
+  if (msg.source === CONTENT_SCRIPT_SOURCE_NAME) {
+    switch (msg.type) {
+      case ACTIONS.VALIDATE_CAN_RUN.REQUEST:
+        getUserToken()
+          .then(user => {
+            if (user == null) {
+              throw new Error("No user token available");
+            }
+            return user;
+          })
+          .then(user => {
+            // do something
+            postMessageToTab(tabId, {
+              type: ACTIONS.VALIDATE_CAN_RUN.FAILED,
+              payload: {
+                err: "Method not implemented"
+              }
+            });
+          })
+          .catch(err =>
+            postMessageToTab(tabId, {
+              type: ACTIONS.VALIDATE_CAN_RUN.FAILED,
+              payload: {
+                err: err.message
+              }
+            })
+          );
+        break;
+      default:
+        postMessageToTab(tabId, {
+          err: "No action found for request",
+          msg
+        });
+    }
+  }
+};
 
 const removeListener = tabId => () => {
   if (tabId in ports) {
@@ -37,7 +73,12 @@ const portForId = tabId => {
   return ports[tabId];
 };
 
-const portMessageForTab = (tabId, message) => {
+/**
+ * Allows us to message a particular Tab
+ * @param {*} tabId
+ * @param {*} message
+ */
+const postMessageToTab = (tabId, message) => {
   const port = portForId(tabId);
   if (!port) {
     console.error("Unable to post message");
@@ -54,6 +95,9 @@ const portMessageForTab = (tabId, message) => {
   );
 };
 
+/**
+ * Handle our initial connection from content scripts
+ */
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === CONTENT_SCRIPT_PORT_NAME) {
     // add me to the ports list
@@ -61,27 +105,6 @@ chrome.runtime.onConnect.addListener(port => {
     port.onMessage.addListener(messageListener(id));
     port.onDisconnect.addListener(removeListener(id));
   }
-});
-
-/**
- * Handles messages from our content scripts
- */
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.source === "diff") {
-    switch (request.type) {
-      case "GET_DOMAIN_LIST":
-        sendResponse(whitelist);
-        break;
-      case "GET_AUTH_TOKEN":
-        getUserToken()
-          .then(sendResponse)
-          .catch(_ => sendResponse("error"));
-        break;
-      default:
-        sendResponse({ err: "No action found for request", request });
-    }
-  }
-  return true;
 });
 
 /**
@@ -96,15 +119,16 @@ chrome.runtime.onInstalled.addListener(function() {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log("clickster");
-  try {
-    const token = await getUserToken();
-    if (!token) {
-      portMessageForTab(tab.id, { type: "@diff/AUTHENTICATION_REQUEST" });
-    } else {
-      console.log("logged in");
+  const token = await getUserToken();
+
+  postMessageToTab(tab.id, {
+    type: ACTIONS.RUN_REQUEST.REQUEST,
+    payload: {
+      context: {
+        token
+      }
     }
-  } catch (err) {}
+  });
 
   return true;
 });

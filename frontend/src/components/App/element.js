@@ -3,29 +3,25 @@ import { LitElement, html } from "@polymer/lit-element";
 import { navigateTo } from "actions/location";
 import { connect } from "pwa-helpers/connect-mixin.js";
 import { store } from "store";
+import { routeSelector } from "selectors/location";
 
 import "components/Launcher";
 import "components/Firebase/listener";
 import "components/Route";
 import "components/Callout";
 import "components/Modal";
-import "components/Context";
 import "components/Login";
 import "components/ui";
 
+const AuthenticatedRoute = template => context => {
+  if (!context.token) {
+    console.log("not authenticated");
+    store.dispatch(navigateTo("/login"));
+    return html``;
+  }
+};
+
 export default class App extends connect(store)(LitElement) {
-  selectorWidgetFactory(route) {
-    if (route && route.startsWith("/selector")) {
-      return html`<df-selectors />`;
-    }
-  }
-
-  modalWidgetFactory(route) {
-    if (route && route.startsWith("/selector/view")) {
-      return html`<df-action-menu />`;
-    }
-  }
-
   _render({ route }) {
     return html`
       <style>
@@ -36,7 +32,7 @@ export default class App extends connect(store)(LitElement) {
           font-family: 'Roboto', wingdings;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
-
+ 
           box-sizing: border-box;
           line-height: 1.6;
           letter-spacing: 0.2px;
@@ -44,20 +40,62 @@ export default class App extends connect(store)(LitElement) {
         }
         
       </style>    
-        <df-context></df-context>
         <df-firebase-app></df-firebase-app>
-        <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
-
-
-        ${this.selectorWidgetFactory(route)}
-        ${this.modalWidgetFactory(route)}
-      
+        
+        ${this.renderAppRoute(route)}       
     `;
+  }
+
+  get routes() {
+    return [
+      {
+        path: "/",
+        component: AuthenticatedRoute(html`
+          <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
+        `)
+      },
+      {
+        path: "/selector",
+        component: AuthenticatedRoute(html`
+          <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
+          <df-selectors></df-action-menu>
+        `)
+      },
+      {
+        path: "/selector/view",
+        component: AuthenticatedRoute(html`<df-selectors></df-action-menu>`)
+      },
+      {
+        path: "/login",
+        component: html`<df-login></df-login>`
+      }
+    ];
+  }
+
+  get context() {
+    return {};
+  }
+
+  renderAppRoute(route) {
+    console.log("return routes", route);
+    const outputTemplate = this.routes.reduce((acc, appRoute) => {
+      if (route && route.startsWith(appRoute.path)) {
+        // if it matches then check the next step
+        if (typeof appRoute.component === "function") {
+          return appRoute.component(this.context);
+        }
+        return appRoute.component;
+      }
+    }, html``);
+
+    console.log("template", outputTemplate);
+    return outputTemplate;
   }
 
   static get properties() {
     return {
-      route: String
+      route: String,
+      token: String
     };
   }
 
@@ -72,8 +110,6 @@ export default class App extends connect(store)(LitElement) {
   }
 
   _stateChanged(state) {
-    if (state) {
-      this.route = state.location.route;
-    }
+    this.route = routeSelector(state);
   }
 }
