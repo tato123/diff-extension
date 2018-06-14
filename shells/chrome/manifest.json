@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Diff.app",
+  "description": "Collaboration design tools",
+  "minimum_chrome_version": "49",
+  "version": "0.0.1",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "http://*/",
+    "https://*/",
+    "storage",
+    "contextMenus"
+  ],
+  "content_security_policy":
+    "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": ["frontend.js", "app.js", "contentScript.js"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "Collaboration"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
