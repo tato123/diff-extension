@@ -10,7 +10,7 @@ const cors = require("cors");
 
 const app = express();
 
-const PORT = 5000;
+const PORT = process.env.PORT || 8080;
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,6 +37,10 @@ firebase.initializeApp(config);
 const signup = (req, res) => {
   console.log("[Signup request]", req.query);
 };
+
+app.get("/", (req, res) => {
+  res.send(200, "running");
+});
 
 app.post("/authenticate", (req, res) => {
   const { username, password } = req.body;
