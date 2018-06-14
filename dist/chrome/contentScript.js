@@ -105,8 +105,32 @@ const ACTIONS = {
   AUTHENTICATION: asyncAction("authentication"),
   VALIDATE_CAN_RUN: asyncAction("VALIDATE_CAN_RUN"),
   RUN_REQUEST: asyncAction("RUN_REQUEST"),
-  LOGIN: asyncAction("LOGIN")
+  LOGIN: asyncAction("LOGIN"),
+  CACHE_TOKEN: asyncAction("CACHE_TOKEN")
 };
+
+
+/***/ }),
+
+/***/ "./content/actions.js":
+/*!****************************!*\
+  !*** ./content/actions.js ***!
+  \****************************/
+/*! exports provided: validateCanRunRequest */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequest", function() { return validateCanRunRequest; });
+/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
+
+
+const validateCanRunRequest = domain => ({
+  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST,
+  payload: {
+    domain: window.location.hostname
+  }
+});
 
 
 /***/ }),
@@ -115,12 +139,13 @@ const ACTIONS = {
 /*!*************************************!*\
   !*** ./content/backgroundClient.js ***!
   \*************************************/
-/*! exports provided: sendMessageToBackground */
+/*! exports provided: sendMessageToBackground, portMessages$ */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendMessageToBackground", function() { return sendMessageToBackground; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "portMessages$", function() { return portMessages$; });
 /* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
@@ -141,19 +166,11 @@ const port = chrome.runtime.connect({ name: _common_keys__WEBPACK_IMPORTED_MODUL
  * @param {*} message
  * @param {*} cb
  */
-const sendMessageToBackground = message => {
-  return new Promise((resolve, reject) => {
-    const enriched = {
-      ...message,
-      source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"]
-    };
-    port.postMessage(enriched, response => {
-      // if we want to log out message, do it here
-      console.log('["Content-Script]', response);
-      resolve(response);
-    });
+const sendMessageToBackground = message =>
+  port.postMessage({
+    ...message,
+    source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"]
   });
-};
 
 // filter only the messages from our backend
 const portMessages$ = rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
@@ -233,44 +250,45 @@ const runFrontend = () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-/* harmony import */ var _message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./message */ "./content/message.js");
-/* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
-/* harmony import */ var _backgroundClient__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./backgroundClient */ "./content/backgroundClient.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./actions */ "./content/actions.js");
+/* harmony import */ var _message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./message */ "./content/message.js");
+/* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
+/* harmony import */ var _backgroundClient__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backgroundClient */ "./content/backgroundClient.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
+
 
 
 
 
 
 /**
- * Configure our script to startup
+ * Our application start script, that handles
+ * checking if we can autorun the application or not as well
+ * as retrieving some of our intiial application data
  */
-const startup = async () => {
-  try {
-    // check if we can run on this domain
-    const actionResponse = await Object(_backgroundClient__WEBPACK_IMPORTED_MODULE_3__["sendMessageToBackground"])({
-      type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST,
-      payload: {
-        domain: window.location.hostname
-      }
+const main = () => {
+  _backgroundClient__WEBPACK_IMPORTED_MODULE_4__["portMessages$"]
+    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["filter"])(({ type }) => type === _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.SUCCESS))
+    .subscribe(val => {
+      console.log("running frontend");
+      Object(_frontend__WEBPACK_IMPORTED_MODULE_3__["runFrontend"])();
     });
 
-    if (actionResponse.type === _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.SUCCESS) {
-      // this handles whether we should automatically run or not
-      Object(_frontend__WEBPACK_IMPORTED_MODULE_2__["runFrontend"])();
-    } else if (actionResponse.type === _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.FAILED) {
-      // if not, then the user might be logged out or needs to do something
-      console.log(
-        "[content-script] cant automatically start, requires a force run",
-        actionResponse
-      );
-    }
-  } catch (err) {
-    console.log(err);
-  }
+  _backgroundClient__WEBPACK_IMPORTED_MODULE_4__["portMessages$"]
+    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["filter"])(({ type }) => type === _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.FAILED))
+    .subscribe(val => {
+      console.log("cant run frontend");
+    });
+
+  // check if we can run on this domain
+  Object(_backgroundClient__WEBPACK_IMPORTED_MODULE_4__["sendMessageToBackground"])(
+    _actions__WEBPACK_IMPORTED_MODULE_1__["validateCanRunRequest"](window.location.hostname)
+  );
 };
 
 // start our applicaiton
-startup();
+main();
 
 
 /***/ }),
@@ -279,96 +297,53 @@ startup();
 /*!****************************!*\
   !*** ./content/message.js ***!
   \****************************/
-/*! no exports provided */
+/*! exports provided: frontendHandlers */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "frontendHandlers", function() { return frontendHandlers; });
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
+/* harmony import */ var _backgroundClient__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./backgroundClient */ "./content/backgroundClient.js");
 
 
 
 
 const messages$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["fromEvent"])(window, "message");
 
-const frontend$ = messages$
-  .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]))
-  .subscribe(evt => console.log("got a message", evt));
+const frontend$ = messages$.pipe(
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]),
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])(evt => console.log("[content-script] frontend message", evt))
+);
 
-const backend$ = messages$
-  .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"]))
-  .subscribe(evt => console.log("got a message", evt));
+const backend$ = messages$.pipe(
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"]),
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])(evt => console.log("[content-script] backend message", evt))
+);
 
-const unhandled$ = messages$
-  .pipe(
-    Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(
-      evt =>
-        evt.data.source !== _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"] &&
-        evt.data.source !== _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]
-    )
+const unhandled$ = messages$.pipe(
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(
+    evt =>
+      evt.data.source !== _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"] &&
+      evt.data.source !== _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]
   )
-  .subscribe(evt => console.log("unknown source", evt));
+  //tap(evt => console.log("[content-script] unhandled message", evt))
+);
 
-// const handleUnknownmessageSource = evt => {
-//   if (process.env.NODE_ENV === "development") {
-//     // console.warn("Unknown message source", evt);
-//   }
-// };
+const cacheRequest$ = frontend$.pipe(
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["map"])(evt => evt.data),
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(data => data.type === _common_keys__WEBPACK_IMPORTED_MODULE_2__["ACTIONS"].CACHE_TOKEN.REQUEST)
+);
 
-// const handleMessageFromBackend = evt => {
-//   console.log("message received from backend", evt);
-// };
+const frontendHandlers = Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["merge"])(cacheRequest$).subscribe(
+  _backgroundClient__WEBPACK_IMPORTED_MODULE_3__["sendMessageToBackground"]
+);
 
-// const handleMessageFromFrontend = (evt, sendResponse) => {
-//   const { data } = evt;
-//   switch (data.type) {
-//     case "@diff/user/get/request":
-//       sendMessage({ type: "GET_AUTH_TOKEN", source: "diff" }, response => {
-//         sendResponse({
-//           payload: response,
-//           type: `@diff/user/get/${response === "" ? "success" : "failed"}`
-//         });
-//       });
-//       break;
-//     default:
-//       if (process.env.NODE_ENV === "development") {
-//         console.warn("Unhandled message type from frontend", data.type);
-//       }
-//   }
-// };
-
-// const respondToSource = source => data => {
-//   const modifiedData = {
-//     ...data,
-//     source
-//   };
-//   window.postMessage(modifiedData, "*");
-// };
-
-// const handleMessagesReceived = evt => {
-//   const { data } = evt;
-
-//   if (data.source) {
-//     switch (data.source) {
-//       case "@diff/frontend":
-//         handleMessageFromFrontend(
-//           evt,
-//           respondToSource(CONTENT_SCRIPT_SOURCE_NAME)
-//         );
-//         break;
-//       case "@diff/backend":
-//         handleMessageFromBackend(
-//           evt,
-//           respondToSource(CONTENT_SCRIPT_SOURCE_NAME)
-//         );
-//         break;
-//       default:
-//         handleUnknownmessageSource(evt);
-//     }
-//   }
-// };
+frontend$.subscribe();
+backend$.subscribe();
+unhandled$.subscribe();
 
 
 /***/ }),

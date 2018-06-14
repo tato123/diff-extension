@@ -7,10 +7,20 @@ import {
 
 const ports = {};
 
+const USER_TOKEN_KEY = "token";
 const getUserToken = () => {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(["_diff_userToken_"], (result = "") => {
+    chrome.storage.local.get([USER_TOKEN_KEY], result => {
       resolve(Object.keys(result).length === 0 ? null : result);
+    });
+  });
+};
+
+const storeUserToken = token => {
+  const record = { [USER_TOKEN_KEY]: token };
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set(record, () => {
+      resolve();
     });
   });
 };
@@ -39,10 +49,8 @@ const messageListener = tabId => msg => {
           .then(user => {
             // do something
             postMessageToTab(tabId, {
-              type: ACTIONS.VALIDATE_CAN_RUN.FAILED,
-              payload: {
-                err: "Method not implemented"
-              }
+              type: ACTIONS.VALIDATE_CAN_RUN.SUCCESS,
+              payload: user
             });
           })
           .catch(err =>
@@ -50,6 +58,22 @@ const messageListener = tabId => msg => {
               type: ACTIONS.VALIDATE_CAN_RUN.FAILED,
               payload: {
                 err: err.message
+              }
+            })
+          );
+        break;
+      case ACTIONS.CACHE_TOKEN.REQUEST:
+        storeUserToken(msg.payload.token)
+          .then(() =>
+            postMessageToTab(tabId, {
+              type: ACTIONS.CACHE_TOKEN.SUCCESS
+            })
+          )
+          .catch(() =>
+            postMessageToTab(tabId, {
+              type: ACTIONS.CACHE_TOKEN.FAILED,
+              payload: {
+                err: "Not able to save"
               }
             })
           );

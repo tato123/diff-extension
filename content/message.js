@@ -1,85 +1,41 @@
-import { fromEvent } from "rxjs";
-import { filter } from "rxjs/operators";
+import { fromEvent, merge } from "rxjs";
+import { filter, map, tap } from "rxjs/operators";
 import {
   MESSAGES_FRONTEND_SOURCE,
-  MESSAGES_BACKGROUND_SOURCE
+  MESSAGES_BACKGROUND_SOURCE,
+  ACTIONS
 } from "../common/keys";
-
+import { sendMessageToBackground } from "./backgroundClient";
 const messages$ = fromEvent(window, "message");
 
-const frontend$ = messages$
-  .pipe(filter(evt => evt.data.source === MESSAGES_FRONTEND_SOURCE))
-  .subscribe(evt => console.log("got a message", evt));
+const frontend$ = messages$.pipe(
+  filter(evt => evt.data.source === MESSAGES_FRONTEND_SOURCE),
+  tap(evt => console.log("[content-script] frontend message", evt))
+);
 
-const backend$ = messages$
-  .pipe(filter(evt => evt.data.source === MESSAGES_BACKGROUND_SOURCE))
-  .subscribe(evt => console.log("got a message", evt));
+const backend$ = messages$.pipe(
+  filter(evt => evt.data.source === MESSAGES_BACKGROUND_SOURCE),
+  tap(evt => console.log("[content-script] backend message", evt))
+);
 
-const unhandled$ = messages$
-  .pipe(
-    filter(
-      evt =>
-        evt.data.source !== MESSAGES_BACKGROUND_SOURCE &&
-        evt.data.source !== MESSAGES_FRONTEND_SOURCE
-    )
+const unhandled$ = messages$.pipe(
+  filter(
+    evt =>
+      evt.data.source !== MESSAGES_BACKGROUND_SOURCE &&
+      evt.data.source !== MESSAGES_FRONTEND_SOURCE
   )
-  .subscribe(evt => console.log("unknown source", evt));
+  //tap(evt => console.log("[content-script] unhandled message", evt))
+);
 
-// const handleUnknownmessageSource = evt => {
-//   if (process.env.NODE_ENV === "development") {
-//     // console.warn("Unknown message source", evt);
-//   }
-// };
+const cacheRequest$ = frontend$.pipe(
+  map(evt => evt.data),
+  filter(data => data.type === ACTIONS.CACHE_TOKEN.REQUEST)
+);
 
-// const handleMessageFromBackend = evt => {
-//   console.log("message received from backend", evt);
-// };
+export const frontendHandlers = merge(cacheRequest$).subscribe(
+  sendMessageToBackground
+);
 
-// const handleMessageFromFrontend = (evt, sendResponse) => {
-//   const { data } = evt;
-//   switch (data.type) {
-//     case "@diff/user/get/request":
-//       sendMessage({ type: "GET_AUTH_TOKEN", source: "diff" }, response => {
-//         sendResponse({
-//           payload: response,
-//           type: `@diff/user/get/${response === "" ? "success" : "failed"}`
-//         });
-//       });
-//       break;
-//     default:
-//       if (process.env.NODE_ENV === "development") {
-//         console.warn("Unhandled message type from frontend", data.type);
-//       }
-//   }
-// };
-
-// const respondToSource = source => data => {
-//   const modifiedData = {
-//     ...data,
-//     source
-//   };
-//   window.postMessage(modifiedData, "*");
-// };
-
-// const handleMessagesReceived = evt => {
-//   const { data } = evt;
-
-//   if (data.source) {
-//     switch (data.source) {
-//       case "@diff/frontend":
-//         handleMessageFromFrontend(
-//           evt,
-//           respondToSource(CONTENT_SCRIPT_SOURCE_NAME)
-//         );
-//         break;
-//       case "@diff/backend":
-//         handleMessageFromBackend(
-//           evt,
-//           respondToSource(CONTENT_SCRIPT_SOURCE_NAME)
-//         );
-//         break;
-//       default:
-//         handleUnknownmessageSource(evt);
-//     }
-//   }
-// };
+frontend$.subscribe();
+backend$.subscribe();
+unhandled$.subscribe();

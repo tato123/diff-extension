@@ -12,12 +12,10 @@ export const loginRequest = createAction(
   (username, password) => ({ username, password })
 );
 
-export const loginSuccess = createAction(
-  ACTIONS.LOGIN.REQUEST,
-  (username, password) => ({ username, password })
-);
+export const loginSuccess = createAction(ACTIONS.LOGIN.SUCCESS, token => ({
+  token
+}));
 
-export const loginFailed = createAction(
-  ACTIONS.LOGIN.REQUEST,
-  (username, password) => ({ username, password })
-);
+export const loginFailed = createAction(ACTIONS.LOGIN.FAILED, error => ({
+  error
+}));

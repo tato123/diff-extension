@@ -19,22 +19,14 @@ const port = chrome.runtime.connect({ name: CONTENT_SCRIPT_PORT_NAME });
  * @param {*} message
  * @param {*} cb
  */
-export const sendMessageToBackground = message => {
-  return new Promise((resolve, reject) => {
-    const enriched = {
-      ...message,
-      source: CONTENT_SCRIPT_SOURCE_NAME
-    };
-    port.postMessage(enriched, response => {
-      // if we want to log out message, do it here
-      console.log('["Content-Script]', response);
-      resolve(response);
-    });
+export const sendMessageToBackground = message =>
+  port.postMessage({
+    ...message,
+    source: CONTENT_SCRIPT_SOURCE_NAME
   });
-};
 
 // filter only the messages from our backend
-const portMessages$ = Observable.create(observer => {
+export const portMessages$ = Observable.create(observer => {
   port.onMessage.addListener(msg => observer.next(msg));
 }).pipe(filter(({ source }) => source === BACKGROUND_SCRIPT_PORT_NAME));
 

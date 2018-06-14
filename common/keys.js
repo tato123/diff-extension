@@ -17,5 +17,6 @@ export const ACTIONS = {
   AUTHENTICATION: asyncAction("authentication"),
   VALIDATE_CAN_RUN: asyncAction("VALIDATE_CAN_RUN"),
   RUN_REQUEST: asyncAction("RUN_REQUEST"),
-  LOGIN: asyncAction("LOGIN")
+  LOGIN: asyncAction("LOGIN"),
+  CACHE_TOKEN: asyncAction("CACHE_TOKEN")
 };
