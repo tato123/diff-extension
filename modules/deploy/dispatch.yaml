@@ -1,0 +1,6 @@
+dispatch:
+  - url: "api.getdiff.app/*"
+    service: api
+
+  - url: "www.getdiff.app/*"
+    service: default

@@ -1,0 +1,7 @@
+service: api
+runtime: nodejs
+env: flex
+
+skip_files:
+ - ^node_modules$
+ - node_modules
