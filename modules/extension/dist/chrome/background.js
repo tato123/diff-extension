@@ -86,6 +86,122 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./background/actions.js":
+/*!*******************************!*\
+  !*** ./background/actions.js ***!
+  \*******************************/
+/*! exports provided: forceRun, composeRemoteAction, validateCanRunRequestSuccess, validateCanRunRequestFailed, cacheTokenFailed, cacheTokenSuccess */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forceRun", function() { return forceRun; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "composeRemoteAction", function() { return composeRemoteAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequestSuccess", function() { return validateCanRunRequestSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequestFailed", function() { return validateCanRunRequestFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenFailed", function() { return cacheTokenFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenSuccess", function() { return cacheTokenSuccess; });
+/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
+
+
+const forceRun = token => ({
+  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST,
+  payload: {
+    context: {
+      token
+    }
+  }
+});
+
+const composeRemoteAction = action =>
+  Object.assign(
+    {},
+    {
+      source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]
+    },
+    action
+  );
+
+const validateCanRunRequestSuccess = token => ({
+  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.SUCCESS,
+  payload: {
+    token
+  }
+});
+
+const validateCanRunRequestFailed = err => ({
+  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.FAILED,
+  payload: {
+    token: ""
+  },
+  meta: {
+    err
+  }
+});
+
+const cacheTokenFailed = err => ({
+  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.FAILED,
+  payload: {
+    err
+  }
+});
+
+const cacheTokenSuccess = () => ({
+  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.SUCCESS
+});
+
+
+/***/ }),
+
+/***/ "./background/handlers.js":
+/*!********************************!*\
+  !*** ./background/handlers.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./actions */ "./background/actions.js");
+/* harmony import */ var _token__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./token */ "./background/token.js");
+
+
+
+
+const handleCanRun = (tabId, postMessageToTab) => {
+  Object(_token__WEBPACK_IMPORTED_MODULE_2__["getUserToken"])()
+    .then(user => {
+      if (user == null) {
+        throw new Error("No user token available");
+      }
+      return user;
+    })
+    .then(user =>
+      postMessageToTab(
+        tabId,
+        Object(_actions__WEBPACK_IMPORTED_MODULE_1__["validateCanRunRequestFailed"])("Did not specify autorun")
+      )
+    )
+    .catch(err =>
+      postMessageToTab(tabId, Object(_actions__WEBPACK_IMPORTED_MODULE_1__["validateCanRunRequestFailed"])(err.message))
+    );
+};
+
+const handleCacheTokenRequest = (tabId, postMessageToTab, action) => {
+  Object(_token__WEBPACK_IMPORTED_MODULE_2__["storeUserToken"])(action.payload.token)
+    .then(() => postMessageToTab(tabId, Object(_actions__WEBPACK_IMPORTED_MODULE_1__["cacheTokenSuccess"])()))
+    .catch(() => postMessageToTab(tabId, Object(_actions__WEBPACK_IMPORTED_MODULE_1__["cacheTokenFailed"])("Not able to save")));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  [_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST]: handleCanRun,
+  [_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.REQUEST]: handleCacheTokenRequest
+});
+
+
+/***/ }),
+
 /***/ "./background/index.js":
 /*!*****************************!*\
   !*** ./background/index.js ***!
@@ -97,6 +213,10 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
 /* harmony import */ var _token__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./token */ "./background/token.js");
+/* harmony import */ var _handlers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./handlers */ "./background/handlers.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions */ "./background/actions.js");
+
+
 
 
 
@@ -113,54 +233,12 @@ const registerPort = port => {
 };
 
 const messageListener = tabId => msg => {
-  if (msg.source === _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"]) {
-    switch (msg.type) {
-      case _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST:
-        Object(_token__WEBPACK_IMPORTED_MODULE_1__["getUserToken"])()
-          .then(user => {
-            if (user == null) {
-              throw new Error("No user token available");
-            }
-            return user;
-          })
-          .then(user => {
-            // do something
-            postMessageToTab(tabId, {
-              type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.SUCCESS,
-              payload: user
-            });
-          })
-          .catch(err =>
-            postMessageToTab(tabId, {
-              type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.FAILED,
-              payload: {
-                err: err.message
-              }
-            })
-          );
-        break;
-      case _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.REQUEST:
-        Object(_token__WEBPACK_IMPORTED_MODULE_1__["storeUserToken"])(msg.payload.token)
-          .then(() =>
-            postMessageToTab(tabId, {
-              type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.SUCCESS
-            })
-          )
-          .catch(() =>
-            postMessageToTab(tabId, {
-              type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.FAILED,
-              payload: {
-                err: "Not able to save"
-              }
-            })
-          );
-        break;
-      default:
-        postMessageToTab(tabId, {
-          err: "No action found for request",
-          msg
-        });
-    }
+  if (msg.source === _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"] && msg.type in _handlers__WEBPACK_IMPORTED_MODULE_2__["default"]) {
+    _handlers__WEBPACK_IMPORTED_MODULE_2__["default"][msg.type](tabId, postMessageToTab, msg);
+  } else {
+    postMessageToTab(tabId, {
+      err: "No action found for request"
+    });
   }
 };
 
@@ -185,15 +263,7 @@ const postMessageToTab = (tabId, message) => {
     console.error("Unable to post message");
     return;
   }
-  port.postMessage(
-    Object.assign(
-      {},
-      {
-        source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]
-      },
-      message
-    )
-  );
+  port.postMessage(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["composeRemoteAction"])(message));
 };
 
 /**
@@ -211,7 +281,7 @@ chrome.runtime.onConnect.addListener(port => {
 /**
  * Create a context menu items to allow encode/decode
  */
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "log-selection",
     title: "Inspect with diff",
@@ -221,16 +291,7 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const token = await Object(_token__WEBPACK_IMPORTED_MODULE_1__["getUserToken"])();
-
-  postMessageToTab(tab.id, {
-    type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST,
-    payload: {
-      context: {
-        token
-      }
-    }
-  });
-
+  postMessageToTab(tab.id, Object(_actions__WEBPACK_IMPORTED_MODULE_3__["forceRun"])(token));
   return true;
 });
 

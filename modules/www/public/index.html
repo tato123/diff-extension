@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Diff | In context collaboration</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300i,700|Oswald:200,300,400,500,600,700|Roboto+Condensed:300,300i,400,400i,700,700i"
+        rel="stylesheet">
+    <link rel="stylesheet" href="base.css">
+    <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+
+</head>
+
+<body>
+
+    <div>
+        <h1>Sign up</h1>
+        <form id="signup">
+            <div>
+                <label>email</label>
+                <input name="email" type="text" />
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <nav>
+        <img id="nav-mark" src="images/mark.png">
+        <div id="hamburger"></div>
+        <ul>
+            <li class="nav-item active transition" data-rel="hero">Home</li>
+            <li class="nav-item transition" data-rel="classrooms">Features</li>
+            <li class="nav-item transition" data-rel="after-school">Overview</li>
+            <!-- <li class="nav-item transition" data-rel="for-parents">For Parents</li> -->
+            <li class="nav-item transition" data-rel="contact-us">Pricing</li>
+        </ul>
+    </nav>
+    <div id="hero">
+        <div class="hero-content">
+            <!-- <img src="images/logo.png" /> -->
+            <h1>The best “in context” collaboration tool for ...</h1>
+            <h3>Designers, developers &amp; product managers</h3>
+            <button id="enroll" class="transition learn-more" data-rel="schedule-a-tour">Try it now</button>
+        </div>
+    </div>
+    <!-- <div id="aboutus" class="section">
+        <div>
+          <h1>Our Mission...</h1>
+          <p>is to provide a nurturing and affirming daycare learning facility for toddler and preschool children. Foundation Learning Center offers a community centered, academically competitive program in a nurturing environment. We will value and support each child in a classroom setting to aid parents in preparing their children as future leaders of the community. We believe that child care means encouraging confidence, positivity, and meeting clear-cut standards ensures the developmental and academic success of children.</p>
+        </div>
+      </div>
+      <div id="pillars" class="section">
+        <div>
+          <img src="images/Artboard 1.png" class="pillarimage" />
+          <p>Every child will be exposed to STEM concepts, mindfullness and cultural arts.</p>
+        </div>
+        <div>
+          <img src="images/Artboard 2.png" class="pillarimage" />
+          <p>Tutoring, homework help and literacy enrichment will prepare students for advanced classes.</p>
+        </div>
+        <div>
+          <img src="images/Artboard 3.png" class="pillarimage" />
+          <p>Children will receive positive affirmations and  caring recognition.</p>
+        </div>
+        <div>
+          <img src="images/Artboard 4.png" class="pillarimage" />
+          <p>Care providers will work with parents and children to implement developmental learning goals.</p>
+        </div>
+        <div>
+          <img src="images/Artboard 5.png" class="pillarimage" />
+          <p>Each child will be monitored to ensure wellness and safety.</p>
+        </div>
+      </div> -->
+    <div id="classrooms" class="section">
+        <div>
+            <h3>Change management</h3>
+            <p>Verify and annotate changes IN your product. Diff will automatically notify you when something has changed.</p>
+            <!-- <button class="small learn-more" data-rel="infant-sched">Schedule</button> -->
+        </div>
+        <div>
+            <h3>Collaboration</h3>
+            <p>Attach wireframes, mockups or assets to the actual component to be manipulated. Give feedback and track communication
+                effortlessly. </p>
+            <!-- <button class="small learn-more" data-rel="toddler-sched">Schedule</button> -->
+        </div>
+        <div>
+            <h3>Presentation</h3>
+            <p>View and export animated GIFs of the changes in your product over time or comparing two days in time. </p>
+            <!-- <button class="small learn-more" data-rel="preschool-sched">Schedule</button> -->
+        </div>
+    </div>
+    <div id="after-school" class="section">
+        <iframe width="820" height="545" frameborder="0" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+        </iframe>
+    </div>
+    <!-- <div id="for-parents">
+        <h1 class="center">For Parents</h1>
+        <div class="isle">
+          <div>
+            <h3>Rates</h3>
+            <p>We have the best rates in town!</p>
+            <button class="small learn-more" data-rel="rates">Learn more</button>
+          </div>
+          <div>
+            <h3>Leadership</h3>
+            <p>With so much experience, you will be happy!</p>
+            <button class="small learn-more" data-rel="leadership">Learn more</button>
+          </div>
+          <div>
+            <h3>Menu</h3>
+            <p>We only serve our children the best plant based diet!</p>
+            <button class="small learn-more" data-rel="menu">Learn more</button>
+          </div>
+          <div>
+            <h3>Discipline</h3>
+            <p>Stern but reasonable!</p>
+            <button class="small learn-more" data-rel="discipline">Learn more</button>
+          </div>
+        </div>
+      </div> -->
+    <div id="contact-us">
+        <h1>Find the perfect plan for your needs</h1>
+        <div id="pricing">
+            <div class="tier">
+                <h3>FREE</h3>
+                <hr>
+                <span class="cost">$0</span>
+                <p>per month
+                    <br>1 user
+                    <br>1 URL</p>
+                <button id="buyfree">buy free</button>
+            </div>
+            <div class="tier">
+                <h3>TEAM</h3>
+                <hr>
+                <span class="cost">$25</span>
+                <p>per month
+                    <br>Up to 5 users
+                    <br>Up to 3 URLs</p>
+                <button id="buyteam">buy team</button>
+            </div>
+            <div class="tier">
+                <h3>ENTERPRISE</h3>
+                <hr>
+                <span class="cost">$50</span>
+                <p>per month
+                    <br>Ulimimted users
+                    <br>Unlimited URLs</p>
+                <button id="buyenterprise">buy enterprise</button>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <p class="center">
+            ©
+            <script>new Date().getFullYear() > 2010 && document.write(new Date().getFullYear());</script>2018 Diff App, LLC
+        </p>
+    </div>
+    <!-- These are the modal screens -->
+    <div id="rates" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="menu" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="discipline" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="leadership" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <!-- <div id="classrooms-more" class="modal">
+        <h1>Classrooms</h1>
+      </div> -->
+    <div id="infant-sched" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="toddler-sched" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="preschool-sched" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="winter-camp" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="schedule-a-tour" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $('.modal').prepend('<div class="close"><p>X</p></div>');
+        if ($(window).width() > 980) {
+            $(function () {
+                $('.nav-item').click(function () {
+                    $('.nav-item').removeClass('active');
+                    $(this).addClass('active');
+                    var target = $(this).data('rel');
+                    $('html,body').animate({
+                        scrollTop: $('#' + target).offset().top
+                    }, 1000);
+                });
+            });
+        } else {
+            $(function () {
+                $('.nav-item').click(function () {
+                    $('.nav-item').removeClass('active');
+                    $('nav ul').removeClass('open');
+                    $(this).addClass('active');
+                    var target = $(this).data('rel');
+                    $('html,body').animate({
+                        scrollTop: $('#' + target).offset().top
+                    }, 1000);
+                });
+            });
+        }
+        $(window).on('scroll', function () {
+            scrollPosition = $(this).scrollTop();
+            classrooms = $('#classrooms').offset().top - 50;
+            aboutUs = $('#aboutus').offset().top - 50;
+            afterSchool = $('#after-school').offset().top - 50;
+            // forParents = $('#for-parents').offset().top - 50;
+            contact = $('#contact-us').offset().top - 50;
+            if (scrollPosition >= aboutUs && scrollPosition < classrooms) {
+                // If the function is only supposed to fire once
+                $('#enroll').css({ 'position': 'fixed', 'top': '7px', 'right': '30px' });
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="hero"]').addClass('active');
+            } else if (scrollPosition >= classrooms && scrollPosition < afterSchool) {
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="classrooms"]').addClass('active');
+                // } else if (scrollPosition >= afterSchool && scrollPosition < forParents){
+                //     $('.nav-item').removeClass('active');
+                //     $('.nav-item[data-rel="after-school"]').addClass('active');
+                // } else if (scrollPosition >= forParents && scrollPosition < contact){
+                //     $('.nav-item').removeClass('active');
+                //     $('.nav-item[data-rel="for-parents"]').addClass('active');
+            } else if (scrollPosition >= afterSchool && scrollPosition < contact) {
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="after-school"]').addClass('active');
+            } else if (scrollPosition >= contact) {
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="contact-us"]').addClass('active');
+            } else {
+                $('#enroll').css('position', '');
+            }
+        });
+        function displayModal(a) {
+            var modal = $(a).data('rel');
+            $('#' + modal).fadeIn();
+            $('body').addClass('modal-open');
+        };
+        $('.learn-more').click(function () {
+            displayModal(this);
+        });
+        $('.inline-button').click(function () {
+            displayModal(this);
+        });
+        $('.close').click(function () {
+            $(this).parent('.modal').fadeOut();
+            $('body').removeClass('modal-open');
+        });
+        $('#hamburger').click(function () {
+            $('nav ul').toggleClass('open');
+            $('nav ul li').addClass('mobile-nav');
+        });
+        $('.nav-item.mobile-nav').click(function () {
+            $(this).parent().removeClass('open');
+            console.log('working');
+        })
+    </script>
+    <script src="main.js"></script>
+</body>
+
+</html>

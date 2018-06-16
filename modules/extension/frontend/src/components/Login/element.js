@@ -71,7 +71,7 @@ export default class Login extends connect(store)(LitElement) {
       </style>
       <div class="modal">
         <div class="modal-content">
-          <h1>Welcome to the world of diff</h1>
+          <h1>Login</h1>
           <form onsubmit=${this.onLoginRequest}>
             <div class="form-control">
                 <label>Username</label>

@@ -26,7 +26,7 @@ export const validateCanRunRequestSuccess = token => ({
 });
 
 export const validateCanRunRequestFailed = err => ({
-  type: ACTIONS.VALIDATE_CAN_RUN.SUCCESS,
+  type: ACTIONS.VALIDATE_CAN_RUN.FAILED,
   payload: {
     token: ""
   },
