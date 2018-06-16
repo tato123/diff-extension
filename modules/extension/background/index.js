@@ -1,10 +1,10 @@
 import {
   CONTENT_SCRIPT_PORT_NAME,
-  CONTENT_SCRIPT_SOURCE_NAME
-} from "../common/keys";
-import { getUserToken } from "./token";
+  CONTENT_SCRIPT_SOURCE_NAME,
+  BACKGROUND_SCRIPT_PORT_NAME
+} from "@diff/common/keys";
 import handlers from "./handlers";
-import { forceRun, composeRemoteAction } from "./actions";
+import { runRequest, composeRemoteAction } from "@diff/common/actions";
 
 const ports = {};
 
@@ -49,7 +49,7 @@ const postMessageToTab = (tabId, message) => {
     console.error("Unable to post message");
     return;
   }
-  port.postMessage(composeRemoteAction(message));
+  port.postMessage(composeRemoteAction(message, BACKGROUND_SCRIPT_PORT_NAME));
 };
 
 /**
@@ -76,7 +76,6 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  const token = await getUserToken();
-  postMessageToTab(tab.id, forceRun(token));
+  postMessageToTab(tab.id, runRequest());
   return true;
 });

@@ -86,73 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./background/actions.js":
-/*!*******************************!*\
-  !*** ./background/actions.js ***!
-  \*******************************/
-/*! exports provided: forceRun, composeRemoteAction, validateCanRunRequestSuccess, validateCanRunRequestFailed, cacheTokenFailed, cacheTokenSuccess */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forceRun", function() { return forceRun; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "composeRemoteAction", function() { return composeRemoteAction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequestSuccess", function() { return validateCanRunRequestSuccess; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequestFailed", function() { return validateCanRunRequestFailed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenFailed", function() { return cacheTokenFailed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenSuccess", function() { return cacheTokenSuccess; });
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-
-
-const forceRun = token => ({
-  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST,
-  payload: {
-    context: {
-      token
-    }
-  }
-});
-
-const composeRemoteAction = action =>
-  Object.assign(
-    {},
-    {
-      source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]
-    },
-    action
-  );
-
-const validateCanRunRequestSuccess = token => ({
-  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.SUCCESS,
-  payload: {
-    token
-  }
-});
-
-const validateCanRunRequestFailed = err => ({
-  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.FAILED,
-  payload: {
-    token: ""
-  },
-  meta: {
-    err
-  }
-});
-
-const cacheTokenFailed = err => ({
-  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.FAILED,
-  payload: {
-    err
-  }
-});
-
-const cacheTokenSuccess = () => ({
-  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.SUCCESS
-});
-
-
-/***/ }),
-
 /***/ "./background/handlers.js":
 /*!********************************!*\
   !*** ./background/handlers.js ***!
@@ -162,41 +95,75 @@ const cacheTokenSuccess = () => ({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./actions */ "./background/actions.js");
-/* harmony import */ var _token__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./token */ "./background/token.js");
+/* harmony import */ var _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @diff/common/keys */ "./common/keys.js");
+/* harmony import */ var _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @diff/common/actions */ "./common/actions.js");
+/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./storage */ "./background/storage.js");
 
 
 
 
-const handleCanRun = (tabId, postMessageToTab) => {
-  Object(_token__WEBPACK_IMPORTED_MODULE_2__["getUserToken"])()
-    .then(user => {
-      if (user == null) {
-        throw new Error("No user token available");
-      }
-      return user;
-    })
-    .then(user =>
+const PREFERENCES = "_DIFF_PREFERENCES";
+
+const handleFetchUserPreferences = (tabId, postMessageToTab) => {
+  Object(_storage__WEBPACK_IMPORTED_MODULE_2__["get"])(PREFERENCES)
+    .then(preferences =>
       postMessageToTab(
         tabId,
-        Object(_actions__WEBPACK_IMPORTED_MODULE_1__["validateCanRunRequestFailed"])("Did not specify autorun")
+        _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["fetchUserPreferencesSuccess"](preferences)
       )
     )
     .catch(err =>
-      postMessageToTab(tabId, Object(_actions__WEBPACK_IMPORTED_MODULE_1__["validateCanRunRequestFailed"])(err.message))
+      postMessageToTab(
+        tabId,
+        _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["fetchUserPreferencesFailed"](err.message)
+      )
+    );
+};
+
+const handlStoreUserPreferences = (
+  tabId,
+  postMessageToTab,
+  { payload: { preferences } }
+) => {
+  Object(_storage__WEBPACK_IMPORTED_MODULE_2__["set"])(PREFERENCES, preferences)
+    .then(() =>
+      postMessageToTab(tabId, _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["storeUserPreferencesSuccess"]())
+    )
+    .catch(err =>
+      postMessageToTab(
+        tabId,
+        _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["storeUserPreferencesFailed"](err.message)
+      )
     );
 };
 
 const handleCacheTokenRequest = (tabId, postMessageToTab, action) => {
-  Object(_token__WEBPACK_IMPORTED_MODULE_2__["storeUserToken"])(action.payload.token)
-    .then(() => postMessageToTab(tabId, Object(_actions__WEBPACK_IMPORTED_MODULE_1__["cacheTokenSuccess"])()))
-    .catch(() => postMessageToTab(tabId, Object(_actions__WEBPACK_IMPORTED_MODULE_1__["cacheTokenFailed"])("Not able to save")));
+  Object(_storage__WEBPACK_IMPORTED_MODULE_2__["storeUserToken"])(action.payload.token)
+    .then(() => postMessageToTab(tabId, _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["cacheTokenSuccess"]()))
+    .catch(() =>
+      postMessageToTab(
+        tabId,
+        _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["cacheTokenFailed"]("Not able to save")
+      )
+    );
+};
+
+const handleFetchCacheTokenRequest = (tabId, postMessageToTab, action) => {
+  Object(_storage__WEBPACK_IMPORTED_MODULE_2__["getUserToken"])()
+    .then(() => postMessageToTab(tabId, _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["fetchCacheTokenFailed"]()))
+    .catch(() =>
+      postMessageToTab(
+        tabId,
+        _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["fetchCacheTokenSuccess"]("No token available")
+      )
+    );
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  [_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST]: handleCanRun,
-  [_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.REQUEST]: handleCacheTokenRequest
+  [_diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
+  [_diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].STORE_USER_PREFERENCES.REQUEST]: handlStoreUserPreferences,
+  [_diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
+  [_diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
 });
 
 
@@ -211,11 +178,9 @@ const handleCacheTokenRequest = (tabId, postMessageToTab, action) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-/* harmony import */ var _token__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./token */ "./background/token.js");
-/* harmony import */ var _handlers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./handlers */ "./background/handlers.js");
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions */ "./background/actions.js");
-
+/* harmony import */ var _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @diff/common/keys */ "./common/keys.js");
+/* harmony import */ var _handlers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./handlers */ "./background/handlers.js");
+/* harmony import */ var _diff_common_actions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @diff/common/actions */ "./common/actions.js");
 
 
 
@@ -233,8 +198,8 @@ const registerPort = port => {
 };
 
 const messageListener = tabId => msg => {
-  if (msg.source === _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"] && msg.type in _handlers__WEBPACK_IMPORTED_MODULE_2__["default"]) {
-    _handlers__WEBPACK_IMPORTED_MODULE_2__["default"][msg.type](tabId, postMessageToTab, msg);
+  if (msg.source === _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"] && msg.type in _handlers__WEBPACK_IMPORTED_MODULE_1__["default"]) {
+    _handlers__WEBPACK_IMPORTED_MODULE_1__["default"][msg.type](tabId, postMessageToTab, msg);
   } else {
     postMessageToTab(tabId, {
       err: "No action found for request"
@@ -263,14 +228,14 @@ const postMessageToTab = (tabId, message) => {
     console.error("Unable to post message");
     return;
   }
-  port.postMessage(Object(_actions__WEBPACK_IMPORTED_MODULE_3__["composeRemoteAction"])(message));
+  port.postMessage(Object(_diff_common_actions__WEBPACK_IMPORTED_MODULE_2__["composeRemoteAction"])(message, _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]));
 };
 
 /**
  * Handle our initial connection from content scripts
  */
 chrome.runtime.onConnect.addListener(port => {
-  if (port.name === _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"]) {
+  if (port.name === _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"]) {
     // add me to the ports list
     const id = registerPort(port);
     port.onMessage.addListener(messageListener(id));
@@ -290,42 +255,163 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  const token = await Object(_token__WEBPACK_IMPORTED_MODULE_1__["getUserToken"])();
-  postMessageToTab(tab.id, Object(_actions__WEBPACK_IMPORTED_MODULE_3__["forceRun"])(token));
+  postMessageToTab(tab.id, Object(_diff_common_actions__WEBPACK_IMPORTED_MODULE_2__["runRequest"])());
   return true;
 });
 
 
 /***/ }),
 
-/***/ "./background/token.js":
-/*!*****************************!*\
-  !*** ./background/token.js ***!
-  \*****************************/
-/*! exports provided: getUserToken, storeUserToken */
+/***/ "./background/storage.js":
+/*!*******************************!*\
+  !*** ./background/storage.js ***!
+  \*******************************/
+/*! exports provided: USER_TOKEN_KEY, getUserToken, storeUserToken, get, set */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "USER_TOKEN_KEY", function() { return USER_TOKEN_KEY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUserToken", function() { return getUserToken; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeUserToken", function() { return storeUserToken; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get", function() { return get; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set", function() { return set; });
 const USER_TOKEN_KEY = "token";
-const getUserToken = () => {
+const getUserToken = () => get(USER_TOKEN_KEY);
+const storeUserToken = token => set(USER_TOKEN_KEY, token);
+
+const get = key => {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get([USER_TOKEN_KEY], result => {
+    chrome.storage.local.get([key], result => {
       resolve(Object.keys(result).length === 0 ? null : result);
     });
   });
 };
 
-const storeUserToken = token => {
-  const record = { [USER_TOKEN_KEY]: token };
+const set = (key, value) => {
+  const record = { [key]: value };
   return new Promise((resolve, reject) => {
     chrome.storage.local.set(record, () => {
       resolve();
     });
   });
 };
+
+
+/***/ }),
+
+/***/ "./common/actions.js":
+/*!***************************!*\
+  !*** ./common/actions.js ***!
+  \***************************/
+/*! exports provided: composeRemoteAction, runRequest, fetchUserPreferences, fetchUserPreferencesSuccess, fetchUserPreferencesFailed, storeUserPreferencesSuccess, storeUserPreferencesFailed, cacheTokenFailed, cacheTokenSuccess, fetchCacheTokenFailed, fetchCacheTokenSuccess, validateCanRunRequest */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "composeRemoteAction", function() { return composeRemoteAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runRequest", function() { return runRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchUserPreferences", function() { return fetchUserPreferences; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchUserPreferencesSuccess", function() { return fetchUserPreferencesSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchUserPreferencesFailed", function() { return fetchUserPreferencesFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeUserPreferencesSuccess", function() { return storeUserPreferencesSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeUserPreferencesFailed", function() { return storeUserPreferencesFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenFailed", function() { return cacheTokenFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenSuccess", function() { return cacheTokenSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchCacheTokenFailed", function() { return fetchCacheTokenFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchCacheTokenSuccess", function() { return fetchCacheTokenSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequest", function() { return validateCanRunRequest; });
+/* harmony import */ var _keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./keys */ "./common/keys.js");
+
+
+const composeRemoteAction = (action, source) =>
+  Object.assign(
+    {},
+    {
+      source
+    },
+    action
+  );
+
+// -------------------------------------------------------
+// User actions
+// -------------------------------------------------------
+
+const runRequest = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST
+});
+
+// -------------------------------------------------------
+// User actions
+// -------------------------------------------------------
+
+const fetchUserPreferences = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.REQUEST
+});
+
+const fetchUserPreferencesSuccess = preferences => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.SUCCESS,
+  payload: {
+    preferences: {
+      ...preferences
+    }
+  }
+});
+
+const fetchUserPreferencesFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.FAILED,
+  meta: {
+    err
+  }
+});
+
+const storeUserPreferencesSuccess = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].STORE_USER_PREFERENCES.SUCCESS,
+  payload: {}
+});
+
+const storeUserPreferencesFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].STORE_USER_PREFERENCES.FAILED,
+  meta: {
+    err
+  }
+});
+
+// -------------------------------------------------------
+// Token actions
+// -------------------------------------------------------
+
+const cacheTokenFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.FAILED,
+  meta: {
+    err
+  }
+});
+
+const cacheTokenSuccess = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.SUCCESS
+});
+
+const fetchCacheTokenFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_CACHE_TOKEN.FAILED,
+  meta: {
+    err
+  }
+});
+
+const fetchCacheTokenSuccess = token => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_CACHE_TOKEN.SUCCESS,
+  payload: {
+    token
+  }
+});
+
+const validateCanRunRequest = domain => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST,
+  payload: {
+    domain: window.location.hostname
+  }
+});
 
 
 /***/ }),
@@ -362,10 +448,12 @@ const asyncAction = actionType => ({
 
 const ACTIONS = {
   AUTHENTICATION: asyncAction("authentication"),
-  VALIDATE_CAN_RUN: asyncAction("VALIDATE_CAN_RUN"),
+  FETCH_USER_PREFERENCES: asyncAction("FETCH_USER_PREFERENCES"),
+  STORE_USER_PREFERENCES: asyncAction("STORE_USER_PREFERENCES"),
   RUN_REQUEST: asyncAction("RUN_REQUEST"),
   LOGIN: asyncAction("LOGIN"),
-  CACHE_TOKEN: asyncAction("CACHE_TOKEN")
+  CACHE_TOKEN: asyncAction("CACHE_TOKEN"),
+  FETCH_CACHE_TOKEN: asyncAction("CACHE_TOKEN")
 };
 
 

@@ -13,6 +13,9 @@ const std = {
   devtool: ENV === "development" ? "source-map" : "none",
   resolve: {
     modules: [path.resolve("./node_modules")],
+    alias: {
+      "@diff/common": path.resolve(__dirname, "./common")
+    },
     extensions: [".json", ".js"]
   }
 };
@@ -54,6 +57,7 @@ module.exports = (env, argv) => [
       ]
     },
     resolve: {
+      alias: std.resolve.alias,
       modules: [
         path.resolve("./node_modules"),
         path.resolve(__dirname, "./frontend/src")

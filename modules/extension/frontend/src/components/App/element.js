@@ -21,6 +21,7 @@ const AuthenticatedRoute = template => context => {
   }
 };
 
+/*eslint-disable*/
 export default class App extends connect(store)(LitElement) {
   _render({ route }) {
     return html`
@@ -50,6 +51,7 @@ export default class App extends connect(store)(LitElement) {
     return [
       {
         path: "/",
+        default: true,
         component: AuthenticatedRoute(html`
           <df-launcher on-click="${this.onLauncherClick}"></df-launcher>
         `)
@@ -76,8 +78,11 @@ export default class App extends connect(store)(LitElement) {
     return {};
   }
 
+  get defaultRoute() {
+    return this.routes.filter(x => x.default)[0];
+  }
+
   renderAppRoute(route) {
-    console.log("return routes", route);
     const outputTemplate = this.routes.reduce((acc, appRoute) => {
       if (route && route.startsWith(appRoute.path)) {
         // if it matches then check the next step
@@ -88,7 +93,6 @@ export default class App extends connect(store)(LitElement) {
       }
     }, html``);
 
-    console.log("template", outputTemplate);
     return outputTemplate;
   }
 

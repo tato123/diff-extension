@@ -3,7 +3,8 @@ import {
   BACKGROUND_SCRIPT_PORT_NAME,
   CONTENT_SCRIPT_SOURCE_NAME,
   ACTIONS
-} from "../common/keys";
+} from "@diff/common/keys";
+import { composeRemoteAction } from "@diff/common/actions";
 import { Observable } from "rxjs";
 import { runFrontend } from "./frontend";
 import { filter } from "rxjs/operators";
@@ -16,14 +17,11 @@ const port = chrome.runtime.connect({ name: CONTENT_SCRIPT_PORT_NAME });
 /**
  * Allows us to communicate back to our background script
  *
- * @param {*} message
+ * @param {*} action
  * @param {*} cb
  */
-export const sendMessageToBackground = message =>
-  port.postMessage({
-    ...message,
-    source: CONTENT_SCRIPT_SOURCE_NAME
-  });
+export const sendMessageToBackground = action =>
+  port.postMessage(composeRemoteAction(action, CONTENT_SCRIPT_SOURCE_NAME));
 
 // filter only the messages from our backend
 export const portMessages$ = Observable.create(observer => {
@@ -46,6 +44,5 @@ actionHandler$(ACTIONS.AUTHENTICATION.REQUEST).subscribe(msg => {
 });
 
 actionHandler$(ACTIONS.RUN_REQUEST.REQUEST).subscribe(msg => {
-  console.log("hey I want to run");
   runFrontend();
 });

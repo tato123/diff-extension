@@ -86,6 +86,122 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./common/actions.js":
+/*!***************************!*\
+  !*** ./common/actions.js ***!
+  \***************************/
+/*! exports provided: composeRemoteAction, runRequest, fetchUserPreferences, fetchUserPreferencesSuccess, fetchUserPreferencesFailed, storeUserPreferencesSuccess, storeUserPreferencesFailed, cacheTokenFailed, cacheTokenSuccess, fetchCacheTokenFailed, fetchCacheTokenSuccess, validateCanRunRequest */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "composeRemoteAction", function() { return composeRemoteAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "runRequest", function() { return runRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchUserPreferences", function() { return fetchUserPreferences; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchUserPreferencesSuccess", function() { return fetchUserPreferencesSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchUserPreferencesFailed", function() { return fetchUserPreferencesFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeUserPreferencesSuccess", function() { return storeUserPreferencesSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeUserPreferencesFailed", function() { return storeUserPreferencesFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenFailed", function() { return cacheTokenFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheTokenSuccess", function() { return cacheTokenSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchCacheTokenFailed", function() { return fetchCacheTokenFailed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchCacheTokenSuccess", function() { return fetchCacheTokenSuccess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequest", function() { return validateCanRunRequest; });
+/* harmony import */ var _keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./keys */ "./common/keys.js");
+
+
+const composeRemoteAction = (action, source) =>
+  Object.assign(
+    {},
+    {
+      source
+    },
+    action
+  );
+
+// -------------------------------------------------------
+// User actions
+// -------------------------------------------------------
+
+const runRequest = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST
+});
+
+// -------------------------------------------------------
+// User actions
+// -------------------------------------------------------
+
+const fetchUserPreferences = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.REQUEST
+});
+
+const fetchUserPreferencesSuccess = preferences => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.SUCCESS,
+  payload: {
+    preferences: {
+      ...preferences
+    }
+  }
+});
+
+const fetchUserPreferencesFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.FAILED,
+  meta: {
+    err
+  }
+});
+
+const storeUserPreferencesSuccess = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].STORE_USER_PREFERENCES.SUCCESS,
+  payload: {}
+});
+
+const storeUserPreferencesFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].STORE_USER_PREFERENCES.FAILED,
+  meta: {
+    err
+  }
+});
+
+// -------------------------------------------------------
+// Token actions
+// -------------------------------------------------------
+
+const cacheTokenFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.FAILED,
+  meta: {
+    err
+  }
+});
+
+const cacheTokenSuccess = () => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].CACHE_TOKEN.SUCCESS
+});
+
+const fetchCacheTokenFailed = err => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_CACHE_TOKEN.FAILED,
+  meta: {
+    err
+  }
+});
+
+const fetchCacheTokenSuccess = token => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_CACHE_TOKEN.SUCCESS,
+  payload: {
+    token
+  }
+});
+
+const validateCanRunRequest = domain => ({
+  type: _keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST,
+  payload: {
+    domain: window.location.hostname
+  }
+});
+
+
+/***/ }),
+
 /***/ "./common/keys.js":
 /*!************************!*\
   !*** ./common/keys.js ***!
@@ -118,33 +234,35 @@ const asyncAction = actionType => ({
 
 const ACTIONS = {
   AUTHENTICATION: asyncAction("authentication"),
-  VALIDATE_CAN_RUN: asyncAction("VALIDATE_CAN_RUN"),
+  FETCH_USER_PREFERENCES: asyncAction("FETCH_USER_PREFERENCES"),
+  STORE_USER_PREFERENCES: asyncAction("STORE_USER_PREFERENCES"),
   RUN_REQUEST: asyncAction("RUN_REQUEST"),
   LOGIN: asyncAction("LOGIN"),
-  CACHE_TOKEN: asyncAction("CACHE_TOKEN")
+  CACHE_TOKEN: asyncAction("CACHE_TOKEN"),
+  FETCH_CACHE_TOKEN: asyncAction("CACHE_TOKEN")
 };
 
 
 /***/ }),
 
-/***/ "./content/actions.js":
-/*!****************************!*\
-  !*** ./content/actions.js ***!
-  \****************************/
-/*! exports provided: validateCanRunRequest */
+/***/ "./common/logger.js":
+/*!**************************!*\
+  !*** ./common/logger.js ***!
+  \**************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateCanRunRequest", function() { return validateCanRunRequest; });
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-
-
-const validateCanRunRequest = domain => ({
-  type: _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.REQUEST,
-  payload: {
-    domain: window.location.hostname
+const debugLog = (...msg) => {
+  if (true) {
+    console.log(...msg);
   }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  log: console.log,
+  debug: debugLog
 });
 
 
@@ -161,10 +279,12 @@ const validateCanRunRequest = domain => ({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendMessageToBackground", function() { return sendMessageToBackground; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "portMessages$", function() { return portMessages$; });
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @diff/common/keys */ "./common/keys.js");
+/* harmony import */ var _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @diff/common/actions */ "./common/actions.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
 
 
 
@@ -173,24 +293,21 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Our unique name that connects us to our background script
  */
-const port = chrome.runtime.connect({ name: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"] });
+const port = chrome.runtime.connect({ name: _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_PORT_NAME"] });
 
 /**
  * Allows us to communicate back to our background script
  *
- * @param {*} message
+ * @param {*} action
  * @param {*} cb
  */
-const sendMessageToBackground = message =>
-  port.postMessage({
-    ...message,
-    source: _common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"]
-  });
+const sendMessageToBackground = action =>
+  port.postMessage(Object(_diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["composeRemoteAction"])(action, _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["CONTENT_SCRIPT_SOURCE_NAME"]));
 
 // filter only the messages from our backend
-const portMessages$ = rxjs__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
+const portMessages$ = rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"].create(observer => {
   port.onMessage.addListener(msg => observer.next(msg));
-}).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(({ source }) => source === _common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]));
+}).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["filter"])(({ source }) => source === _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["BACKGROUND_SCRIPT_PORT_NAME"]));
 
 portMessages$.subscribe(evt => {
   console.log("[content-script] from background", evt);
@@ -201,15 +318,14 @@ portMessages$.subscribe(evt => {
 // ----------------------------------------------------------------------
 
 const actionHandler$ = ACTION_TYPE =>
-  portMessages$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(({ type }) => type === ACTION_TYPE));
+  portMessages$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["filter"])(({ type }) => type === ACTION_TYPE));
 
-actionHandler$(_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].AUTHENTICATION.REQUEST).subscribe(msg => {
-  Object(_frontend__WEBPACK_IMPORTED_MODULE_2__["runFrontend"])();
+actionHandler$(_diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].AUTHENTICATION.REQUEST).subscribe(msg => {
+  Object(_frontend__WEBPACK_IMPORTED_MODULE_3__["runFrontend"])();
 });
 
-actionHandler$(_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST).subscribe(msg => {
-  console.log("hey I want to run");
-  Object(_frontend__WEBPACK_IMPORTED_MODULE_2__["runFrontend"])();
+actionHandler$(_diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].RUN_REQUEST.REQUEST).subscribe(msg => {
+  Object(_frontend__WEBPACK_IMPORTED_MODULE_3__["runFrontend"])();
 });
 
 
@@ -264,12 +380,14 @@ const runFrontend = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./actions */ "./content/actions.js");
-/* harmony import */ var _message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./message */ "./content/message.js");
-/* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
-/* harmony import */ var _backgroundClient__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./backgroundClient */ "./content/backgroundClient.js");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @diff/common/keys */ "./common/keys.js");
+/* harmony import */ var _diff_common_actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @diff/common/actions */ "./common/actions.js");
+/* harmony import */ var _diff_common_logger__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @diff/common/logger */ "./common/logger.js");
+/* harmony import */ var _message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./message */ "./content/message.js");
+/* harmony import */ var _frontend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./frontend */ "./content/frontend.js");
+/* harmony import */ var _backgroundClient__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./backgroundClient */ "./content/backgroundClient.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
 
 
 
@@ -283,23 +401,27 @@ __webpack_require__.r(__webpack_exports__);
  * as retrieving some of our intiial application data
  */
 const main = () => {
-  _backgroundClient__WEBPACK_IMPORTED_MODULE_4__["portMessages$"]
-    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["filter"])(({ type }) => type === _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.SUCCESS))
-    .subscribe(val => {
-      console.log("running frontend");
-      Object(_frontend__WEBPACK_IMPORTED_MODULE_3__["runFrontend"])();
+  _backgroundClient__WEBPACK_IMPORTED_MODULE_5__["portMessages$"]
+    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["filter"])(({ type }) => type === _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.SUCCESS))
+    .subscribe(preferences => {
+      if (
+        preferences.autorunDomains &&
+        preferences.autorunDomains.includes(window.location.host)
+      ) {
+        _diff_common_logger__WEBPACK_IMPORTED_MODULE_2__["default"].debug("Running frontend");
+        Object(_frontend__WEBPACK_IMPORTED_MODULE_4__["runFrontend"])();
+      } else {
+      }
     });
 
-  _backgroundClient__WEBPACK_IMPORTED_MODULE_4__["portMessages$"]
-    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["filter"])(({ type }) => type === _common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].VALIDATE_CAN_RUN.FAILED))
+  _backgroundClient__WEBPACK_IMPORTED_MODULE_5__["portMessages$"]
+    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["filter"])(({ type }) => type === _diff_common_keys__WEBPACK_IMPORTED_MODULE_0__["ACTIONS"].FETCH_USER_PREFERENCES.FAILED))
     .subscribe(val => {
       console.log("cant run frontend");
     });
 
   // check if we can run on this domain
-  Object(_backgroundClient__WEBPACK_IMPORTED_MODULE_4__["sendMessageToBackground"])(
-    _actions__WEBPACK_IMPORTED_MODULE_1__["validateCanRunRequest"](window.location.hostname)
-  );
+  Object(_backgroundClient__WEBPACK_IMPORTED_MODULE_5__["sendMessageToBackground"])(_diff_common_actions__WEBPACK_IMPORTED_MODULE_1__["fetchUserPreferences"]());
 };
 
 // start our applicaiton
@@ -320,7 +442,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "frontendHandlers", function() { return frontendHandlers; });
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
-/* harmony import */ var _common_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common/keys */ "./common/keys.js");
+/* harmony import */ var _diff_common_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @diff/common/keys */ "./common/keys.js");
 /* harmony import */ var _backgroundClient__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./backgroundClient */ "./content/backgroundClient.js");
 
 
@@ -329,27 +451,27 @@ __webpack_require__.r(__webpack_exports__);
 const messages$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["fromEvent"])(window, "message");
 
 const frontend$ = messages$.pipe(
-  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]),
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _diff_common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]),
   Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])(evt => console.log("[content-script] frontend message", evt))
 );
 
 const backend$ = messages$.pipe(
-  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"]),
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(evt => evt.data.source === _diff_common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"]),
   Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])(evt => console.log("[content-script] backend message", evt))
 );
 
 const unhandled$ = messages$.pipe(
   Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(
     evt =>
-      evt.data.source !== _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"] &&
-      evt.data.source !== _common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]
+      evt.data.source !== _diff_common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_BACKGROUND_SOURCE"] &&
+      evt.data.source !== _diff_common_keys__WEBPACK_IMPORTED_MODULE_2__["MESSAGES_FRONTEND_SOURCE"]
   )
-  //tap(evt => console.log("[content-script] unhandled message", evt))
+  // tap(evt => console.log("[content-script] unhandled message", evt))
 );
 
 const cacheRequest$ = frontend$.pipe(
   Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["map"])(evt => evt.data),
-  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(data => data.type === _common_keys__WEBPACK_IMPORTED_MODULE_2__["ACTIONS"].CACHE_TOKEN.REQUEST)
+  Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(data => data.type === _diff_common_keys__WEBPACK_IMPORTED_MODULE_2__["ACTIONS"].CACHE_TOKEN.REQUEST)
 );
 
 const frontendHandlers = Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["merge"])(cacheRequest$).subscribe(

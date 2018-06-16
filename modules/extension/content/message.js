@@ -4,7 +4,7 @@ import {
   MESSAGES_FRONTEND_SOURCE,
   MESSAGES_BACKGROUND_SOURCE,
   ACTIONS
-} from "../common/keys";
+} from "@diff/common/keys";
 import { sendMessageToBackground } from "./backgroundClient";
 const messages$ = fromEvent(window, "message");
 
@@ -24,7 +24,7 @@ const unhandled$ = messages$.pipe(
       evt.data.source !== MESSAGES_BACKGROUND_SOURCE &&
       evt.data.source !== MESSAGES_FRONTEND_SOURCE
   )
-  //tap(evt => console.log("[content-script] unhandled message", evt))
+  // tap(evt => console.log("[content-script] unhandled message", evt))
 );
 
 const cacheRequest$ = frontend$.pipe(
