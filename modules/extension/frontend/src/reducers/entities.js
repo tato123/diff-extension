@@ -1,5 +1,5 @@
 import { handleActions } from "redux-actions";
-import { newValue } from "../actions/firebase";
+import actionCreators from "actions";
 import _ from "lodash";
 
 const reduceSelectors = (state, doc) =>
@@ -28,7 +28,7 @@ const handleFirebaseValue = (state, action) => {
 
 const reducer = handleActions(
   {
-    [newValue.toString()]: handleFirebaseValue
+    [actionCreators.newValue.toString()]: handleFirebaseValue
   },
   {
     selectors: [],

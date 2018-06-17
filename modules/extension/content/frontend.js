@@ -21,5 +21,5 @@ export const addScriptToPage = async (scriptName, scriptId) => {
 };
 
 export const runFrontend = () => {
-  addScriptToPage("frontend.js", "df-bridge-0123");
+  addScriptToPage("frontend/main.js", "df-bridge");
 };

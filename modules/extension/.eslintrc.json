@@ -16,6 +16,7 @@
     "prettier/prettier": "error"
   },
   "globals": {
-    "chrome": true
+    "chrome": true,
+    "__webpack_public_path__": true
   }
 }

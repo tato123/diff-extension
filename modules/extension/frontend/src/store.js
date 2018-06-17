@@ -25,7 +25,10 @@ const epicMiddleware = createEpicMiddleware(rootEpic);
 
 export const store = createStore(
   (state, action) => state,
-  compose(lazyReducerEnhancer(combineReducers), applyMiddleware(epicMiddleware))
+  compose(
+    lazyReducerEnhancer(combineReducers),
+    applyMiddleware(epicMiddleware)
+  )
 );
 
 // Initially loaded reducers.

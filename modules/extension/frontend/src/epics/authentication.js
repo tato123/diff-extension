@@ -1,8 +1,11 @@
-import { loginRequest, loginFailed, loginSuccess } from "actions/user";
+import actionCreators from "actions";
 import { MESSAGES_FRONTEND_SOURCE, ACTIONS } from "../../../common/keys";
 import { combineEpics, ofType } from "redux-observable";
 import { from, of } from "rxjs";
 import { switchMap, map, catchError, tap } from "rxjs/operators";
+
+console.log("action creators", actionCreators);
+
 /*eslint-disable*/
 const login = async (username, password) => {
   const data = {
@@ -59,7 +62,7 @@ const cacheToken = async token => {
 
 const loginUser$ = (action$, store) =>
   action$.pipe(
-    ofType(loginRequest.toString()),
+    ofType(actionCreators.loginRequest.toString()),
     switchMap(({ payload: { username, password } }) =>
       from(login(username, password)).pipe(
         tap(userToken => cacheToken(userToken)),

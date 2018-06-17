@@ -1,10 +1,11 @@
 import { ACTIONS } from "./keys";
 
-export const composeRemoteAction = (action, source) =>
+export const composeRemoteAction = (action, source, dest) =>
   Object.assign(
     {},
     {
-      source
+      source,
+      dest
     },
     action
   );
@@ -66,6 +67,10 @@ export const cacheTokenFailed = err => ({
 
 export const cacheTokenSuccess = () => ({
   type: ACTIONS.CACHE_TOKEN.SUCCESS
+});
+
+export const fetchCacheToken = () => ({
+  type: ACTIONS.FETCH_CACHE_TOKEN.REQUEST
 });
 
 export const fetchCacheTokenFailed = err => ({

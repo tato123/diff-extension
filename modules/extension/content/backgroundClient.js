@@ -2,12 +2,13 @@ import {
   CONTENT_SCRIPT_PORT_NAME,
   BACKGROUND_SCRIPT_PORT_NAME,
   CONTENT_SCRIPT_SOURCE_NAME,
+  MESSAGES_FRONTEND_SOURCE,
   ACTIONS
 } from "@diff/common/keys";
 import { composeRemoteAction } from "@diff/common/actions";
 import { Observable } from "rxjs";
 import { runFrontend } from "./frontend";
-import { filter } from "rxjs/operators";
+import { filter, tap } from "rxjs/operators";
 
 /**
  * Our unique name that connects us to our background script
@@ -28,9 +29,17 @@ export const portMessages$ = Observable.create(observer => {
   port.onMessage.addListener(msg => observer.next(msg));
 }).pipe(filter(({ source }) => source === BACKGROUND_SCRIPT_PORT_NAME));
 
-portMessages$.subscribe(evt => {
-  console.log("[content-script] from background", evt);
-});
+portMessages$
+  .pipe(
+    tap(evt => {
+      if (evt && evt.dest === MESSAGES_FRONTEND_SOURCE) {
+        window.postMessage(evt, "*");
+      }
+    })
+  )
+  .subscribe(evt => {
+    console.log("[content-script] received and processed", evt);
+  });
 
 // ----------------------------------------------------------------------
 // Action Handlers
