@@ -2,6 +2,7 @@ const Dotenv = require("dotenv-webpack");
 const path = require("path");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 // For dependencies that are internal to the chrome extension
 const OUTPUT_PATH = path.resolve(__dirname, "./dist/chrome");
@@ -18,9 +19,9 @@ const std = {
     alias: {
       "@diff/common": path.resolve(__dirname, "./common")
     },
-    extensions: [".json", ".js"],
-    plugins: []
-  }
+    extensions: [".json", ".js"]
+  },
+  plugins: [new Dotenv()]
 };
 
 // export our configurations
@@ -47,8 +48,7 @@ module.exports = (env, argv) => [
     output: {
       filename: "[name].js",
       path: OUTPUT_PATH
-    },
-    plugins: [new Dotenv()]
+    }
   },
   // Configure our frontend
   {
@@ -64,16 +64,34 @@ module.exports = (env, argv) => [
       path: OUTPUT_PATH + "/frontend"
     },
     resolve: {
-      alias: std.resolve.alias,
+      alias: {
+        ...std.resolve.alias,
+        vue: "vue/dist/vue.esm.js"
+      },
       modules: [
         path.resolve("./node_modules"),
         path.resolve(__dirname, "./frontend/src")
       ],
-      extensions: [".js", ".json"],
-      plugins: [...std.resolve.plugins]
+      extensions: [".js", ".json", ".vue"]
     },
     module: {
       rules: [
+        {
+          test: /\.vue$/,
+          exclude: /node_modules/,
+          loader: "vue-loader"
+        },
+        {
+          test: /\.js$/,
+          use: {
+            loader: "babel-loader"
+          }
+        },
+
+        {
+          test: /\.css$/,
+          use: ["vue-style-loader", "css-loader"]
+        },
         {
           test: /\.html$/,
           use: ["html-loader"]
@@ -90,6 +108,6 @@ module.exports = (env, argv) => [
       ]
     },
 
-    plugins: [new Dotenv()]
+    plugins: [...std.plugins, new VueLoaderPlugin()]
   }
 ];
