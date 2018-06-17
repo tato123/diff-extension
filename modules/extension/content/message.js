@@ -4,18 +4,42 @@ import {
   MESSAGES_FRONTEND_SOURCE,
   MESSAGES_BACKGROUND_SOURCE,
   ACTIONS
-} from "../common/keys";
+} from "@diff/common/keys";
 import { sendMessageToBackground } from "./backgroundClient";
-const messages$ = fromEvent(window, "message");
+const messages$ = fromEvent(window, "message").pipe(
+  filter(evt => {
+    if (!evt.data) {
+      return false;
+    }
+    if (evt.dest === MESSAGES_FRONTEND_SOURCE) {
+      return false;
+    }
+    if (evt.data && evt.data.dest === MESSAGES_FRONTEND_SOURCE) {
+      return false;
+    }
+
+    return true;
+  })
+);
 
 const frontend$ = messages$.pipe(
   filter(evt => evt.data.source === MESSAGES_FRONTEND_SOURCE),
-  tap(evt => console.log("[content-script] frontend message", evt))
+  tap(evt =>
+    console.log(
+      "[content-script] postMessage, from frontend, type: MessageEvent",
+      evt.data
+    )
+  )
 );
 
 const backend$ = messages$.pipe(
   filter(evt => evt.data.source === MESSAGES_BACKGROUND_SOURCE),
-  tap(evt => console.log("[content-script] backend message", evt))
+  tap(evt =>
+    console.log(
+      "[content-script] postMessage, from backend, type: MessageEvent",
+      evt.data
+    )
+  )
 );
 
 const unhandled$ = messages$.pipe(
@@ -24,7 +48,7 @@ const unhandled$ = messages$.pipe(
       evt.data.source !== MESSAGES_BACKGROUND_SOURCE &&
       evt.data.source !== MESSAGES_FRONTEND_SOURCE
   )
-  //tap(evt => console.log("[content-script] unhandled message", evt))
+  // tap(evt => console.log("[content-script] unhandled message", evt))
 );
 
 const cacheRequest$ = frontend$.pipe(
@@ -36,6 +60,4 @@ export const frontendHandlers = merge(cacheRequest$).subscribe(
   sendMessageToBackground
 );
 
-frontend$.subscribe();
-backend$.subscribe();
-unhandled$.subscribe();
+messages$.subscribe();

@@ -1,10 +1,11 @@
 import {
   CONTENT_SCRIPT_PORT_NAME,
-  CONTENT_SCRIPT_SOURCE_NAME
-} from "../common/keys";
-import { getUserToken } from "./token";
+  CONTENT_SCRIPT_SOURCE_NAME,
+  BACKGROUND_SCRIPT_PORT_NAME,
+  MESSAGES_FRONTEND_SOURCE
+} from "@diff/common/keys";
 import handlers from "./handlers";
-import { forceRun, composeRemoteAction } from "./actions";
+import { runRequest, composeRemoteAction } from "@diff/common/actions";
 
 const ports = {};
 
@@ -19,10 +20,19 @@ const registerPort = port => {
 };
 
 const messageListener = tabId => msg => {
+  const postDestContentScript = postMessageToTabWithDestination(
+    CONTENT_SCRIPT_SOURCE_NAME
+  );
+  const postDestFrontend = postMessageToTabWithDestination(
+    MESSAGES_FRONTEND_SOURCE
+  );
+
   if (msg.source === CONTENT_SCRIPT_SOURCE_NAME && msg.type in handlers) {
-    handlers[msg.type](tabId, postMessageToTab, msg);
+    handlers[msg.type](tabId, postDestContentScript, msg);
+  } else if (msg.source === MESSAGES_FRONTEND_SOURCE && msg.type in handlers) {
+    handlers[msg.type](tabId, postDestFrontend, msg);
   } else {
-    postMessageToTab(tabId, {
+    postDestContentScript(tabId, {
       err: "No action found for request"
     });
   }
@@ -44,12 +54,23 @@ const portForId = tabId => {
  * @param {*} message
  */
 const postMessageToTab = (tabId, message) => {
+  postMessageToTabWithDestination(CONTENT_SCRIPT_SOURCE_NAME)(tabId, message);
+};
+
+/**
+ * Allows us to message a particular Tab
+ * @param {*} tabId
+ * @param {*} message
+ */
+const postMessageToTabWithDestination = destination => (tabId, message) => {
   const port = portForId(tabId);
   if (!port) {
     console.error("Unable to post message");
     return;
   }
-  port.postMessage(composeRemoteAction(message));
+  port.postMessage(
+    composeRemoteAction(message, BACKGROUND_SCRIPT_PORT_NAME, destination)
+  );
 };
 
 /**
@@ -76,7 +97,6 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  const token = await getUserToken();
-  postMessageToTab(tab.id, forceRun(token));
+  postMessageToTab(tab.id, runRequest());
   return true;
 });

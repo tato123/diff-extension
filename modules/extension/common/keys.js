@@ -15,8 +15,10 @@ const asyncAction = actionType => ({
 
 export const ACTIONS = {
   AUTHENTICATION: asyncAction("authentication"),
-  VALIDATE_CAN_RUN: asyncAction("VALIDATE_CAN_RUN"),
+  FETCH_USER_PREFERENCES: asyncAction("FETCH_USER_PREFERENCES"),
+  STORE_USER_PREFERENCES: asyncAction("STORE_USER_PREFERENCES"),
   RUN_REQUEST: asyncAction("RUN_REQUEST"),
   LOGIN: asyncAction("LOGIN"),
-  CACHE_TOKEN: asyncAction("CACHE_TOKEN")
+  CACHE_TOKEN: asyncAction("CACHE_TOKEN"),
+  FETCH_CACHE_TOKEN: asyncAction("CACHE_TOKEN")
 };

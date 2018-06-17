@@ -1,5 +1,6 @@
-import { ACTIONS } from "../common/keys";
-import * as actionCreators from "./actions";
+import { ACTIONS } from "@diff/common/keys";
+import * as actionCreators from "@diff/common/actions";
+import logger from "@diff/common/logger";
 import "./message";
 import { runFrontend } from "./frontend";
 import { sendMessageToBackground, portMessages$ } from "./backgroundClient";
@@ -12,22 +13,26 @@ import { filter } from "rxjs/operators";
  */
 const main = () => {
   portMessages$
-    .pipe(filter(({ type }) => type === ACTIONS.VALIDATE_CAN_RUN.SUCCESS))
-    .subscribe(val => {
-      console.log("running frontend");
-      runFrontend();
+    .pipe(filter(({ type }) => type === ACTIONS.FETCH_USER_PREFERENCES.SUCCESS))
+    .subscribe(preferences => {
+      if (
+        preferences.autorunDomains &&
+        preferences.autorunDomains.includes(window.location.host)
+      ) {
+        logger.debug("Running frontend");
+        runFrontend();
+      } else {
+      }
     });
 
   portMessages$
-    .pipe(filter(({ type }) => type === ACTIONS.VALIDATE_CAN_RUN.FAILED))
+    .pipe(filter(({ type }) => type === ACTIONS.FETCH_USER_PREFERENCES.FAILED))
     .subscribe(val => {
       console.log("cant run frontend");
     });
 
   // check if we can run on this domain
-  sendMessageToBackground(
-    actionCreators.validateCanRunRequest(window.location.hostname)
-  );
+  sendMessageToBackground(actionCreators.fetchUserPreferences());
 };
 
 // start our applicaiton
