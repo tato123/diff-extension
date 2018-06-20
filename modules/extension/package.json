@@ -22,13 +22,11 @@
   },
   "homepage": "https://github.com/tato123/designr-extension#readme",
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.0.0",
     "autoprefixer": "^8.5.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
     "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.1",
@@ -82,9 +80,14 @@
     "@polymer/iron-pages": "^3.0.0-pre.19",
     "@polymer/lit-element": "^0.5.1",
     "@polymer/polymer": "^3.0.0",
+    "@vue/web-component-wrapper": "^1.2.0",
+    "aphrodite": "^2.2.2",
     "date-fns": "^1.29.0",
+    "document-register-element": "^1.9.1",
     "dotenv-webpack": "^1.5.5",
     "firebase": "^5.0.1",
+    "jss": "^9.8.6",
+    "jss-preset-default": "^4.5.0",
     "lit-html": "^0.10.0",
     "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
@@ -99,6 +102,8 @@
     "rxjs-compat": "^6.2.1",
     "vue": "^2.5.16",
     "vue-custom-element": "^3.2.1",
+    "vue-styled-components": "^1.2.3",
+    "vue-web-component": "^1.2.0",
     "vuex": "^3.0.1"
   }
 }

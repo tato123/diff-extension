@@ -1,24 +1,15 @@
 <template>
     <div class="launcher">
+        <label>test</label>
         <div class="logo" x-unfocus>
-            <img src="${img}" x-unfocus/>
+            <img src="./imgs/logo.png" x-unfocus/>
         </div>
-        <df-bubble value="${rules}" class="number" x-unfocus />
     </div>
 </template>
 
 <script>
-import Vue from "vue";
-import vueCustomElement from "vue-custom-element";
-
-Vue.use(vueCustomElement);
-
 export default {
-  methods: {
-    registerCustomElement() {
-      Vue.customElement("df-launcher");
-    }
-  }
+  name: "Launcher"
 };
 </script>
 
@@ -43,6 +34,11 @@ export default {
   --blue-2: #191b3bef;
   --pink: #e5397c;
   --offset: 64px;
+}
+
+.launcher {
+  font-size: 20px;
+  color: purple !important;
 }
 
 .md-appear {

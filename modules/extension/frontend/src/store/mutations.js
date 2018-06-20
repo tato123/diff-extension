@@ -5,6 +5,6 @@ export default {
     console.log("faield to get token");
   },
   addWidget(state, widgetName) {
-    console.log("we want to add a widget name", widgetName);
+    state.widgets.push(widgetName);
   }
 };

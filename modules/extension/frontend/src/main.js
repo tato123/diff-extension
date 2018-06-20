@@ -1,16 +1,17 @@
+/*eslint-disable*/
+__webpack_public_path__ =
+  "chrome-extension://ablcegjlfbphmccdhdeldjefadcopgdm/frontend/";
+
+// Set our correct module path so that we can use dynamic imports
 import Vue from "vue";
-import vueCustomElement from "vue-custom-element";
 import Vuex from "vuex";
 import VuexStore from "./store";
 
-import App from "components/App";
+import App from "App";
 
 Vue.config.productionTip = false;
-Vue.use(vueCustomElement);
 Vue.use(Vuex);
-
-// Set our correct module path so that we can use dynamic imports
-__webpack_public_path__ = getModulePath();
+Vue.config.ignoredElements = [/^df-/];
 
 function getModulePath() {
   const bridgeScript = document.querySelector("#df-bridge");
@@ -46,5 +47,4 @@ bootstrap().then(id => {
     components: { App },
     template: "<App />"
   });
-  console.log(app);
 });

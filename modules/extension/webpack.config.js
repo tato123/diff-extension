@@ -53,6 +53,7 @@ module.exports = (env, argv) => [
   // Configure our frontend
   {
     ...std,
+    mode: "development",
     entry: {
       main: [path.resolve(__dirname, "./frontend/src/main.js")]
     },
@@ -61,7 +62,9 @@ module.exports = (env, argv) => [
       chunkFilename: "[name].bundle.js",
       // the chrome extension is served from a remote server
       // to avoid needing constant updates
-      path: OUTPUT_PATH + "/frontend"
+      path: OUTPUT_PATH + "/frontend",
+      publicPath:
+        "chrome-extension://ablcegjlfbphmccdhdeldjefadcopgdm/frontend/"
     },
     resolve: {
       alias: {
@@ -78,19 +81,19 @@ module.exports = (env, argv) => [
       rules: [
         {
           test: /\.vue$/,
-          exclude: /node_modules/,
-          loader: "vue-loader"
+          loader: "vue-loader",
+          options: {
+            shadowMode: true
+          },
+          exclude: /node_modules/
         },
-        {
-          test: /\.js$/,
-          use: {
-            loader: "babel-loader"
-          }
-        },
-
         {
           test: /\.css$/,
           use: ["vue-style-loader", "css-loader"]
+        },
+        {
+          resourceQuery: /blockType=shadowStyle/,
+          loader: require.resolve("./shadow-loader.js")
         },
         {
           test: /\.html$/,
@@ -108,6 +111,11 @@ module.exports = (env, argv) => [
       ]
     },
 
-    plugins: [...std.plugins, new VueLoaderPlugin()]
+    plugins: [
+      ...std.plugins,
+      new VueLoaderPlugin({
+        shadowMode: true
+      })
+    ]
   }
 ];
