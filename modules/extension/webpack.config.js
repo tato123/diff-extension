@@ -1,8 +1,9 @@
-const Dotenv = require("dotenv-webpack");
 const path = require("path");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const Dotenv = require("dotenv-webpack");
+const webpack = require("webpack");
+const WriteAssetsWebpackPlugin = require("write-assets-webpack-plugin");
 
 // For dependencies that are internal to the chrome extension
 const OUTPUT_PATH = path.resolve(__dirname, "./dist/chrome");
@@ -13,7 +14,7 @@ const ENV = process.env.NODE_ENV || "development";
 // consistent across each of our build configurations
 const std = {
   mode: ENV,
-  devtool: ENV === "development" ? "inline-source-map" : "none",
+  devtool: ENV === "development" ? "source-map" : "none",
   resolve: {
     modules: [path.resolve("./node_modules")],
     alias: {
@@ -21,35 +22,17 @@ const std = {
     },
     extensions: [".json", ".js"]
   },
-  plugins: [new Dotenv()]
+  plugins: [new Dotenv()],
+  devServer: {
+    contentBase: OUTPUT_PATH + "/frontend",
+    compress: true,
+    port: 9000,
+    public: "localhost:9000"
+  }
 };
 
 // export our configurations
 module.exports = (env, argv) => [
-  {
-    ...std,
-    plugins: [
-      new CleanWebpackPlugin(["dist"]),
-      new CopyWebpackPlugin([
-        {
-          from: "shells/chrome/manifest.json",
-          to: OUTPUT_PATH,
-          toType: "dir"
-        }
-      ])
-    ]
-  },
-  {
-    ...std,
-    entry: {
-      background: path.resolve(__dirname, "background/index.js"),
-      contentScript: path.resolve(__dirname, "content/index.js")
-    },
-    output: {
-      filename: "[name].js",
-      path: OUTPUT_PATH
-    }
-  },
   // Configure our frontend
   {
     ...std,
@@ -63,37 +46,28 @@ module.exports = (env, argv) => [
       // the chrome extension is served from a remote server
       // to avoid needing constant updates
       path: OUTPUT_PATH + "/frontend",
-      publicPath:
-        "chrome-extension://ablcegjlfbphmccdhdeldjefadcopgdm/frontend/"
+      publicPath: "http://localhost:9000/js/"
     },
     resolve: {
-      alias: {
-        ...std.resolve.alias,
-        vue: "vue/dist/vue.esm.js"
-      },
       modules: [
         path.resolve("./node_modules"),
         path.resolve(__dirname, "./frontend/src")
       ],
-      extensions: [".js", ".json", ".vue"]
+      extensions: [".js", ".json"]
     },
+
     module: {
       rules: [
         {
-          test: /\.vue$/,
-          loader: "vue-loader",
-          options: {
-            shadowMode: true
-          },
-          exclude: /node_modules/
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader"
+          }
         },
         {
           test: /\.css$/,
-          use: ["vue-style-loader", "css-loader"]
-        },
-        {
-          resourceQuery: /blockType=shadowStyle/,
-          loader: require.resolve("./shadow-loader.js")
+          use: ["style-loader", "css-loader"]
         },
         {
           test: /\.html$/,
@@ -111,11 +85,29 @@ module.exports = (env, argv) => [
       ]
     },
 
+    plugins: [...std.plugins, new webpack.HotModuleReplacementPlugin()]
+  },
+  {
+    ...std,
     plugins: [
-      ...std.plugins,
-      new VueLoaderPlugin({
-        shadowMode: true
-      })
-    ]
+      new CleanWebpackPlugin(["dist"]),
+      new CopyWebpackPlugin([
+        {
+          from: "shells/chrome/manifest.json",
+          to: OUTPUT_PATH,
+          toType: "dir"
+        }
+      ]),
+      new WriteAssetsWebpackPlugin({ force: true, extension: ["js", "json"] })
+    ],
+    entry: {
+      background: path.resolve(__dirname, "background/index.js"),
+      contentScript: path.resolve(__dirname, "content/index.js")
+    },
+    output: {
+      filename: "[name].js",
+      path: OUTPUT_PATH,
+      publicPath: "http://localhost:9000/js/"
+    }
   }
 ];

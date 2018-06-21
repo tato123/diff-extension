@@ -2,16 +2,9 @@
 __webpack_public_path__ =
   "chrome-extension://ablcegjlfbphmccdhdeldjefadcopgdm/frontend/";
 
-// Set our correct module path so that we can use dynamic imports
-import Vue from "vue";
-import Vuex from "vuex";
-import VuexStore from "./store";
-
-import App from "App";
-
-Vue.config.productionTip = false;
-Vue.use(Vuex);
-Vue.config.ignoredElements = [/^df-/];
+import App from "./App";
+import React from "react";
+import ReactDOM from "react-dom";
 
 function getModulePath() {
   const bridgeScript = document.querySelector("#df-bridge");
@@ -33,18 +26,19 @@ function getModulePath() {
 // }
 
 function bootstrap() {
-  const placeholder = document.createElement("div");
-  placeholder.id = "root";
-  document.body.appendChild(placeholder);
-  return Promise.resolve("#root");
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
+    <div id="root">
+    </div>
+  
+  
+  `
+  );
+  return Promise.resolve("root");
 }
 
 bootstrap().then(id => {
-  const store = new Vuex.Store(VuexStore);
-  const app = new Vue({
-    el: id,
-    store,
-    components: { App },
-    template: "<App />"
-  });
+  console.log(id);
+  ReactDOM.render(<App />, document.getElementById(id));
 });

@@ -12,7 +12,7 @@ export const addScriptToPage = async (scriptName, scriptId) => {
 
     // Add our page bridge
     const script = document.createElement("script");
-    script.src = chrome.runtime.getURL(scriptName);
+    script.src = scriptName;
     script.onload = resolve;
     script.onerror = reject;
     script.id = scriptId;
@@ -21,5 +21,5 @@ export const addScriptToPage = async (scriptName, scriptId) => {
 };
 
 export const runFrontend = () => {
-  addScriptToPage("frontend/main.js", "df-bridge");
+  addScriptToPage("http://localhost:9000/js/main.js", "df-bridge");
 };
