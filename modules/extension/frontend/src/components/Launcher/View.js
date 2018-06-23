@@ -4,6 +4,7 @@ import img from "assets/logo.png";
 import Bubble from "components/Bubble";
 import styled from "styled-components";
 import Progress from "components/Progress";
+import Widget from "components/Widget";
 
 const LauncherContainer = styled.div`
   width: 80px;
@@ -57,36 +58,38 @@ const ImgContainer = styled.div`
 export default class Launcher extends React.Component {
   static propTypes = {
     rules: PropTypes.number,
-    loading: PropTypes.bool
+    busy: PropTypes.bool
   };
 
   static defaultProps = {
     rules: null,
-    loading: true
+    busy: false
   };
 
   render() {
     const {
-      props: { rules, loading }
+      props: { rules, busy }
     } = this;
     return (
-      <LauncherContainer>
-        <div>
-          {!loading && (
-            <React.Fragment>
-              <ImgContainer>
-                <img src={img} />
-              </ImgContainer>
-              <Bubble value={rules} />
-            </React.Fragment>
-          )}
-          {loading && (
-            <React.Fragment>
-              <Progress.Circle />
-            </React.Fragment>
-          )}
-        </div>
-      </LauncherContainer>
+      <Widget>
+        <LauncherContainer>
+          <div>
+            {!busy && (
+              <React.Fragment>
+                <ImgContainer>
+                  <img src={img} />
+                </ImgContainer>
+                <Bubble value={rules} />
+              </React.Fragment>
+            )}
+            {busy && (
+              <React.Fragment>
+                <Progress.Circle />
+              </React.Fragment>
+            )}
+          </div>
+        </LauncherContainer>
+      </Widget>
     );
   }
 }

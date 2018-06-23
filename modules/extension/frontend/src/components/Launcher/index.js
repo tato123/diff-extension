@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import View from "./View";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({ launcher: { busy } }) => ({ busy });
 const mapDispatchToProps = dispatch => ({});
 
 export default connect(

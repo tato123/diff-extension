@@ -1,7 +1,11 @@
 import firebase from "firebase";
 
 export default {
-  onInit: () => {
+  exposed: {
+    // expose effects for access from dispatch plugin
+    firebaseSnapshots: {}
+  },
+  onInit() {
     console.log("[plugin - firebase] initializing connection");
     // connect to firebase
     const config = {
@@ -13,5 +17,21 @@ export default {
       messagingSenderId: process.env.FIREBASE_SENDER_ID
     };
     firebase.initializeApp(config);
+
+    this.db = firebase.firestore();
+  },
+  onModel(model) {
+    if (!model.firebaseSnapshots) {
+      return;
+    }
+
+    const firebaseEffects =
+      typeof model.firebaseSnapshots === "function"
+        ? model.firebaseSnapshots(this.dispatch, this.db)
+        : model.firebaseSnapshots;
+
+    const listeners = Object.keys(firebaseEffects).map(key =>
+      firebaseEffects[key]()
+    );
   }
 };
