@@ -1,44 +1,33 @@
-/*eslint-disable*/
-__webpack_public_path__ =
-  "chrome-extension://ablcegjlfbphmccdhdeldjefadcopgdm/frontend/";
-
-import App from "./App";
+import App from "./components/App";
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import store from "./store";
 
-function getModulePath() {
-  const bridgeScript = document.querySelector("#df-bridge");
-  const loadPath = bridgeScript.src.split("/main.js")[0];
-  return loadPath + "/";
-}
+const ROOT_ID = "root";
 
-// function initializeFirebase() {
-//   // connect to firebase
-//   const config = {
-//     apiKey: process.env.FIREBASE_API_KEY,
-//     authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-//     databaseURL: process.env.FIREBASE_DATABASE_URL,
-//     projectId: process.env.FIREBASE_PROJECT_ID,
-//     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-//     messagingSenderId: process.env.FIREBASE_SENDER_ID
-//   };
-//   firebase.initializeApp(config);
-// }
+const bootstrap = () => {
+  const rootElement = document.createElement("div");
+  rootElement.id = ROOT_ID;
+  document.body.appendChild(rootElement);
+  return Promise.resolve(ROOT_ID);
+};
 
-function bootstrap() {
-  document.body.insertAdjacentHTML(
-    "beforeend",
-    `
-    <div id="root">
-    </div>
-  
-  
-  `
+const render = RootComponent => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <RootComponent />
+    </Provider>,
+    document.getElementById(ROOT_ID)
   );
-  return Promise.resolve("root");
-}
+};
 
 bootstrap().then(id => {
-  console.log(id);
-  ReactDOM.render(<App />, document.getElementById(id));
+  render(App);
 });
+
+if (module.hot) {
+  module.hot.accept("./components/App.js", () => {
+    render(App);
+  });
+}

@@ -18,7 +18,7 @@ const Container = styled.div`
   height: 32px;
   opacity: 1;
   position: absolute;
-  left: -16px;
+  right: 0px;
   top: -16px;
 `;
 

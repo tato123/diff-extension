@@ -58,6 +58,13 @@ export const storeUserPreferencesFailed = err => ({
 // Token actions
 // -------------------------------------------------------
 
+export const cacheTokenRequest = token => ({
+  type: ACTIONS.CACHE_TOKEN.REQUEST,
+  payload: {
+    token
+  }
+});
+
 export const cacheTokenFailed = err => ({
   type: ACTIONS.CACHE_TOKEN.FAILED,
   meta: {
@@ -91,5 +98,12 @@ export const validateCanRunRequest = domain => ({
   type: ACTIONS.VALIDATE_CAN_RUN.REQUEST,
   payload: {
     domain: window.location.hostname
+  }
+});
+
+export const loginSuccess = token => ({
+  type: ACTIONS.LOGIN.SUCCESS,
+  payload: {
+    token
   }
 });

@@ -1,14 +1,15 @@
-import mutations from "./mutations";
-import actions from "./actions";
-import PostMessagePlugin from "./plugins/postmessage";
-import WidgetPlugin from "./plugins/widgets";
+import { init } from "@rematch/core";
+// contains all our store logic
+import models from "./models";
 
-export default {
-  state: {
-    widgets: [],
-    isAuthenticated: false
-  },
-  mutations,
-  actions,
-  plugins: [PostMessagePlugin(), WidgetPlugin()]
-};
+// additional functionality
+import postMessagePlugin from "./plugins/postmessage";
+import firebasePlugin from "./plugins/firebase";
+import async from "./plugins/async";
+
+const store = init({
+  plugins: [postMessagePlugin, firebasePlugin, async],
+  models
+});
+
+export default store;
