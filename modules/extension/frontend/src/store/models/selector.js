@@ -1,3 +1,5 @@
+import { createSelector } from "reselect";
+
 export default {
   state: {
     byId: {},
@@ -21,5 +23,8 @@ export default {
         allIds: [...state.allIds, payload.id]
       };
     }
+  },
+  selectors: {
+    count: createSelector(state => state.allIds, allIds => allIds.length)
   }
 };

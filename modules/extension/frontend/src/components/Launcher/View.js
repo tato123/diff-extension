@@ -57,18 +57,18 @@ const ImgContainer = styled.div`
 
 export default class Launcher extends React.Component {
   static propTypes = {
-    rules: PropTypes.number,
-    busy: PropTypes.bool
+    busy: PropTypes.bool,
+    count: PropTypes.oneOf(PropTypes.any, PropTypes.number)
   };
 
   static defaultProps = {
-    rules: null,
-    busy: false
+    busy: false,
+    count: null
   };
 
   render() {
     const {
-      props: { rules, busy }
+      props: { count, busy }
     } = this;
     return (
       <Widget>
@@ -79,7 +79,7 @@ export default class Launcher extends React.Component {
                 <ImgContainer>
                   <img src={img} />
                 </ImgContainer>
-                <Bubble value={rules} />
+                <Bubble value={count} />
               </React.Fragment>
             )}
             {busy && (

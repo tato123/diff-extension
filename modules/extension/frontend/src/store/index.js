@@ -6,9 +6,10 @@ import models from "./models";
 import postMessagePlugin from "./plugins/postmessage";
 import firebasePlugin from "./plugins/firebase";
 import async from "./plugins/async";
+import selectPlugin from "@rematch/select";
 
 const store = init({
-  plugins: [postMessagePlugin, firebasePlugin, async],
+  plugins: [postMessagePlugin, firebasePlugin, async, selectPlugin()],
   models
 });
 
