@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Callout from "components/Callout";
 
-export default class Selectors extends React.PureComponent {
+export default class Selectors extends React.Component {
   static propTypes = {
     selectors: PropTypes.array.isRequired
   };
@@ -13,11 +13,11 @@ export default class Selectors extends React.PureComponent {
     } = this;
 
     return (
-      <React.Fragment>
-        {selectors.map((selector, idx) => {
-          <Callout selector={selector} />;
-        })}
-      </React.Fragment>
+      <div>
+        {selectors.map((selector, idx) => (
+          <Callout key={idx} selector={selector} />
+        ))}
+      </div>
     );
   }
 }

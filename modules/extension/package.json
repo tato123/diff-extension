@@ -8,7 +8,7 @@
     "build:prod": "cross-env NODE_ENV=\"production\" webpack --progress --colors --watch --env dev",
     "dev:server": "cross-env NODE_ENV=\"development\" webpack-dev-server --hot --config configs/webpack.frontend.js",
     "dev:extension": "cross-env NODE_ENV=\"development\" webpack --progress --colors --watch --env dev --config configs/webpack.extension.js",
-    "dev:api" : "node ../api/index.js",
+    "dev:api": "node ../api/index.js",
     "start": "run-p dev:*",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
