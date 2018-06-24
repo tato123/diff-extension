@@ -1,10 +1,18 @@
+// @flow
+
+export type SelectorPayload = {
+  id: string,
+  type: string,
+  typeId: string
+};
+
 export default {
   state: {
     byId: {},
     allIds: []
   },
   reducers: {
-    addComment: (state, payload) => {
+    addComment: (state, payload: SelectorPayload) => {
       return {
         byId: {
           ...state.byId,
