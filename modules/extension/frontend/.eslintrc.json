@@ -1,7 +1,15 @@
 {
-  "extends": ["plugin:react/recommended", "prettier"],
-  "parser": "babel-eslint",
+  "extends": [
+    "standard",
+    "plugin:flowtype/recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/flowtype",
+    "prettier/react",
+    "prettier/standard"
+  ],
   "plugins": ["flowtype", "react", "prettier", "standard"],
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
     "ecmaFeatures": {

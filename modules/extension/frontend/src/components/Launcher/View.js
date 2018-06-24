@@ -58,21 +58,23 @@ const ImgContainer = styled.div`
 export default class Launcher extends React.Component {
   static propTypes = {
     busy: PropTypes.bool,
-    count: PropTypes.oneOf(PropTypes.any, PropTypes.number)
+    count: PropTypes.oneOf(PropTypes.any, PropTypes.number),
+    onClick: PropTypes.func
   };
 
   static defaultProps = {
     busy: false,
-    count: null
+    count: null,
+    onClick: () => {}
   };
 
   render() {
     const {
-      props: { count, busy }
+      props: { count, busy, onClick }
     } = this;
     return (
       <Widget>
-        <LauncherContainer>
+        <LauncherContainer onClick={onClick}>
           <div>
             {!busy && (
               <React.Fragment>
