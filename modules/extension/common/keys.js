@@ -20,5 +20,5 @@ export const ACTIONS = {
   RUN_REQUEST: asyncAction("RUN_REQUEST"),
   LOGIN: asyncAction("LOGIN"),
   CACHE_TOKEN: asyncAction("CACHE_TOKEN"),
-  FETCH_CACHE_TOKEN: asyncAction("CACHE_TOKEN")
+  FETCH_CACHE_TOKEN: asyncAction("FETCH_CACHE_TOKEN")
 };

@@ -6,6 +6,7 @@ import {
   ACTIONS
 } from "@diff/common/keys";
 import { sendMessageToBackground } from "./backgroundClient";
+
 const messages$ = fromEvent(window, "message").pipe(
   filter(evt => {
     if (!evt.data) {
@@ -51,9 +52,14 @@ const unhandled$ = messages$.pipe(
   // tap(evt => console.log("[content-script] unhandled message", evt))
 );
 
+const FORWARD_MESSAGE_TYPES = [
+  ACTIONS.CACHE_TOKEN.REQUEST,
+  ACTIONS.FETCH_CACHE_TOKEN.REQUEST
+];
+
 const cacheRequest$ = frontend$.pipe(
   map(evt => evt.data),
-  filter(data => data.type === ACTIONS.CACHE_TOKEN.REQUEST)
+  filter(data => FORWARD_MESSAGE_TYPES.includes(data.type))
 );
 
 export const frontendHandlers = merge(cacheRequest$).subscribe(

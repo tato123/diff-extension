@@ -14,7 +14,11 @@
   ],
   "content_security_policy":
     "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["contentScript.js", "frontend/*"],
+  "web_accessible_resources": [
+    "contentScript.js",
+    "frontend/*",
+    "http://localhost:9000/*"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false

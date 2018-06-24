@@ -50,7 +50,9 @@ const handleCacheTokenRequest = (tabId, postMessageToTab, action) => {
 
 const handleFetchCacheTokenRequest = (tabId, postMessageToTab, action) => {
   getUserToken()
-    .then(() => postMessageToTab(tabId, actionCreator.fetchCacheTokenFailed()))
+    .then(value =>
+      postMessageToTab(tabId, actionCreator.fetchCacheTokenSuccess(value.token))
+    )
     .catch(() =>
       postMessageToTab(
         tabId,

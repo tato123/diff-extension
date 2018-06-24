@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const querystring = require("querystring");
 const admin = require("firebase-admin");
 const db = admin.firestore();
+const firebase = require("firebase");
 
 const retrieveClaimsForUid = uid => {
   return {};
@@ -37,6 +38,11 @@ const createTokenForUid = async (uid, offlineScope = false) => {
   }
 
   return customToken;
+};
+
+const restoreTokenForUid = async (uid, refresh_token) => {
+  const customToken = await createTokenForUid(uid);
+  return Object.assign({}, customToken, { refresh_token });
 };
 
 const basicAuthentication = (req, res) => {
@@ -75,7 +81,7 @@ const tokenAuthentication = async (req, res) => {
 
     if (snapshot.docs.length > 0) {
       const { uid } = snapshot.docs[0].data();
-      const customToken = await createTokenForUid(uid);
+      const customToken = await restoreTokenForUid(uid, token);
       return res.send(200, customToken);
     } else {
       return res.send(401, { err: "Invalid refresh token" });
