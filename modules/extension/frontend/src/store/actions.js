@@ -1,6 +1,6 @@
 import { switchMap } from "rxjs/operators";
 import { Observable, of, throwError } from "rxjs";
-import { dispatch } from "@rematch/core";
+import { dispatch } from "store";
 
 export const TYPES = {
   PROMISE_ACTION_TYPE: "@diff/async",

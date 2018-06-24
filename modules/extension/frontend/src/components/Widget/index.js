@@ -1,18 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ShadowDom from "react-shadow";
-import styled, { StyleSheetManager } from "styled-components";
+import ShadowDom from "./ShadowDOM";
+import styled, { StyleSheetManager, ThemeProvider } from "styled-components";
+import mainTheme from "components/Theme";
 
-const H1 = styled.h1`
-  color: purple;
-`;
-
+/* prettier-ignore */
 const View = styled.div`
-  * {
-    font-family: "Inter UI", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+
+
+  font-family: ${({theme}) => theme.text.fontFamily};
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;  
+
+  color: ${({ theme }) => theme.colors.textColor};
+  font-size: ${({ theme }) => theme.text.size.normal};
+  line-height: ${({ theme }) => theme.text.lineHeight};
+
 `;
 
 export default class Widget extends React.Component {
@@ -25,11 +28,18 @@ export default class Widget extends React.Component {
     shadowDom: true
   };
 
-  state = { div: null };
+  state = { div: null, hasError: false };
 
   ref = div => {
     this.setState({ div });
   };
+
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({ hasError: true });
+
+    console.error("[Widget] error occured while displaying", error, info);
+  }
 
   innerContent = () => {
     const {
@@ -42,7 +52,9 @@ export default class Widget extends React.Component {
         <div ref={ref}>
           {div && (
             <StyleSheetManager target={div}>
-              <View>{React.Children.only(this.props.children)}</View>
+              <ThemeProvider theme={mainTheme}>
+                <View>{this.props.children}</View>
+              </ThemeProvider>
             </StyleSheetManager>
           )}
         </div>
@@ -52,8 +64,13 @@ export default class Widget extends React.Component {
 
   render() {
     const {
-      props: { shadowDom }
+      props: { shadowDom },
+      state: { hasError }
     } = this;
+
+    if (hasError) {
+      return <div>x</div>;
+    }
 
     return shadowDom ? (
       <ShadowDom>{this.innerContent()}</ShadowDom>

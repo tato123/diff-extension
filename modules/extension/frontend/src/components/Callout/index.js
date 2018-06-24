@@ -1,12 +1,29 @@
+// @flow
+
 import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Popper from "components/Popper";
 import Outline from "./styles/outline";
+import Widget from "components/Widget";
 
-export default class Callout extends React.Component {
+type Props = {
+  selector: string,
+  onClick: () => string
+};
+
+type State = {
+  domElement: ?HTMLElement
+};
+
+export default class Callout extends React.Component<Props, State> {
   static propTypes = {
-    selector: PropTypes.string.isRequired
+    selector: PropTypes.string.isRequired,
+    onClick: PropTypes.func
+  };
+
+  static defaultProps = {
+    onClick: () => {}
   };
 
   state = {
@@ -31,14 +48,15 @@ export default class Callout extends React.Component {
         element={document.querySelector(selector)}
         render={({ ref, elementWidth, elementHeight }) => (
           <div ref={ref}>
-            <div>
+            <Widget>
               <Outline
+                onClick={this.props.onClick}
                 width={`${elementWidth}px`}
                 height={`${elementHeight}px`}
                 left={"-8px"}
                 top={"-8px"}
               />
-            </div>
+            </Widget>
           </div>
         )}
       />

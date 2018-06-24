@@ -6,13 +6,18 @@ export type SelectorPayload = {
   typeId: string
 };
 
+type State = {
+  byId: {},
+  allIds: []
+};
+
 export default {
   state: {
     byId: {},
     allIds: []
   },
   reducers: {
-    addComment: (state, payload: SelectorPayload) => {
+    addComment: (state: State, payload: SelectorPayload) => {
       return {
         byId: {
           ...state.byId,

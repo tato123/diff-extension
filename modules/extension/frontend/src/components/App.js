@@ -4,8 +4,7 @@ import { MemoryRouter as Router, Switch, Route } from "react-router";
 import PrivateRoute from "components/Routes/PrivateRoute";
 import Login from "components/Login";
 import Selectors from "components/Selectors";
-import styled, { ThemeProvider } from "styled-components";
-import theme from "./Theme";
+import styled from "styled-components";
 import "components/Theme/fonts/inter-ui/inter-ui.css";
 
 export default class App extends React.Component {
@@ -17,26 +16,24 @@ export default class App extends React.Component {
     const { onClick } = this;
 
     return (
-      <ThemeProvider theme={theme}>
-        <div>
-          <Router>
-            <React.Fragment>
-              <Route
-                render={renderProps => (
-                  <React.Fragment>
-                    <Switch>
-                      <Route exact path="/login" component={Login} />
-                      <PrivateRoute path="/selectors" component={Selectors} />
-                      <PrivateRoute exact path="/" component={() => <div />} />
-                    </Switch>
-                    <Launcher onClick={this.onClick(renderProps)} />
-                  </React.Fragment>
-                )}
-              />
-            </React.Fragment>
-          </Router>
-        </div>
-      </ThemeProvider>
+      <div>
+        <Router>
+          <React.Fragment>
+            <Route
+              render={renderProps => (
+                <React.Fragment>
+                  <Switch>
+                    <Route exact path="/login" component={Login} />
+                    <PrivateRoute path="/selectors" component={Selectors} />
+                    <PrivateRoute exact path="/" component={() => <div />} />
+                  </Switch>
+                  <Launcher onClick={this.onClick(renderProps)} />
+                </React.Fragment>
+              )}
+            />
+          </React.Fragment>
+        </Router>
+      </div>
     );
   }
 }
