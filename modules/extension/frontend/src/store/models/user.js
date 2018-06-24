@@ -8,7 +8,11 @@ import {
 import { ACTIONS as localActions } from "store/actions";
 import firebase from "firebase";
 
-const authenticate = async (username, password, refreshToken) => {
+const authenticate = async (
+  username: ?string,
+  password: ?string,
+  refreshToken: ?string
+) => {
   const options = refreshToken
     ? {
         body: `refresh_token=${refreshToken}&grant_type=refresh_token`
