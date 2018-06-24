@@ -41,3 +41,8 @@ extension/background*
 
 *.zip
 **/*.zip
+
+
+dist
+dist/*
+dist/**/*
