@@ -6,16 +6,12 @@ import mainTheme from "components/Theme";
 
 /* prettier-ignore */
 const View = styled.div`
-
-
-  font-family: ${({theme}) => theme.text.fontFamily};
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;  
-
   color: ${({ theme }) => theme.colors.textColor};
   font-size: ${({ theme }) => theme.text.size.normal};
   line-height: ${({ theme }) => theme.text.lineHeight};
-
 `;
 
 export default class Widget extends React.Component {

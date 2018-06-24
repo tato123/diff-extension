@@ -9,12 +9,7 @@ module.exports = (env, argv) => [
     ...std,
     mode: "development",
     entry: {
-      main: [
-        "webpack-dev-server/client?http://localhost:9000",
-        "webpack/hot/only-dev-server",
-        "react-hot-loader/patch",
-        path.resolve(__dirname, "../frontend/src/main.js")
-      ]
+      main: [path.resolve(__dirname, "../frontend/src/main.js")]
     },
     output: {
       filename: "[name].js",
@@ -83,6 +78,6 @@ module.exports = (env, argv) => [
       ]
     },
 
-    plugins: [...std.plugins]
+    plugins: [...std.plugins, new webpack.HotModuleReplacementPlugin()]
   }
 ];

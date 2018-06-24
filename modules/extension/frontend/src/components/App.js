@@ -5,7 +5,6 @@ import PrivateRoute from "components/Routes/PrivateRoute";
 import Login from "components/Login";
 import Selectors from "components/Selectors";
 import styled from "styled-components";
-import "components/Theme/fonts/inter-ui/inter-ui.css";
 
 export default class App extends React.Component {
   onClick = ({ history }) => () => {
