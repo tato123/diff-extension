@@ -6,7 +6,7 @@ const Outline = styled.div`
   width: ${props => props.width || 0};
   height: ${props => props.height || 0};
   position: absolute;
-  border-radius: 20px;
+  border-radius: 35px;
   opacity: ${props => (props.hidden ? 0 : 1)};
   cursor: pointer;
   z-index: 0;

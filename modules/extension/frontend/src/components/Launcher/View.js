@@ -45,6 +45,7 @@ const LauncherContainer = styled.div`
 
   > div {
     position: relative;
+    flex: 1;
   }
 `;
 
@@ -53,6 +54,7 @@ const ImgContainer = styled.div`
   align-items: center;
   flex: 1;
   justify-content: center;
+  height: 100%;
 `;
 
 export default class Launcher extends React.Component {

@@ -3,12 +3,7 @@ import { connect } from "react-redux";
 import { select } from "@rematch/select";
 
 const mapStateToProps = state => ({
-  selectors: select.selector.ids(state)
+  selectors: state.selector.allIds
 });
 
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(View);
+export default connect(mapStateToProps)(View);

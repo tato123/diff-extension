@@ -13,4 +13,5 @@ const store = init({
   models
 });
 
+export const { getState, dispatch } = store;
 export default store;

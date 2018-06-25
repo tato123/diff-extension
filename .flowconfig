@@ -1,0 +1,17 @@
+[ignore]
+
+[include]
+./modules/extension/frontend/src
+./modules/extension/content
+./modules/extension/common
+./modules/extension/background
+
+[libs]
+
+[lints]
+
+[options]
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=./modules/extension/frontend/src/**
+
+[strict]

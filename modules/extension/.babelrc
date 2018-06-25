@@ -1,4 +1,16 @@
 {
-  "presets": [["es2015", { "modules": false }], "react-app", "flow"],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["last 2 Chrome versions"]
+        }
+      }
+    ],
+
+    "react-app",
+    "flow"
+  ],
   "plugins": ["react-hot-loader/babel"]
 }
