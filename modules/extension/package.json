@@ -72,6 +72,7 @@
     "@rematch/core": "^1.0.0-beta.2",
     "@rematch/select": "^1.0.2",
     "antd": "^3.6.4",
+    "color": "^3.0.0",
     "date-fns": "^1.29.0",
     "dotenv-webpack": "^1.5.5",
     "firebase": "^5.0.1",

@@ -27,25 +27,35 @@ export default {
       };
     }
   },
-  firebaseSnapshots: (dispatch, db) => ({
-    comments: () =>
-      db
-        .collection("events")
-        .where("type", "==", "comment")
-        .onSnapshot(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            const data = doc.data();
-            dispatch.comment.addComment({
-              id: doc.id,
-              ...data
-            });
+  effects(dispatch) {
+    return {
+      addComment: async payload => {
+        console.log("going to write something", payload, this.db);
+      }
+    };
+  },
+  firebaseSnapshots(dispatch, db) {
+    this.db = db;
+    return {
+      comments: () =>
+        db
+          .collection("events")
+          .where("type", "==", "comment")
+          .onSnapshot(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              const data = doc.data();
+              dispatch.comment.addComment({
+                id: doc.id,
+                ...data
+              });
 
-            dispatch.selector.addSelector({
-              id: data.selector,
-              type: data.type,
-              typeId: doc.id
+              dispatch.selector.addSelector({
+                id: data.selector,
+                type: data.type,
+                typeId: doc.id
+              });
             });
-          });
-        })
-  })
+          })
+    };
+  }
 };

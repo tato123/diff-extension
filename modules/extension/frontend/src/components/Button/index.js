@@ -9,7 +9,7 @@ const ButtonImpl = styled(ButtonOutline)`
   cursor: pointer;
 
   &:hover {
-    background: #fff !important;
+    background: ${({ theme }) => theme.colors.white1} !important;
   }
 `;
 

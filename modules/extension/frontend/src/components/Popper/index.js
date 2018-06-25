@@ -36,15 +36,10 @@ export default class PopperHandler extends React.Component {
       return;
     }
 
-    try {
-      const popper = new Popper(element, popperElement, options);
-      this.setState({
-        popper
-      });
-    } catch (err) {
-      debugger;
-      console.log("whats going on ", err);
-    }
+    const popper = new Popper(element, popperElement, options);
+    this.setState({
+      popper
+    });
   };
 
   getPopperTargetElementStyles(element) {
