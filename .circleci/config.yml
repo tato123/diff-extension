@@ -1,16 +1,50 @@
 version: 2
 jobs:
-  extension:
+  dependencies:
+    docker:
+      - image: circleci/node:10.5.0
+    steps:
+      - checkout
+      - run: sudo npm install -g yarn@latest
+      - run: 
+          name: Install dependencies and Bootstrap with Lerna
+          command: |            
+            yarn install
+            ./node_modules/.bin/lerna bootstrap
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+  test:
     docker:
       - image: circleci/node:7.10
     steps:
       - checkout
-      - run: 
-          command: |            
-            sudo yarn global add lerna      
-            lerna bootstrap
-            sudo lerna exec -- yarn test
-            sudo lerna exec -- yarn deploy     
+      - restore_cache: # special step to restore the dependency cache 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: ./node_modules/.bin/lerna exec -- yarn test
+  chromeExtension:
+    docker:
+      - image: circleci/node:7.10 
+    steps:
+      - checkout
+      - restore_cache: # special step to restore the dependency cache 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:  
+          command: |
+            cd packages/extension
+            yarn deploy:extension
+  frontend:
+    docker:
+      - image: circleci/node:7.10 
+    steps:
+      - checkout
+      - restore_cache: # special step to restore the dependency cache 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:  
+          command: |
+            cd packages/extension
+            yarn deploy:frontend
   api:
     machine:
       environment:
@@ -21,13 +55,25 @@ jobs:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
             gcloud --quiet components update app
-            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json        
-            gcloud config set project $GCLOUD_PROJECT
-            gcloud -q preview app deploy app.yaml --promote --version=1
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+      - run:
+          name: Install Gcloud updates
+          command: gcloud components update   
+      - run:
+          name: Set project default
+          command: gcloud config set project $GCLOUD_PROJECT
+      - run:
+          name: Deploy project
+          command: gcloud -q preview app deploy app.yaml --promote --version=1
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - extension
-      - api
+      - dependencies
+      - test:
+          requires:
+            - dependencies
+      - api:
+          requires:
+            - test

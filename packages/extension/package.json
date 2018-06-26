@@ -10,10 +10,9 @@
     "dev:server": "cross-env NODE_ENV=\"development\" webpack-dev-server --mode development --hot --config configs/webpack.frontend.js",
     "dev:extension": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.extension.js",
     "start": "run-p dev:*",
-    "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
-    "uploadExtension": "node ./configs/deploy.js",
-    "deploy": "npm run build && npm run uploadExtension"
+    "test": "echo \"Error: no test specified\"",
+    "deploy:extension": "yarn build && node ./configs/deploy.js",
+    "deploy:frontend": "yarn build && node ./configs/deploy.js"
   },
   "repository": {
     "type": "git",
