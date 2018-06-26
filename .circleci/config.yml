@@ -31,7 +31,7 @@ jobs:
       - restore_cache: # special step to restore the dependency cache 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:  
-          command: lerna run --scope @diff/extension deploy:extension
+          command: ./node_modules/.bin/lerna run --scope @diff/extension deploy:extension
   frontend:
     docker:
       - image: circleci/node:10.5.0 
@@ -40,7 +40,7 @@ jobs:
       - restore_cache: # special step to restore the dependency cache 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:  
-          command: lerna run --scope @diff/extension deploy:frontend
+          command: ./node_modules/.bin/lerna run --scope @diff/extension deploy:frontend
   api:
     docker:
       - image: google/cloud-sdk:latest
@@ -57,7 +57,9 @@ jobs:
       - run:
           name: Deploy project
           command: |
-            cd packages/api
+            pwd
+            ls
+            cd ./packages/api
             gcloud deploy app.yaml --quiet
 
 workflows:
@@ -74,3 +76,11 @@ workflows:
       - frontend:
           requires:
             - test
+      - chromeExtension:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^extension-.*/
+            branches:
+              ignore: /.*/
