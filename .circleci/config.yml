@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  extension:
     docker:
       - image: circleci/node:7.10
     steps:
@@ -9,19 +9,9 @@ jobs:
           command: |            
             sudo yarn global add lerna      
             lerna bootstrap
-  test:      
-    docker:
-      - image: circleci/node:7.10
-    steps:
-      - checkout
-      - run: sudo lerna exec -- yarn test
-  deployExtension:
-    docker:
-      - image: circleci/node:7.10
-    steps:
-      - checkout
-      - run: sudo lerna exec -- yarn deploy    
-  deployment:
+            sudo lerna exec -- yarn test
+            sudo lerna exec -- yarn deploy     
+  api:
     machine:
       environment:
         PYTHONPATH: ${PYTHONPATH}:${HOME}/google_appengine
@@ -39,19 +29,5 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - deployExtension:
-          requires:
-            - build
-            - test
-      - uploadFrontend:
-          requires:
-            - build
-            - test
-      - deployment:
-          requires:
-            - build
-            - test
+      - extension
+      - api
