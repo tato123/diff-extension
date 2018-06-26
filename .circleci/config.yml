@@ -25,25 +25,16 @@ jobs:
     machine:
       environment:
         PYTHONPATH: ${PYTHONPATH}:${HOME}/google_appengine
-        GCLOUD_PROJECT: "diff-204716"
-    dependencies:
-      pre:        
-        # Retrieve our secrets from the CircleCI environment
-        - echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
-        # Make sure gcloud is up to date
-        - gcloud --quiet components update app
-        # authenticate gcloud
-        - gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
-        # Replace <your-project-id>
-        - gcloud config set project $GCLOUD_PROJECT
-    deployment:
-        production:
-            branch: master
-            commands:
-            # deploy to AppEngine
-            - gcloud -q preview app deploy app.yaml --promote --version=1
-            # Run our E2E Test
-            - python e2e_test.py
+        GCLOUD_PROJECT: "diff-204716"    
+    steps:
+      - run: 
+          command: |
+            echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            gcloud --quiet components update app
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json        
+            gcloud config set project $GCLOUD_PROJECT
+            gcloud -q preview app deploy app.yaml --promote --version=1
+
 workflows:
   version: 2
   build_and_test:
