@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\"",
     "start": "node index.js",
-    "deploy": "gcloud app deploy --quiet"
+    "deploy": "gcloud app deploy app.yaml --quiet"
   },
   "author": "",
   "license": "ISC",

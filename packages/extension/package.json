@@ -11,8 +11,8 @@
     "dev:extension": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.extension.js",
     "start": "run-p dev:*",
     "test": "echo \"Error: no test specified\"",
-    "deploy:extension": "yarn build && node ./configs/deploy.js",
-    "deploy:frontend": "yarn build && node ./configs/deploy.js"
+    "deploy:extension": "yarn build && node .deploy.webstore.js",
+    "deploy:frontend": "yarn build && node .deploy.frontend.js"
   },
   "repository": {
     "type": "git",
