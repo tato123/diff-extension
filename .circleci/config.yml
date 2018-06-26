@@ -22,31 +22,51 @@ jobs:
       - checkout
       - restore_cache: # special step to restore the dependency cache 
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: ./node_modules/.bin/lerna exec -- yarn test
+      - run: ./node_modules/.bin/lerna exec -- yarn test      
+  build:
+    docker:
+      - image: circleci/node:10.5.0
+    steps:
+      - checkout
+      - restore_cache: # special step to restore the dependency cache 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Build
+          command: ./node_modules/.bin/lerna run --scope @diff/extension build
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
+	        # taken to be the root directory of the workspace.
+          root: packages/extension/dist
+          # Must be relative path from root
+          paths:
+            - chrome
+            - frontend
   chromeExtension:
     docker:
       - image: circleci/node:10.5.0 
     steps:
       - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: packages/extension/dist
       - restore_cache: # special step to restore the dependency cache 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:  
-          command: ./node_modules/.bin/lerna run --scope @diff/extension deploy:extension
+          name: Upload to webstore
+          command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+      - run:  
+          name: Publish to webstore
+          command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID
   frontend:
     docker:
-      - image: circleci/node:10.5.0 
+      - image: google/cloud-sdk:latest 
     steps:
       - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: packages/extension/dist
       - restore_cache: # special step to restore the dependency cache 
           key: dependency-cache-{{ checksum "package.json" }}
-      - run:  
-          command: ./node_modules/.bin/lerna run --scope @diff/extension deploy:frontend
-  api:
-    docker:
-      - image: google/cloud-sdk:latest
-    environment:
-      GCLOUD_PROJECT: "diff-204716"    
-    steps:
       - run: 
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
@@ -55,32 +75,65 @@ jobs:
           name: Set project default
           command: gcloud config set project $GCLOUD_PROJECT
       - run:
-          name: Deploy project
+          name: Deploy to google cloud
           command: |
-            pwd
-            ls
-            cd ./packages/api
-            gcloud deploy app.yaml --quiet
+            gsutil -m cp -r packages/extension/dist/frontend gs://diff-frontend
+  api:
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      GCLOUD_PROJECT: "diff-204716"    
+    steps:
+      - checkout
+      - run: 
+          command: |
+            echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json      
+      - run:
+          name: Set project default
+          command: gcloud config set project $GCLOUD_PROJECT
+      - run:
+          name: Deploy to google cloud
+          command: |
+            cd packages/api
+            gcloud app deploy app.yaml --quiet
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - dependencies
+      - dependencies:
+          filters:
+            tags:
+              only: /.*/
       - test:
           requires:
             - dependencies
-      - api:
-          requires:
-            - test
-      - frontend:
-          requires:
-            - test
-      - chromeExtension:
+          filters:
+            tags:
+              only: /.*/
+      - build:
           requires:
             - test
           filters:
             tags:
-              only: /^extension-.*/
-            branches:
-              ignore: /.*/
+              only: /.*/
+      - api:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
+      - frontend:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - chromeExtension:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^.*/
+            

@@ -47,5 +47,7 @@ dist
 dist/*
 dist/**/*
 
-configs/.env.keys
+.env.keys
 extension.zip
+
+cmd.bat
