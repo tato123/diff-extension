@@ -7,20 +7,20 @@ jobs:
       - checkout
       - run: 
           command: |            
-            yarn lerna:install      
+            sudo yarn global add lerna      
             lerna bootstrap
   test:      
     docker:
       - image: circleci/node:7.10
     steps:
       - checkout
-      - run: lerna exec -- yarn test
+      - run: sudo lerna exec -- yarn test
   deployExtension:
     docker:
       - image: circleci/node:7.10
     steps:
       - checkout
-      - run: lerna exec -- yarn deploy    
+      - run: sudo lerna exec -- yarn deploy    
   deployment:
     machine:
       environment:
@@ -40,7 +40,18 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test
-      - deployExtension
-      - uploadFrontend
+      - test:
+          requires:
+            - build
+      - deployExtension:
+          requires:
+            - build
+            - test
+      - uploadFrontend:
+          requires:
+            - build
+            - test
       - deployment
+          requires:
+            - build
+            - test
