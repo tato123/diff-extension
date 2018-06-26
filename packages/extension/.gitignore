@@ -46,3 +46,6 @@ extension/background*
 dist
 dist/*
 dist/**/*
+
+configs/.env.keys
+extension.zip

@@ -2,10 +2,7 @@ const path = require("path");
 const Dotenv = require("dotenv-webpack");
 
 // For dependencies that are internal to the chrome extension
-const OUTPUT_PATH = (exports.OUTPUT_PATH = path.resolve(
-  __dirname,
-  "../dist/chrome"
-));
+const OUTPUT_PATH = (exports.OUTPUT_PATH = path.resolve(__dirname, "../dist"));
 
 const ENV = (exports.ENV = process.env.NODE_ENV || "development");
 
@@ -15,11 +12,14 @@ exports.std = {
   mode: ENV,
   devtool: ENV === "development" ? "source-map" : "none",
   resolve: {
-    modules: [path.resolve("./node_modules")],
     alias: {
       "@diff/common": path.resolve(__dirname, "../common")
     },
     extensions: [".json", ".js"]
   },
-  plugins: [new Dotenv()]
+  plugins: [
+    new Dotenv({
+      path: path.resolve(__dirname, `./.env.${ENV}`)
+    })
+  ]
 };

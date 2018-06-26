@@ -17,7 +17,8 @@
   "web_accessible_resources": [
     "contentScript.js",
     "frontend/*",
-    "http://localhost:9000/*"
+    "http://localhost:9000/*",
+    "https://api.getdiff.app/*"
   ],
   "background": {
     "scripts": ["background.js"],

@@ -20,6 +20,8 @@ export const addScriptToPage = async (scriptName, scriptId) => {
   });
 };
 
+const SCRIPT_HOST = process.env.SCRIPT_HOST;
+
 export const runFrontend = () => {
-  addScriptToPage("http://localhost:9000/js/main.js", "df-bridge");
+  addScriptToPage(`${SCRIPT_HOST}/main.js`, "df-bridge");
 };

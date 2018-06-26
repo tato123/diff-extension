@@ -1,11 +1,12 @@
 {
-  "name": "custom-authentication",
+  "name": "@diff/api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "gcloud app deploy --quiet"
   },
   "author": "",
   "license": "ISC",

@@ -1,0 +1,18 @@
+0 silly input [ 'yarn', 'install' ]
+1 silly flags { _: [ 'exec' ],
+1 silly flags   'reject-cycles': false,
+1 silly flags   rejectCycles: false,
+1 silly flags   command: 'yarn',
+1 silly flags   args: [ 'install' ] }
+2 verbose rootPath C:\Users\Jonathan\Repositories\github\diff\diff
+3 info version 2.11.0
+4 silly existsSync C:\Users\Jonathan\Repositories\github\diff\diff\VERSION
+5 silly initialize attempt
+6 silly initialize success
+7 silly execute attempt
+8 error exec Errored while executing 'yarn install' in '@diff/api'
+9 error execute callback with error
+10 error Error: spawn yarn ENOENT
+10 error     at notFoundError (C:\Users\Jonathan\AppData\Roaming\nvm\v8.9.4\node_modules\lerna\node_modules\cross-spawn\lib\enoent.js:11:11)
+10 error     at verifyENOENT (C:\Users\Jonathan\AppData\Roaming\nvm\v8.9.4\node_modules\lerna\node_modules\cross-spawn\lib\enoent.js:46:16)
+10 error     at ChildProcess.cp.emit (C:\Users\Jonathan\AppData\Roaming\nvm\v8.9.4\node_modules\lerna\node_modules\cross-spawn\lib\enoent.js:33:19)

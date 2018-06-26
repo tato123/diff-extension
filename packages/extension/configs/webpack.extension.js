@@ -6,16 +6,19 @@ const webpack = require("webpack");
 const WriteAssetsWebpackPlugin = require("write-assets-webpack-plugin");
 const { OUTPUT_PATH, ENV, std } = require("./webpack.common");
 
+const CHROME_DIR = OUTPUT_PATH + "/chrome";
+
 // export our configurations
 module.exports = (env, argv) => [
   {
     ...std,
     plugins: [
+      ...std.plugins,
       new CleanWebpackPlugin(["dist"]),
       new CopyWebpackPlugin([
         {
           from: path.resolve(__dirname, "../shells/chrome/manifest.json"),
-          to: OUTPUT_PATH,
+          to: CHROME_DIR,
           toType: "dir"
         }
       ]),
@@ -27,7 +30,7 @@ module.exports = (env, argv) => [
     },
     output: {
       filename: "[name].js",
-      path: OUTPUT_PATH,
+      path: CHROME_DIR,
       publicPath: "http://localhost:9000/js/"
     }
   }
