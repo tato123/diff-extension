@@ -11,7 +11,7 @@ jobs:
           command: |            
             yarn install
             ./node_modules/.bin/lerna bootstrap
-      - save_cache: # special step to save the dependency cache
+      - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
@@ -20,7 +20,7 @@ jobs:
       - image: circleci/node:10.5.0
     steps:
       - checkout
-      - restore_cache: # special step to restore the dependency cache 
+      - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run: ./node_modules/.bin/lerna exec -- yarn test      
   build:
@@ -28,16 +28,13 @@ jobs:
       - image: circleci/node:10.5.0
     steps:
       - checkout
-      - restore_cache: # special step to restore the dependency cache 
+      - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Build
+          name: Build some stuff
           command: ./node_modules/.bin/lerna run --scope @diff/extension build
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
-	        # taken to be the root directory of the workspace.
           root: packages/extension/dist
-          # Must be relative path from root
           paths:
             - chrome
             - frontend
@@ -47,9 +44,8 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: packages/extension/dist
-      - restore_cache: # special step to restore the dependency cache 
+      - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:  
           name: Upload to webstore
@@ -63,9 +59,8 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: packages/extension/dist
-      - restore_cache: # special step to restore the dependency cache 
+      - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run: 
           command: |
