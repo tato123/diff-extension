@@ -76,8 +76,6 @@ jobs:
   api:
     docker:
       - image: google/cloud-sdk:latest
-    environment:
-      GCLOUD_PROJECT: "diff-204716"    
     steps:
       - checkout
       - run: 
@@ -113,12 +111,12 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - api:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /.*/
+      # - api:
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /.*/
       - frontend:
           requires:
             - build
