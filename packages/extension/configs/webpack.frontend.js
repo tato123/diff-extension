@@ -1,6 +1,9 @@
 const path = require("path");
+const package = require("../package.json");
 const webpack = require("webpack");
 const { OUTPUT_PATH, ENV, std } = require("./webpack.common");
+
+const WEB_OUTPUT_PATH = `${OUTPUT_PATH}/frontend/${package.version}`;
 
 // export our configurations
 module.exports = (env, argv) => [
@@ -16,7 +19,7 @@ module.exports = (env, argv) => [
       chunkFilename: "[name].bundle.js",
       // the chrome extension is served from a remote server
       // to avoid needing constant updates
-      path: OUTPUT_PATH + "/frontend",
+      path: WEB_OUTPUT_PATH,
       publicPath: "http://localhost:9000/js/"
     },
     resolve: {
@@ -25,7 +28,7 @@ module.exports = (env, argv) => [
       extensions: [".js", ".json"]
     },
     devServer: {
-      contentBase: OUTPUT_PATH + "/frontend",
+      contentBase: WEB_OUTPUT_PATH,
       compress: true,
       port: 9000,
       public: "localhost:9000",
