@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
-  addComment: dispatch.comment.addComment
+  addComment: dispatch.comment.addNewComment
 });
 
 export default connect(

@@ -16,6 +16,16 @@ const BottomRow = styled.div`
   justify-content: space-between;
 `;
 
+const Container = styled.div`
+  display: block;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 16px;
+  min-height: 200px;
+  height: 200px;
+  max-height: 200px;
+`;
+
 export default class Editor extends React.Component {
   static propTypes = {
     onSubmit: PropTypes.func,
@@ -53,7 +63,7 @@ export default class Editor extends React.Component {
     } = this;
 
     return (
-      <div>
+      <Container>
         <TextArea rows={5} value={textValue} onChange={handleChange} />
         <AttachmentLabel>No Attachments</AttachmentLabel>
 
@@ -61,7 +71,7 @@ export default class Editor extends React.Component {
           <a onClick={handleCancel}>cancel</a>
           <Button onClick={handleSubmit}>POST</Button>
         </BottomRow>
-      </div>
+      </Container>
     );
   }
 }

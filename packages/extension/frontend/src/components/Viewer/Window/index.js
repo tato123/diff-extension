@@ -14,19 +14,19 @@ import Editor from "../Editor";
 
 /* prettier-ignore */
 const ThreadContainer = styled.div`
-  display: grid;
-  grid-template-areas:
-    "head"
-    "thread";
-  height: 100%;
-  grid-auto-rows: min-content;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  
 `;
 
 const GridArea = styled.div`
-  grid-area: ${({ gridArea }) => gridArea};
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
 
-const HeadArea = styled(GridArea)`
+const HeadArea = styled.div`
   margin-top: 16px;
 
   .centered {
@@ -66,7 +66,8 @@ export default class Viewer extends React.Component {
   };
 
   handleEditorSubmit = vals => {
-    this.props.addComment(vals);
+    console.log("calling handle editor submit");
+    this.props.addComment({ ...vals, selector: this.props.match.params.id });
   };
 
   handleEditorCancel = () => {
@@ -97,7 +98,7 @@ export default class Viewer extends React.Component {
           />
         </Switch>
       </HeadArea>
-      <GridArea gridArea="thread">
+      <GridArea gridArea="thread" style={{ overflow: "auto", flex: 1 }}>
         <Thread thread={thread} />
       </GridArea>
     </ThreadContainer>
@@ -134,7 +135,7 @@ export default class Viewer extends React.Component {
               <option>Since last visit</option>
             </Select>
           </DateChooser>
-          <div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <Tabs>
               <Tabs.Tab onClick={onTabClick(1)} selected={selectedTab === 1}>
                 Thread

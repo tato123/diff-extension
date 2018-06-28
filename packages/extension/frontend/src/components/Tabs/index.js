@@ -1,7 +1,9 @@
 import { Tabs, Tab } from "rebass";
 import styled from "styled-components";
 
-const TabsImpl = styled(Tabs)``;
+const TabsImpl = styled(Tabs)`
+  min-height: 30px;
+`;
 
 /* prettier-ignore */
 TabsImpl.Tab = styled(Tab)`

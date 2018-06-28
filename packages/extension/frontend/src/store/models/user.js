@@ -7,6 +7,7 @@ import {
 } from "../../../../common/actions";
 import { ACTIONS as localActions } from "store/actions";
 import firebase from "firebase";
+import jwtDecode from "jwt-decode";
 
 const authenticate = async (
   username: ?string,
@@ -73,10 +74,15 @@ export default {
       state,
       { token: { access_token, refresh_token } }
     ) => {
+      const { claims, uid } = jwtDecode(access_token);
+      console.log(jwtDecode(access_token));
       return {
         ...state,
         access_token,
-        refresh_token
+        refresh_token,
+        ...claims,
+        selectedAccount: Object.keys(claims.accounts)[0],
+        uid
       };
     },
     [ACTIONS.LOGIN.FAILED]: (state, payload) => {

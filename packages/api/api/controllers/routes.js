@@ -6,7 +6,19 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const firebase = require("firebase");
 
-const retrieveClaimsForUid = uid => {
+const retrieveClaimsForUid = async uid => {
+  const db = admin.firestore();
+  const docRef = await db
+    .collection("users")
+    .doc(uid)
+    .get();
+
+  if (docRef.exists) {
+    const data = docRef.data();
+    return {
+      accounts: data.accounts
+    };
+  }
   return {};
 };
 
@@ -24,9 +36,9 @@ const createAndStoreRefreshToken = async uid => {
 };
 
 const createTokenForUid = async (uid, offlineScope = false) => {
-  const access_token = await admin
-    .auth()
-    .createCustomToken(uid, retrieveClaimsForUid(uid));
+  const claims = await retrieveClaimsForUid(uid);
+
+  const access_token = await admin.auth().createCustomToken(uid, claims);
 
   const customToken = {
     access_token

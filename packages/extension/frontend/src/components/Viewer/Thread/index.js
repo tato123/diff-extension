@@ -10,6 +10,7 @@ const selectThreadFromSelector = (state, thread) =>
     .values()
     .flatten()
     .sortBy("meta.created")
+    .reverse()
     .value();
 
 const mapStateToProps = (state, props) => ({

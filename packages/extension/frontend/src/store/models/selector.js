@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import _ from "lodash";
 
 export default {
   state: {
@@ -20,7 +21,7 @@ export default {
             [payload.type]: types
           }
         },
-        allIds: [...state.allIds, payload.id]
+        allIds: _.uniq([...state.allIds, payload.id])
       };
     }
   },

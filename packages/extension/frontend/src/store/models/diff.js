@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export default {
   state: {
     byId: {},
@@ -10,7 +12,7 @@ export default {
           ...state.byId,
           [payload.id]: payload
         },
-        allIds: [...state.allIds, payload.id]
+        allIds: _.uniq([state.allIds, payload.id])
       };
     }
   },

@@ -1,4 +1,6 @@
 // @flow
+import firebase from "firebase";
+import _ from "lodash";
 
 export type SelectorPayload = {
   id: string,
@@ -11,6 +13,7 @@ type State = {
   allIds: []
 };
 
+/* eslint-disable */
 export default {
   state: {
     byId: {},
@@ -23,39 +26,52 @@ export default {
           ...state.byId,
           [payload.id]: payload
         },
-        allIds: [...state.allIds, payload.id]
+        allIds: _.union([state.allIds, payload.id])
       };
     }
   },
-  effects(dispatch) {
-    return {
-      addComment: async payload => {
-        console.log("going to write something", payload, this.db);
+  effects: dispatch => ({
+    addNewComment: async ({ text: comment, selector }, rootState) => {
+      if (!selector) {
+        return;
       }
-    };
-  },
-  firebaseSnapshots(dispatch, db) {
-    this.db = db;
-    return {
-      comments: () =>
-        db
-          .collection("events")
-          .where("type", "==", "comment")
-          .onSnapshot(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              const data = doc.data();
-              dispatch.comment.addComment({
-                id: doc.id,
-                ...data
-              });
 
-              dispatch.selector.addSelector({
-                id: data.selector,
-                type: data.type,
-                typeId: doc.id
-              });
+      const db = firebase.firestore();
+      const record = {
+        comment,
+        selector,
+        type: "comment",
+        meta: {
+          accountId: rootState.user.selectedAccount,
+          userId: rootState.user.uid,
+          created: Date.now()
+        }
+      };
+      const newEvent = db.collection("events").doc();
+      const result = await newEvent.set(record);
+      console.log(result);
+    }
+  }),
+
+  firebaseSnapshots: (dispatch, db) => ({
+    comments: () =>
+      db
+        .collection("events")
+        .where("type", "==", "comment")
+        .onSnapshot(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            const data = doc.data();
+            dispatch.comment.addComment({
+              id: doc.id,
+              ...data
             });
-          })
-    };
-  }
+
+            dispatch.selector.addSelector({
+              id: data.selector,
+              type: data.type,
+              typeId: doc.id
+            });
+          });
+        })
+  })
 };
