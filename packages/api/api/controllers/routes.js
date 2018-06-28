@@ -1,5 +1,5 @@
-const express = require("express");
-const router = express.Router();
+// const express = require("express");
+// const router = express.Router();
 const crypto = require("crypto");
 const querystring = require("querystring");
 const admin = require("firebase-admin");
@@ -137,7 +137,7 @@ const initializeUser = async user => {
 // Define our api routes
 // ----------------------------------------------------------------
 
-router.post("/authenticate", (req, res) => {
+exports.authenticate = (req, res) => {
   // check the headers
   if (
     req.headers.authorization &&
@@ -150,9 +150,9 @@ router.post("/authenticate", (req, res) => {
   ) {
     return tokenAuthentication(req, res);
   }
-});
+};
 
-router.post("/signup", (req, res) => {
+exports.signup = (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.send(400, {
@@ -176,27 +176,27 @@ router.post("/signup", (req, res) => {
     .catch(err => {
       res.send(400, { err: err.message });
     });
-});
+};
 
-router.get("/", (req, res) => {
+exports.health = (req, res) => {
   res.send(200, "running");
-});
+};
 
-router.get("/test", (req, res) => {
-  const test = require("./test");
-  const records = test(req.query.accountId, req.query.userId);
+// router.get("/test", (req, res) => {
+//   const test = require("./test");
+//   const records = test(req.query.accountId, req.query.userId);
 
-  const batch = db.batch();
+//   const batch = db.batch();
 
-  records.forEach(record => {
-    const dbRef = db.collection("events").doc();
-    batch.set(dbRef, record);
-  });
+//   records.forEach(record => {
+//     const dbRef = db.collection("events").doc();
+//     batch.set(dbRef, record);
+//   });
 
-  batch
-    .commit()
-    .then(() => res.send(201))
-    .catch(() => res.send(400));
-});
+//   batch
+//     .commit()
+//     .then(() => res.send(201))
+//     .catch(() => res.send(400));
+// });
 
-module.exports = router;
+// module.exports = router;

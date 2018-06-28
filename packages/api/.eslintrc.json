@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "standard",
+    "plugin:flowtype/recommended",
+
+    "prettier",
+    "prettier/flowtype",
+
+    "prettier/standard"
+  ],
+  "plugins": ["flowtype", "prettier", "standard"],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": false,
+      "sourceType": "module",
+      "allowImportExportEverywhere": false
+    }
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}

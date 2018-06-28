@@ -1,16 +1,29 @@
+"use strict";
+
+require("dotenv").config();
+
+const SwaggerExpress = require("swagger-express-mw");
 const firebase = require("firebase");
 const admin = require("firebase-admin");
 const serviceAccount = require("./key.json");
-const config = require("./config");
 
 // import express dependencies
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const compression = require("compression");
 
 // setup express
 const app = express();
-const PORT = process.env.PORT || 8080;
+
+module.exports = app; // for testing
+
+const config = {
+  appRoot: __dirname // required config
+};
+
+// ----------------------------------------------------
+// configure parsing and cors rules
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,17 +38,39 @@ app.use(
   })
 );
 
-// initialize the admin app
+app.use(compression());
+
+// ----------------------------------------------------
+// configure firebase
+//
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://diff-204716.firebaseio.com"
 });
 
 // initialize the firebase app
-firebase.initializeApp(config);
+firebase.initializeApp({
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_SENDER_ID
+});
 
-app.use("/", require("./routes"));
+// ----------------------------------------------------
+// create swagger
 
-app.listen(PORT, function() {
-  console.log(`CORS-enabled web server listening on port ${PORT}`);
+SwaggerExpress.create(config, function(err, swaggerExpress) {
+  if (err) {
+    throw err;
+  }
+
+  // install middleware
+  swaggerExpress.register(app);
+
+  const port = process.env.PORT || 8080;
+  app.listen(port);
+
+  console.log(`Application running at: ${port}`);
 });
