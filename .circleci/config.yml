@@ -50,9 +50,9 @@ jobs:
       - run:  
           name: Upload to webstore
           command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
-      - run:  
-          name: Publish to webstore
-          command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+      # - run:  
+      #     name: Publish to webstore
+      #     command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
   frontend:
     docker:
       - image: google/cloud-sdk:latest 
@@ -72,7 +72,7 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            gsutil -m cp -r packages/extension/dist/frontend gs://diff-frontend
+            gsutil rsync -d -r packages\extension\dist\frontend\ gs://diff-frontend
   api:
     docker:
       - image: google/cloud-sdk:latest
@@ -111,12 +111,12 @@ workflows:
           filters:
             tags:
               only: /.*/
-      # - api:
-      #     requires:
-      #       - test
-      #     filters:
-      #       tags:
-      #         only: /.*/
+      - api:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
       - frontend:
           requires:
             - build
@@ -128,5 +128,5 @@ workflows:
             - build
           filters:
             tags:
-              only: /^.*/
+              only: /^v.*/
             

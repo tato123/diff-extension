@@ -1,6 +1,19 @@
 const path = require("path");
 const semver = require("semver");
 const fs = require("fs");
+const Storage = require("@google-cloud/storage");
+const _ = require("lodash");
+
+// Your Google Cloud Platform project ID
+const projectId = process.env.GCLOUD_PROJECT_ID;
+
+// Creates a client
+const storage = new Storage({
+  projectId: projectId
+});
+
+// The name for the new bucket
+const bucketName = process.env.GCLOUD_FRONTEND_BUCKET;
 
 const LOCAL_DIRECTORY = path.resolve(__dirname, process.env.LOCAL_DIR);
 
@@ -16,7 +29,11 @@ const readLocalFilesVersions = async () => {
 };
 
 const readStorageBucketVersions = async () => {
-  return Promise.reject(new Error(""));
+  const results = await storage.bucket(bucketName).getFiles();
+  return _.chain(results[0])
+    .map(gcresult => gcresult.name.split("/")[0])
+    .uniq()
+    .value();
 };
 
 const sendLocalFile = async (version, file, res) => {
@@ -24,7 +41,12 @@ const sendLocalFile = async (version, file, res) => {
 };
 
 const sendCloudStorageFile = async (version, file, res) => {
-  res.send(404);
+  const remoteFile = storage.bucket(bucketName).file(`${version}/${file}`);
+  const [exists] = await remoteFile.exists();
+  if (exists) {
+    return remoteFile.createReadStream().pipe(res);
+  }
+  return Promise.reject(new Error(`${file} not found`));
 };
 
 exports.library = async (req, res) => {
@@ -33,9 +55,9 @@ exports.library = async (req, res) => {
 
   try {
     // local directory
-
+    const ENV = process.env.NODE_ENV;
     const versions =
-      process.env.NODE_ENV === "production"
+      ENV === "production"
         ? await readStorageBucketVersions()
         : await readLocalFilesVersions();
 
@@ -49,9 +71,9 @@ exports.library = async (req, res) => {
       version = sorted[sorted.length - 1];
     }
 
-    process.env.NODE_ENV === "production"
-      ? sendCloudStorageFile(version, file, res)
-      : sendLocalFile(version, file, res);
+    ENV === "production"
+      ? await sendCloudStorageFile(version, file, res)
+      : await sendLocalFile(version, file, res);
   } catch (err) {
     res.send(404);
   }
