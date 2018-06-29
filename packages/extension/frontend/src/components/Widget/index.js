@@ -1,17 +1,37 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ShadowDom from "./ShadowDOM";
-import styled, { StyleSheetManager, ThemeProvider } from "styled-components";
+import styled, {
+  StyleSheetManager,
+  ThemeProvider,
+  injectGlobal
+} from "styled-components";
 import mainTheme from "components/Theme";
+import { normalize } from "polished";
+
+injectGlobal`
+  @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:100,200,300,400,500,600,700,800,900');
+
+`;
 
 /* prettier-ignore */
 const View = styled.div`
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+  ${normalize(false)}
+
+  font-family: 'Barlow Semi Condensed', sans-serif;
+
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;  
   color: ${({ theme }) => theme.colors.textColor};
   font-size: ${({ theme }) => theme.text.size.normal};
   line-height: ${({ theme }) => theme.text.lineHeight};
+
+  box-sizing: border-box;
+
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
 `;
 
 export default class Widget extends React.Component {
@@ -40,8 +60,7 @@ export default class Widget extends React.Component {
   innerContent = () => {
     const {
       ref,
-      state: { div },
-      props: { shadowDom }
+      state: { div }
     } = this;
     return (
       <div>

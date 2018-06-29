@@ -20,7 +20,6 @@ const Container = styled.div`
   display: block;
   flex-direction: column;
   flex: 1;
-  margin-bottom: 16px;
   min-height: 200px;
   height: 200px;
   max-height: 200px;

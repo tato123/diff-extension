@@ -1,9 +1,6 @@
+import Button from "components/Button";
 import styled from "styled-components";
 
-export default styled.button`
+export default styled(Button)`
   width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  outline: none;
-  border: none;
 `;

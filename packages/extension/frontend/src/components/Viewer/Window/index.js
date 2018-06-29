@@ -27,7 +27,7 @@ const GridArea = styled.div`
 `;
 
 const HeadArea = styled.div`
-  margin-top: 16px;
+  margin: 16px 0;
 
   .centered {
     justify-content: center;

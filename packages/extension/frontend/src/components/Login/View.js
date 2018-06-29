@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Form from "components/Form";
 import { Redirect } from "react-router";
+import Widget from "components/Widget";
 
 const Modal = styled.div`
   position: fixed;
@@ -24,10 +25,9 @@ Modal.Content = styled.div`
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 50%;
-  max-width: 300px;
+  width: 500px;
   color: #fff;
-  overflow: auto;
+  border-radius: 8px;
 `;
 
 export default class Login extends React.Component {
@@ -80,20 +80,26 @@ export default class Login extends React.Component {
 
     return (
       <Modal>
-        <Modal.Content>
-          <h1>Login</h1>
-          <form onSubmit={this.onLoginRequest}>
-            <div className="form-control">
-              <Form.Label>Username</Form.Label>
-              <Form.Input name="user" type="text" />
+        <Widget>
+          <Modal.Content id="login-modal">
+            <div>
+              <h1>Login</h1>
+              <form onSubmit={this.onLoginRequest} autoComplete="off">
+                <Form.Row>
+                  <Form.Label>Username</Form.Label>
+                  <Form.Input name="user" type="text" />
+                </Form.Row>
+                <Form.Row>
+                  <Form.Label>Password</Form.Label>
+                  <Form.Input name="password" type="password" />
+                </Form.Row>
+                <Form.Row spacing="lg">
+                  <Form.Button type="submit">Submit</Form.Button>
+                </Form.Row>
+              </form>
             </div>
-            <div className="form-control">
-              <Form.Label>Password</Form.Label>
-              <Form.Input name="password" type="password" />
-            </div>
-            <Form.Button type="submit">Submit</Form.Button>
-          </form>
-        </Modal.Content>
+          </Modal.Content>
+        </Widget>
       </Modal>
     );
   }

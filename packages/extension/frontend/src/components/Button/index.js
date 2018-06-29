@@ -6,6 +6,7 @@ const ButtonImpl = styled(ButtonOutline)`
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3) !important;
   border-radius: 8px !important;
   font-weight: 200 !important;
+  font-family: inherit !important;
   cursor: pointer;
 
   &:hover {

@@ -53,8 +53,6 @@ export default class Callout extends React.Component<Props, State> {
                 onClick={this.props.onClick}
                 width={`${elementWidth}px`}
                 height={`${elementHeight}px`}
-                left={"-8px"}
-                top={"-8px"}
               />
             </Widget>
           </div>
