@@ -1,8 +1,11 @@
 const path = require("path");
 const semver = require("semver");
 const fs = require("fs");
+
 const Storage = require("@google-cloud/storage");
+const { listObjects } = require("../helpers/storage");
 const _ = require("lodash");
+const request = require("request");
 
 // Your Google Cloud Platform project ID
 const projectId = process.env.GCLOUD_PROJECT_ID;
@@ -29,11 +32,14 @@ const readLocalFilesVersions = async () => {
 };
 
 const readStorageBucketVersions = async () => {
-  const results = await storage.bucket(bucketName).getFiles();
-  return _.chain(results[0])
-    .map(gcresult => gcresult.name.split("/")[0])
-    .uniq()
-    .value();
+  return listObjects().then(response => {
+    const files = response.data.items;
+
+    return _.chain(files)
+      .map(gcresult => gcresult.name.split("/")[0])
+      .uniq()
+      .value();
+  });
 };
 
 const sendLocalFile = async (version, file, res) => {
@@ -42,11 +48,25 @@ const sendLocalFile = async (version, file, res) => {
 
 const sendCloudStorageFile = async (version, file, res) => {
   const remoteFile = storage.bucket(bucketName).file(`${version}/${file}`);
-  const [exists] = await remoteFile.exists();
-  if (exists) {
-    return remoteFile.createReadStream().pipe(res);
+  if (!remoteFile.exists) {
+    return Promise.reject(new Error("file not found"));
   }
-  return Promise.reject(new Error(`${file} not found`));
+  const gzip = require("zlib").createGzip();
+
+  const [metadata] = await remoteFile.getMetadata();
+
+  return new Promise((resolve, reject) => {
+    res.setHeader("content-yype", `${metadata.contentType}; charset=utf-8`);
+    res.setHeader("content-size", metadata.size);
+    res.setHeader("content-encoding", "gzip");
+    res.setHeader("cache-control", "no-cache");
+    remoteFile
+      .createReadStream({ validation: false })
+      .on("end", () => resolve())
+      .on("error", err => reject(err))
+      .pipe(gzip)
+      .pipe(res);
+  });
 };
 
 exports.library = async (req, res) => {
@@ -75,6 +95,6 @@ exports.library = async (req, res) => {
       ? await sendCloudStorageFile(version, file, res)
       : await sendLocalFile(version, file, res);
   } catch (err) {
-    res.send(404);
+    res.json(404, { err: err.message });
   }
 };
