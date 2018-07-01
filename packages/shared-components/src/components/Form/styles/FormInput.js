@@ -1,20 +1,28 @@
-import styled from "styled-components";
+import React from "react";
+import PropTypes from "prop-types";
 
-export default styled.input`
-  outline: none;
-  border-radius: 16px;
-  padding: 10px;
-  width: 100%;
-  margin-bottom: 16px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: #fff;
+import FormField from "./FormField";
 
-  &:hover {
-    border-color: rgba(255, 255, 255, 0.7);
-  }
+const FormInput = ({ type, value, placeholder, name, ...rest }) => (
+  <FormField {...rest}>
+    <input type={type} value={value} placeholder={placeholder} name={name} />
+  </FormField>
+);
 
-  &:focus {
-    border-color: #fff;
-  }
-`;
+FormInput.propTypes = {
+  label: PropTypes.string,
+  type: PropTypes.oneOf(["password", "email", "text"]),
+  value: PropTypes.string,
+  placeholder: PropTypes.string,
+  name: PropTypes.string
+};
+
+FormInput.defaultProps = {
+  label: null,
+  value: null,
+  type: "text",
+  placeholder: null,
+  name: null
+};
+
+export default FormInput;

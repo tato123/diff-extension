@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-export default styled.label`
+const FormLabel = styled.label`
   display: block;
   margin-bottom: 8px;
 `;
+
+FormLabel.displayName = "Form.Label";
+
+export default FormLabel;

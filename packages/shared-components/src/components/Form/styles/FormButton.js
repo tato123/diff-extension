@@ -1,6 +1,9 @@
-import Button from "components/Button";
 import styled from "styled-components";
 
-export default styled(Button)`
+const FormButton = styled.div`
   width: 100%;
 `;
+
+FormButton.displayName = "Form.Button";
+
+export default FormButton;

@@ -4,6 +4,7 @@ const nodeExternals = require("webpack-node-externals");
 // export our configurations
 module.exports = {
   mode: "development",
+  devtool: "inline-source-map",
   entry: {
     turbocharge: path.resolve(__dirname, "./src/index.js")
   },
@@ -14,10 +15,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "./build"),
     filename: "index.js",
-    library: "",
     libraryTarget: "commonjs"
   },
-  externals: [nodeExternals()],
+  externals: [nodeExternals(), "react", "react-dom", "styled-components"],
   module: {
     rules: [
       {
@@ -30,6 +30,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
+      },
+      { test: /\.png$/, use: ["url-loader?mimetype=image/png"] },
+      {
+        test: /\.svg$/,
+        use: {
+          loader: "text-loader",
+          options: {}
+        }
       }
     ]
   }

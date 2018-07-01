@@ -1,5 +1,1 @@
-import Circle from "./Circle";
-
-export default {
-  Circle
-};
+export { default as Progress } from "./Circle";

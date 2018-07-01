@@ -2,10 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Content from "./Content";
 import styled from "styled-components";
-
-const Comment = styled.p`
-  font-size: 12px;
-`;
+import { Label } from "@diff/shared-components";
 
 const TypeMarker = styled.label`
   font-size: 12px;
@@ -36,7 +33,7 @@ export default class Thread extends React.Component {
   };
 
   renderDiff = (item, idx) => (
-    <Content data={item}>
+    <Content data={item} key={item.id}>
       <div>
         <TypeMarker>{item.diffType}</TypeMarker>
         <DiffFrom>{item.diff.from}</DiffFrom>
@@ -46,8 +43,8 @@ export default class Thread extends React.Component {
   );
 
   renderComment = (item, idx) => (
-    <Content data={item}>
-      <Comment>{item.comment}</Comment>
+    <Content data={item} key={item.id}>
+      <Label as="body1">{item.comment}</Label>
     </Content>
   );
 

@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import img from "assets/logo.png";
-import Bubble from "components/Bubble";
+
 import styled from "styled-components";
-import Progress from "components/Progress";
-import Widget from "components/Widget";
+
+import { Widget, Progress, Bubble, Logo } from "@diff/shared-components";
 
 const LauncherContainer = styled.div`
   width: 80px;
@@ -49,6 +48,12 @@ const LauncherContainer = styled.div`
   }
 `;
 
+const BubbleContainer = styled.div`
+  position: absolute;
+  right: 0px;
+  top: -10px;
+`;
+
 const ImgContainer = styled.div`
   display: flex;
   align-items: center;
@@ -81,9 +86,11 @@ export default class Launcher extends React.Component {
             {!busy && (
               <React.Fragment>
                 <ImgContainer>
-                  <img src={img} />
+                  <Logo />
                 </ImgContainer>
-                <Bubble value={count} />
+                <BubbleContainer>
+                  <Bubble value={count} />
+                </BubbleContainer>
               </React.Fragment>
             )}
             {busy && (

@@ -4,8 +4,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Popper from "components/Popper";
-import Outline from "./styles/outline";
-import Widget from "components/Widget";
+
+import { Widget, Outline } from "@diff/shared-components";
 
 type Props = {
   selector: string,

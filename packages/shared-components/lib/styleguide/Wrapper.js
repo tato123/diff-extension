@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Widget from "../../src/components/Widget";
+import { Widget } from "components/Widget";
 
 const styles = {
   background: "linear-gradient(to right,#171a3a,#221f41)",

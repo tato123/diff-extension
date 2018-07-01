@@ -1,13 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import MainWindow from "../styles/MainWindow";
-import Widget from "components/Widget";
-import logo from "assets/diff-logo_24.png";
-import Label from "@diff/shared-components";
-import Select from "components/Select";
-import Tabs from "components/Tabs";
+import {
+  Widget,
+  Form,
+  Button,
+  Logo,
+  Select,
+  Tabs,
+  Grid
+} from "@diff/shared-components";
+
 import Thread from "../Thread";
-import Button from "components/Button";
 import styled from "styled-components";
 import { Switch, Route } from "react-router";
 import Editor from "../Editor";
@@ -16,8 +20,7 @@ import Editor from "../Editor";
 const ThreadContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
-  
+  flex: 1;  
 `;
 
 const GridArea = styled.div`
@@ -32,19 +35,6 @@ const HeadArea = styled.div`
   .centered {
     justify-content: center;
     display: flex;
-  }
-`;
-
-const DateChooser = styled.div`
-  label {
-    text-transform: uppercase;
-    font-weight: 200 !important;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
-    display: block;
-    margin: 0;
-    padding: 0;
-    margin-bottom: 8px;
   }
 `;
 
@@ -98,8 +88,17 @@ export default class Viewer extends React.Component {
           />
         </Switch>
       </HeadArea>
-      <GridArea gridArea="thread" style={{ overflow: "auto", flex: 1 }}>
-        <Thread thread={thread} />
+      <GridArea
+        gridArea="thread"
+        style={{
+          overflow: "auto",
+          flex: 1,
+          width: "calc(100% + 23px)"
+        }}
+      >
+        <div style={{ width: "calc(100% - 23px)" }}>
+          <Thread thread={thread} />
+        </div>
       </GridArea>
     </ThreadContainer>
   );
@@ -117,7 +116,6 @@ export default class Viewer extends React.Component {
       onTabClick,
       showDiffs,
       showAssets,
-      renderThread,
       state: { selectedTab }
     } = this;
 
@@ -127,14 +125,15 @@ export default class Viewer extends React.Component {
       <Widget>
         <MainWindow>
           <div>
-            <img src={logo} />
+            <Logo size="sm" />
           </div>
-          <DateChooser>
-            <Label.Small>Date Range</Label.Small>
-            <Select>
-              <option>Since last visit</option>
-            </Select>
-          </DateChooser>
+          <Grid.Row scale={1}>
+            <Form.Field label="Date Range">
+              <Select>
+                <option>Since last visit</option>
+              </Select>
+            </Form.Field>
+          </Grid.Row>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Tabs>
               <Tabs.Tab onClick={onTabClick(1)} selected={selectedTab === 1}>

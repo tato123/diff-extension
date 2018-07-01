@@ -6,7 +6,7 @@ const Button = styled.button`
   border: none;
   outline: none;
 
-  border-radius: 2px;
+  border-radius: ${get("size.borderRadius")};
 
   cursor: pointer;
   color: ${get("colors.textColor")};
@@ -32,7 +32,7 @@ const Button = styled.button`
     width: 100%;
     background-color: #fff;
     position: absolute;
-    border-radius: 2px;
+    border-radius: ${get("size.borderRadius")};
     z-index: 1;
     top: 0px;
     left: 0px

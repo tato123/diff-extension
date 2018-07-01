@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import format from "date-fns/format";
+import { Header, Label } from "@diff/shared-components";
 
 const ThreadItem = styled.div`
   display: grid;
@@ -11,15 +12,6 @@ const ThreadItem = styled.div`
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 16px;
-`;
-
-const ThreadItemLabel = styled.label`
-  text-transform: uppercase;
-  display: block;
-  font-size: 14px;
-  margin: 0;
-  padding: 0;
-  height: 20px;
 `;
 
 const AvatarContainer = styled.div`
@@ -34,15 +26,10 @@ const PlaceholderAvatar = styled.div`
   border-radius: 50%;
 `;
 
-const DateTimeLabel = styled.label`
-  display: block;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 8px;
-`;
-
 const DateTime = ({ date }) => (
-  <DateTimeLabel>{format(date, "dddd, MMM D, YYYY - h:mm A")}</DateTimeLabel>
+  <div>
+    <Label as="overline">{format(date, "dddd, MMM D, YYYY - h:mm A")}</Label>
+  </div>
 );
 
 const Content = ({ children, data: item, ...rest }) => (
@@ -51,7 +38,9 @@ const Content = ({ children, data: item, ...rest }) => (
       <PlaceholderAvatar />
     </AvatarContainer>
     <div>
-      <ThreadItemLabel>{item.type}</ThreadItemLabel>
+      <Header as="h6" uppercase={true}>
+        {item.type}
+      </Header>
       <DateTime date={item.meta.created} />
       {children}
     </div>

@@ -1,16 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import TextArea from "components/TextArea";
-import Button from "components/Button";
+
 import styled from "styled-components";
+import { Button, TextArea, Label, Grid } from "@diff/shared-components";
 
-const AttachmentLabel = styled.label`
-  font-size: 12px;
-  padding: 8px 0;
-  display: block;
-`;
-
-const BottomRow = styled.div`
+const BottomRow = styled(Grid.Row)`
   flex: 1;
   display: flex;
   justify-content: space-between;
@@ -64,10 +58,10 @@ export default class Editor extends React.Component {
     return (
       <Container>
         <TextArea rows={5} value={textValue} onChange={handleChange} />
-        <AttachmentLabel>No Attachments</AttachmentLabel>
+        <Label>No Attachments</Label>
 
         <BottomRow>
-          <a onClick={handleCancel}>cancel</a>
+          <Button.Flat onClick={handleCancel}>cancel</Button.Flat>
           <Button onClick={handleSubmit}>POST</Button>
         </BottomRow>
       </Container>

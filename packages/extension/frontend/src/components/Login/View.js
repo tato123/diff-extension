@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Form from "components/Form";
+
 import { Redirect } from "react-router";
-import Widget from "components/Widget";
+import { Widget, Form, Button, Header } from "@diff/shared-components";
 
 const Modal = styled.div`
   position: fixed;
@@ -83,20 +83,22 @@ export default class Login extends React.Component {
         <Widget>
           <Modal.Content id="login-modal">
             <div>
-              <h1>Login</h1>
-              <form onSubmit={this.onLoginRequest} autoComplete="off">
-                <Form.Row>
-                  <Form.Label>Username</Form.Label>
-                  <Form.Input name="user" type="text" />
-                </Form.Row>
-                <Form.Row>
-                  <Form.Label>Password</Form.Label>
-                  <Form.Input name="password" type="password" />
-                </Form.Row>
-                <Form.Row spacing="lg">
-                  <Form.Button type="submit">Submit</Form.Button>
-                </Form.Row>
-              </form>
+              <Header as="h4">Login</Header>
+              <Form onSubmit={this.onLoginRequest} autoComplete="off">
+                <Form.Input
+                  label="Username"
+                  name="user"
+                  type="text"
+                  placeholder="email@domain.com"
+                />
+                <Form.Input
+                  label="Password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                />
+                <Button type="submit">Submit</Button>
+              </Form>
             </div>
           </Modal.Content>
         </Widget>
