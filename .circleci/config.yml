@@ -1,0 +1,140 @@
+version: 2
+jobs:
+  dependencies:
+    docker:
+      - image: circleci/node:10.5.0
+    steps:
+      - checkout
+      - run: sudo npm install -g yarn@latest
+      - run: 
+          name: Install dependencies and Bootstrap with Lerna
+          command: |            
+            yarn install
+            ./node_modules/.bin/lerna bootstrap
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+  test:
+    docker:
+      - image: circleci/node:10.5.0
+    steps:
+      - checkout
+      - restore_cache: 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: ./node_modules/.bin/lerna exec -- yarn test      
+  build:
+    docker:
+      - image: circleci/node:10.5.0
+    steps:
+      - checkout
+      - restore_cache: 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Build some stuff
+          command: ./node_modules/.bin/lerna run --scope @diff/extension build
+      - persist_to_workspace:
+          root: packages/extension/dist
+          paths:
+            - chrome
+            - frontend
+  deploy-chrome-extension:
+    docker:
+      - image: circleci/node:10.5.0 
+    steps:
+      - checkout
+      - attach_workspace:
+          at: packages/extension/dist
+      - restore_cache: 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:  
+          name: Upload to webstore
+          command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+      # - run:  
+      #     name: Publish to webstore
+      #     command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+  deploy-frontend:
+    docker:
+      - image: google/cloud-sdk:latest 
+    steps:
+      - checkout
+      - attach_workspace:
+          at: packages/extension/dist
+      - restore_cache: 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: 
+          command: |
+            echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json      
+      - run:
+          name: Set project default
+          command: gcloud config set project $GCLOUD_PROJECT
+      - run:
+          name: Deploy to google cloud
+          command: |
+            gsutil -h "Cache-Control:public,max-age=0" rsync -d -r packages\extension\dist\frontend\ gs://diff-frontend
+  deploy-api:
+    docker:
+      - image: google/cloud-sdk:latest
+    steps:
+      - checkout
+      - run: 
+          command: |
+            echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json      
+      - run:
+          name: Set project default
+          command: gcloud config set project $GCLOUD_PROJECT
+      - run:
+          name: Deploy to google cloud
+          command: |
+            cd packages/api
+            gcloud app deploy app.yaml --quiet
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - dependencies:
+          filters:
+            tags:
+              only: /.*/
+      - test:
+          requires:
+            - dependencies
+          filters:
+            tags:
+              only: /.*/
+      - build:
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - deploy-api:
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - deploy-frontend:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - deploy-chrome-extension:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+            

@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/modules\\api\\index.js"
+            "program": "${file}"
         }
     ]
 }
