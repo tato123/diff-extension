@@ -1,13 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Icon from "react-icons-kit";
-import { spinner } from "react-icons-kit/fa/spinner";
+import Label from "components/Text/Label";
 
 const Container = styled.div`
   color: #fff;
-  font-size: 14px;
-  font-weight: bold;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -17,25 +14,24 @@ const Container = styled.div`
   width: 32px;
   height: 32px;
   opacity: 1;
-  position: absolute;
-  right: 0px;
-  top: -16px;
 `;
 
 export default class Bubble extends React.PureComponent {
   static propTypes = {
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    loading: PropTypes.bool
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   static defaultProps = {
-    value: "",
-    loading: false
+    value: ""
   };
 
   render() {
-    const { value, loading } = this.props;
+    const { value } = this.props;
 
-    return <Container>{loading ? <Icon icon={spinner} /> : value}</Container>;
+    return (
+      <Container>
+        <Label as="button">{value}</Label>
+      </Container>
+    );
   }
 }

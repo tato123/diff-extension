@@ -6,7 +6,7 @@ import styled, {
   ThemeProvider,
   injectGlobal
 } from "styled-components";
-import mainTheme from "components/Theme";
+import mainTheme, { get } from "../../theme";
 import { normalize } from "polished";
 
 injectGlobal`
@@ -16,25 +16,23 @@ injectGlobal`
 
 /* prettier-ignore */
 const View = styled.div`
-  ${normalize(false)}
 
-  font-family: 'Barlow Semi Condensed', sans-serif;
-
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;  
-  color: ${({ theme }) => theme.colors.textColor};
-  font-size: ${({ theme }) => theme.text.size.normal};
-  line-height: ${({ theme }) => theme.text.lineHeight};
+  font-family: ${get('text.fontFamily')};
+  color: ${get('colors.textColor')};
+  font-size: 1rem;
 
   box-sizing: border-box;
 
   *, *:before, *:after {
     box-sizing: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;  
+    text-rendering: geometricPrecision;
+    
   }
 `;
 
-export default class Widget extends React.Component {
+export default class Widget extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
     shadowDom: PropTypes.bool

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import MainWindow from "../styles/MainWindow";
 import Widget from "components/Widget";
 import logo from "assets/diff-logo_24.png";
-import Label from "components/Label";
+import Label from "@diff/shared-components";
 import Select from "components/Select";
 import Tabs from "components/Tabs";
 import Thread from "../Thread";

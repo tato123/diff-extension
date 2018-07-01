@@ -1,15 +1,18 @@
 const path = require("path");
-const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals");
 
 // export our configurations
 module.exports = {
   mode: "development",
   entry: {
-    turbocharge: path.resolve(__dirname, "./src/components/index.js")
+    turbocharge: path.resolve(__dirname, "./src/index.js")
+  },
+  resolve: {
+    modules: ["node_modules", path.resolve(__dirname, "./src")],
+    extensions: [".js", ".json"]
   },
   output: {
-    path: path.resolve(__dirname, "./build/components"),
+    path: path.resolve(__dirname, "./build"),
     filename: "index.js",
     library: "",
     libraryTarget: "commonjs"
