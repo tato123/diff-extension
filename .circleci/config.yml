@@ -38,7 +38,7 @@ jobs:
           paths:
             - chrome
             - frontend
-  chromeExtension:
+  deploy-chrome-extension:
     docker:
       - image: circleci/node:10.5.0 
     steps:
@@ -53,7 +53,7 @@ jobs:
       # - run:  
       #     name: Publish to webstore
       #     command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
-  frontend:
+  deploy-frontend:
     docker:
       - image: google/cloud-sdk:latest 
     steps:
@@ -72,8 +72,8 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            gsutil rsync -d -r packages\extension\dist\frontend\ gs://diff-frontend
-  api:
+            gsutil -h "Cache-Control:public,max-age=0" rsync -d -r packages\extension\dist\frontend\ gs://diff-frontend
+  deploy-api:
     docker:
       - image: google/cloud-sdk:latest
     steps:
@@ -111,22 +111,28 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - api:
+      - deploy-api:
           requires:
             - test
           filters:
+            branches:
+              ignore: /.*/
             tags:
-              only: /.*/
-      - frontend:
+              only: /^v.*/
+      - deploy-frontend:
           requires:
             - build
           filters:
+            branches:
+              ignore: /.*/
             tags:
-              only: /.*/
-      - chromeExtension:
+              only: /^v.*/
+      - deploy-chrome-extension:
           requires:
             - build
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
             

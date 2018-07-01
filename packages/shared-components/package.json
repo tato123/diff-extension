@@ -4,7 +4,7 @@
   "description": "A common library for building out react-components",
   "main": "./build/index.js",
   "scripts": {
-    "test": "test",
+    "test": "echo \"Error: no test specified\"",
     "styles": "styleguidist server",
     "build": "cross-env NODE_ENV=production webpack --progress --colors",
     "publish": "yarn build",

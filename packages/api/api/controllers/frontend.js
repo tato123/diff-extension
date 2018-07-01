@@ -59,7 +59,7 @@ const sendCloudStorageFile = async (version, file, res) => {
     res.setHeader("content-yype", `${metadata.contentType}; charset=utf-8`);
     res.setHeader("content-size", metadata.size);
     res.setHeader("content-encoding", "gzip");
-    res.setHeader("cache-control", "no-cache");
+    res.setHeader("cache-control", "max-age=0");
     remoteFile
       .createReadStream({ validation: false })
       .on("end", () => resolve())
