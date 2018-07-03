@@ -72,8 +72,7 @@ jobs:
           command: gcloud config set project $GCLOUD_PROJECT
       - run:
           name: Deploy to google cloud
-          command: |
-            gsutil rsync -d -r packages\extension\dist\frontend\ gs://diff-frontend
+          command: gsutil -h "Cache-Control:public, max-age=3600" rsync -d -r packages/extension/dist/frontend/ gs://diff-frontend
   deploy-api:
     docker:
       - image: google/cloud-sdk:latest
@@ -96,46 +95,47 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - dependencies:
-          filters:
-            tags:
-              only: /.*/
-      - test:
-          requires:
-            - dependencies
-          filters:
-            tags:
-              only: /.*/
-      - build:
-          requires:
-            - test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-      - deploy-api:
-          requires:
-            - test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-      - deploy-frontend:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-      - deploy-chrome-extension:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+      - deploy-frontend
+      # - dependencies:
+      #     filters:
+      #       tags:
+      #         only: /.*/
+      # - test:
+      #     requires:
+      #       - dependencies
+      #     filters:
+      #       tags:
+      #         only: /.*/
+      # - build:
+      #     requires:
+      #       - test
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/
+      # - deploy-api:
+      #     requires:
+      #       - test
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/
+      # - deploy-frontend:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/
+      # - deploy-chrome-extension:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/
             
