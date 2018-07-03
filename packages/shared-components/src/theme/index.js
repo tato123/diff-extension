@@ -8,23 +8,27 @@ export const get = val => props => {
 const TRACKING = 0.2;
 const REM = 16;
 
-const remRatio = sp => `${sp / REM}em`;
+const remRatio = sp => `${sp / REM}rem`;
 
-const toLetterSpacing = sp => `${TRACKING / REM}em`;
+const toLetterSpacing = sp => `${TRACKING / REM}rem`;
 
 const white = "rgb(255, 255, 255)";
 const white1 = color(white)
   .fade(0.5)
   .string();
+const green = "#22B573";
+const red = "#EF3B7B";
 
 const black1 = "rgba(0,0,0,1)";
 
-const colors = {
+export const colors = {
   textColor: white,
   white,
   white1,
   border: white1,
-  black1
+  black1,
+  green,
+  red
 };
 
 const size = {

@@ -125,7 +125,7 @@ export default class Viewer extends React.Component {
       <Widget>
         <MainWindow>
           <div>
-            <Logo size="sm" />
+            <Logo.Text />
           </div>
           <Grid.Row scale={1}>
             <Form.Field label="Date Range">
