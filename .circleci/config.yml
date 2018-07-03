@@ -7,14 +7,15 @@ jobs:
       - checkout
       - run: sudo npm install -g yarn@latest
       - run: 
-          name: Install dependencies and Bootstrap with Lerna
-          command: |            
-            yarn install
-            ./node_modules/.bin/lerna bootstrap
+          name: Install dependencies with yarn workspaces
+          command: yarn install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
+            - ./packages/extension/node_modules
+            - ./packages/api/node_modules
+            - ./packages/shared-components/node_modules
   test:
     docker:
       - image: circleci/node:10.5.0
