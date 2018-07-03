@@ -128,7 +128,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^v*/
+              only: /^v.*/
       - deploy-chrome-extension:
           requires:
             - build
