@@ -3,7 +3,7 @@
   "name": "Diff.app",
   "description": "Collaboration design tools",
   "minimum_chrome_version": "49",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "permissions": [
     "activeTab",
     "tabs",
