@@ -95,25 +95,24 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - deploy-frontend
-      # - dependencies:
-      #     filters:
-      #       tags:
-      #         only: /.*/
-      # - test:
-      #     requires:
-      #       - dependencies
-      #     filters:
-      #       tags:
-      #         only: /.*/
-      # - build:
-      #     requires:
-      #       - test
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /^v.*/
+      - dependencies:
+          # filters:
+          #   tags:
+          #     only: /.*/
+      - test:
+          requires:
+            - dependencies
+          # filters:
+          #   tags:
+          #     only: /.*/
+      - build:
+          requires:
+            - test
+          # filters:
+          #   branches:
+          #     ignore: /.*/
+          #   tags:
+          #     only: /^.*/
       # - deploy-api:
       #     requires:
       #       - test
@@ -122,14 +121,14 @@ workflows:
       #         ignore: /.*/
       #       tags:
       #         only: /^v.*/
-      # - deploy-frontend:
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /^v.*/
+      - deploy-frontend:
+          requires:
+            - build
+          # filters:
+          #   branches:
+          #     ignore: /.*/
+          #   tags:
+          #     only: /^.*/
       # - deploy-chrome-extension:
       #     requires:
       #       - build
