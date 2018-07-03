@@ -1,5 +1,5 @@
 export * from "./components/Anchor";
-export * from "./components/Avatar";
+export * from "./components/Image";
 export * from "./components/Bubble";
 export * from "./components/Button";
 export * from "./components/Form";
@@ -12,3 +12,5 @@ export * from "./components/Text";
 export * from "./components/TextArea";
 export * from "./components/Widget";
 export * from "./components/Grid";
+export * from "./components/List";
+export * from "./components/Code";

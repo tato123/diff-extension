@@ -21,7 +21,7 @@ const FormFieldContainer = styled.div`
     tap-highlight-color: rgba(255, 255, 255, 0);
     line-height: 1.21428571em;
     padding: 0.67857143em 1em;
-    font-size: 1em;
+    font-size: 1rem;
     background: #fff;
     border: 1px solid rgba(34, 36, 38, 0.15);
     color: rgba(0, 0, 0, 0.87);

@@ -10,6 +10,7 @@ import mainTheme, { get } from "../../theme";
 
 injectGlobal`
   @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:100,200,300,400,500,600,700,800,900');
+  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 
 `;
 
