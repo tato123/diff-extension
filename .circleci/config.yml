@@ -32,8 +32,10 @@ jobs:
       - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Build some stuff
-          command: ./node_modules/.bin/lerna run --scope @diff/extension build
+          name: Build frontend
+          command: |
+            yarn install
+            ./node_modules/.bin/lerna run --scope @diff/extension build
       - persist_to_workspace:
           root: packages/extension/dist
           paths:
