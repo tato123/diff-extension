@@ -82,29 +82,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"  
-  /js/{version}/{file}:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: frontend
-    get:
-      description: Retrieves the frontend 
-      operationId: library
-      produces:
-        - application/js        
-      parameters:
-        - in: path
-          name: version
-          type: string
-          required: true
-          description: The version of the file we want
-        - in: path
-          name: file
-          type: string
-          required: true
-          description: The name of the file we want
-      responses:
-        "200":
-          description: Ok
+            $ref: "#/definitions/ErrorResponse"    
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions

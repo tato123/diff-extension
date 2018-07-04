@@ -37,8 +37,6 @@ app.use(
   })
 );
 
-app.disable("etag");
-
 app.use(compression());
 
 // ----------------------------------------------------
@@ -46,7 +44,7 @@ app.use(compression());
 //
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://diff-204716.firebaseio.com"
+  databaseURL: process.env.FIREBASE_DATABASE_URL
 });
 
 // initialize the firebase app
@@ -72,6 +70,14 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
 
   const port = process.env.PORT || 8080;
   app.listen(port);
+
+  const frontend = require("./api/controllers/frontend");
+  if (process.env.NODE_ENV === "production") {
+    app.get("/js/:version/:file", frontend.library);
+  } else {
+    app.use(frontend.library);
+    app.use(frontend.hotLoader);
+  }
 
   console.log(`Application running at: ${port}`);
 });

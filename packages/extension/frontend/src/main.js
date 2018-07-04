@@ -28,6 +28,7 @@ bootstrap().then(id => {
 
 if (module.hot) {
   module.hot.accept("./components/App.js", () => {
-    render(App);
+    const NextRootContainer = require("./components/App.js").default;
+    render(NextRootContainer);
   });
 }
