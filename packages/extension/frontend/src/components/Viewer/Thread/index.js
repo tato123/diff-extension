@@ -14,7 +14,8 @@ const selectThreadFromSelector = (state, thread) =>
     .value();
 
 const mapStateToProps = (state, props) => ({
-  thread: selectThreadFromSelector(state, props.thread)
+  thread: selectThreadFromSelector(state, props.thread),
+  users: state.user.byId
 });
 
 const mapDispatchToProps = dispatch => ({});

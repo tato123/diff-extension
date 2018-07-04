@@ -3,6 +3,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import format from "date-fns/format";
+import _ from "lodash";
 
 import { Label, List, Image, Code } from "@diff/shared-components";
 
@@ -20,16 +21,21 @@ DateTime.propTypes = {
 
 export default class Thread extends React.Component {
   static propTypes = {
-    thread: PropTypes.array
+    thread: PropTypes.array,
+    users: PropTypes.any
   };
 
   static defaultProps = {
-    thread: []
+    thread: [],
+    users: {}
   };
 
   renderDiff = (item, idx) => (
     <List.Item data={item} key={item.id}>
-      <Image avatar src="https://d3iw72m71ie81c.cloudfront.net/male-20.jpg" />
+      <Image
+        avatar
+        src={_.get(this.props.users, `${[item.meta.userId]}.photoUrl`)}
+      />
       <List.Content>
         <List.Header>Diff</List.Header>
         <List.SubHeader>
@@ -54,7 +60,10 @@ export default class Thread extends React.Component {
 
   renderComment = (item, idx) => (
     <List.Item data={item} key={item.id}>
-      <Image avatar src="https://d3iw72m71ie81c.cloudfront.net/male-20.jpg" />
+      <Image
+        avatar
+        src={_.get(this.props.users, `${[item.meta.userId]}.photoUrl`)}
+      />
       <List.Content>
         <List.Header>Comment</List.Header>
         <List.SubHeader>

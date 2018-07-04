@@ -30,6 +30,6 @@ PrivateRoute.defaultProps = {
   token: null
 };
 
-const mapStateToProps = ({ user: { access_token: token } }) => ({ token });
+const mapStateToProps = ({ auth: { access_token: token } }) => ({ token });
 
 export default connect(mapStateToProps)(PrivateRoute);

@@ -28,6 +28,7 @@ export default {
               id: doc.id,
               ...data
             });
+            dispatch.user.fetchUser({ uid: data.meta.userId });
 
             dispatch.selector.addSelector({
               id: data.selector,
