@@ -42,8 +42,8 @@ export default {
         selector,
         type: "comment",
         meta: {
-          accountId: rootState.user.selectedAccount,
-          userId: rootState.user.uid,
+          accountId: rootState.auth.selectedAccount,
+          userId: rootState.auth.uid,
           created: Date.now()
         }
       };
@@ -61,10 +61,15 @@ export default {
         .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             const data = doc.data();
+
+            // add our comment
             dispatch.comment.addComment({
               id: doc.id,
               ...data
             });
+
+            // resolve our user
+            dispatch.user.fetchUser({ uid: data.meta.userId });
 
             dispatch.selector.addSelector({
               id: data.selector,

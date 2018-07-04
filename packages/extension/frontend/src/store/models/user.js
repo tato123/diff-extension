@@ -1,138 +1,52 @@
-import { ACTIONS, MESSAGES_FRONTEND_SOURCE } from "@diff/common/keys";
-import { fetchCacheToken } from "@diff/common/actions";
-import {
-  composeRemoteAction,
-  cacheTokenRequest,
-  loginSuccess
-} from "../../../../common/actions";
-import { ACTIONS as localActions } from "store/actions";
+// @flow
 import firebase from "firebase";
-import jwtDecode from "jwt-decode";
 
-const authenticate = async (
-  username: ?string,
-  password: ?string,
-  refreshToken: ?string
-) => {
-  const options = refreshToken
-    ? {
-        body: `refresh_token=${refreshToken}&grant_type=refresh_token`
-      }
-    : {
-        headers: {
-          Authorization: `Basic ${btoa(`${username}:${password}`)}`
-        }
-      };
-
-  const response = await fetch(`${process.env.API_SERVER}/authenticate`, {
-    ...options,
-    method: "POST"
-  });
-
-  if (!response.ok) {
-    return Promise.reject(response.statusText);
-  }
-
-  return response.json();
+type fetchUserPayload = {
+  uid: string
 };
+
+type DispatchType = () => {};
+
+type RootType = mixed;
 
 export default {
   state: {
-    access_token: null,
-    refresh_token: null
+    byId: {},
+    allIds: []
   },
   reducers: {
-    [ACTIONS.FETCH_CACHE_TOKEN.REQUEST]: (state, payload) => {
-      return {
-        ...state,
-        access_token: null,
-        refresh_token: null
-      };
-    },
-    [ACTIONS.FETCH_CACHE_TOKEN.SUCCESS]: (state, { token }) => {
-      return {
-        ...state,
-        access_token: null,
-        refresh_token: token
-      };
-    },
-    [ACTIONS.FETCH_CACHE_TOKEN.FAILED]: (state, payload) => {
-      return {
-        ...state,
-        access_token: null,
-        refresh_token: null
-      };
-    },
-    [ACTIONS.LOGIN.REQUEST]: (state, payload) => {
-      return {
-        ...state,
-        access_token: null,
-        refresh_token: null
-      };
-    },
-    [ACTIONS.LOGIN.SUCCESS]: (
-      state,
-      { token: { access_token, refresh_token } }
-    ) => {
-      const { claims, uid } = jwtDecode(access_token);
-      console.log(jwtDecode(access_token));
-      return {
-        ...state,
-        access_token,
-        refresh_token,
-        ...claims,
-        selectedAccount: Object.keys(claims.accounts)[0],
-        uid
-      };
-    },
-    [ACTIONS.LOGIN.FAILED]: (state, payload) => {
-      return {
-        ...state,
-        access_token: null,
-        refresh_token: null
-      };
+    fetchUserSuccess: (state, payload) => ({
+      byId: {
+        ...state.byId,
+        [payload.uid]: {
+          photoUrl: payload.photoUrl,
+          email: payload.email,
+          displayName: payload.displayName,
+          uid: payload.uid
+        }
+      },
+      allIds: [...state.allIds, payload.uid]
+    }),
+    fetchUserFailed: (state, payload) => {
+      console.error(payload);
+      return state;
     }
   },
-  effects: dispatch => ({
-    login: async ({ username, password, refreshToken }) => {
+  effects: (dispatch: DispatchType) => ({
+    async fetchUser(payload: fetchUserPayload, rootState: RootType) {
       try {
-        const token = await authenticate(username, password, refreshToken);
-
-        // login to firebase
-        return firebase
-          .auth()
-          .signInWithCustomToken(token.access_token)
-          .then(response => {
-            console.log("[FIREBASE val]", response);
-            // dispatch a success
-            dispatch(loginSuccess(token));
-
-            // cache our token
-            dispatch.user.remoteCacheToken(token);
-          })
-          .catch(error => {
-            console.error(error);
-            dispatch.user[ACTIONS.LOGIN.FAILED](error);
-            return Promise.reject();
-          });
-      } catch (err) {
-        dispatch.user[ACTIONS.LOGIN.FAILED](err);
-        return Promise.reject();
+        const db = firebase.firestore();
+        const doc = await db
+          .collection("users")
+          .doc(payload.uid)
+          .get();
+        if (doc.exists) {
+          return dispatch.user.fetchUserSuccess(doc.data());
+        }
+        return dispatch.user.fetchUserFailed("Unable to get user data");
+      } catch (error) {
+        return dispatch.user.fetchUserFailed(error.message);
       }
-    },
-    // consider removing all remote actions to one place
-    remoteCacheToken: ({ refresh_token: token }) => {
-      // forward with our remote flag
-      dispatch(localActions.postMessage(cacheTokenRequest(token)));
-    },
-    fetchCatchTokenAsync: async () =>
-      localActions
-        .promisedAction({
-          submit: localActions.postMessage(fetchCacheToken()),
-          success: ACTIONS.FETCH_CACHE_TOKEN.SUCCESS,
-          failed: ACTIONS.FETCH_CACHE_TOKEN.FAILED
-        })
-        .then(successAction => successAction.payload.token)
-        .catch(errorAction => Promise.reject("No Token available"))
+    }
   })
 };

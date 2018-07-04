@@ -1,13 +1,17 @@
-import user from "./user";
+// @flow
+
+import auth from "./auth";
 import launcher from "./launcher";
 import diff from "./diff";
 import comment from "./comment";
 import selector from "./selector";
+import user from "./user";
 
 export default {
-  user,
+  auth,
   launcher,
   diff,
   comment,
-  selector
+  selector,
+  user
 };
