@@ -12,7 +12,13 @@ module.exports = (env, argv) => [
     ...std,
     mode: "development",
     entry: {
-      main: [path.resolve(__dirname, "../frontend/src/main.js")]
+      main:
+        ENV === "production"
+          ? [path.resolve(__dirname, "../frontend/src/main.js")]
+          : [
+              "webpack-hot-middleware/client?path=http://localhost:8080/__webpack_hmr",
+              path.resolve(__dirname, "../frontend/src/main.js")
+            ]
     },
     output: {
       filename: "[name].js",
@@ -20,25 +26,12 @@ module.exports = (env, argv) => [
       // the chrome extension is served from a remote server
       // to avoid needing constant updates
       path: WEB_OUTPUT_PATH,
-      publicPath: "http://localhost:9000/js/"
+      publicPath: "http://localhost:8080/js/latest"
     },
     resolve: {
       ...std.resolve,
       modules: ["node_modules", path.resolve(__dirname, "../frontend/src")],
       extensions: [".js", ".json"]
-    },
-    devServer: {
-      contentBase: WEB_OUTPUT_PATH,
-      compress: true,
-      port: 9000,
-      public: "localhost:9000",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods":
-          "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-        "Access-Control-Allow-Headers":
-          "X-Requested-With, content-type, Authorization"
-      }
     },
     module: {
       rules: [
@@ -81,6 +74,9 @@ module.exports = (env, argv) => [
       ]
     },
 
-    plugins: [...std.plugins]
+    plugins:
+      ENV === "production"
+        ? [...std.plugins]
+        : [...std.plugins, new webpack.HotModuleReplacementPlugin()]
   }
 ];
