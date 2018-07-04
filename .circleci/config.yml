@@ -72,7 +72,9 @@ jobs:
           command: gcloud config set project $GCLOUD_PROJECT
       - run:
           name: Deploy to google cloud
-          command: gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension/dist/frontend/ gs://diff-frontend
+          command: |
+            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension/dist/frontend/ gs://diff-frontend
+            gsutil iam ch allUsers:objectViewer gs://diff-frontend
   deploy-api:
     docker:
       - image: google/cloud-sdk:latest
