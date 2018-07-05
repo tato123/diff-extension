@@ -35,11 +35,13 @@ const View = styled.div`
 export default class Widget extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
-    shadowDom: PropTypes.bool
+    shadowDom: PropTypes.bool,
+    innerRef: PropTypes.func
   };
 
   static defaultProps = {
-    shadowDom: true
+    shadowDom: true,
+    innerRef: () => {}
   };
 
   state = { div: null, hasError: false };
@@ -86,7 +88,9 @@ export default class Widget extends React.PureComponent {
     }
 
     return shadowDom ? (
-      <ShadowDom>{this.innerContent()}</ShadowDom>
+      <ShadowDom innerRef={this.props.innerRef}>
+        {this.innerContent()}
+      </ShadowDom>
     ) : (
       this.innerContent()
     );

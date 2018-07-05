@@ -7,20 +7,6 @@ const { listObjects } = require("../helpers/storage");
 const _ = require("lodash");
 const requestProxy = require("express-request-proxy");
 
-// do this
-const webpack = require("webpack");
-const middleware = require("webpack-dev-middleware");
-const file = path.resolve(
-  __dirname,
-  "../../../extension/configs/webpack.frontend.js"
-);
-if (!fs.existsSync(file)) {
-  throw new Error("file doesnt exist " + file);
-}
-process.env.NODE_ENV = "development";
-const options = require(file)(process.env.NODE_ENV);
-const compiler = webpack(options);
-
 // Your Google Cloud Platform project ID
 const projectId = process.env.GCLOUD_PROJECT_ID;
 
@@ -81,6 +67,20 @@ const gcloudFrontendMiddleware = (req, res, next) => {
 if (process.env.NODE_ENV === "production") {
   exports.library = gcloudFrontendMiddleware;
 } else {
+  // do this
+  const webpack = require("webpack");
+  const middleware = require("webpack-dev-middleware");
+  const file = path.resolve(
+    __dirname,
+    "../../../extension/configs/webpack.frontend.js"
+  );
+  if (!fs.existsSync(file)) {
+    throw new Error("file doesnt exist " + file);
+  }
+  process.env.NODE_ENV = "development";
+  const options = require(file)(process.env.NODE_ENV);
+  const compiler = webpack(options);
+
   exports.library = middleware(compiler, {
     noInfo: true
   });

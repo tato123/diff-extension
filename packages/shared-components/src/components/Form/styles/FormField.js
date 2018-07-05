@@ -5,7 +5,7 @@ import { get } from "theme";
 import { Label } from "components/Text";
 
 const FormFieldContainer = styled.div`
-  margin: 0 0 1em;
+  margin: 0 0 ${get("size.grid.grid-2")};
   clear: both;
 
   label,

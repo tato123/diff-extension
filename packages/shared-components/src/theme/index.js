@@ -10,6 +10,16 @@ const REM = 16;
 
 const remRatio = sp => `${sp / REM}rem`;
 
+export const remToSP = rem => {
+  if (typeof rem === "string" && rem.indexOf("rem") !== -1) {
+    return parseFloat(rem.replace("rem", "")) * REM;
+  }
+  if (typeof rem === "string" && rem.indexOf("em") !== -1) {
+    return parseFloat(rem.replace("em", "")) * REM;
+  }
+  return rem * REM;
+};
+
 const toLetterSpacing = sp => `${TRACKING / REM}rem`;
 
 const white = "rgb(255, 255, 255)";
@@ -31,9 +41,22 @@ export const colors = {
   red
 };
 
+// BASED ON THE 4DP GRID IN MATERIAL DESIGN,
+// DP = DISPLAY UNIT = PX IN WEB
+const GRID_DP_BASELINE = 4;
+
 const size = {
-  sm: "8px",
-  borderRadius: remRatio(3.2)
+  sm: `${GRID_DP_BASELINE}px`,
+  borderRadius: remRatio(3.2),
+  grid: {
+    ...new Array(20).fill(0).reduce(
+      (acc, val, idx) => ({
+        ...acc,
+        [`grid-${idx + 1}`]: `${(idx + 1) * GRID_DP_BASELINE}px`
+      }),
+      {}
+    )
+  }
 };
 
 // based on the material.io type scale

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+/* prettier-ignore */
 const Outline = styled.div`
   border: 4px dashed #8c8da0;
   width: ${props => props.width || 0};
@@ -14,6 +15,7 @@ const Outline = styled.div`
   top: ${props => props.top || 0};
   padding: 4px;
 
+  ${({ highlight }) => highlight && "border-color:red !important;"}
   &:hover {
     border-color: #1e1e3e99;
   }

@@ -16,14 +16,20 @@ type State = {
   domElement: ?HTMLElement
 };
 
+const identity = () => {};
+
 export default class Callout extends React.Component<Props, State> {
   static propTypes = {
     selector: PropTypes.string.isRequired,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    innerRef: PropTypes.func,
+    highlight: PropTypes.bool
   };
 
   static defaultProps = {
-    onClick: () => {}
+    onClick: identity,
+    innerRef: identity,
+    highlight: false
   };
 
   state = {
@@ -40,7 +46,7 @@ export default class Callout extends React.Component<Props, State> {
 
   innerContent = () => {
     const {
-      props: { selector }
+      props: { selector, innerRef, highlight }
     } = this;
 
     return (
@@ -48,8 +54,9 @@ export default class Callout extends React.Component<Props, State> {
         element={document.querySelector(selector)}
         render={({ ref, elementWidth, elementHeight }) => (
           <div ref={ref}>
-            <Widget>
+            <Widget innerRef={innerRef}>
               <Outline
+                highlight={highlight}
                 onClick={this.props.onClick}
                 width={`${elementWidth}px`}
                 height={`${elementHeight}px`}

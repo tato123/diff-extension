@@ -96,7 +96,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  postMessageToTab(tab.id, runRequest());
+  return true;
+});
+
+chrome.browserAction.onClicked.addListener(tab => {
   postMessageToTab(tab.id, runRequest());
   return true;
 });
