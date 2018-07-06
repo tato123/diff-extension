@@ -155,7 +155,6 @@ export const withContext = contextTypes => {
       const root = node.attachShadow
         ? node.attachShadow({ mode, delegatesFocus })
         : node.createShadowRoot();
-      const include = [].concat(this.props.include);
       const container = this.wrapContainer();
 
       // Render the passed in component to the shadow root, and then `setState` if there

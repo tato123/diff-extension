@@ -47,13 +47,15 @@ export default class Widget extends React.PureComponent {
   state = { div: null, hasError: false };
 
   ref = div => {
+    if (!div) {
+      return;
+    }
     this.setState({ div });
   };
 
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({ hasError: true });
-
     console.error("[Widget] error occured while displaying", error, info);
   }
 

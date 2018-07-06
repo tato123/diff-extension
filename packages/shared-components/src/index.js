@@ -14,3 +14,4 @@ export * from "./components/Widget";
 export * from "./components/Grid";
 export * from "./components/List";
 export * from "./components/Code";
+export * from "./animations/Draggable";

@@ -10,8 +10,18 @@ import Popper from "popper.js";
  */
 export default class PopperHandler extends React.Component {
   static propTypes = {
+    /**
+     * The HTMLElement that we want to select
+     */
     element: PropTypes.object.isRequired,
+    /**
+     * Render function that will be called
+     * as part of our render props
+     */
     render: PropTypes.func.isRequired,
+    /**
+     * Any additional popper options that we want to pass in
+     */
     options: PropTypes.object
   };
 

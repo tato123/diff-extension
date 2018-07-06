@@ -40,8 +40,10 @@
     "@babel/preset-env": "^7.0.0-beta.51",
     "lodash.get": "^4.4.2",
     "lodash.omit": "^4.5.0",
+    "popmotion-pose": "^2.0.6",
     "react-date-picker": "^6.10.4",
     "react-datepicker": "^1.5.0",
-    "react-icons-kit": "^1.1.5"
+    "react-icons-kit": "^1.1.5",
+    "react-pose": "^2.1.2"
   }
 }

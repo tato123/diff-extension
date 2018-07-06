@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import styled from "styled-components";
-
 import { Widget, Progress, Bubble, Logo } from "@diff/shared-components";
 
 const LauncherContainer = styled.div`

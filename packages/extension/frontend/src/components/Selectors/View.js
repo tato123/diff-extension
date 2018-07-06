@@ -2,7 +2,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import Callout from "components/Callout";
+import Callout from "./ElementHighlight";
 import Viewer from "components/Viewer";
 import { Route } from "react-router";
 import { injectGlobal } from "styled-components";

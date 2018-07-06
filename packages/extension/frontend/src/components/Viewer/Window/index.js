@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import MainWindow from "../styles/MainWindow";
 import {
   Widget,
   Form,
@@ -8,13 +7,15 @@ import {
   Logo,
   Select,
   Tabs,
-  Grid
+  Grid,
+  Draggable
 } from "@diff/shared-components";
 
 import Thread from "../Thread";
 import styled from "styled-components";
 import { Switch, Route } from "react-router";
 import Editor from "../Editor";
+import Popper from "components/Popper";
 
 /* prettier-ignore */
 const ThreadContainer = styled.div`
@@ -38,10 +39,36 @@ const HeadArea = styled.div`
   }
 `;
 
+const MainWindow = styled(Draggable)`
+  width: 340px;
+  height: 627px;
+  background: linear-gradient(to right, #171a3a, #221f41);
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  padding: 24px;
+  z-index: 999999999;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+
+  * {
+    box-sizing: border-box;
+  }
+`;
+
 export default class Viewer extends React.Component {
   static propTypes = {
-    addComment: PropTypes.func.isRequired
+    addComment: PropTypes.func.isRequired,
+    match: PropTypes.shape({
+      params: {
+        id: PropTypes.string
+      }
+    })
   };
+
   state = {
     selectedTab: 1
   };
@@ -122,37 +149,54 @@ export default class Viewer extends React.Component {
     const thread = this.props.match.params.id;
 
     return (
-      <Widget>
-        <MainWindow>
-          <div>
-            <Logo.Text />
-          </div>
-          <Grid.Row scale={1}>
-            <Form.Field label="Date Range">
-              <Select>
-                <option>Since last visit</option>
-              </Select>
-            </Form.Field>
-          </Grid.Row>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <Tabs>
-              <Tabs.Tab onClick={onTabClick(1)} selected={selectedTab === 1}>
-                Thread
-              </Tabs.Tab>
-              <Tabs.Tab onClick={onTabClick(2)} selected={selectedTab === 2}>
-                Diff view
-              </Tabs.Tab>
-              <Tabs.Tab onClick={onTabClick(3)} selected={selectedTab === 3}>
-                Assets
-              </Tabs.Tab>
-            </Tabs>
+      <Popper
+        element={document.querySelector(thread)}
+        options={{ placement: "right" }}
+        render={({ ref }) => (
+          <div ref={ref} style={{ zIndex: "999999999" }}>
+            <Widget draggable={true}>
+              <MainWindow>
+                <div>
+                  <Logo.Text />
+                </div>
+                <Grid.Row scale={1}>
+                  <Form.Field label="Date Range">
+                    <Select>
+                      <option>Since last visit</option>
+                    </Select>
+                  </Form.Field>
+                </Grid.Row>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <Tabs>
+                    <Tabs.Tab
+                      onClick={onTabClick(1)}
+                      selected={selectedTab === 1}
+                    >
+                      Thread
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      onClick={onTabClick(2)}
+                      selected={selectedTab === 2}
+                    >
+                      Diff view
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      onClick={onTabClick(3)}
+                      selected={selectedTab === 3}
+                    >
+                      Assets
+                    </Tabs.Tab>
+                  </Tabs>
 
-            {selectedTab === 1 && this.renderThread(thread)}
-            {selectedTab === 2 && showDiffs()}
-            {selectedTab === 3 && showAssets()}
+                  {selectedTab === 1 && this.renderThread(thread)}
+                  {selectedTab === 2 && showDiffs()}
+                  {selectedTab === 3 && showAssets()}
+                </div>
+              </MainWindow>
+            </Widget>
           </div>
-        </MainWindow>
-      </Widget>
+        )}
+      />
     );
   }
 }
