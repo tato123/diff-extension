@@ -1,5 +1,3 @@
-// @flow
-
 import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
@@ -7,18 +5,9 @@ import Popper from "components/Popper";
 
 import { Widget, Outline } from "@diff/shared-components";
 
-type Props = {
-  selector: string,
-  onClick: () => string
-};
-
-type State = {
-  domElement: ?HTMLElement
-};
-
 const identity = () => {};
 
-export default class Callout extends React.Component<Props, State> {
+export default class Callout extends React.Component {
   static propTypes = {
     selector: PropTypes.string.isRequired,
     onClick: PropTypes.func,
@@ -54,7 +43,7 @@ export default class Callout extends React.Component<Props, State> {
         element={document.querySelector(selector)}
         render={({ ref, elementWidth, elementHeight }) => (
           <div ref={ref}>
-            <Widget innerRef={innerRef}>
+            <Widget innerRef={innerRef} selectable={true}>
               <Outline
                 highlight={highlight}
                 onClick={this.props.onClick}

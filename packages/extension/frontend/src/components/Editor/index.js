@@ -55,6 +55,8 @@ export default class Editor extends React.Component {
       handleSubmit
     } = this;
 
+    console.log("trying to display editor");
+
     return (
       <Container>
         <TextArea rows={5} value={textValue} onChange={handleChange} />

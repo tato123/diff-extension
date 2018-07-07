@@ -838,6 +838,12 @@
     through2 "^2.0.0"
     xdg-basedir "^3.0.0"
 
+"@medv/finder@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@medv/finder/-/finder-1.0.3.tgz#cb89794e1fb549c16915c9629d3ce7f9cc23f24f"
+  dependencies:
+    cssesc "^1.0.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -3919,6 +3925,10 @@ css-to-react-native@^2.0.3:
 cssesc@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/cssesc/-/cssesc-0.1.0.tgz#c814903e45623371a0477b40109aaafbeeaddbb4"
+
+cssesc@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/cssesc/-/cssesc-1.0.1.tgz#ef7bd8d0229ed6a3a7051ff7771265fe7330e0a8"
 
 cssnano@^3.10.0:
   version "3.10.0"

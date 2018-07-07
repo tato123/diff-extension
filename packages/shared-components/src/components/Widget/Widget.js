@@ -36,11 +36,13 @@ export default class Widget extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
     shadowDom: PropTypes.bool,
-    innerRef: PropTypes.func
+    innerRef: PropTypes.func,
+    selectable: PropTypes.bool
   };
 
   static defaultProps = {
     shadowDom: true,
+    selectable: false,
     innerRef: () => {}
   };
 
@@ -81,7 +83,7 @@ export default class Widget extends React.PureComponent {
 
   render() {
     const {
-      props: { shadowDom },
+      props: { shadowDom, selectable },
       state: { hasError }
     } = this;
 
@@ -90,7 +92,7 @@ export default class Widget extends React.PureComponent {
     }
 
     return shadowDom ? (
-      <ShadowDom innerRef={this.props.innerRef}>
+      <ShadowDom innerRef={this.props.innerRef} selectable={selectable}>
         {this.innerContent()}
       </ShadowDom>
     ) : (

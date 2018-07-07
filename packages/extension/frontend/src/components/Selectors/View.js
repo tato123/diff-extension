@@ -1,5 +1,3 @@
-// @flow
-
 import React from "react";
 import PropTypes from "prop-types";
 import Callout from "./ElementHighlight";
@@ -22,15 +20,23 @@ injectGlobal`
 export default class Selectors extends React.Component {
   static propTypes = {
     selectors: PropTypes.array.isRequired,
-    history: PropTypes.object
+    history: PropTypes.object,
+    match: PropTypes.shape({
+      url: PropTypes.string
+    }),
+    createNewSelector: PropTypes.func
   };
 
   state = {
     highlightedSelector: null,
-    selectionMode: true
+    selectionMode: true,
+    createNewSelector: () => {}
   };
 
   callouts = {};
+
+  diffWidgetClass = "x-diff-selectable";
+  diffPortalAttr = "data-portal-id";
 
   removeHighlights = () => {
     document
@@ -38,13 +44,36 @@ export default class Selectors extends React.Component {
       .forEach(elm => elm.classList.remove(RANDOM_KEY));
   };
 
-  /*eslint-disable */
+  /**
+   * Retrieve our stored selectors that are mapped to objects
+   */
+  selectorForEvent = evt => {
+    for (let key in this.callouts) {
+      const value = this.callouts[key];
+
+      if (value === evt.target) {
+        return key;
+      }
+    }
+    return null;
+  };
+
+  /**
+   * API for creating and registering a new selector
+   */
+  generateNewSelector = evt => {
+    return this.props.createNewSelector(evt.target);
+  };
+
   handleMouseOver = _.debounce(evt => {
+    evt.preventDefault();
+
     if (this.state.selectionMode) {
       this.removeHighlights();
       if (
-        !evt.target.hasAttribute("data-portal-id") &&
-        !evt.target.classList.contains("x-diff-widget-resolved")
+        !evt.target.hasAttribute(this.diffPortalAttr) &&
+        !evt.target.classList.contains("x-diff-widget-resolved") &&
+        !evt.target.classList.contains("x-diff-widget-resolving")
       ) {
         this.setState({
           highlightedSelector: null
@@ -52,34 +81,60 @@ export default class Selectors extends React.Component {
 
         evt.target.classList.add(RANDOM_KEY);
       } else {
-        for (let key in this.callouts) {
-          const value = this.callouts[key];
-
-          if (value === evt.target) {
-            this.setState({
-              highlightedSelector: key
-            });
-          }
+        const selector = this.selectorForEvent(evt);
+        if (selector != null) {
+          this.setState({
+            highlightedSelector: selector
+          });
         }
       }
     }
   }, 15);
 
-  componentDidMount() {
-    document.body.addEventListener("mouseover", this.handleMouseOver);
-  }
+  // we allow elements to specify whether they can be selected or not
+  // if they use this special data attribute we respect its state, otherwise
+  // we just allow the selection
+  isSelectable = evt => {
+    return evt.target.hasAttribute("data-diff-selectable")
+      ? evt.target.getAttribute("data-diff-selectable") === "true"
+      : true;
+  };
 
-  componentWillUnmount() {
-    document.body.removeEventListener(this.handleMouseOver);
-  }
+  handleClick = async evt => {
+    // we dont' want to allow targetting diff
+    // for non-test environments
+    if (!this.isSelectable(evt)) {
+      return;
+    }
 
-  onSelectorClicked = (selector: string) => () => {
+    evt.preventDefault();
+
+    const selector =
+      this.selectorForEvent(evt) || (await this.generateNewSelector(evt));
+    const {
+      match: { url }
+    } = this.props;
+
+    this.props.history.push(`${url}/${selector}/window`);
+
+    // on selection of an element
     this.setState({
       selectionMode: false,
       highlightedSelector: null
     });
-    this.props.history.push(`/selectors/${selector}`);
+
+    return false;
   };
+
+  componentDidMount() {
+    document.body.addEventListener("mouseover", this.handleMouseOver, false);
+    document.body.addEventListener("click", this.handleClick, false);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener("mouseover", this.handleMouseOver, false);
+    document.body.removeEventListener("click", this.handleMouseOver, false);
+  }
 
   assignTo = (selector, key) => callout => {
     this.callouts = {
@@ -93,7 +148,10 @@ export default class Selectors extends React.Component {
 
   render() {
     const {
-      props: { selectors },
+      props: {
+        selectors,
+        match: { url }
+      },
       state: { highlightedSelector }
     } = this;
 
@@ -105,10 +163,9 @@ export default class Selectors extends React.Component {
             innerRef={callout => (this.callouts[selector] = callout)}
             key={idx}
             selector={selector}
-            onClick={this.onSelectorClicked(selector)}
           />
         ))}
-        <Route path="/selectors/:id" component={Viewer} />
+        <Route path={`${url}/:id/window`} component={Viewer} />
       </div>
     );
   }

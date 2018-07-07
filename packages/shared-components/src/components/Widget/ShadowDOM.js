@@ -105,7 +105,8 @@ export const withContext = contextTypes => {
       nodeName: PropTypes.string,
       boundaryMode: PropTypes.oneOf(["open", "closed"]),
       delegatesFocus: PropTypes.bool,
-      innerRef: PropTypes.func
+      innerRef: PropTypes.func,
+      selectable: PropTypes.bool
     };
 
     /**
@@ -117,7 +118,8 @@ export const withContext = contextTypes => {
       nodeName: "span",
       boundaryMode: "open",
       delegatesFocus: false,
-      innerRef: () => {}
+      innerRef: () => {},
+      selectable: false
     };
 
     /**
@@ -216,9 +218,18 @@ export const withContext = contextTypes => {
       const classNames = `${
         childProps.className ? childProps.className : ""
       } ${className}`.trim();
-      const props = { ...childProps, className: classNames };
+      const props = {
+        ...childProps,
+        className: classNames
+      };
 
-      return <child.type {...props} ref={this.props.innerRef} />;
+      return (
+        <child.type
+          {...props}
+          ref={this.props.innerRef}
+          data-diff-selectable={this.props.selectable}
+        />
+      );
     };
 
     /**

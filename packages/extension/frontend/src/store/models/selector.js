@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import _ from "lodash";
+import finder from "@medv/finder";
 
 export default {
   state: {
@@ -28,5 +29,15 @@ export default {
   selectors: {
     count: createSelector(state => state.allIds, allIds => allIds.length),
     ids: createSelector(state => state.allIds, allIds => allIds || [])
-  }
+  },
+  effects: dispatch => ({
+    createNewSelector(htmlElement) {
+      const newSelector = finder(htmlElement, {
+        seedMinLength: 4,
+        optimizedMinLength: 2,
+        threshold: 1000
+      });
+      return newSelector;
+    }
+  })
 };
