@@ -22,7 +22,7 @@ export default {
             [payload.type]: types
           }
         },
-        allIds: _.uniq([...state.allIds, payload.id])
+        allIds: _.union(state.allIds, [payload.id])
       };
     }
   },
@@ -34,6 +34,12 @@ export default {
     createNewSelector(htmlElement) {
       const newSelector = finder(htmlElement, {
         seedMinLength: 4,
+        className: name => {
+          if (name.indexOf("df") === -1 && name.indexOf("diff") === -1) {
+            return true;
+          }
+          return false;
+        },
         optimizedMinLength: 2,
         threshold: 1000
       });

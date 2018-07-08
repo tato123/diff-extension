@@ -12,7 +12,7 @@ export default {
           ...state.byId,
           [payload.id]: payload
         },
-        allIds: _.uniq([state.allIds, payload.id])
+        allIds: _.union(state.allIds, [payload.id])
       };
     }
   },
@@ -21,6 +21,7 @@ export default {
       db
         .collection("events")
         .where("type", "==", "diff")
+        .where("url", "==", window.location.href)
         .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             const data = doc.data();

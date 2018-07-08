@@ -38,9 +38,16 @@ export default class Callout extends React.Component {
       props: { selector, innerRef, highlight }
     } = this;
 
+    const domElement = document.querySelector(selector);
+
+    if (!domElement) {
+      console.warn("Unable to resolve element", selector);
+      return null;
+    }
+
     return (
       <Popper
-        element={document.querySelector(selector)}
+        element={domElement}
         render={({ ref, elementWidth, elementHeight }) => (
           <div ref={ref}>
             <Widget innerRef={innerRef} selectable={true}>
@@ -59,10 +66,11 @@ export default class Callout extends React.Component {
 
   render() {
     const {
-      state: { domElement }
+      state: { domElement },
+      props: { selector }
     } = this;
 
-    if (domElement) {
+    if (domElement && selector) {
       // render in a portal
       return ReactDOM.createPortal(this.innerContent(), domElement);
     }

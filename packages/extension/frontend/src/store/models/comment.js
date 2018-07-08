@@ -26,7 +26,7 @@ export default {
           ...state.byId,
           [payload.id]: payload
         },
-        allIds: _.union([state.allIds, payload.id])
+        allIds: _.union(state.allIds, [payload.id])
       };
     }
   },
@@ -45,7 +45,8 @@ export default {
           accountId: rootState.auth.selectedAccount,
           userId: rootState.auth.uid,
           created: Date.now()
-        }
+        },
+        url: window.location.href
       };
       const newEvent = db.collection("events").doc();
       const result = await newEvent.set(record);
@@ -58,6 +59,7 @@ export default {
       db
         .collection("events")
         .where("type", "==", "comment")
+        .where("url", "==", window.location.href)
         .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             const data = doc.data();

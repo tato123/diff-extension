@@ -1,4 +1,4 @@
-import View from "./View";
+import View from "./Selectors";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
