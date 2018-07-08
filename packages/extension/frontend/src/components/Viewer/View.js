@@ -16,7 +16,7 @@ import { Assets, Diff, Thread } from "./Tabs";
 import { Route, Switch, Redirect, matchPath } from "react-router";
 import _ from "lodash";
 
-const MainWindow = styled(Draggable)`
+const MainWindow = styled.div`
   width: 340px;
   height: 627px;
   background: linear-gradient(to right, #171a3a, #221f41);
@@ -84,7 +84,7 @@ export default class Viewer extends React.Component {
         options={{ placement: "right" }}
         render={({ ref }) => (
           <div ref={ref} style={{ zIndex: "999999999" }}>
-            <Widget draggable={true}>
+            <Widget>
               <MainWindow>
                 <div>
                   <Logo.Text />

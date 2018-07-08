@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Editor from "components/Editor";
 import { Switch, Route } from "react-router";
-import { Button } from "../../../../../../../shared-components/build";
+import { Button } from "@diff/shared-components";
 import Comments from "components/Comments";
 
 /* prettier-ignore */
@@ -42,7 +42,8 @@ export default class Thread extends React.Component {
   };
 
   handleEditorSubmit = vals => {
-    this.props.addComment({ ...vals, selector: this.cssSelector });
+    debugger;
+    this.props.addComment({ ...vals, selector: this.props.cssSelector });
   };
 
   handleEditorCancel = () => {
@@ -64,8 +65,9 @@ export default class Thread extends React.Component {
         <Route
           render={() => (
             <div className="centered">
-              <Button icon="plus" onClick={this.onAddCommentButtonClick}>
-                Add Comment
+              <Button onClick={this.onAddCommentButtonClick}>
+                
+                + Add Comment
               </Button>
             </div>
           )}

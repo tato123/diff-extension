@@ -65,7 +65,15 @@ export default class Selectors extends React.Component {
     return this.props.createNewSelector(evt.target);
   };
 
+  isSelectionModeEnabled = () => {
+    return true;
+  }
+
   handleMouseOver = _.debounce(evt => {
+    if (!this.isSelectionModeEnabled() ) {
+      return ;
+    }
+
     evt.preventDefault();
 
     if (this.state.selectionMode) {
@@ -101,6 +109,10 @@ export default class Selectors extends React.Component {
   };
 
   handleClick = async evt => {
+    if (!this.isSelectionModeEnabled() ) {
+      return ;
+    }
+
     // we dont' want to allow targetting diff
     // for non-test environments
     if (!this.isSelectable(evt)) {
@@ -117,23 +129,22 @@ export default class Selectors extends React.Component {
 
     this.props.history.push(`${url}/${selector}/window`);
 
-    // on selection of an element
     this.setState({
-      selectionMode: false,
-      highlightedSelector: null
+      highlightedSelector: null,
+      selectionMode: false
     });
 
     return false;
   };
 
   componentDidMount() {
-    document.body.addEventListener("mouseover", this.handleMouseOver, false);
-    document.body.addEventListener("click", this.handleClick, false);
+    document.body.addEventListener("mouseover", this.handleMouseOver, true);
+    document.body.addEventListener("click", this.handleClick, true);
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener("mouseover", this.handleMouseOver, false);
-    document.body.removeEventListener("click", this.handleMouseOver, false);
+    document.body.removeEventListener("mouseover", this.handleMouseOver, true);
+    document.body.removeEventListener("click", this.handleMouseOver, true);
   }
 
   assignTo = (selector, key) => callout => {

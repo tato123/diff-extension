@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import Label from "components/Text/Label";
 import { get } from "theme";
@@ -38,5 +39,9 @@ const Select = ({ children, ...rest }) => (
     <Icon icon={angleDown} />
   </StyledSelect>
 );
+
+Select.propTypes = {
+  children: PropTypes.node
+}
 
 export default Select;
