@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 /* prettier-ignore */
-const Outline = styled.div`
-  border: 4px dashed #8c8da0;
+const StyledOutline = styled.div`
+  outline: 2px dashed #8c8da0;
   width: ${props => props.width || 0};
   height: ${props => props.height || 0};
   position: absolute;
@@ -14,16 +14,18 @@ const Outline = styled.div`
   left: ${props => props.left || 0};
   top: ${props => props.top || 0};
   padding: 4px;
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 
-  ${({ highlight }) => highlight && "border-color:red !important;"}
+
+
   &:hover {
     border-color: #1e1e3e99;
   }
-
-  .selected {
-    border-color: #1e1e3e;
-    z-index: 2;
-  }
+  
 `;
+
+const Outline = ({ children, ...rest }) => (
+  <StyledOutline {...rest}>{children}</StyledOutline>
+);
 
 export default Outline;

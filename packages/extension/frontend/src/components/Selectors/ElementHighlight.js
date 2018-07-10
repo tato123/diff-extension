@@ -3,16 +3,15 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Popper from "components/Popper";
 
-import { Widget, Outline } from "@diff/shared-components";
+import { Outline } from "@diff/shared-components";
 
 const identity = () => {};
 
-export default class Callout extends React.Component {
+export default class ElementHighlight extends React.Component {
   static propTypes = {
     selector: PropTypes.string.isRequired,
     onClick: PropTypes.func,
-    innerRef: PropTypes.func,
-    highlight: PropTypes.bool
+    innerRef: PropTypes.func
   };
 
   static defaultProps = {
@@ -35,7 +34,7 @@ export default class Callout extends React.Component {
 
   innerContent = () => {
     const {
-      props: { selector, innerRef, highlight }
+      props: { selector, innerRef }
     } = this;
 
     const domElement = document.querySelector(selector);
@@ -50,14 +49,14 @@ export default class Callout extends React.Component {
         element={domElement}
         render={({ ref, elementWidth, elementHeight }) => (
           <div ref={ref}>
-            <Widget innerRef={innerRef} selectable={true}>
-              <Outline
-                highlight={highlight}
-                onClick={this.props.onClick}
-                width={`${elementWidth}px`}
-                height={`${elementHeight}px`}
-              />
-            </Widget>
+            <Outline
+              data-selector={selector}
+              left={"-2px"}
+              top={"-4px"}
+              onClick={this.props.onClick}
+              width={`${elementWidth}px`}
+              height={`${elementHeight}px`}
+            />
           </div>
         )}
       />
