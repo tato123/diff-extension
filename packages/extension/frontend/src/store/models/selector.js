@@ -27,7 +27,7 @@ export default {
     }
   },
   selectors: {
-    count: createSelector(state => state.allIds, allIds => allIds.length),
+    count: createSelector(state => state.allIds, allIds => allIds.length || 0),
     ids: createSelector(state => state.allIds, allIds => allIds || [])
   },
   effects: dispatch => ({

@@ -1,41 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ElementHighlight from "./ElementHighlight";
-import Viewer from "components/Viewer";
-import { Route } from "react-router";
-
 import { inject } from "api/window";
 import finder from "@medv/finder";
 
 /* eslint-disable */
-export default class Selectors extends React.PureComponent {
+export default class Selectors extends React.Component {
   static propTypes = {
     selectors: PropTypes.array.isRequired,
     history: PropTypes.object,
-    match: PropTypes.shape({
-      url: PropTypes.string
-    }),
-    location: {
-      pathname: PropTypes.string
-    },
     createNewSelector: PropTypes.func
   };
-
-  state = {
-    elements: []
-  };
-
-  componentDidMount() {
-    if (this.props.location.pathname === "/selectors") {
-      this.getSelector();
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location.pathname === "/selectors") {
-      this.getSelector();
-    }
-  }
 
   createNewSelector = htmlElement => {
     const newSelector = finder(htmlElement, {
@@ -52,15 +27,11 @@ export default class Selectors extends React.PureComponent {
     return newSelector;
   };
 
+  componentDidMount() {
+    this.getSelector();
+  }
+
   getSelector() {
-    //   const {
-    //     match: { url }
-    //   } = this.props;
-    //   const selector = await inject();
-    //   this.props.history.push(`${url}/${selector}/window`);
-    // } catch (err) {
-    //   console.error("Get selector isnt working", err);
-    // }
     const {
       match: { url }
     } = this.props;
@@ -73,34 +44,22 @@ export default class Selectors extends React.PureComponent {
             : this.createNewSelector(element)
         );
 
-        console.log("using selector", selector);
-        const newUrl = `${url}/${selector}/window`;
-        console.log("new url", newUrl);
-        this.props.history.push(newUrl);
+        this.props.history.push("/window");
       })
       .catch(err => {
         console.error("element selection error", err.message);
       });
   }
 
-  innerElementReference = e => {
-    this.setState(prevState => ({ elements: [...prevState.elements, e] }));
-  };
-
   render() {
     const {
-      props: {
-        selectors,
-        match: { url }
-      }
+      props: { selectors }
     } = this;
-
     return (
       <div>
         {selectors.map((selector, idx) => (
           <ElementHighlight key={idx} selector={selector} />
         ))}
-        <Route path={`${url}/:id/window`} component={Viewer} />
       </div>
     );
   }

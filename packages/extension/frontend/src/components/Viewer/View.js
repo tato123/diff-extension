@@ -13,7 +13,6 @@ import {
 import styled from "styled-components";
 import Popper from "components/Popper";
 import { Assets, Diff, Thread } from "./Tabs";
-import { Route, Switch, Redirect, matchPath } from "react-router";
 import _ from "lodash";
 
 const MainWindow = styled.div`
@@ -38,26 +37,24 @@ const MainWindow = styled.div`
 
 export default class Viewer extends React.Component {
   static propTypes = {
-    cssSelector: PropTypes.string,
-    match: PropTypes.shape({
-      url: PropTypes.string
-    }).isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func
-    }).isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string
-    }).isRequired,
-    pageUrl: PropTypes.string
+    cssSelector: PropTypes.string
+  };
+
+  state = {
+    selectedTab: 0
+  };
+
+  onTabClick = val => () => {
+    this.setState({ selectedTab: val });
   };
 
   renderTabs = tabList =>
-    tabList.map(({ url, title }) => {
+    tabList.map(({ title }, idx) => {
       return (
         <Tabs.Tab
-          key={url}
-          onClick={() => this.props.history.push(url)}
-          selected={matchPath(this.props.location.pathname, url)}
+          key={idx}
+          onClick={this.onTabClick(idx)}
+          selected={this.state.selectedTab === idx}
         >
           {title}
         </Tabs.Tab>
@@ -67,11 +64,8 @@ export default class Viewer extends React.Component {
   render() {
     const {
       renderTabs,
-      props: {
-        match: { url },
-        pageUrl,
-        cssSelector
-      }
+      props: { cssSelector },
+      state: { selectedTab }
     } = this;
 
     if (!cssSelector) {
@@ -80,7 +74,7 @@ export default class Viewer extends React.Component {
 
     return (
       <Popper
-        element={document.querySelector(cssSelector)}
+        element={cssSelector}
         options={{ placement: "right" }}
         render={({ ref }) => (
           <div ref={ref} style={{ zIndex: "999999999" }}>
@@ -99,17 +93,14 @@ export default class Viewer extends React.Component {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <Tabs>
                     {renderTabs([
-                      { url: `${url}/thread`, title: "Thread" },
-                      { url: `${url}/diff`, title: "Diff" },
-                      { url: `${url}/assets`, title: "Assets" }
+                      { title: "Thread" },
+                      { title: "Diff" },
+                      { title: "Assets" }
                     ])}
                   </Tabs>
-                  <Switch>
-                    <Route path={`${pageUrl}/assets`} component={Assets} />
-                    <Route path={`${pageUrl}/diff`} component={Diff} />
-                    <Route path={`${pageUrl}/thread`} component={Thread} />
-                    <Redirect to={`${url}/thread`} />
-                  </Switch>
+                  {selectedTab === 0 && <Thread cssSelector={cssSelector} />}
+                  {selectedTab === 1 && <Diff />}
+                  {selectedTab === 2 && <Assets />}
                 </div>
               </MainWindow>
             </Widget>

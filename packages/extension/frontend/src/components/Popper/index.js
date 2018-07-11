@@ -13,7 +13,8 @@ export default class PopperHandler extends React.Component {
     /**
      * The HTMLElement that we want to select
      */
-    element: PropTypes.object.isRequired,
+    element: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+      .isRequired,
     /**
      * Render function that will be called
      * as part of our render props
@@ -32,8 +33,7 @@ export default class PopperHandler extends React.Component {
   };
 
   state = {
-    popper: null,
-    rootElement: null
+    popper: null
   };
 
   ref = popperElement => {
@@ -42,20 +42,36 @@ export default class PopperHandler extends React.Component {
     } = this;
 
     if (!popperElement) {
-      console.error("No popper element defined");
+      // console.error("No popper element defined");
       return;
     }
 
-    const popper = new Popper(element, popperElement, options);
+    const targetedElement =
+      typeof element === "string" ? document.querySelector(element) : element;
+
+    const popper = new Popper(targetedElement, popperElement, options);
     this.setState({
       popper
     });
   };
 
+  componentWillUnmount() {
+    const { popper } = this.state;
+    if (popper) {
+      popper.destroy();
+    }
+  }
+
   getPopperTargetElementStyles(element) {
+    const targetedElement =
+      typeof element === "string" ? document.querySelector(element) : element;
     // Calculate the targets
-    const width = window.getComputedStyle(element, null).width.split("px")[0];
-    const height = window.getComputedStyle(element, null).height.split("px")[0];
+    const width = window
+      .getComputedStyle(targetedElement, null)
+      .width.split("px")[0];
+    const height = window
+      .getComputedStyle(targetedElement, null)
+      .height.split("px")[0];
     return {
       elementWidth: parseInt(Math.abs(width)),
       elementHeight: parseInt(Math.abs(height))

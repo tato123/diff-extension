@@ -1,36 +1,20 @@
 import React from "react";
 import Launcher from "components/Launcher";
-import { MemoryRouter as Router, Switch, Route } from "react-router";
-import PrivateRoute from "components/Routes/PrivateRoute";
+
 import Login from "components/Login";
 import Selectors from "components/Selectors";
+import Viewer from "components/Viewer";
 
-export default class App extends React.Component {
-  onClick = ({ history }) => () => {
-    history.push("/selectors");
-  };
+import UserView from "components/UserView";
 
+export default class App extends React.PureComponent {
   render() {
-    const { onClick } = this;
-
     return (
       <div>
-        <Router>
-          <React.Fragment>
-            <Route
-              render={renderProps => (
-                <React.Fragment>
-                  <Switch>
-                    <Route exact path="/login" component={Login} />
-                    <PrivateRoute path="/selectors" component={Selectors} />
-                    <PrivateRoute exact path="/" component={() => <div />} />
-                  </Switch>
-                  <Launcher onClick={this.onClick(renderProps)} />
-                </React.Fragment>
-              )}
-            />
-          </React.Fragment>
-        </Router>
+        <UserView name="login">{() => <Login />}</UserView>
+        <UserView name="selectors">{() => <Selectors />}</UserView>
+        <UserView name="DiffWindow">{() => <Viewer />}</UserView>
+        <UserView name="launcher">{() => <Launcher />}</UserView>
       </div>
     );
   }

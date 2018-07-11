@@ -30,49 +30,42 @@ const HeadArea = styled.div`
 
 export default class Thread extends React.Component {
   static propTypes = {
-    cssSelector: PropTypes.string,
-    navigateTo: PropTypes.func.isRequired,
-    basePath: PropTypes.string.isRequired,
-    currentUrl: PropTypes.string.isRequired,
+    cssSelector: PropTypes.string.isRequired,
+    onCancel: PropTypes.func,
     addComment: PropTypes.func.isRequired
   };
 
+  state = {
+    addComment: false,
+    onCancel: () => {}
+  };
+
   onAddCommentButtonClick = () => {
-    this.props.navigateTo(`${this.props.currentUrl}/add`);
+    this.setState({ addComment: true });
   };
 
   handleEditorSubmit = vals => {
-    debugger;
     this.props.addComment({ ...vals, selector: this.props.cssSelector });
   };
 
   handleEditorCancel = () => {
-    this.props.navigateTo(this.props.currentUrl);
+    this.props.onCancel();
   };
 
   renderEditor = () => {
+    if (this.state.addComment) {
+      return (
+        <Editor
+          onSubmit={this.handleEditorSubmit}
+          onCancel={this.handleEditorCancel}
+        />
+      );
+    }
+
     return (
-      <Switch>
-        <Route
-          path={`/selectors/:id/window/thread/add`}
-          render={() => (
-            <Editor
-              onSubmit={this.handleEditorSubmit}
-              onCancel={this.handleEditorCancel}
-            />
-          )}
-        />
-        <Route
-          render={() => (
-            <div className="centered">
-              <Button onClick={this.onAddCommentButtonClick}>
-                
-                + Add Comment
-              </Button>
-            </div>
-          )}
-        />
-      </Switch>
+      <div className="centered">
+        <Button onClick={this.onAddCommentButtonClick}>+ Add Comment</Button>
+      </div>
     );
   };
 
@@ -81,6 +74,7 @@ export default class Thread extends React.Component {
       props: { cssSelector }
     } = this;
 
+    console.log("my css selector", cssSelector);
     return (
       <ThreadContainer>
         <HeadArea gridArea="head">{this.renderEditor()}</HeadArea>
