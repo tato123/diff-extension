@@ -10,25 +10,22 @@ import mainTheme, { get } from "../../theme";
 
 injectGlobal`
   @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:100,200,300,400,500,600,700,800,900');
-  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
-
+  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');        
 `;
 
 /* prettier-ignore */
 const View = styled.div`
-
   font-family: ${get('text.fontFamily')};
   color: ${get('colors.textColor')};
   font-size: 1rem;
-
   box-sizing: border-box;
-
+.g, body, html, input, .std, h1,
   *, *:before, *:after {
     box-sizing: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;  
     text-rendering: geometricPrecision;
-    
+    font-size:initial;
   }
 `;
 
@@ -66,6 +63,7 @@ export default class Widget extends React.PureComponent {
       ref,
       state: { div }
     } = this;
+
     return (
       <div>
         <div ref={ref}>

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Editor from "components/Editor";
-import { Switch, Route } from "react-router";
+import Editor from "./Editor";
 import { Button } from "@diff/shared-components";
 import Comments from "components/Comments";
 
@@ -36,8 +35,7 @@ export default class Thread extends React.Component {
   };
 
   state = {
-    addComment: false,
-    onCancel: () => {}
+    addComment: false
   };
 
   onAddCommentButtonClick = () => {
@@ -49,7 +47,7 @@ export default class Thread extends React.Component {
   };
 
   handleEditorCancel = () => {
-    this.props.onCancel();
+    this.setState({ addComment: false });
   };
 
   renderEditor = () => {

@@ -1,4 +1,4 @@
-import UserView from "./UserView";
+import UserView from "./Widget";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state, props) => ({

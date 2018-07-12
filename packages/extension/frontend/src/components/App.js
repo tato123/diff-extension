@@ -59,13 +59,11 @@ export default class App extends React.Component {
             </AuthenticatedView>
           )}
         </Widget>
-        <Widget name="launcher">
+        <Widget name="launcher" static>
           {props => (
-            <AuthenticatedView {...props}>
-              <Launcher
-                onClick={this.handleLauncherClick(props.show, props.closeAll)}
-              />
-            </AuthenticatedView>
+            <Launcher
+              onClick={this.handleLauncherClick(props.show, props.closeAll)}
+            />
           )}
         </Widget>
       </div>

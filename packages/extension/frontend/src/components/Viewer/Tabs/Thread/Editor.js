@@ -27,7 +27,7 @@ export default class Editor extends React.Component {
 
   static defaultProps = {
     onSubmit: () => {},
-    ononCancelSubmit: () => {}
+    onCancel: () => {}
   };
 
   state = {
@@ -42,16 +42,11 @@ export default class Editor extends React.Component {
     this.props.onSubmit({ text: this.state.textValue });
   };
 
-  handleCancel = () => {
-    this.props.onCancel();
-  };
-
   render() {
     const {
       state: { textValue },
-      props: { onSubmit },
+      props: { onCancel },
       handleChange,
-      handleCancel,
       handleSubmit
     } = this;
 
@@ -61,7 +56,7 @@ export default class Editor extends React.Component {
         <Label>No Attachments</Label>
 
         <BottomRow>
-          <Button.Flat onClick={handleCancel}>cancel</Button.Flat>
+          <Button.Flat onClick={onCancel}>cancel</Button.Flat>
           <Button onClick={handleSubmit}>POST</Button>
         </BottomRow>
       </Container>
