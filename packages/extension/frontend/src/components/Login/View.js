@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Widget, Form, Button, Header } from "@diff/shared-components";
+import { StyleBoundary, Form, Button, Header } from "@diff/shared-components";
 
 const Modal = styled.div`
   position: fixed;
@@ -50,7 +50,6 @@ export default class Login extends React.Component {
         this.setState({ requiresLogin: true });
       }
     } catch (err) {
-      console.error("error occured on login", err.message);
       this.setState({ requiresLogin: true });
     }
   }
@@ -65,7 +64,7 @@ export default class Login extends React.Component {
 
   loginScreen = () => (
     <Modal>
-      <Widget>
+      <StyleBoundary>
         <Modal.Content id="login-modal">
           <div>
             <Header as="h4">Login</Header>
@@ -86,7 +85,7 @@ export default class Login extends React.Component {
             </Form>
           </div>
         </Modal.Content>
-      </Widget>
+      </StyleBoundary>
     </Modal>
   );
 

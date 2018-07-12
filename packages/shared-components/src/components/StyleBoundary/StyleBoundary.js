@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ShadowDom from "./ShadowDOM";
+import ShadowDom from "./styles/ShadowDOM";
 import styled, {
   StyleSheetManager,
   ThemeProvider,

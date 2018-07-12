@@ -8,7 +8,8 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggle: dispatch.widgets.toggle
+  closeAll: dispatch.widgets.closeAll,
+  show: dispatch.widgets.show
 });
 
 export default connect(

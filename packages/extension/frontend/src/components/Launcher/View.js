@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Widget, Progress, Bubble, Logo } from "@diff/shared-components";
+import { StyleBoundary, Progress, Bubble, Logo } from "@diff/shared-components";
 
 const LauncherContainer = styled.div`
   width: 80px;
@@ -78,7 +78,7 @@ export default class Launcher extends React.Component {
       props: { count, busy, onClick }
     } = this;
     return (
-      <Widget>
+      <StyleBoundary>
         <LauncherContainer onClick={onClick}>
           <div>
             {!busy && (
@@ -98,7 +98,7 @@ export default class Launcher extends React.Component {
             )}
           </div>
         </LauncherContainer>
-      </Widget>
+      </StyleBoundary>
     );
   }
 }

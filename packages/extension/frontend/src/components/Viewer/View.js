@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
-  Widget,
+  StyleBoundary,
   Form,
   Logo,
   Select,
@@ -76,7 +76,7 @@ export default class Viewer extends React.Component {
         options={{ placement: "right" }}
         render={({ ref }) => (
           <div ref={ref} style={{ zIndex: "999999999" }}>
-            <Widget>
+            <StyleBoundary>
               <MainWindow>
                 <div>
                   <Logo.Text />
@@ -101,7 +101,7 @@ export default class Viewer extends React.Component {
                   {selectedTab === 2 && <Assets />}
                 </div>
               </MainWindow>
-            </Widget>
+            </StyleBoundary>
           </div>
         )}
       />

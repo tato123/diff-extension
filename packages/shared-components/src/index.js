@@ -10,7 +10,7 @@ export * from "./components/Select";
 export * from "./components/Tabs";
 export * from "./components/Text";
 export * from "./components/TextArea";
-export * from "./components/Widget";
+export * from "./components/StyleBoundary";
 export * from "./components/Grid";
 export * from "./components/List";
 export * from "./components/Code";

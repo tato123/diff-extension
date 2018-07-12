@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { omit } from "lodash";
 
-/* eslint-disable */
 export default class UserView extends React.Component {
   static propTypes = {
     children: PropTypes.func,
@@ -10,8 +9,9 @@ export default class UserView extends React.Component {
     token: PropTypes.string,
     requiresAuth: PropTypes.bool,
     name: PropTypes.string,
-    toggle: PropTypes.func.isRequired,
-    context: PropTypes.object
+    context: PropTypes.object,
+    show: PropTypes.func.isRequired,
+    closeAll: PropTypes.func.isRequired
   };
 
   static defaultProps = {
