@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import format from "date-fns/format";
-import { Redirect } from "react-router";
 import _ from "lodash";
 
 import { Label, List, Image, Code } from "@diff/shared-components";
@@ -77,10 +76,6 @@ export default class Comments extends React.Component {
     const {
       props: { thread }
     } = this;
-
-    if (thread.length === 0) {
-      return <Redirect to={`${this.props.location.pathname}/add`} />;
-    }
 
     return (
       <List>

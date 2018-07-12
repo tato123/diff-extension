@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 import _ from "lodash";
-import finder from "@medv/finder";
 
 export default {
   state: {
@@ -31,19 +30,13 @@ export default {
     ids: createSelector(state => state.allIds, allIds => allIds || [])
   },
   effects: dispatch => ({
-    createNewSelector(htmlElement) {
-      const newSelector = finder(htmlElement, {
-        seedMinLength: 4,
-        className: name => {
-          if (name.indexOf("df") === -1 && name.indexOf("diff") === -1) {
-            return true;
-          }
-          return false;
-        },
-        optimizedMinLength: 2,
-        threshold: 1000
+    toggleDiffForSelector(payload, rootState) {
+      dispatch.widgets.show({
+        name: "diff",
+        context: {
+          selector: payload.selector
+        }
       });
-      return newSelector;
     }
   })
 };

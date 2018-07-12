@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import View from "./View";
 import _ from "lodash";
-import { withRouter } from "react-router";
 
 const selectThreadFromSelector = (state, thread) =>
   _.chain(state.selector.byId[thread])
@@ -24,4 +23,4 @@ const mapDispatchToProps = dispatch => ({});
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(View));
+)(View);

@@ -6,14 +6,12 @@ import {
   Logo,
   Select,
   Tabs,
-  Grid,
-  Draggable
+  Grid
 } from "@diff/shared-components";
 
 import styled from "styled-components";
 import Popper from "components/Popper";
 import { Assets, Diff, Thread } from "./Tabs";
-import _ from "lodash";
 
 const MainWindow = styled.div`
   width: 340px;

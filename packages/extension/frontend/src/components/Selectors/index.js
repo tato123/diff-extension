@@ -6,7 +6,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  createNewSelector: dispatch.selector.createNewSelector
+  toggleDiffForSelector: dispatch.selector.toggleDiffForSelector
 });
 
 export default connect(

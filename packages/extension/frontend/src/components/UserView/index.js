@@ -1,37 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
+import UserView from "./UserView";
 import { connect } from "react-redux";
 
-const mapStateToProps = (state, props) => {
-  return {
-    shown: state.widgets.filter(x => x.name === props.name).length > 0
-  };
-};
+const mapStateToProps = (state, props) => ({
+  shown: state.widgets.filter(x => x.name === props.name).length > 0,
+  values: state.widgets.filter(x => x.name === props.name)[0],
+  token: state.auth.access_token
+});
 
-const mapDispatchToProps = dispatch => ({});
-
-class UserView extends React.Component {
-  static propTypes = {
-    children: PropTypes.func,
-    shown: PropTypes.bool
-  };
-
-  static defaultProps = {
-    shown: false
-  };
-
-  render() {
-    const {
-      props: { shown }
-    } = this;
-
-    if (shown) {
-      return this.props.children();
-    }
-
-    return null;
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  toggle: dispatch.widgets.toggle
+});
 
 export default connect(
   mapStateToProps,

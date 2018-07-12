@@ -8,8 +8,7 @@ import finder from "@medv/finder";
 export default class Selectors extends React.Component {
   static propTypes = {
     selectors: PropTypes.array.isRequired,
-    history: PropTypes.object,
-    createNewSelector: PropTypes.func
+    toggleDiffForSelector: PropTypes.func.isRequired
   };
 
   createNewSelector = htmlElement => {
@@ -32,19 +31,13 @@ export default class Selectors extends React.Component {
   }
 
   getSelector() {
-    const {
-      match: { url }
-    } = this.props;
-
     inject()
       .then(element => {
-        const selector = encodeURI(
-          element.hasAttribute("data-selector")
-            ? element.getAttribute("data-selector")
-            : this.createNewSelector(element)
-        );
+        const selector = element.hasAttribute("data-selector")
+          ? element.getAttribute("data-selector")
+          : this.createNewSelector(element);
 
-        this.props.history.push("/window");
+        this.props.toggleDiffForSelector({ selector });
       })
       .catch(err => {
         console.error("element selection error", err.message);

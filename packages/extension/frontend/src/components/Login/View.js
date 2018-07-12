@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Redirect } from "react-router";
 import { Widget, Form, Button, Header } from "@diff/shared-components";
 
 const Modal = styled.div`
@@ -39,21 +38,22 @@ export default class Login extends React.Component {
   };
 
   state = {
-    isFetchingRefreshToken: false
+    requiresLogin: false
   };
 
-  componentDidMount() {
-    this.fetchTokenAndLogin();
+  async componentDidMount() {
+    try {
+      const refreshToken = await this.props.getCacheToken();
+      if (refreshToken) {
+        await this.props.login({ refreshToken });
+      } else {
+        this.setState({ requiresLogin: true });
+      }
+    } catch (err) {
+      console.error("error occured on login", err.message);
+      this.setState({ requiresLogin: true });
+    }
   }
-
-  fetchTokenAndLogin = () => {
-    this.setState({ isFetchingRefreshToken: true });
-    // check to see if we have a token
-    this.props
-      .getCacheToken()
-      .then(refreshToken => this.props.login({ refreshToken }))
-      .finally(() => this.setState({ isFetchingRefreshToken: false }));
-  };
 
   onLoginRequest = evt => {
     evt.preventDefault();
@@ -63,46 +63,37 @@ export default class Login extends React.Component {
     return false;
   };
 
+  loginScreen = () => (
+    <Modal>
+      <Widget>
+        <Modal.Content id="login-modal">
+          <div>
+            <Header as="h4">Login</Header>
+            <Form onSubmit={this.onLoginRequest} autoComplete="off">
+              <Form.Input
+                label="Username"
+                name="user"
+                type="text"
+                placeholder="email@domain.com"
+              />
+              <Form.Input
+                label="Password"
+                name="password"
+                type="password"
+                placeholder="Password"
+              />
+              <Button type="submit">Submit</Button>
+            </Form>
+          </div>
+        </Modal.Content>
+      </Widget>
+    </Modal>
+  );
+
   render() {
-    const {
-      state: { isFetchingRefreshToken },
-      props: { accessToken }
-    } = this;
-
-    // step 1 check the token
-    if (isFetchingRefreshToken) {
-      return null;
+    if (this.state.requiresLogin) {
+      return this.loginScreen();
     }
-
-    if (accessToken) {
-      return <Redirect to="/" />;
-    }
-
-    return (
-      <Modal>
-        <Widget>
-          <Modal.Content id="login-modal">
-            <div>
-              <Header as="h4">Login</Header>
-              <Form onSubmit={this.onLoginRequest} autoComplete="off">
-                <Form.Input
-                  label="Username"
-                  name="user"
-                  type="text"
-                  placeholder="email@domain.com"
-                />
-                <Form.Input
-                  label="Password"
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                />
-                <Button type="submit">Submit</Button>
-              </Form>
-            </div>
-          </Modal.Content>
-        </Widget>
-      </Modal>
-    );
+    return null;
   }
 }

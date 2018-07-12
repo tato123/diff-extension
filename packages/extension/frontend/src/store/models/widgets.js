@@ -13,5 +13,10 @@ export default {
         state => state,
         widgets => widgets.filter(x => x.name === name).length > 0
       )
-  }
+  },
+  effects: (dispatch: DispatchType) => ({
+    toggle: (payload, rootState) => {
+      dispatch.widgets.show({ name: payload });
+    }
+  })
 };
