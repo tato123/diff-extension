@@ -21,12 +21,22 @@ export default {
             [payload.type]: types
           }
         },
-        allIds: _.uniq([...state.allIds, payload.id])
+        allIds: _.union(state.allIds, [payload.id])
       };
     }
   },
   selectors: {
-    count: createSelector(state => state.allIds, allIds => allIds.length),
+    count: createSelector(state => state.allIds, allIds => allIds.length || 0),
     ids: createSelector(state => state.allIds, allIds => allIds || [])
-  }
+  },
+  effects: dispatch => ({
+    toggleDiffForSelector(payload, rootState) {
+      dispatch.widgets.show({
+        name: "diff",
+        context: {
+          selector: payload.selector
+        }
+      });
+    }
+  })
 };

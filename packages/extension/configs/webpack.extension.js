@@ -17,7 +17,7 @@ module.exports = (env, argv) => [
       new CleanWebpackPlugin(["dist"]),
       new CopyWebpackPlugin([
         {
-          from: path.resolve(__dirname, "../shells/chrome/manifest.json"),
+          from: path.resolve(__dirname, "../shells/chrome"),
           to: CHROME_DIR,
           toType: "dir"
         }

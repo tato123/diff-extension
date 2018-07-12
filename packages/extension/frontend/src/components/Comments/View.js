@@ -1,5 +1,3 @@
-// @flow
-
 import React from "react";
 import PropTypes from "prop-types";
 import format from "date-fns/format";
@@ -19,7 +17,7 @@ DateTime.propTypes = {
   date: PropTypes.object
 };
 
-export default class Thread extends React.Component {
+export default class Comments extends React.Component {
   static propTypes = {
     thread: PropTypes.array,
     users: PropTypes.any
@@ -78,10 +76,6 @@ export default class Thread extends React.Component {
     const {
       props: { thread }
     } = this;
-
-    if (thread.length === 0) {
-      return <div> Thread - Nothing to show</div>;
-    }
 
     return (
       <List>

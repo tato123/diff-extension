@@ -4,6 +4,8 @@ import { get } from "theme";
 
 const Tabs = styled(RebassTabs)`
   min-height: 30px;
+  height: 30px;
+  max-height: 30px;
 `;
 
 /* prettier-ignore */

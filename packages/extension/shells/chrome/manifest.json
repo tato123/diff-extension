@@ -3,7 +3,7 @@
   "name": "Diff.app",
   "description": "Collaboration design tools",
   "minimum_chrome_version": "49",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "permissions": [
     "activeTab",
     "tabs",
@@ -25,7 +25,12 @@
     "persistent": false
   },
   "browser_action": {
-    "default_title": "Collaboration"
+    "default_title": "Diff"
+  },
+  "icons": {
+    "16": "icon_16.png",
+    "48": "icon_48.png",
+    "128": "icon_128.png"
   },
   "content_scripts": [
     {

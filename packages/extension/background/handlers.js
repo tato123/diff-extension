@@ -4,6 +4,11 @@ import { get, set, storeUserToken, getUserToken } from "./storage";
 
 const PREFERENCES = "_DIFF_PREFERENCES";
 
+/**
+ *
+ * @param {Number} tabId
+ * @param {Object} postMessageToTab
+ */
 const handleFetchUserPreferences = (tabId, postMessageToTab) => {
   get(PREFERENCES)
     .then(preferences =>

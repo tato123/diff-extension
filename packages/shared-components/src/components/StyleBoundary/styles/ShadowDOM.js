@@ -104,7 +104,9 @@ export const withContext = contextTypes => {
       include: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
       nodeName: PropTypes.string,
       boundaryMode: PropTypes.oneOf(["open", "closed"]),
-      delegatesFocus: PropTypes.bool
+      delegatesFocus: PropTypes.bool,
+      innerRef: PropTypes.func,
+      selectable: PropTypes.bool
     };
 
     /**
@@ -115,7 +117,9 @@ export const withContext = contextTypes => {
       include: [],
       nodeName: "span",
       boundaryMode: "open",
-      delegatesFocus: false
+      delegatesFocus: false,
+      innerRef: () => {},
+      selectable: false
     };
 
     /**
@@ -153,7 +157,6 @@ export const withContext = contextTypes => {
       const root = node.attachShadow
         ? node.attachShadow({ mode, delegatesFocus })
         : node.createShadowRoot();
-      const include = [].concat(this.props.include);
       const container = this.wrapContainer();
 
       // Render the passed in component to the shadow root, and then `setState` if there
@@ -209,13 +212,24 @@ export const withContext = contextTypes => {
       // Props from the passed component, minus `children` as that's handled by `componentDidMount`.
       const child = Children.only(this.props.children);
       const childProps = omit(child.props, ["children"]);
-      const className = this.state.resolving ? "resolving" : "resolved";
+      const className = this.state.resolving
+        ? "x-diff-widget-resolving"
+        : "x-diff-widget-resolved";
       const classNames = `${
         childProps.className ? childProps.className : ""
       } ${className}`.trim();
-      const props = { ...childProps, className: classNames };
+      const props = {
+        ...childProps,
+        className: classNames
+      };
 
-      return <child.type {...props} />;
+      return (
+        <child.type
+          {...props}
+          ref={this.props.innerRef}
+          data-diff-selectable={this.props.selectable}
+        />
+      );
     };
 
     /**

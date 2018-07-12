@@ -1,13 +1,8 @@
-import Window from "./Window";
+import View from "./View";
 import { connect } from "react-redux";
 
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = dispatch => ({
-  addComment: dispatch.comment.addNewComment
+const mapStateToProps = (state, props) => ({
+  cssSelector: props.context.selector
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Window);
+export default connect(mapStateToProps)(View);

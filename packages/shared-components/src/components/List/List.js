@@ -6,10 +6,7 @@ import { get } from "theme";
 const List = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
-  max-width: 100%;
-  min-width: 100%;
-  width: 100%;
+  flex: 1 auto;
 
   > div {
     border-bottom: 1px solid ${get("colors.white1")};
@@ -24,12 +21,15 @@ List.Item = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0.5em 0;
-  max-width: inherit;
-  width: inherit;
-  min-width: inherit;
+  flex: 1 auto;
 
   > :first-child {
     margin-right: 1em;
+  }
+
+  span,
+  img {
+    display: inline-block;
   }
 `;
 
