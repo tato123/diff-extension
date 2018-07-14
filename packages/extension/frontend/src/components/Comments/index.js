@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import View from "./View";
+import View from "./Comments";
 import _ from "lodash";
 
 const selectThreadFromSelector = (state, thread) =>

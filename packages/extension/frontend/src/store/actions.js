@@ -1,5 +1,4 @@
-import { switchMap } from "rxjs/operators";
-import { Observable, of, throwError } from "rxjs";
+import { Observable } from "rxjs";
 import { dispatch } from "store";
 
 export const TYPES = {

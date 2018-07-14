@@ -30,8 +30,6 @@ export default {
         ? model.firebaseSnapshots(this.dispatch, this.db)
         : model.firebaseSnapshots;
 
-    const listeners = Object.keys(firebaseEffects).map(key =>
-      firebaseEffects[key]()
-    );
+    Object.keys(firebaseEffects).map(key => firebaseEffects[key]());
   }
 };
