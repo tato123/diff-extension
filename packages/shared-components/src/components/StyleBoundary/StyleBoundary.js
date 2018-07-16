@@ -10,7 +10,9 @@ import mainTheme, { get } from "../../theme";
 
 injectGlobal`
   @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:100,200,300,400,500,600,700,800,900');
-  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');        
+  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');  
+
+        
 `;
 
 /* prettier-ignore */
@@ -19,13 +21,34 @@ const View = styled.div`
   color: ${get('colors.textColor')};
   font-size: 1rem;
   box-sizing: border-box;
-.g, body, html, input, .std, h1,
+
   *, *:before, *:after {
     box-sizing: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;  
     text-rendering: geometricPrecision;
-    font-size:initial;
+
+  }
+`;
+
+const styleContent = `
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+      -webkit-border-radius: 10px;
+      border-radius: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    opacity:0.1;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.5); 
+    -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.5); 
   }
 `;
 
@@ -66,6 +89,7 @@ export default class Widget extends React.PureComponent {
 
     return (
       <div>
+        <style>{styleContent}</style>
         <div ref={ref}>
           {div && (
             <StyleSheetManager target={div}>

@@ -1,21 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import format from "date-fns/format";
+
 import _ from "lodash";
-
-import { Label, List, Image, Code } from "@diff/shared-components";
-
-const DateTime = ({ date }) => (
-  <div>
-    <Label as="overline">
-      {date && format(date, "dddd, MMM D, YYYY - h:mm A")}
-    </Label>
-  </div>
-);
-
-DateTime.propTypes = {
-  date: PropTypes.object
-};
+import Attachment from "components/Attachment";
+import { List, Image, Code, DateTime } from "@diff/shared-components";
 
 export default class Comments extends React.Component {
   static propTypes = {
@@ -67,7 +55,15 @@ export default class Comments extends React.Component {
         <List.SubHeader>
           <DateTime date={item.meta.created} />
         </List.SubHeader>
-        <List.Description>{item.comment}</List.Description>
+        <List.Description>
+          <div>
+            {item.comment}
+            {item.attachments &&
+              item.attachments.map(file => (
+                <Attachment key={file.url} name={file.name} url={file.url} />
+              ))}
+          </div>
+        </List.Description>
       </List.Content>
     </List.Item>
   );

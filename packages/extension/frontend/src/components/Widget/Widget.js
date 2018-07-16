@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { omit } from "lodash";
 
-export default class UserView extends React.Component {
+export default class Widget extends React.Component {
   static propTypes = {
     children: PropTypes.func,
     shown: PropTypes.bool,
