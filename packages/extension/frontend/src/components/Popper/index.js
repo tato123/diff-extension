@@ -65,6 +65,16 @@ export default class PopperHandler extends React.Component {
   getPopperTargetElementStyles(element) {
     const targetedElement =
       typeof element === "string" ? document.querySelector(element) : element;
+
+    // component may have been unmounted
+    // unexpectedly
+    if (targetedElement == null) {
+      return {
+        elementWidth: 0,
+        elementHeight: 0
+      };
+    }
+
     // Calculate the targets
     const width = window
       .getComputedStyle(targetedElement, null)

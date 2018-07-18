@@ -6,12 +6,15 @@ import {
   Logo,
   Select,
   Tabs,
-  Grid
+  Grid,
+  Anchor
 } from "@diff/shared-components";
 
 import styled from "styled-components";
 import Popper from "components/Popper";
 import { Assets, Diff, Thread } from "./Tabs";
+import Icon from "react-icons-kit";
+import { ic_close } from "react-icons-kit/md/ic_close";
 
 const MainWindow = styled.div`
   width: 340px;
@@ -59,6 +62,10 @@ export default class Viewer extends React.Component {
       );
     });
 
+  close = () => {
+    this.props.close();
+  };
+
   render() {
     const {
       renderTabs,
@@ -78,8 +85,21 @@ export default class Viewer extends React.Component {
           <div ref={ref} style={{ zIndex: "999999999" }}>
             <StyleBoundary>
               <MainWindow>
-                <div>
-                  <Logo.Text />
+                <div
+                  style={{
+                    display: "flex",
+                    height: "24px",
+                    justifyContent: "space-between"
+                  }}
+                >
+                  <div>
+                    <Logo.Text />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Anchor onClick={this.close}>
+                      <Icon icon={ic_close} />
+                    </Anchor>
+                  </div>
                 </div>
                 <Grid.Row scale={1}>
                   <Form.Field label="Date Range">
