@@ -5,4 +5,11 @@ const mapStateToProps = (state, props) => ({
   cssSelector: props.context.selector
 });
 
-export default connect(mapStateToProps)(View);
+const mapDispatchToProps = dispatch => ({
+  close: dispatch.widgets.closeDiff
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(View);

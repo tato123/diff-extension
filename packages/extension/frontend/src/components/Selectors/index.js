@@ -2,11 +2,14 @@ import View from "./Selectors";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({
-  selectors: state.selector.allIds
+  selectors: state.selector.allIds,
+  inspectMode: state.selector.inspectMode
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleDiffForSelector: dispatch.selector.toggleDiffForSelector
+  showSelectorDetails: dispatch.selector.toggleDiffForSelector,
+  inspect: dispatch.selector.inspect,
+  cancelInspect: dispatch.selector.cancelInspect
 });
 
 export default connect(

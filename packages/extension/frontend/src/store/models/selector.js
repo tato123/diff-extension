@@ -4,7 +4,8 @@ import _ from "lodash";
 export default {
   state: {
     byId: {},
-    allIds: []
+    allIds: [],
+    inspectMode: false
   },
   reducers: {
     addSelector: (state, payload) => {
@@ -23,7 +24,15 @@ export default {
         },
         allIds: _.union(state.allIds, [payload.id])
       };
-    }
+    },
+    inspect: (state, payload) => ({
+      ...state,
+      inspectMode: true
+    }),
+    cancelInspect: (state, payload) => ({
+      ...state,
+      inspectMode: false
+    })
   },
   selectors: {
     count: createSelector(state => state.allIds, allIds => allIds.length || 0),

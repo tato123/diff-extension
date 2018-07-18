@@ -1,6 +1,5 @@
 // @flow
 import { createSelector } from "reselect";
-import { findIndex } from "lodash";
 
 export default {
   state: [
@@ -11,15 +10,7 @@ export default {
   ],
   reducers: {
     show: (state, payload) => [...state, payload],
-    hide: (state, payload) => state.filter(x => x.name === payload.name),
-
-    closeAll: (state, payload) =>
-      state.reduce((acc, widget) => {
-        if (widget.static) {
-          return [...acc, widget];
-        }
-        return acc;
-      }, [])
+    hide: (state, payload) => state.filter(x => x.name !== payload.name)
   },
   selectors: {
     isVisible: name =>
@@ -27,5 +18,19 @@ export default {
         state => state,
         widgets => widgets.filter(x => x.name === name).length > 0
       )
-  }
+  },
+  effects: dispatch => ({
+    closeDiff: () => {
+      dispatch.widgets.hide({ name: "diff" });
+      dispatch.selector.inspect();
+    },
+    closeAll: (payload, rootState) => {
+      rootState.widgets.forEach(widget => {
+        if (!widget.static) {
+          dispatch.widgets.hide(widget);
+        }
+      });
+      dispatch.selector.cancelInspect();
+    }
+  })
 };
