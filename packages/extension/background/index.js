@@ -7,8 +7,27 @@ import {
 import handlers from "./handlers";
 import { runRequest, composeRemoteAction } from "@diff/common/actions";
 
+import firebase from "firebase";
+
+// connect to firebase
+const config = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_SENDER_ID
+};
+firebase.initializeApp(config);
+
+// all of our tabs in the browser
 const ports = {};
 
+/**
+ * Handles storing the port object in memory
+ *
+ * @param {Object} port - port object provided by chrome
+ */
 const registerPort = port => {
   const id = port.sender.tab.id;
 
@@ -19,6 +38,10 @@ const registerPort = port => {
   return port.sender.tab.id;
 };
 
+/**
+ * Generalized listener for all chrome messages that then applies
+ * some sort of handler specified in handlers
+ */
 const messageListener = tabId => msg => {
   const postDestContentScript = postMessageToTabWithDestination(
     CONTENT_SCRIPT_SOURCE_NAME
@@ -76,32 +99,37 @@ const postMessageToTabWithDestination = destination => (tabId, message) => {
 /**
  * Handle our initial connection from content scripts
  */
-chrome.runtime.onConnect.addListener(port => {
+const handleOnConnect = port => {
   if (port.name === CONTENT_SCRIPT_PORT_NAME) {
     // add me to the ports list
     const id = registerPort(port);
     port.onMessage.addListener(messageListener(id));
     port.onDisconnect.addListener(removeListener(id));
   }
-});
+};
 
 /**
  * Create a context menu items to allow encode/decode
  */
-chrome.runtime.onInstalled.addListener(() => {
+const handleOnInstalled = () => {
   chrome.contextMenus.create({
     id: "log-selection",
     title: "Inspect with diff",
     contexts: ["all"]
   });
-});
+};
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+const handleOnContextMenuClicked = (info, tab) => {
   postMessageToTab(tab.id, runRequest());
   return true;
-});
+};
 
-chrome.browserAction.onClicked.addListener(tab => {
+const handleOnBrowserActionClicked = tab => {
   postMessageToTab(tab.id, runRequest());
   return true;
-});
+};
+
+chrome.runtime.onConnect.addListener(handleOnConnect);
+chrome.runtime.onInstalled.addListener(handleOnInstalled);
+chrome.contextMenus.onClicked.addListener(handleOnContextMenuClicked);
+chrome.browserAction.onClicked.addListener(handleOnBrowserActionClicked);

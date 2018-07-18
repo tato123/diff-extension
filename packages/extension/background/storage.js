@@ -2,10 +2,10 @@ export const USER_TOKEN_KEY = "token";
 export const getUserToken = () => get(USER_TOKEN_KEY);
 export const storeUserToken = token => set(USER_TOKEN_KEY, token);
 
-export const get = key => {
+export const get = (key, defaultValue) => {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get([key], result => {
-      resolve(Object.keys(result).length === 0 ? null : result);
+      resolve(Object.keys(result).length === 0 ? defaultValue || null : result);
     });
   });
 };
