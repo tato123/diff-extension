@@ -1,13 +1,4 @@
-// @flow
 import firebase from "firebase";
-
-type fetchUserPayload = {
-  uid: string
-};
-
-type DispatchType = () => {};
-
-type RootType = mixed;
 
 export default {
   state: {
@@ -32,8 +23,8 @@ export default {
       return state;
     }
   },
-  effects: (dispatch: DispatchType) => ({
-    async fetchUser(payload: fetchUserPayload, rootState: RootType) {
+  effects: dispatch => ({
+    async fetchUser(payload, rootState) {
       try {
         const db = firebase.firestore();
         const doc = await db

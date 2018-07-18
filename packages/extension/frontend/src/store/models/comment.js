@@ -1,23 +1,5 @@
-// @flow
 import firebase from "firebase";
 import _ from "lodash";
-
-export type CommentPayload = {
-  comment: string,
-  attachments: {},
-  selector: string
-};
-
-export type SelectorPayload = {
-  id: string,
-  type: string,
-  typeId: string
-};
-
-type State = {
-  byId: {},
-  allIds: []
-};
 
 /* eslint-disable */
 export default {
@@ -26,7 +8,7 @@ export default {
     allIds: []
   },
   reducers: {
-    addComment: (state: State, payload: SelectorPayload) => {
+    addComment: (state, payload) => {
       return {
         byId: {
           ...state.byId,
