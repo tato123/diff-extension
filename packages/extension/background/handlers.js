@@ -1,6 +1,12 @@
 import { ACTIONS } from "@diff/common/keys";
 import * as actionCreator from "@diff/common/actions";
-import { get, set, storeUserToken, getUserToken } from "./storage";
+import {
+  get,
+  set,
+  storeUserToken,
+  getUserToken,
+  rememberUserClickedSite
+} from "./storage";
 import { login } from "./user";
 import _ from "lodash";
 const PREFERENCES = "_DIFF_PREFERENCES";
@@ -24,8 +30,12 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
       const data = doc.data();
       sites = _.union(sites, [data.url]);
     });
-    preferences.autorunDomains = sites;
+
     // get the local sites theyve opened diff for
+    const localSites = await rememberUserClickedSite();
+    /* eslint-disable */
+    debugger;
+    preferences.autorunDomains = _.union(sites, localSites);
 
     // combine and send back
     postMessageToTab(

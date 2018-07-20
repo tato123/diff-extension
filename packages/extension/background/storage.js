@@ -1,4 +1,6 @@
+import _ from "lodash";
 export const USER_TOKEN_KEY = "token";
+
 export const getUserToken = () => get(USER_TOKEN_KEY);
 export const storeUserToken = token => set(USER_TOKEN_KEY, token);
 
@@ -17,4 +19,17 @@ export const set = (key, value) => {
       resolve();
     });
   });
+};
+
+export const rememberUserClickedSite = async value => {
+  const key = "USER_CLICKED_PREFERENCE";
+  const sites = await get(key, []);
+  const innerArray = Array.isArray(sites) ? sites : sites[key];
+
+  if (value) {
+    innerArray.push(value);
+    await set(key, _.uniq(innerArray));
+  }
+
+  return innerArray;
 };

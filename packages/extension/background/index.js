@@ -6,7 +6,7 @@ import {
 } from "@diff/common/keys";
 import handlers from "./handlers";
 import { runRequest, composeRemoteAction } from "@diff/common/actions";
-
+import { rememberUserClickedSite } from "./storage";
 import firebase from "firebase";
 
 // connect to firebase
@@ -119,12 +119,22 @@ const handleOnInstalled = () => {
   });
 };
 
+const rememberUserClickedPreference = tab => {
+  rememberUserClickedSite(tab.url);
+};
+
 const handleOnContextMenuClicked = (info, tab) => {
+  // remember the user clicked this site
+  rememberUserClickedPreference(tab);
+
   postMessageToTab(tab.id, runRequest());
   return true;
 };
 
 const handleOnBrowserActionClicked = tab => {
+  // remember the user clicked this site
+  rememberUserClickedPreference(tab);
+
   postMessageToTab(tab.id, runRequest());
   return true;
 };
