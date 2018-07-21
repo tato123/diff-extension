@@ -14,14 +14,19 @@ import { filter } from "rxjs/operators";
 const main = () => {
   portMessages$
     .pipe(filter(({ type }) => type === ACTIONS.FETCH_USER_PREFERENCES.SUCCESS))
-    .subscribe(preferences => {
+    .subscribe(action => {
+      const {
+        payload: { preferences }
+      } = action;
+
       if (
         preferences.autorunDomains &&
-        preferences.autorunDomains.includes(window.location.host)
+        preferences.autorunDomains.includes(window.location.href)
       ) {
         logger.debug("Running frontend");
         runFrontend();
       } else {
+        console.log("not running");
       }
     });
 

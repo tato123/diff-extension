@@ -1,7 +1,14 @@
 import { ACTIONS } from "@diff/common/keys";
 import * as actionCreator from "@diff/common/actions";
-import { get, set, storeUserToken, getUserToken } from "./storage";
-
+import {
+  get,
+  set,
+  storeUserToken,
+  getUserToken,
+  rememberUserClickedSite
+} from "./storage";
+import { login } from "./user";
+import _ from "lodash";
 const PREFERENCES = "_DIFF_PREFERENCES";
 
 /**
@@ -9,20 +16,38 @@ const PREFERENCES = "_DIFF_PREFERENCES";
  * @param {Number} tabId
  * @param {Object} postMessageToTab
  */
-const handleFetchUserPreferences = (tabId, postMessageToTab) => {
-  get(PREFERENCES)
-    .then(preferences =>
-      postMessageToTab(
-        tabId,
-        actionCreator.fetchUserPreferencesSuccess(preferences)
-      )
-    )
-    .catch(err =>
-      postMessageToTab(
-        tabId,
-        actionCreator.fetchUserPreferencesFailed(err.message)
-      )
+const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
+  try {
+    // get the user preferences
+    const preferences = await get(PREFERENCES, {});
+    const { token: refreshToken } = await getUserToken();
+    const firestore = await login(refreshToken);
+
+    // get the remote domains
+    const querySnapshot = await firestore.collection("events").get();
+    let sites = [];
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      sites = _.union(sites, [data.url]);
+    });
+
+    // get the local sites theyve opened diff for
+    const localSites = await rememberUserClickedSite();
+    /* eslint-disable */
+    debugger;
+    preferences.autorunDomains = _.union(sites, localSites);
+
+    // combine and send back
+    postMessageToTab(
+      tabId,
+      actionCreator.fetchUserPreferencesSuccess(preferences)
     );
+  } catch (err) {
+    postMessageToTab(
+      tabId,
+      actionCreator.fetchUserPreferencesFailed(err.message)
+    );
+  }
 };
 
 const handlStoreUserPreferences = (

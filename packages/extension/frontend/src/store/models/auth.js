@@ -1,5 +1,3 @@
-// @flow
-
 import { ACTIONS } from "@diff/common/keys";
 import { fetchCacheToken } from "@diff/common/actions";
 import { cacheTokenRequest, loginSuccess } from "../../../../common/actions";
@@ -7,16 +5,7 @@ import { ACTIONS as localActions } from "store/actions";
 import firebase from "firebase";
 import jwtDecode from "jwt-decode";
 
-export type AuthState = {
-  access_token: ?string,
-  refresh_token: ?string
-};
-
-const authenticate = async (
-  username: ?string,
-  password: ?string,
-  refreshToken: ?string
-) => {
+const authenticate = async (username, password, refreshToken) => {
   const options = refreshToken
     ? {
         body: `refresh_token=${refreshToken}&grant_type=refresh_token`
@@ -45,28 +34,28 @@ export default {
     refresh_token: null
   },
   reducers: {
-    [ACTIONS.FETCH_CACHE_TOKEN.REQUEST]: (state: AuthState, payload) => {
+    [ACTIONS.FETCH_CACHE_TOKEN.REQUEST]: (state, payload) => {
       return {
         ...state,
         access_token: null,
         refresh_token: null
       };
     },
-    [ACTIONS.FETCH_CACHE_TOKEN.SUCCESS]: (state: AuthState, { token }) => {
+    [ACTIONS.FETCH_CACHE_TOKEN.SUCCESS]: (state, { token }) => {
       return {
         ...state,
         access_token: null,
         refresh_token: token
       };
     },
-    [ACTIONS.FETCH_CACHE_TOKEN.FAILED]: (state: AuthState, payload) => {
+    [ACTIONS.FETCH_CACHE_TOKEN.FAILED]: (state, payload) => {
       return {
         ...state,
         access_token: null,
         refresh_token: null
       };
     },
-    [ACTIONS.LOGIN.REQUEST]: (state: AuthState, payload) => {
+    [ACTIONS.LOGIN.REQUEST]: (state, payload) => {
       return {
         ...state,
         access_token: null,

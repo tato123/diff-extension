@@ -1,5 +1,3 @@
-// @flow
-
 import auth from "./auth";
 import launcher from "./launcher";
 import diff from "./diff";

@@ -23,6 +23,9 @@
     "es6": true,
     "node": true
   },
+  "globals": {
+    "chrome": true
+  },
   "rules": {
     "prettier/prettier": "error",
     "react/no-deprecated": "warn"
