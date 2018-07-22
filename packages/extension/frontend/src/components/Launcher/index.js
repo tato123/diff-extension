@@ -1,14 +1,12 @@
 import { connect } from "react-redux";
 import View from "./View";
-import { select } from "@rematch/select";
 
-const mapStateToProps = state => ({
-  busy: state.launcher.busy,
-  count: select.selector.count(state)
+import { createStructuredSelector } from "reselect";
+import { selectors } from "redux/launcher";
+
+const mapStateToProps = createStructuredSelector({
+  busy: selectors.busySelector(),
+  count: selectors.countSelector()
 });
-const mapDispatchToProps = dispatch => ({});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(View);
+export default connect(mapStateToProps)(View);

@@ -1,26 +1,11 @@
 import { connect } from "react-redux";
 import View from "./Comments";
-import _ from "lodash";
 
-const selectThreadFromSelector = (state, thread) =>
-  _.chain(state.selector.byId[thread])
-    .mapValues((value, key) => {
-      return value.map(id => state[key].byId[id]);
-    })
-    .values()
-    .flatten()
-    .sortBy("meta.created")
-    .reverse()
-    .value();
+import { selectors } from "diff";
 
 const mapStateToProps = (state, props) => ({
-  thread: selectThreadFromSelector(state, props.thread),
-  users: state.user.byId
+  thread: selectors.elementThreadSelector(props.thread)(state),
+  users: selectors.allUsersSelector()(state)
 });
 
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(View);
+export default connect(mapStateToProps)(View);

@@ -1,15 +1,10 @@
 import { Observable } from "rxjs";
-import { dispatch } from "store";
+import types from "./types";
 
-export const TYPES = {
-  PROMISE_ACTION_TYPE: "@diff/async",
-  POST_MESSAGE: "@diff/postmessage"
-};
-
-const observableAction = ({ submit, success, failed }) => {
+const observableAction = ({ submit, success, failed, dispatch }) => {
   return Observable.create(observer => {
     const action = {
-      type: TYPES.PROMISE_ACTION_TYPE,
+      type: types.PROMISE_ACTION_TYPE,
       payload: {
         submit,
         success,
@@ -24,13 +19,13 @@ const observableAction = ({ submit, success, failed }) => {
 const promisedAction = (...args) => observableAction(...args).toPromise();
 
 const postMessage = action => ({
-  type: TYPES.POST_MESSAGE,
+  type: types.POST_MESSAGE,
   payload: {
     action
   }
 });
 
-export const ACTIONS = {
+export default {
   observableAction,
   promisedAction,
   postMessage

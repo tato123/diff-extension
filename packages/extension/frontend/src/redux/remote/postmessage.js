@@ -1,13 +1,12 @@
 import {
   MESSAGES_FRONTEND_SOURCE,
   MESSAGES_BACKGROUND_SOURCE,
-  CONTENT_SCRIPT_SOURCE_NAME,
-  ACTIONS
+  CONTENT_SCRIPT_SOURCE_NAME
 } from "@diff/common/keys";
 import { composeRemoteAction } from "@diff/common/actions";
 import { fromEvent } from "rxjs";
 import { filter } from "rxjs/operators";
-import { TYPES } from "store/actions";
+import types from "./types";
 
 const onMessageObservable = store => {
   return fromEvent(window, "message")
@@ -51,17 +50,14 @@ const onSendMessage = action => {
   );
 };
 
-export default {
-  onInit: () => {
-    console.log("Initialized post message plugin");
-  },
-  middleware: store => {
-    const observable$ = onMessageObservable(store);
-    return next => action => {
-      if (action.type === TYPES.POST_MESSAGE) {
-        onSendMessage(action.payload.action);
-      }
-      return next(action);
-    };
-  }
+const postMessageMiddleware = store => {
+  onMessageObservable(store);
+  return next => action => {
+    if (action.type === types.POST_MESSAGE) {
+      onSendMessage(action.payload.action);
+    }
+    return next(action);
+  };
 };
+
+export default postMessageMiddleware;

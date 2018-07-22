@@ -1,18 +1,16 @@
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 import View from "./View";
+import { selectors, operations } from "redux/user";
 
-const mapStateToProps = ({
-  auth: { access_token: accessToken, refresh_token: refreshToken }
-}) => ({
-  accessToken,
-  refreshToken
+const mapStateToProps = createStructuredSelector({
+  accessToken: selectors.accessTokenSelector(),
+  refreshToken: selectors.refreshTokenSelector()
 });
 
-const mapDispatchToProps = ({
-  auth: { login, fetchCatchTokenAsync: getCacheToken }
-}) => ({
-  login,
-  getCacheToken
+const mapDispatchToProps = dispatch => ({
+  login: credentials => dispatch(operations.login(credentials)),
+  getCacheToken: () => dispatch(operations.fetchCacheToken())
 });
 
 export default connect(

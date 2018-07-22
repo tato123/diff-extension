@@ -63,7 +63,7 @@ const ImgContainer = styled.div`
 export default class Launcher extends React.Component {
   static propTypes = {
     busy: PropTypes.bool,
-    count: PropTypes.oneOf(PropTypes.string, PropTypes.number),
+    count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onClick: PropTypes.func
   };
 
