@@ -29,9 +29,7 @@ const addNewComment = (payload, rootState) => async dispatch => {
   const { comment, selector } = payload;
   const db = firebase.firestore();
 
-  const attachments = await Promise.all(
-    payload.attachments.map(dispatch.comment.uploadFile)
-  );
+  const attachments = await Promise.all(payload.attachments.map(uploadFile));
 
   const record = {
     comment,

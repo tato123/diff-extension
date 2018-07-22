@@ -1,5 +1,4 @@
-import { ACTIONS } from "@diff/common/keys";
-import { fetchCacheToken as fetchCacheTokenAction } from "@diff/common/actions";
+import * as commonActions from "@diff/common/actions";
 import { cacheTokenRequest, loginSuccess } from "../../../../common/actions";
 import firebase from "firebase";
 import { authenticate } from "./api";
@@ -19,15 +18,15 @@ const login = ({ username, password, refreshToken }) => async dispatch => {
         dispatch(loginSuccess(token));
 
         // cache our token
-        dispatch.auth.remoteCacheToken(token);
+        dispatch(remoteCacheToken(token));
       })
       .catch(error => {
         console.error(error);
-        dispatch.auth[ACTIONS.LOGIN.FAILED](error);
+        dispatch(commonActions.loginFailed(error));
         return Promise.reject(error);
       });
   } catch (err) {
-    dispatch.auth[ACTIONS.LOGIN.FAILED](err);
+    dispatch(commonActions.loginFailed(err));
     return Promise.reject(err);
   }
 };
@@ -42,7 +41,7 @@ const fetchCacheToken = () => dispatch => {
   debugger;
   remoteActions
     .promisedAction({
-      submit: remoteActions.postMessage(fetchCacheTokenAction()),
+      submit: remoteActions.postMessage(commonActions.fetchCacheToken()),
       success: ACTIONS.FETCH_CACHE_TOKEN.SUCCESS,
       failed: ACTIONS.FETCH_CACHE_TOKEN.FAILED,
       dispatch
@@ -51,7 +50,7 @@ const fetchCacheToken = () => dispatch => {
     .catch(errorAction => Promise.reject(new Error("No Token available")));
 };
 
-const fetchUser = action => async dispatch => {
+const fetchUser = async action => async dispatch => {
   try {
     const db = firebase.firestore();
     const doc = await db

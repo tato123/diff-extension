@@ -107,3 +107,10 @@ export const loginSuccess = token => ({
     token
   }
 });
+
+export const loginFailed = err => ({
+  type: ACTIONS.LOGIN.FAILED,
+  meta: {
+    err
+  }
+});
