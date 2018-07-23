@@ -43,10 +43,8 @@ export default class Login extends React.Component {
 
   async componentDidMount() {
     try {
-      /* eslint-disable */
-      
       const refreshToken = await this.props.getCacheToken();
-      debugger;
+
       if (refreshToken) {
         await this.props.login({ refreshToken });
       } else {

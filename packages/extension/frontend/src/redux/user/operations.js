@@ -1,4 +1,4 @@
-import * as commonActions from "@diff/common/actions";
+import { actions as commonActions, types as commonTypes } from "@diff/common";
 import { cacheTokenRequest, loginSuccess } from "../../../../common/actions";
 import firebase from "firebase";
 import { authenticate } from "./api";
@@ -38,12 +38,11 @@ const remoteCacheToken = ({ refresh_token: token }) => dispatch => {
 
 /* eslint-disable */
 const fetchCacheToken = () => dispatch => {
-  debugger;
-  remoteActions
+  return remoteActions
     .promisedAction({
       submit: remoteActions.postMessage(commonActions.fetchCacheToken()),
-      success: ACTIONS.FETCH_CACHE_TOKEN.SUCCESS,
-      failed: ACTIONS.FETCH_CACHE_TOKEN.FAILED,
+      success: commonTypes.FETCH_CACHE_TOKEN.SUCCESS,
+      failed: commonTypes.FETCH_CACHE_TOKEN.FAILED,
       dispatch
     })
     .then(successAction => successAction.payload.token)
