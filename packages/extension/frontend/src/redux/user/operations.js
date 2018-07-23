@@ -1,5 +1,4 @@
 import { actions as commonActions, types as commonTypes } from "@diff/common";
-import { cacheTokenRequest, loginSuccess } from "../../../../common/actions";
 import firebase from "firebase";
 import { authenticate } from "./api";
 import { actions as remoteActions } from "redux/remote";
@@ -15,7 +14,7 @@ const login = ({ username, password, refreshToken }) => async dispatch => {
       .then(response => {
         console.log("[FIREBASE val]", response);
         // dispatch a success
-        dispatch(loginSuccess(token));
+        dispatch(commonActions.loginSuccess(token));
 
         // cache our token
         dispatch(remoteCacheToken(token));
@@ -33,11 +32,14 @@ const login = ({ username, password, refreshToken }) => async dispatch => {
 
 const remoteCacheToken = ({ refresh_token: token }) => dispatch => {
   // forward with our remote flag
-  dispatch(remoteActions.postMessage(cacheTokenRequest(token)));
+  dispatch(remoteActions.postMessage(commonActions.cacheTokenRequest(token)));
 };
 
 /* eslint-disable */
 const fetchCacheToken = () => dispatch => {
+  console.log("commonTypes", commonTypes, commonActions);
+  debugger;
+
   return remoteActions
     .promisedAction({
       submit: remoteActions.postMessage(commonActions.fetchCacheToken()),
@@ -46,7 +48,10 @@ const fetchCacheToken = () => dispatch => {
       dispatch
     })
     .then(successAction => successAction.payload.token)
-    .catch(errorAction => Promise.reject(new Error("No Token available")));
+    .catch(errorAction => {
+      debugger;
+      Promise.reject(new Error("No Token available", errorAction));
+    });
 };
 
 const fetchUser = async action => async dispatch => {

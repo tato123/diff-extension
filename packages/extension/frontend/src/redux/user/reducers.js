@@ -1,6 +1,6 @@
-import { ACTIONS } from "@diff/common/keys";
 import types from "./types";
 import jwtDecode from "jwt-decode";
+import { types as commonTypes } from "@diff/common";
 
 const initialState = {
   byId: {},
@@ -11,19 +11,19 @@ const initialState = {
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case ACTIONS.FETCH_CACHE_TOKEN.REQUEST:
+    case commonTypes.FETCH_CACHE_TOKEN.REQUEST:
       return {
         ...state,
         access_token: null,
         refresh_token: null
       };
-    case ACTIONS.FETCH_CACHE_TOKEN.SUCCESS:
+    case commonTypes.FETCH_CACHE_TOKEN.SUCCESS:
       return {
         ...state,
         access_token: null,
         refresh_token: payload.token
       };
-    case ACTIONS.FETCH_CACHE_TOKEN.FAILED:
+    case commonTypes.FETCH_CACHE_TOKEN.FAILED:
       return {
         ...state,
         access_token: null,
@@ -45,13 +45,13 @@ const reducer = (state = initialState, { type, payload }) => {
     case types.FETCH_USER_FAILED:
       console.error(payload);
       return state;
-    case ACTIONS.LOGIN.REQUEST:
+    case commonTypes.LOGIN.REQUEST:
       return {
         ...state,
         access_token: null,
         refresh_token: null
       };
-    case ACTIONS.LOGIN.SUCCESS:
+    case commonTypes.LOGIN.SUCCESS:
       const {
         token: { access_token, refresh_token }
       } = payload;
@@ -65,7 +65,7 @@ const reducer = (state = initialState, { type, payload }) => {
         selectedAccount: Object.keys(claims.accounts)[0],
         uid
       };
-    case ACTIONS.LOGIN.FAILED:
+    case commonTypes.LOGIN.FAILED:
       return {
         ...state,
         access_token: null,

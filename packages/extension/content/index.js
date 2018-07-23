@@ -1,10 +1,8 @@
-import { ACTIONS } from "@diff/common/keys";
-import * as actionCreators from "@diff/common/actions";
-import logger from "@diff/common/logger";
 import "./message";
 import { runFrontend } from "./frontend";
 import { sendMessageToBackground, portMessages$ } from "./backgroundClient";
 import { filter } from "rxjs/operators";
+import { types, actions, logger } from "@diff/common";
 
 /**
  * Our application start script, that handles
@@ -13,7 +11,7 @@ import { filter } from "rxjs/operators";
  */
 const main = () => {
   portMessages$
-    .pipe(filter(({ type }) => type === ACTIONS.FETCH_USER_PREFERENCES.SUCCESS))
+    .pipe(filter(({ type }) => type === types.FETCH_USER_PREFERENCES.SUCCESS))
     .subscribe(action => {
       const {
         payload: { preferences }
@@ -31,13 +29,13 @@ const main = () => {
     });
 
   portMessages$
-    .pipe(filter(({ type }) => type === ACTIONS.FETCH_USER_PREFERENCES.FAILED))
+    .pipe(filter(({ type }) => type === types.FETCH_USER_PREFERENCES.FAILED))
     .subscribe(val => {
       console.log("cant run frontend");
     });
 
   // check if we can run on this domain
-  sendMessageToBackground(actionCreators.fetchUserPreferences());
+  sendMessageToBackground(actions.fetchUserPreferences());
 };
 
 // start our applicaiton

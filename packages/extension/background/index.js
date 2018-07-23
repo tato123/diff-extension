@@ -1,13 +1,8 @@
-import {
-  CONTENT_SCRIPT_PORT_NAME,
-  CONTENT_SCRIPT_SOURCE_NAME,
-  BACKGROUND_SCRIPT_PORT_NAME,
-  MESSAGES_FRONTEND_SOURCE
-} from "@diff/common/keys";
 import handlers from "./handlers";
-import { runRequest, composeRemoteAction } from "@diff/common/actions";
 import { rememberUserClickedSite } from "./storage";
 import firebase from "firebase";
+
+import { sources, actions } from "@diff/common";
 
 // connect to firebase
 const config = {
@@ -44,15 +39,21 @@ const registerPort = port => {
  */
 const messageListener = tabId => msg => {
   const postDestContentScript = postMessageToTabWithDestination(
-    CONTENT_SCRIPT_SOURCE_NAME
+    sources.CONTENT_SCRIPT_SOURCE_NAME
   );
   const postDestFrontend = postMessageToTabWithDestination(
-    MESSAGES_FRONTEND_SOURCE
+    sources.MESSAGES_FRONTEND_SOURCE
   );
 
-  if (msg.source === CONTENT_SCRIPT_SOURCE_NAME && msg.type in handlers) {
+  if (
+    msg.source === sources.CONTENT_SCRIPT_SOURCE_NAME &&
+    msg.type in handlers
+  ) {
     handlers[msg.type](tabId, postDestContentScript, msg);
-  } else if (msg.source === MESSAGES_FRONTEND_SOURCE && msg.type in handlers) {
+  } else if (
+    msg.source === sources.MESSAGES_FRONTEND_SOURCE &&
+    msg.type in handlers
+  ) {
     handlers[msg.type](tabId, postDestFrontend, msg);
   } else {
     postDestContentScript(tabId, {
@@ -77,7 +78,10 @@ const portForId = tabId => {
  * @param {*} message
  */
 const postMessageToTab = (tabId, message) => {
-  postMessageToTabWithDestination(CONTENT_SCRIPT_SOURCE_NAME)(tabId, message);
+  postMessageToTabWithDestination(sources.CONTENT_SCRIPT_SOURCE_NAME)(
+    tabId,
+    message
+  );
 };
 
 /**
@@ -92,7 +96,11 @@ const postMessageToTabWithDestination = destination => (tabId, message) => {
     return;
   }
   port.postMessage(
-    composeRemoteAction(message, BACKGROUND_SCRIPT_PORT_NAME, destination)
+    actions.composeRemoteAction(
+      message,
+      sources.BACKGROUND_SCRIPT_PORT_NAME,
+      destination
+    )
   );
 };
 
@@ -100,7 +108,7 @@ const postMessageToTabWithDestination = destination => (tabId, message) => {
  * Handle our initial connection from content scripts
  */
 const handleOnConnect = port => {
-  if (port.name === CONTENT_SCRIPT_PORT_NAME) {
+  if (port.name === sources.CONTENT_SCRIPT_PORT_NAME) {
     // add me to the ports list
     const id = registerPort(port);
     port.onMessage.addListener(messageListener(id));
@@ -127,7 +135,7 @@ const handleOnContextMenuClicked = (info, tab) => {
   // remember the user clicked this site
   rememberUserClickedPreference(tab);
 
-  postMessageToTab(tab.id, runRequest());
+  postMessageToTab(tab.id, actions.runRequest());
   return true;
 };
 
@@ -135,7 +143,7 @@ const handleOnBrowserActionClicked = tab => {
   // remember the user clicked this site
   rememberUserClickedPreference(tab);
 
-  postMessageToTab(tab.id, runRequest());
+  postMessageToTab(tab.id, actions.runRequest());
   return true;
 };
 
