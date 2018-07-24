@@ -1,7 +1,9 @@
+import { operations } from "redux/user";
 import firebase from "firebase";
-import _ from "lodash";
+import actions from "./actions";
+import { actions as selectorActions } from "redux/elements";
 
-const uploadFile = (file, rootState) => async dispatch => {
+const uploadFile = file => (dispatch, getState) => {
   const storageRef = firebase.storage().ref(`attachments/${file.name}`);
   const task = storageRef.put(file);
 
@@ -25,19 +27,25 @@ const uploadFile = (file, rootState) => async dispatch => {
   });
 };
 
-const addNewComment = (payload, rootState) => async dispatch => {
-  const { comment, selector } = payload;
-  const db = firebase.firestore();
+/**
+ * Persists a new comment to firestore
+ *
+ * @param {{comment:string, selector:string}}
+ * @returns {Function}
+ */
+const persistComment = payload => async (dispatch, getState, { db }) => {
+  const { comment, selector, attachments: uploadAttachment } = payload;
+  const rootState = getState();
 
-  const attachments = await Promise.all(payload.attachments.map(uploadFile));
+  const attachments = await Promise.all(uploadAttachment.map(uploadFile));
 
   const record = {
     comment,
     selector,
     type: "comment",
     meta: {
-      accountId: rootState.auth.selectedAccount,
-      userId: rootState.auth.uid,
+      accountId: rootState.user.selectedAccount,
+      userId: rootState.user.uid,
       created: Date.now()
     },
     attachments,
@@ -48,67 +56,85 @@ const addNewComment = (payload, rootState) => async dispatch => {
   console.log(result);
 };
 
-// firebaseSnapshots = () => {
-//   comments: () => {
-//     let unsubscribe = null;
-//     firebase.auth().onAuthStateChanged(function(user) {
-//       if (user) {
-//         unsubscribe = db
-//           .collection("events")
-//           .where("type", "==", "comment")
-//           .where("url", "==", window.location.href)
-//           .onSnapshot(querySnapshot => {
-//             querySnapshot.forEach(doc => {
-//               const data = doc.data();
+/**
+ * Fetches comments from firestore
+ *
+ * @param {}
+ * @returns {Function}
+ */
+const getComments = () => (dispatch, getState, { db }) => {
+  db.collection("events")
+    .where("type", "==", "comment")
+    .where("url", "==", window.location.href)
+    .onSnapshot(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
 
-//               // add our comment
-//               dispatch.comment.addComment({
-//                 id: doc.id,
-//                 ...data
-//               });
+        // add our comment
+        dispatch(
+          actions.addComment({
+            id: doc.id,
+            ...data
+          })
+        );
 
-//               // resolve our user
-//               dispatch.user.fetchUser({ uid: data.meta.userId });
+        // resolve our user
+        dispatch(operations.fetchUser(data.meta.userId));
 
-//               dispatch.selector.addSelector({
-//                 id: data.selector,
-//                 type: data.type,
-//                 typeId: doc.id
-//               });
-//             });
-//           });
-//       } else {
-//         unsubscribe && unsubscribe();
-//       }
-//     });
-//   };
-// };
+        dispatch(
+          selectorActions.addSelector({
+            id: data.selector,
+            type: data.type,
+            typeId: doc.id
+          })
+        );
+      });
+    });
+};
 
-// firebaseSnapshots: (dispatch, db) => ({
-//   diffs: () =>
-//     db
-//       .collection("events")
-//       .where("type", "==", "diff")
-//       .where("url", "==", window.location.href)
-//       .onSnapshot(querySnapshot => {
-//         querySnapshot.forEach(doc => {
-//           const data = doc.data();
-//           dispatch.diff.addDiff({
-//             id: doc.id,
-//             ...data
-//           });
-//           dispatch.user.fetchUser({ uid: data.meta.userId });
+/**
+ * Fetches diffs from firestore
+ *
+ * @param {}
+ * @returns {Function}
+ */
+const getDiffs = () => (dispatch, getState, { db }) => {
+  let unsubscribe = null;
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      db.collection("events")
+        .where("type", "==", "diff")
+        .where("url", "==", window.location.href)
+        .onSnapshot(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            const data = doc.data();
+            dispatch(
+              actions.addDiff({
+                id: doc.id,
+                ...data
+              })
+            );
 
-//           dispatch.selector.addSelector({
-//             id: data.selector,
-//             type: data.type,
-//             typeId: doc.id
-//           });
-//         });
-//       })
-// });
+            dispatch(operations.fetchUser(data.meta.userId));
+
+            dispatch(
+              selectorActions.addSelector({
+                id: data.selector,
+                type: data.type,
+                typeId: doc.id
+              })
+            );
+          });
+        });
+    } else {
+      unsubscribe && unsubscribe();
+    }
+  });
+};
 
 export default {
   uploadFile,
-  addNewComment
+  persistComment,
+  getComments,
+  getDiffs
 };

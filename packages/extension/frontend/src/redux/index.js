@@ -1,6 +1,5 @@
-import { applyMiddleware, createStore } from "redux";
+import { applyMiddleware, createStore, compose } from "redux";
 import thunkMiddleware from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducers";
 
 import { postmessageMiddleware, asyncMiddleware } from "./remote";
@@ -18,9 +17,14 @@ const config = {
 };
 
 firebase.initializeApp(config);
+const db = firebase.firestore();
 
 export default function configureStore(preloadedState) {
-  const middlewares = [thunkMiddleware, asyncMiddleware, postmessageMiddleware];
+  const middlewares = [
+    thunkMiddleware.withExtraArgument({ db }),
+    asyncMiddleware,
+    postmessageMiddleware
+  ];
   const middlewareEnhancer = applyMiddleware(...middlewares);
 
   const enhancers = [middlewareEnhancer];

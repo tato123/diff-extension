@@ -32,8 +32,7 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
 
     // get the local sites theyve opened diff for
     const localSites = await rememberUserClickedSite();
-    /* eslint-disable */
-    debugger;
+
     preferences.autorunDomains = _.union(sites, localSites);
 
     // combine and send back

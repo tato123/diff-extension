@@ -41,19 +41,27 @@ export default class Login extends React.Component {
     requiresLogin: false
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.login();
+  }
+
+  login = async () => {
     try {
       const refreshToken = await this.props.getCacheToken();
 
       if (refreshToken) {
         await this.props.login({ refreshToken });
+
+        return Promise.resolve();
+        // perform post login
+        // dispatch(postLogin());
       } else {
         this.setState({ requiresLogin: true });
       }
     } catch (err) {
       this.setState({ requiresLogin: true });
     }
-  }
+  };
 
   onLoginRequest = evt => {
     evt.preventDefault();

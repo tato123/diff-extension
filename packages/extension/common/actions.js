@@ -101,6 +101,13 @@ const validateCanRunRequest = domain => ({
   }
 });
 
+const loginRequest = credentials => ({
+  type: types.LOGIN.REQUEST,
+  payload: {
+    ...credentials
+  }
+});
+
 const loginSuccess = token => ({
   type: types.LOGIN.SUCCESS,
   payload: {
@@ -131,5 +138,6 @@ export default {
   fetchCacheTokenSuccess,
   validateCanRunRequest,
   loginSuccess,
-  loginFailed
+  loginFailed,
+  loginRequest
 };
