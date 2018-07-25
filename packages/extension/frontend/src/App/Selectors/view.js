@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ElementHighlight from "./ElementHighlight";
+import ElementHighlight from "./components/ElementHighlight";
 import { inspect } from "api/window";
 import finder from "@medv/finder";
 
