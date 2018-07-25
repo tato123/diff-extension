@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import View from "./Comments";
 
-import { selectors } from "diff";
+import { selectors } from "redux/widgets/diff";
 
 const mapStateToProps = (state, props) => ({
   thread: selectors.elementThreadSelector(props.thread)(state),

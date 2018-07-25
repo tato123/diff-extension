@@ -94,7 +94,7 @@ export default class Selectors extends React.Component {
             ? element.getAttribute("data-selector")
             : this.createNewSelector(element);
 
-          this.props.showSelectorDetails({ selector });
+          this.props.showSelectorDetails(selector);
         }
 
         this.props.cancelInspect();

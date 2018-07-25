@@ -1,1 +1,1 @@
-export { default } from "./view.container";
+export { default } from "./Diff.container";

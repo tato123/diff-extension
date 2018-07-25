@@ -1,4 +1,11 @@
 import firebase from "firebase";
+import { actions as widgetActions } from "../state";
+import { actions as selectorActions } from "../selectors";
+
+const closeDiff = () => dispatch => {
+  dispatch(widgetActions.hide("diff"));
+  dispatch(selectorActions.inspect());
+};
 
 const uploadFile = file => (dispatch, getState) => {
   const storageRef = firebase.storage().ref(`attachments/${file.name}`);
@@ -30,7 +37,9 @@ const uploadFile = file => (dispatch, getState) => {
  * @param {{comment:string, selector:string}}
  * @returns {Function}
  */
-const persistComment = payload => async (dispatch, getState, { db }) => {
+const addNewComment = payload => async (dispatch, getState, { db }) => {
+  /* eslint-disable */
+  debugger;
   const { comment, selector, attachments: uploadAttachment } = payload;
   const rootState = getState();
 
@@ -55,5 +64,6 @@ const persistComment = payload => async (dispatch, getState, { db }) => {
 
 export default {
   uploadFile,
-  persistComment
+  closeDiff,
+  addNewComment
 };

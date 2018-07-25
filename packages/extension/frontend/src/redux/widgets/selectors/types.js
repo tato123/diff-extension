@@ -1,5 +1,5 @@
-const CANCEL_INSPECT = "@diff/user/cancelInspect";
-const INSPECT = "@diff/user/inspect";
+const CANCEL_INSPECT = "@diff/selectors/cancelInspect";
+const INSPECT = "@diff/selectors/inspect";
 
 export default {
   CANCEL_INSPECT,

@@ -38,7 +38,8 @@ const MainWindow = styled.div`
 
 export default class Viewer extends React.Component {
   static propTypes = {
-    cssSelector: PropTypes.string
+    cssSelector: PropTypes.string,
+    close: PropTypes.func.isRequired
   };
 
   state = {

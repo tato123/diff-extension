@@ -1,17 +1,21 @@
 import types from "./types";
 
-const closeAll = () => ({
-  type: types.CLOSE_ALL
+const show = (name, context = {}) => ({
+  type: types.SHOW,
+  payload: {
+    name,
+    context
+  }
 });
 
-const show = name => ({
-  type: types.SHOW,
+const hide = name => ({
+  type: types.HIDE,
   payload: {
     name
   }
 });
 
 export default {
-  closeAll,
-  show
+  show,
+  hide
 };

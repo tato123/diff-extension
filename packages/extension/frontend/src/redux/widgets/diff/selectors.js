@@ -1,14 +1,25 @@
 import { createSelector } from "reselect";
 import _ from "lodash";
 
-const commentsSelector = state => state.diff.comments;
-const stateSelector = state => state;
-const usersSelector = state => state.users;
+// all of our comments
+const cssSelectorSelectors = state => state.entities.selectors;
 
-const elementThreadSelector = thread =>
-  createSelector(commentsSelector, stateSelector, (comments, state) =>
-    _.chain(comments.byId[thread])
-      .mapValues((value, key) => value.map(id => state[key].byId[id]))
+// all of our users
+const usersSelector = state => state.entities.users;
+// state
+const stateSelector = state => state;
+
+/**
+ * Flattens
+ * @params {String}
+ * @returns {Function}
+ */
+const elementThreadSelector = cssSelector =>
+  createSelector(cssSelectorSelectors, stateSelector, (cssSelectors, state) =>
+    _.chain(cssSelectors.byId[cssSelector])
+      .mapValues((value, key) => {
+        return value.map(id => state.entities[key + "s"].byId[id]);
+      })
       .values()
       .flatten()
       .sortBy("meta.created")

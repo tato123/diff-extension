@@ -1,18 +1,17 @@
-const closeDiff = () => dispatch => {
-  dispatch.widgets.hide({ name: "diff" });
-  dispatch.selector.inspect();
-};
+import actions from "./actions";
+import { actions as selectorActions } from "../selectors";
 
-const closeAll = (payload, rootState) => dispatch => {
-  rootState.widgets.forEach(widget => {
+const closeAll = name => (dispatch, getState) => {
+  const state = getState();
+  dispatch(selectorActions.cancelInspect());
+
+  state.widgets.state.forEach(widget => {
     if (!widget.static) {
-      dispatch.widgets.hide(widget);
+      dispatch(actions.hide(widget.name));
     }
   });
-  dispatch.selector.cancelInspect();
 };
 
 export default {
-  closeDiff,
   closeAll
 };
