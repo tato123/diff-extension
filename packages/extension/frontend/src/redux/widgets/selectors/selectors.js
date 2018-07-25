@@ -1,12 +1,10 @@
 import { createSelector } from "reselect";
 
-const elementsDomain = state => state.elements;
+const selectorWidgetDomain = state => state.widgets.selector;
 
-const count = createSelector(elementsDomain, allIds => allIds.length || 0);
-
-const ids = createSelector(elementsDomain, allIds => allIds || []);
+const inspectModeSelector = () =>
+  createSelector(selectorWidgetDomain, selector => selector);
 
 export default {
-  count,
-  ids
+  inspectModeSelector
 };

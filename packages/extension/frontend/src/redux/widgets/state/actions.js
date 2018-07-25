@@ -4,10 +4,10 @@ const closeAll = () => ({
   type: types.CLOSE_ALL
 });
 
-const show = widget => ({
+const show = name => ({
   type: types.SHOW,
   payload: {
-    widget
+    name
   }
 });
 

@@ -1,15 +1,24 @@
 import View from "./view";
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 
-const mapStateToProps = state => ({
-  selectors: state.selector.allIds,
-  inspectMode: state.selector.inspectMode
+import { selectors as selectorEntitySelectors } from "redux/entities/selectors";
+import {
+  selectors as widgetSelectors,
+  operations,
+  actions
+} from "redux/widgets/selectors";
+
+const mapStateToProps = createStructuredSelector({
+  selectors: selectorEntitySelectors.cssSelectorIdsSelector(),
+  inspectMode: widgetSelectors.inspectModeSelector()
 });
 
 const mapDispatchToProps = dispatch => ({
-  showSelectorDetails: dispatch.selector.toggleDiffForSelector,
-  inspect: dispatch.selector.inspect,
-  cancelInspect: dispatch.selector.cancelInspect
+  showSelectorDetails: selector =>
+    dispatch(operations.showDiffForSelector(selector)),
+  inspect: () => dispatch(actions.inspect()),
+  cancelInspect: () => dispatch(actions.cancelInspect())
 });
 
 export default connect(

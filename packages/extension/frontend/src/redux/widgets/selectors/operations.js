@@ -1,12 +1,16 @@
-import { actions as widgetActions } from "redux/widgets";
+import { actions as widgetActions } from "redux/widgets/state";
 
-export const toggleDiffForSelector = action => dispatch => {
+const showDiffForSelector = selector => dispatch => {
   dispatch(
     widgetActions.show({
       name: "diff",
       context: {
-        selector: action.payload.selector
+        selector
       }
     })
   );
+};
+
+export default {
+  showDiffForSelector
 };

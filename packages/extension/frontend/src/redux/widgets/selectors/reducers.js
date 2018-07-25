@@ -3,10 +3,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, { type, payload }) => {
-  switch (type) {
-    default:
-      return state;
-  }
+  return state;
 };
 
 export default reducer;

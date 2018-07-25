@@ -2,7 +2,7 @@ import React from "react";
 import { Provider } from "react-redux";
 
 // common components
-import Widget from "components/Widget";
+import Widget, { Unauthenticated, Authenticated } from "components/Widget";
 
 // Application specific views
 import Launcher from "./Launcher";
@@ -16,20 +16,6 @@ import configureStore from "./store";
 // Create our new store
 const store = configureStore();
 
-const UnAuthenticatedView = ({ token, children }) => {
-  if (!token) {
-    return children;
-  }
-  return null;
-};
-
-const AuthenticatedView = ({ name, shown, token, children }) => {
-  if (shown && token) {
-    return children;
-  }
-  return null;
-};
-
 export default class App extends React.Component {
   state = {
     launcherActive: false
@@ -41,7 +27,7 @@ export default class App extends React.Component {
       return closeAll();
     }
 
-    show({ name: "selectors" });
+    show("selectors");
     this.setState({ launcherActive: true });
   };
 
@@ -51,23 +37,23 @@ export default class App extends React.Component {
         <div>
           <Widget name="login">
             {({ token }) => (
-              <UnAuthenticatedView token={token}>
+              <Unauthenticated token={token}>
                 <Login />
-              </UnAuthenticatedView>
+              </Unauthenticated>
             )}
           </Widget>
           <Widget name="selectors">
             {props => (
-              <AuthenticatedView {...props}>
+              <Authenticated {...props}>
                 <Selectors />
-              </AuthenticatedView>
+              </Authenticated>
             )}
           </Widget>
           <Widget name="diff">
             {props => (
-              <AuthenticatedView {...props}>
+              <Authenticated {...props}>
                 <Viewer context={props.values && props.values.context} />
-              </AuthenticatedView>
+              </Authenticated>
             )}
           </Widget>
           <Widget name="launcher" static>
