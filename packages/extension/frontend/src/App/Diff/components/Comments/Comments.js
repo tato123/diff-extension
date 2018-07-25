@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import _ from "lodash";
-import Attachment from "components/Attachment";
+
+import Attachment from "../Attachment";
 import { List, Image, Code, DateTime } from "@diff/shared-components";
 
 export default class Comments extends React.Component {

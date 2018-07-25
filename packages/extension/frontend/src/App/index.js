@@ -1,14 +1,19 @@
 import React from "react";
 import { Provider } from "react-redux";
 
-import Launcher from "components/Launcher";
-import Login from "components/Login";
-import Selectors from "components/Selectors";
-import Viewer from "components/Viewer";
+// common components
 import Widget from "components/Widget";
 
+// Application specific views
+import Launcher from "./Launcher";
+import Login from "./Login";
+import Selectors from "./Selectors";
+import Viewer from "./Diff";
+
+// Redux store
 import configureStore from "./store";
 
+// Create our new store
 const store = configureStore();
 
 const UnAuthenticatedView = ({ token, children }) => {

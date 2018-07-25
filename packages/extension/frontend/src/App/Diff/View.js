@@ -12,7 +12,7 @@ import {
 
 import styled from "styled-components";
 import Popper from "components/Popper";
-import { Assets, Diff, Thread } from "./Tabs";
+import { Assets, Diff, Thread } from "./components/Tabs";
 import Icon from "react-icons-kit";
 import { ic_close } from "react-icons-kit/md/ic_close";
 
