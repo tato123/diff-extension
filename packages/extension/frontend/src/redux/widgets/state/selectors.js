@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-const widgetsDomain = state => state.widgets;
+const widgetsDomain = state => state.widgets.state;
 
 const shownSelector = name =>
   createSelector(

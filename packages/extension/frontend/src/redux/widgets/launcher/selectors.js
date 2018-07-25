@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-const launcherSelector = state => state.launcher;
+const launcherSelector = state => state.widgets.launcher;
 const elementSelector = state => state.entities.selectors;
 
 const busySelector = () =>

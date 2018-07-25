@@ -4,9 +4,6 @@ import thunkMiddleware from "redux-thunk";
 import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
 import firebase from "firebase";
 
-import diff from "redux/diff";
-import selectors from "redux/selectors";
-import launcher from "redux/launcher";
 import user from "redux/user";
 import widgets from "redux/widgets";
 import entities from "redux/entities";
@@ -44,9 +41,6 @@ export default function configureStore(preloadedState) {
   const composedEnhancers = composeEnhancers(...enhancers);
 
   const rootReducer = combineReducers({
-    diff,
-    selectors,
-    launcher,
     user,
     widgets,
     entities
