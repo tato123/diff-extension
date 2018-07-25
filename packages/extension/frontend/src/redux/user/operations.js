@@ -2,8 +2,9 @@ import { actions as commonActions, types as commonTypes } from "@diff/common";
 import firebase from "firebase";
 import { authenticate } from "./api";
 import { actions as remoteActions } from "redux/remote";
-import { operations as diffOperations } from "redux/diff";
-import actions from "./actions";
+
+import { operations as diffOperations } from "redux/entities/diffs";
+import { operations as commentOperations } from "redux/entities/comments";
 
 /**
  * Async login operation that should be used for logging in via refresh credentials
@@ -32,10 +33,9 @@ const login = credentials => async dispatch => {
         // cache our token
         dispatch(remoteCacheToken(token));
 
+        dispatch(postLogin());
         // perform post login
         // fetch our
-        dispatch(diffOperations.getComments());
-        // dispatch(diffOperations.getDiffs());
 
         return Promise.resolve();
       })
@@ -48,6 +48,19 @@ const login = credentials => async dispatch => {
     dispatch(commonActions.loginFailed(err));
     return Promise.reject(err);
   }
+};
+
+/**
+ * Prelogin attempts to pre-fetch some of our data
+ */
+const postLogin = () => async dispatch => {
+  // fetch all of our diff comments
+  dispatch(commentOperations.fetchComments());
+
+  // fetch all of our diffs
+  dispatch(diffOperations.getDiffs());
+
+  return Promise.resolve();
 };
 
 /**
@@ -80,32 +93,7 @@ const fetchCacheToken = () => dispatch => {
     });
 };
 
-/**
- *
- * @param {{}} action
- * @returns {Function}
- */
-const fetchUser = uid => async (dispatch, getState, { db }) => {
-  try {
-    /* eslint-disable */
-
-    const doc = await db
-      .collection("users")
-      .doc(uid)
-      .get();
-
-    if (doc.exists) {
-      return dispatch(actions.fetchUserSuccess(doc.data()));
-    }
-    return dispatch(actions.fetchUserFailed("Unable to get user data"));
-  } catch (error) {
-    console.log(error);
-    return dispatch(actions.fetchUserFailed(error.message));
-  }
-};
-
 export default {
-  fetchUser,
   fetchCacheToken,
   remoteCacheToken,
   login

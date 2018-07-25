@@ -1,9 +1,15 @@
-import { applyMiddleware, createStore, compose } from "redux";
+import { applyMiddleware, createStore, compose, combineReducers } from "redux";
 import thunkMiddleware from "redux-thunk";
-import rootReducer from "./reducers";
 
 import { postmessageMiddleware, asyncMiddleware } from "./remote";
 import firebase from "firebase";
+
+import diff from "./diff";
+import selectors from "./selectors";
+import launcher from "./launcher";
+import user from "./user";
+import widgets from "./widgets";
+import entities from "./entities";
 
 console.log("[plugin - firebase] initializing connection");
 // connect to firebase
@@ -37,10 +43,19 @@ export default function configureStore(preloadedState) {
 
   const composedEnhancers = composeEnhancers(...enhancers);
 
+  const rootReducer = combineReducers({
+    diff,
+    selectors,
+    launcher,
+    user,
+    widgets,
+    entities
+  });
+
   const store = createStore(rootReducer, preloadedState, composedEnhancers);
 
   if (process.env.NODE_ENV !== "production" && module.hot) {
-    module.hot.accept("./reducers", () => store.replaceReducer(rootReducer));
+    module.hot.accept("./index", () => store.replaceReducer(rootReducer));
   }
   return store;
 }

@@ -1,3 +1,10 @@
+/**
+ *
+ * @param {string} username - username credential
+ * @param {string} password - password credential
+ * @param {string} refreshToken - refreshToken credential
+ * @returns {Promise}
+ */
 export const authenticate = async (username, password, refreshToken) => {
   const options = refreshToken
     ? {

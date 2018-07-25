@@ -1,7 +1,4 @@
-import { operations } from "redux/user";
 import firebase from "firebase";
-import actions from "./actions";
-import { actions as selectorActions } from "redux/elements";
 
 const uploadFile = file => (dispatch, getState) => {
   const storageRef = firebase.storage().ref(`attachments/${file.name}`);
@@ -56,85 +53,7 @@ const persistComment = payload => async (dispatch, getState, { db }) => {
   console.log(result);
 };
 
-/**
- * Fetches comments from firestore
- *
- * @param {}
- * @returns {Function}
- */
-const getComments = () => (dispatch, getState, { db }) => {
-  db.collection("events")
-    .where("type", "==", "comment")
-    .where("url", "==", window.location.href)
-    .onSnapshot(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-
-        // add our comment
-        dispatch(
-          actions.addComment({
-            id: doc.id,
-            ...data
-          })
-        );
-
-        // resolve our user
-        dispatch(operations.fetchUser(data.meta.userId));
-
-        dispatch(
-          selectorActions.addSelector({
-            id: data.selector,
-            type: data.type,
-            typeId: doc.id
-          })
-        );
-      });
-    });
-};
-
-/**
- * Fetches diffs from firestore
- *
- * @param {}
- * @returns {Function}
- */
-const getDiffs = () => (dispatch, getState, { db }) => {
-  let unsubscribe = null;
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      db.collection("events")
-        .where("type", "==", "diff")
-        .where("url", "==", window.location.href)
-        .onSnapshot(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            const data = doc.data();
-            dispatch(
-              actions.addDiff({
-                id: doc.id,
-                ...data
-              })
-            );
-
-            dispatch(operations.fetchUser(data.meta.userId));
-
-            dispatch(
-              selectorActions.addSelector({
-                id: data.selector,
-                type: data.type,
-                typeId: doc.id
-              })
-            );
-          });
-        });
-    } else {
-      unsubscribe && unsubscribe();
-    }
-  });
-};
-
 export default {
   uploadFile,
-  persistComment,
-  getComments,
-  getDiffs
+  persistComment
 };

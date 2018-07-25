@@ -25,16 +25,6 @@ const reducer = (state = initialState, { type, payload }) => {
         },
         allIds: _.union(state.allIds, [payload.id])
       };
-    case types.CANCEL_INSPECT:
-      return {
-        ...state,
-        inspectMode: false
-      };
-    case types.INSPECT:
-      return {
-        ...state,
-        inspectMode: true
-      };
     default:
       return state;
   }

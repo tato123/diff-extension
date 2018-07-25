@@ -1,10 +1,7 @@
-import types from "./types";
 import jwtDecode from "jwt-decode";
 import { types as commonTypes } from "@diff/common";
 
 const initialState = {
-  byId: {},
-  allIds: [],
   access_token: null,
   refresh_token: null
 };
@@ -29,22 +26,6 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token: null,
         refresh_token: null
       };
-    case types.FETCH_USER_SUCCESS:
-      return {
-        byId: {
-          ...state.byId,
-          [payload.uid]: {
-            photoUrl: payload.photoUrl,
-            email: payload.email,
-            displayName: payload.displayName,
-            uid: payload.uid
-          }
-        },
-        allIds: [...state.allIds, payload.uid]
-      };
-    case types.FETCH_USER_FAILED:
-      console.error(payload);
-      return state;
     case commonTypes.LOGIN.REQUEST:
       return {
         ...state,
@@ -55,8 +36,9 @@ const reducer = (state = initialState, { type, payload }) => {
       const {
         token: { access_token, refresh_token }
       } = payload;
+
       const { claims, uid } = jwtDecode(access_token);
-      console.log(jwtDecode(access_token));
+
       return {
         ...state,
         access_token,
