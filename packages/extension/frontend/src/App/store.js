@@ -1,15 +1,15 @@
 import { applyMiddleware, createStore, compose, combineReducers } from "redux";
 import thunkMiddleware from "redux-thunk";
 
-import { postmessageMiddleware, asyncMiddleware } from "./remote";
+import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
 import firebase from "firebase";
 
-import diff from "./diff";
-import selectors from "./selectors";
-import launcher from "./launcher";
-import user from "./user";
-import widgets from "./widgets";
-import entities from "./entities";
+import diff from "redux/diff";
+import selectors from "redux/selectors";
+import launcher from "redux/launcher";
+import user from "redux/user";
+import widgets from "redux/widgets";
+import entities from "redux/entities";
 
 console.log("[plugin - firebase] initializing connection");
 // connect to firebase
