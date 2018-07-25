@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "paths": {
+      "@diff/common": ["./packages/extension/common"],
+      "@diff/common/*": ["./packages/extension/common/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "packages/**/node_modules",
+    "packages/**/build",
+    "packages/**/dist"
+  ]
+}
