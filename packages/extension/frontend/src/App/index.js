@@ -32,6 +32,10 @@ export default class App extends React.Component {
   };
 
   render() {
+    const {
+      state: { launcherActive }
+    } = this;
+
     return (
       <Provider store={store}>
         <div>
@@ -45,7 +49,7 @@ export default class App extends React.Component {
           <Widget name="selectors">
             {props => (
               <Authenticated {...props}>
-                <Selectors />
+                <Selectors showCount={launcherActive} />
               </Authenticated>
             )}
           </Widget>
@@ -59,6 +63,7 @@ export default class App extends React.Component {
           <Widget name="launcher">
             {props => (
               <Launcher
+                showCount={!launcherActive}
                 onClick={this.handleLauncherClick(props.show, props.closeAll)}
               />
             )}

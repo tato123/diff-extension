@@ -26,10 +26,10 @@ export default class Bubble extends React.PureComponent {
   };
 
   render() {
-    const { value } = this.props;
+    const { value, style, className } = this.props;
 
     return (
-      <Container>
+      <Container style={style} className={className}>
         <Label as="button">{value}</Label>
       </Container>
     );

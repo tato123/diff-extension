@@ -1,6 +1,4 @@
-const initialState = {
-  busy: false
-};
+const initialState = {};
 
 const reducer = (state = initialState, action) => {
   return state;
