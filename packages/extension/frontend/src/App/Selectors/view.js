@@ -28,7 +28,9 @@ export default class Selectors extends React.Component {
     /**
      * Stops our inspection
      */
-    cancelInspect: PropTypes.func.isRequired
+    cancelInspect: PropTypes.func.isRequired,
+    /* create selector */
+    createNewSelector: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -75,6 +77,8 @@ export default class Selectors extends React.Component {
       optimizedMinLength: 2,
       threshold: 1000
     });
+
+    this.props.createNewSelector(newSelector);
     return newSelector;
   };
 

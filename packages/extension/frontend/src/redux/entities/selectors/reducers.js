@@ -25,6 +25,16 @@ const reducer = (state = initialState, { type, payload }) => {
         },
         allIds: _.union(state.allIds, [payload.id])
       };
+    case types.ADD_NEW_SELECTOR:
+      return {
+        byId: {
+          ...state.byId,
+          [payload.id]: {
+            transient: true
+          }
+        },
+        allIds: _.union(state.allIds, [payload.id])
+      };
     default:
       return state;
   }

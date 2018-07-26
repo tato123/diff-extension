@@ -1,7 +1,6 @@
 import { fromEvent, Subject, of } from "rxjs";
 import {
   takeUntil,
-  empty,
   debounceTime,
   distinctUntilChanged,
   last,
@@ -16,11 +15,6 @@ injectGlobal`
     outline: 2px dashed #FF3C41;    
     background-color: rgba(60, 65, 255, 0.2)!important;
   }
-
-  .diff-selected {
-    outline: 2px dashed #1e1e3e;
-  }
-
 `;
 
 // common selector attribute

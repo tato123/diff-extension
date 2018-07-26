@@ -15,8 +15,13 @@ const stateSelector = state => state;
  * @returns {Function}
  */
 const elementThreadSelector = cssSelector =>
-  createSelector(cssSelectorSelectors, stateSelector, (cssSelectors, state) =>
-    _.chain(cssSelectors.byId[cssSelector])
+  createSelector(cssSelectorSelectors, stateSelector, (cssSelectors, state) => {
+    const selector = cssSelectors.byId[cssSelector];
+    if (_.has(selector, "transient")) {
+      return [];
+    }
+
+    return _.chain(selector)
       .mapValues((value, key) => {
         return value.map(id => state.entities[key + "s"].byId[id]);
       })
@@ -24,8 +29,8 @@ const elementThreadSelector = cssSelector =>
       .flatten()
       .sortBy("meta.created")
       .reverse()
-      .value()
-  );
+      .value();
+  });
 
 const allUsersSelector = () =>
   createSelector(usersSelector, users => users.byId);

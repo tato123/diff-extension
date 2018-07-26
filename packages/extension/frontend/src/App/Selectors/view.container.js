@@ -18,7 +18,9 @@ const mapDispatchToProps = dispatch => ({
   showSelectorDetails: selector =>
     dispatch(operations.showDiffForSelector(selector)),
   inspect: () => dispatch(actions.inspect()),
-  cancelInspect: () => dispatch(actions.cancelInspect())
+  cancelInspect: () => dispatch(actions.cancelInspect()),
+  createNewSelector: selector =>
+    dispatch(operations.createNewSelector(selector))
 });
 
 export default connect(

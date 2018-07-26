@@ -1,4 +1,4 @@
-const ADD_DIFF = "@diff/diff/addDiff";
+const ADD_DIFF = "@diff/entities/diffs/addDiff";
 
 export default {
   ADD_DIFF

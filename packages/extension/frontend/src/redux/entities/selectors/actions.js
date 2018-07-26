@@ -5,6 +5,14 @@ const addSelector = payload => ({
   payload
 });
 
+const addNewSelector = cssSelector => ({
+  type: types.ADD_NEW_SELECTOR,
+  payload: {
+    id: cssSelector
+  }
+});
+
 export default {
-  addSelector
+  addSelector,
+  addNewSelector
 };
