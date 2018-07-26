@@ -20,11 +20,14 @@ const config = {
 };
 
 firebase.initializeApp(config);
-const db = firebase.firestore();
+
+const firestore = firebase.firestore();
+const settings = { timestampsInSnapshots: true };
+firestore.settings(settings);
 
 export default function configureStore(preloadedState) {
   const middlewares = [
-    thunkMiddleware.withExtraArgument({ db }),
+    thunkMiddleware.withExtraArgument({ db: firestore }),
     asyncMiddleware,
     postmessageMiddleware
   ];
