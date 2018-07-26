@@ -38,8 +38,6 @@ const uploadFile = file => (dispatch, getState) => {
  * @returns {Function}
  */
 const addNewComment = payload => async (dispatch, getState, { db }) => {
-  /* eslint-disable */
-  debugger;
   const { comment, selector, attachments: uploadAttachment } = payload;
   const rootState = getState();
 

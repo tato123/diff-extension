@@ -16,7 +16,7 @@ const fetchComments = () => (dispatch, getState, { db }) => {
       querySnapshot.forEach(doc => {
         const data = doc.data();
 
-        // add our comment
+        console.warn("[Ambiguous add, update, or delete]");
         dispatch(
           actions.addComment({
             id: doc.id,

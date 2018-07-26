@@ -1,7 +1,10 @@
 import types from "./types";
 
-const fetchUserRequest = () => ({
-  type: types.FETCH_USER_REQUEST
+const fetchUserRequest = uid => ({
+  type: types.FETCH_USER_REQUEST,
+  payload: {
+    uid
+  }
 });
 
 const fetchUserSuccess = payload => ({
