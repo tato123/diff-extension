@@ -12,7 +12,11 @@ const DateTime = ({ date }) => (
 );
 
 DateTime.propTypes = {
-  date: PropTypes.date
+  date: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.instanceOf(Date)
+  ])
 };
 
 export default DateTime;

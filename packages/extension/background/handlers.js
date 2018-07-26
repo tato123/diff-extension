@@ -1,5 +1,3 @@
-import { ACTIONS } from "@diff/common/keys";
-import * as actionCreator from "@diff/common/actions";
 import {
   get,
   set,
@@ -9,6 +7,7 @@ import {
 } from "./storage";
 import { login } from "./user";
 import _ from "lodash";
+import { types, actions } from "@diff/common";
 const PREFERENCES = "_DIFF_PREFERENCES";
 
 /**
@@ -33,20 +32,13 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
 
     // get the local sites theyve opened diff for
     const localSites = await rememberUserClickedSite();
-    /* eslint-disable */
-    debugger;
+
     preferences.autorunDomains = _.union(sites, localSites);
 
     // combine and send back
-    postMessageToTab(
-      tabId,
-      actionCreator.fetchUserPreferencesSuccess(preferences)
-    );
+    postMessageToTab(tabId, actions.fetchUserPreferencesSuccess(preferences));
   } catch (err) {
-    postMessageToTab(
-      tabId,
-      actionCreator.fetchUserPreferencesFailed(err.message)
-    );
+    postMessageToTab(tabId, actions.fetchUserPreferencesFailed(err.message));
   }
 };
 
@@ -56,44 +48,36 @@ const handlStoreUserPreferences = (
   { payload: { preferences } }
 ) => {
   set(PREFERENCES, preferences)
-    .then(() =>
-      postMessageToTab(tabId, actionCreator.storeUserPreferencesSuccess())
-    )
+    .then(() => postMessageToTab(tabId, actions.storeUserPreferencesSuccess()))
     .catch(err =>
-      postMessageToTab(
-        tabId,
-        actionCreator.storeUserPreferencesFailed(err.message)
-      )
+      postMessageToTab(tabId, actions.storeUserPreferencesFailed(err.message))
     );
 };
 
 const handleCacheTokenRequest = (tabId, postMessageToTab, action) => {
   storeUserToken(action.payload.token)
-    .then(() => postMessageToTab(tabId, actionCreator.cacheTokenSuccess()))
+    .then(() => postMessageToTab(tabId, actions.cacheTokenSuccess()))
     .catch(() =>
-      postMessageToTab(
-        tabId,
-        actionCreator.cacheTokenFailed("Not able to save")
-      )
+      postMessageToTab(tabId, actions.cacheTokenFailed("Not able to save"))
     );
 };
 
 const handleFetchCacheTokenRequest = (tabId, postMessageToTab, action) => {
   getUserToken()
     .then(value =>
-      postMessageToTab(tabId, actionCreator.fetchCacheTokenSuccess(value.token))
+      postMessageToTab(tabId, actions.fetchCacheTokenSuccess(value.token))
     )
     .catch(() =>
       postMessageToTab(
         tabId,
-        actionCreator.fetchCacheTokenSuccess("No token available")
+        actions.fetchCacheTokenSuccess("No token available")
       )
     );
 };
 
 export default {
-  [ACTIONS.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [ACTIONS.STORE_USER_PREFERENCES.REQUEST]: handlStoreUserPreferences,
-  [ACTIONS.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
-  [ACTIONS.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
+  [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
+  [types.STORE_USER_PREFERENCES.REQUEST]: handlStoreUserPreferences,
+  [types.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
+  [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
 };

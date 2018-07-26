@@ -14,10 +14,10 @@ module.exports = (env, argv) => [
     entry: {
       main:
         ENV === "production"
-          ? [path.resolve(__dirname, "../frontend/src/main.js")]
+          ? [path.resolve(__dirname, "../frontend/src/index.js")]
           : [
               "webpack-hot-middleware/client?path=http://localhost:8080/__webpack_hmr",
-              path.resolve(__dirname, "../frontend/src/main.js")
+              path.resolve(__dirname, "../frontend/src/index.js")
             ]
     },
     output: {

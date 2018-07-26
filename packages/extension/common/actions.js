@@ -1,6 +1,6 @@
-import { ACTIONS } from "./keys";
+import types from "./types";
 
-export const composeRemoteAction = (action, source, dest) =>
+const composeRemoteAction = (action, source, dest) =>
   Object.assign(
     {},
     {
@@ -14,20 +14,20 @@ export const composeRemoteAction = (action, source, dest) =>
 // User actions
 // -------------------------------------------------------
 
-export const runRequest = () => ({
-  type: ACTIONS.RUN_REQUEST.REQUEST
+const runRequest = () => ({
+  type: types.RUN_REQUEST.REQUEST
 });
 
 // -------------------------------------------------------
 // User actions
 // -------------------------------------------------------
 
-export const fetchUserPreferences = () => ({
-  type: ACTIONS.FETCH_USER_PREFERENCES.REQUEST
+const fetchUserPreferences = () => ({
+  type: types.FETCH_USER_PREFERENCES.REQUEST
 });
 
-export const fetchUserPreferencesSuccess = preferences => ({
-  type: ACTIONS.FETCH_USER_PREFERENCES.SUCCESS,
+const fetchUserPreferencesSuccess = preferences => ({
+  type: types.FETCH_USER_PREFERENCES.SUCCESS,
   payload: {
     preferences: {
       ...preferences
@@ -35,20 +35,20 @@ export const fetchUserPreferencesSuccess = preferences => ({
   }
 });
 
-export const fetchUserPreferencesFailed = err => ({
-  type: ACTIONS.FETCH_USER_PREFERENCES.FAILED,
+const fetchUserPreferencesFailed = err => ({
+  type: types.FETCH_USER_PREFERENCES.FAILED,
   meta: {
     err
   }
 });
 
-export const storeUserPreferencesSuccess = () => ({
-  type: ACTIONS.STORE_USER_PREFERENCES.SUCCESS,
+const storeUserPreferencesSuccess = () => ({
+  type: types.STORE_USER_PREFERENCES.SUCCESS,
   payload: {}
 });
 
-export const storeUserPreferencesFailed = err => ({
-  type: ACTIONS.STORE_USER_PREFERENCES.FAILED,
+const storeUserPreferencesFailed = err => ({
+  type: types.STORE_USER_PREFERENCES.FAILED,
   meta: {
     err
   }
@@ -58,52 +58,86 @@ export const storeUserPreferencesFailed = err => ({
 // Token actions
 // -------------------------------------------------------
 
-export const cacheTokenRequest = token => ({
-  type: ACTIONS.CACHE_TOKEN.REQUEST,
+const cacheTokenRequest = token => ({
+  type: types.CACHE_TOKEN.REQUEST,
   payload: {
     token
   }
 });
 
-export const cacheTokenFailed = err => ({
-  type: ACTIONS.CACHE_TOKEN.FAILED,
+const cacheTokenFailed = err => ({
+  type: types.CACHE_TOKEN.FAILED,
   meta: {
     err
   }
 });
 
-export const cacheTokenSuccess = () => ({
-  type: ACTIONS.CACHE_TOKEN.SUCCESS
+const cacheTokenSuccess = () => ({
+  type: types.CACHE_TOKEN.SUCCESS
 });
 
-export const fetchCacheToken = () => ({
-  type: ACTIONS.FETCH_CACHE_TOKEN.REQUEST
+const fetchCacheToken = () => ({
+  type: types.FETCH_CACHE_TOKEN.REQUEST
 });
 
-export const fetchCacheTokenFailed = err => ({
-  type: ACTIONS.FETCH_CACHE_TOKEN.FAILED,
+const fetchCacheTokenFailed = err => ({
+  type: types.FETCH_CACHE_TOKEN.FAILED,
   meta: {
     err
   }
 });
 
-export const fetchCacheTokenSuccess = token => ({
-  type: ACTIONS.FETCH_CACHE_TOKEN.SUCCESS,
+const fetchCacheTokenSuccess = token => ({
+  type: types.FETCH_CACHE_TOKEN.SUCCESS,
   payload: {
     token
   }
 });
 
-export const validateCanRunRequest = domain => ({
-  type: ACTIONS.VALIDATE_CAN_RUN.REQUEST,
+const validateCanRunRequest = domain => ({
+  type: types.VALIDATE_CAN_RUN.REQUEST,
   payload: {
     domain: window.location.hostname
   }
 });
 
-export const loginSuccess = token => ({
-  type: ACTIONS.LOGIN.SUCCESS,
+const loginRequest = credentials => ({
+  type: types.LOGIN.REQUEST,
+  payload: {
+    ...credentials
+  }
+});
+
+const loginSuccess = token => ({
+  type: types.LOGIN.SUCCESS,
   payload: {
     token
   }
 });
+
+const loginFailed = err => ({
+  type: types.LOGIN.FAILED,
+  meta: {
+    err
+  }
+});
+
+export default {
+  composeRemoteAction,
+  runRequest,
+  fetchUserPreferences,
+  fetchUserPreferencesSuccess,
+  fetchUserPreferencesFailed,
+  storeUserPreferencesSuccess,
+  storeUserPreferencesFailed,
+  cacheTokenRequest,
+  cacheTokenFailed,
+  cacheTokenSuccess,
+  fetchCacheToken,
+  fetchCacheTokenFailed,
+  fetchCacheTokenSuccess,
+  validateCanRunRequest,
+  loginSuccess,
+  loginFailed,
+  loginRequest
+};

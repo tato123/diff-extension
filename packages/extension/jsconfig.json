@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "@diff/common": ["./packages/extension/common"],
+      "@diff/common/*": ["./packages/extension/common/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
