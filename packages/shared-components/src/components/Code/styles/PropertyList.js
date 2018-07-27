@@ -7,9 +7,11 @@ import Space from "./Space";
 const PropertyList = ({ label, properties }) => {
   return properties.map((property, idx) => (
     <div key={idx}>
-      <Space right="sm">
-        <Label>{property.name}:</Label>
-      </Space>
+      {property.name && (
+        <Space right="sm">
+          <Label>{property.name}:</Label>
+        </Space>
+      )}
       <Space right="xs">
         <CodeLabel type="from" inline>
           {property.from}

@@ -1,6 +1,5 @@
-import View from "./view";
+import View from "./Selectors";
 import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
 
 import { selectors as selectorEntitySelectors } from "redux/entities/selectors";
 import {
@@ -9,9 +8,10 @@ import {
   actions
 } from "redux/widgets/selectors";
 
-const mapStateToProps = createStructuredSelector({
-  selectors: selectorEntitySelectors.cssSelectorIdsSelector(),
-  inspectMode: widgetSelectors.inspectModeSelector()
+const mapStateToProps = (state, props) => ({
+  selectors: selectorEntitySelectors.cssSelectorIdsSelector()(state),
+  inspectMode: widgetSelectors.inspectModeSelector()(state),
+  getSelectorCount: element => widgetSelectors.countForSelector(element)(state)
 });
 
 const mapDispatchToProps = dispatch => ({

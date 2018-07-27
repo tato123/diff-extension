@@ -29,12 +29,21 @@ export default class Selectors extends React.Component {
      * Stops our inspection
      */
     cancelInspect: PropTypes.func.isRequired,
-    /* create selector */
-    createNewSelector: PropTypes.func.isRequired
+    /**
+     * Create selector
+     */
+    createNewSelector: PropTypes.func.isRequired,
+    /**
+     * Whether elements should display a counter of the diffs
+     */
+    showCount: PropTypes.bool,
+
+    getSelectorCount: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    inspectMode: false
+    inspectMode: false,
+    showCount: false
   };
 
   componentDidMount() {
@@ -111,12 +120,16 @@ export default class Selectors extends React.Component {
 
   render() {
     const {
-      props: { selectors }
+      props: { selectors, getSelectorCount }
     } = this;
     return (
       <div>
         {selectors.map((selector, idx) => (
-          <ElementHighlight key={idx} selector={selector} />
+          <ElementHighlight
+            key={idx}
+            selector={selector}
+            count={getSelectorCount(selector)}
+          />
         ))}
       </div>
     );

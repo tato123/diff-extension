@@ -60,42 +60,51 @@ const ImgContainer = styled.div`
   height: 100%;
 `;
 
+/**
+ * Launcher is the main widget on our page, it handles
+ * the primary function of displaying diff counts and enabling
+ * our users to interact with or show the diff inspector
+ */
 export default class Launcher extends React.Component {
   static propTypes = {
-    busy: PropTypes.bool,
+    /**
+     * Diff Count
+     */
     count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onClick: PropTypes.func
+    /**
+     * Pass this through to parent element
+     */
+    onClick: PropTypes.func,
+    /**
+     * Enable or disable visibilty of the count
+     */
+    showCount: PropTypes.bool
   };
 
   static defaultProps = {
-    busy: false,
     count: null,
-    onClick: () => {}
+    onClick: () => {},
+    showCount: true
   };
 
   render() {
     const {
-      props: { count, busy, onClick }
+      props: { count, onClick, showCount }
     } = this;
     return (
       <StyleBoundary>
         <LauncherContainer onClick={onClick}>
           <div>
-            {!busy && (
-              <React.Fragment>
-                <ImgContainer>
-                  <Logo />
-                </ImgContainer>
+            <React.Fragment>
+              <ImgContainer>
+                <Logo />
+              </ImgContainer>
+              {showCount && (
                 <BubbleContainer>
                   <Bubble value={count} />
                 </BubbleContainer>
-              </React.Fragment>
-            )}
-            {busy && (
-              <React.Fragment>
-                <Progress.Circle />
-              </React.Fragment>
-            )}
+              )}
+            </React.Fragment>
           </div>
         </LauncherContainer>
       </StyleBoundary>

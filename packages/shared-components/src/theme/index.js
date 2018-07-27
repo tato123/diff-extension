@@ -76,7 +76,7 @@ const text = {
   button: {
     fontSize: remRatio(14),
     fontWeight: 500,
-    letterSpacing: toLetterSpacing(0.75)
+    letterSpacing: "1.1px"
   },
   body2: {
     fontSize: remRatio(14),

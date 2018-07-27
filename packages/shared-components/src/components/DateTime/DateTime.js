@@ -2,12 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import format from "date-fns/format";
 import Label from "components/Text/Label";
+import styled from "styled-components";
+
+const StyledLabel = styled(Label)`
+  letter-spacing: 1.1px;
+  font-size: 11px;
+`;
 
 const DateTime = ({ date }) => (
   <div>
-    <Label as="overline">
+    <StyledLabel as="overline">
       {date && format(date, "dddd, MMM D, YYYY - h:mm A")}
-    </Label>
+    </StyledLabel>
   </div>
 );
 
