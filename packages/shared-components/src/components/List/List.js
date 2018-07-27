@@ -9,7 +9,7 @@ const List = styled.div`
   flex: 1 auto;
 
   > div {
-    border-bottom: 1px solid ${get("colors.white1")};
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   > div:last-child {
@@ -38,6 +38,7 @@ List.Content = styled.div`
   flex-direction: column;
   flex: 1 auto;
   max-width: inherit;
+  line-height: 1.5;
 `;
 
 List.Header = styled(HeaderTypes.h6)`
@@ -47,21 +48,26 @@ List.Header = styled(HeaderTypes.h6)`
   max-width: inherit;
   width: inherit;
   min-width: inherit;
+  font-size: 16px !important
+  letter-spacing: 1.2px !important;
 `;
+
 List.SubHeader = styled(LabelTypes.overline)`
-  margin: 0.2em 0;
+  margin: -2px 0 0 0 !important;
   text-transform: none;
   color: ${get("colors.white1")};
   max-width: inherit;
   width: inherit;
   min-width: inherit;
 `;
+
 List.Description = styled.div`
-  margin: 1em 0;
+  margin: 8px 0 !important;
   overflow-wrap: break-word;
   max-width: inherit;
   width: inherit;
   min-width: inherit;
+  font-size: 14px !important;
 `;
 
 export default List;

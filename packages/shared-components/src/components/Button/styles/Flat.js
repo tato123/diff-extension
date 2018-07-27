@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { get } from "theme";
 
 const Button = styled.button`
+  font-family: ${get("text.fontFamily")};
   background-color: transparent;
   border: none;
   outline: none;

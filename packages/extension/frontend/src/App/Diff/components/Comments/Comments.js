@@ -5,6 +5,18 @@ import _ from "lodash";
 import Attachment from "../Attachment";
 import { List, Image, Code, DateTime } from "@diff/shared-components";
 
+import styled from "styled-components";
+
+const AttachmentContainer = styled.div`
+  > div:first-child {
+    margin-top: 16px;
+  }
+
+  > div:last-child {
+    margin-bottom: 8px;
+  }
+`;
+
 export default class Comments extends React.Component {
   static propTypes = {
     thread: PropTypes.array,
@@ -16,10 +28,13 @@ export default class Comments extends React.Component {
     users: {}
   };
 
+  NON_USER_ID = "system";
+
   renderDiff = (item, idx) => (
     <List.Item data={item} key={item.id}>
       <Image
-        avatar
+        avatar={item.meta.userId !== this.NON_USER_ID}
+        small
         src={_.get(this.props.users, `${[item.meta.userId]}.photoUrl`)}
       />
       <List.Content>
@@ -28,11 +43,10 @@ export default class Comments extends React.Component {
           <DateTime date={item.meta.created} />
         </List.SubHeader>
         <List.Description>
-          <Code label="CSS">
+          <Code label={item.diffType.toUpperCase()}>
             <Code.PropertyList
               properties={[
                 {
-                  name: item.diffType,
                   from: item.diff.from,
                   to: item.diff.to
                 }
@@ -47,7 +61,8 @@ export default class Comments extends React.Component {
   renderComment = (item, idx) => (
     <List.Item data={item} key={item.id}>
       <Image
-        avatar
+        small
+        avatar={item.meta.userId !== this.NON_USER_ID}
         src={_.get(this.props.users, `${[item.meta.userId]}.photoUrl`)}
       />
       <List.Content>
@@ -56,13 +71,13 @@ export default class Comments extends React.Component {
           <DateTime date={item.meta.created} />
         </List.SubHeader>
         <List.Description>
-          <div>
+          <AttachmentContainer>
             {item.comment}
             {item.attachments &&
               item.attachments.map(file => (
                 <Attachment key={file.url} name={file.name} url={file.url} />
               ))}
-          </div>
+          </AttachmentContainer>
         </List.Description>
       </List.Content>
     </List.Item>

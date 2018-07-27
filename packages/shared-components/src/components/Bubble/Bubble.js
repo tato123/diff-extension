@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Label from "components/Text/Label";
+import { get } from "theme";
 
 const Container = styled.div`
   color: #fff;
@@ -14,6 +15,10 @@ const Container = styled.div`
   width: 32px;
   height: 32px;
   opacity: 1;
+`;
+
+const StyledLabel = styled(Label)`
+  font-family: ${get("text.fontFamily")};
 `;
 
 export default class Bubble extends React.PureComponent {
@@ -30,7 +35,7 @@ export default class Bubble extends React.PureComponent {
 
     return (
       <Container style={style} className={className}>
-        <Label as="button">{value}</Label>
+        <StyledLabel as="button">{value}</StyledLabel>
       </Container>
     );
   }
