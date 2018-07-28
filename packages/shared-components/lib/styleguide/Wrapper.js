@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Widget } from "components/Widget";
+import { StyleBoundary } from "components/StyleBoundary";
 
 const styles = {
   background: "linear-gradient(to right,#171a3a,#221f41)",
@@ -15,9 +15,9 @@ export default class Wrapper extends Component {
 
   render() {
     return (
-      <Widget>
+      <StyleBoundary>
         <div style={styles}>{this.props.children}</div>
-      </Widget>
+      </StyleBoundary>
     );
   }
 }

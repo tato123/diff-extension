@@ -36,18 +36,23 @@ jobs:
           command: |
             yarn install
             ./node_modules/.bin/lerna run --scope @diff/extension build
+      - run:
+          name: Build styles
+          command: |
+            ./node_modules/.bin/lerna run --scope @diff/shared-components build:styles
       - persist_to_workspace:
-          root: packages/extension/dist
+          root: packages
           paths:
-            - chrome
-            - frontend
+            - extension/dist/chrome
+            - extension/dist/frontend  
+            - shared-components/styleguide
   deploy-chrome-extension:
     docker:
       - image: circleci/node:10.5.0 
     steps:
       - checkout
       - attach_workspace:
-          at: packages/extension/dist
+          at: packages
       - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:  
@@ -62,7 +67,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: packages/extension/dist
+          at: packages
       - run: 
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
@@ -75,6 +80,11 @@ jobs:
           command: |
             gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension/dist/frontend/ gs://diff-frontend
             gsutil iam ch allUsers:objectViewer gs://diff-frontend
+      - run:
+          name: Deploy styleguide
+          command: |
+            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/shared-components/styleguide/ gs://diff-styles
+            gsutil iam ch allUsers:objectViewer gs://diff-styles
   deploy-api:
     docker:
       - image: google/cloud-sdk:latest
