@@ -44,7 +44,7 @@ jobs:
           root: packages
           paths:
             - extension/dist/chrome
-            - extension/distfrontend  
+            - extension/dist/frontend  
             - shared-components/styleguide
   deploy-chrome-extension:
     docker:
@@ -52,7 +52,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: packages/extension/dist
+          at: packages
       - restore_cache: 
           key: dependency-cache-{{ checksum "package.json" }}
       - run:  
