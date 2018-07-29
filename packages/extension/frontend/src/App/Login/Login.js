@@ -22,6 +22,10 @@ export default class Login extends React.Component {
      */
     login: PropTypes.func.isRequired,
     /**
+     * Action handler for signing up a new user
+     */
+    signup: PropTypes.func.isRequired,
+    /**
      * Getter to fetch our cache token
      */
     getCacheToken: PropTypes.func.isRequired
@@ -58,7 +62,17 @@ export default class Login extends React.Component {
   };
 
   onSignup = evt => {
-    console.log(evt);
+    evt.preventDefault();
+    const email = evt.target.email.value;
+    const password = evt.target.password.value;
+    return this.props
+      .signup(email, password)
+      .then(refreshToken => {
+        return this.props.login({ refreshToken });
+      })
+      .catch(err => {
+        console.error("Error occured signing up", err);
+      });
   };
 
   renderSignup = styles => (

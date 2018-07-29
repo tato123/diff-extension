@@ -44,6 +44,7 @@ paths:
       operationId: signup
       consumes:
         - "application/x-www-form-urlencoded"
+        - "application/json"
       parameters:
         - name: email
           type: string

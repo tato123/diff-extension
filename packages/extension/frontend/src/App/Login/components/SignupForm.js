@@ -59,7 +59,7 @@ export default class CredentialForm extends React.Component {
         <Form onSubmit={handleOnSubmit} autoComplete="off">
           <Form.Input
             label="Username"
-            name="user"
+            name="email"
             type="text"
             placeholder="email@domain.com"
           />
@@ -71,7 +71,7 @@ export default class CredentialForm extends React.Component {
           />
           <Form.Input
             label="Confirm Password"
-            name="password"
+            name="confirmPassword"
             type="password"
             placeholder="Password"
           />
@@ -79,7 +79,7 @@ export default class CredentialForm extends React.Component {
             <Button onClick={onCancel} type="button">
               Cancel
             </Button>
-            <Button loading={loading} type="submit" disabled>
+            <Button loading={loading} type="submit">
               Create Account
             </Button>
           </Space>

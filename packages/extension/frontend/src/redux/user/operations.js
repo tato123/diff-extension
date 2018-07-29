@@ -1,6 +1,7 @@
 import { actions as commonActions, types as commonTypes } from "@diff/common";
 import firebase from "firebase";
-import { authenticate } from "./api";
+import actions from "./actions";
+import api from "./api";
 import { actions as remoteActions } from "redux/remote";
 
 import { operations as diffOperations } from "redux/entities/diffs";
@@ -19,7 +20,7 @@ const login = credentials => async dispatch => {
 
     const { username, password, refreshToken } = credentials;
 
-    const token = await authenticate(username, password, refreshToken);
+    const token = await api.authenticate(username, password, refreshToken);
 
     // login to firebase
     return firebase
@@ -63,6 +64,21 @@ const postLogin = () => async dispatch => {
   return Promise.resolve();
 };
 
+const signup = (email, password) => async dispatch => {
+  try {
+    // dispatch a notification that we are working on a request
+    dispatch(actions.signupRequest(email, password));
+
+    const { refresh_token: refreshToken } = await api.signup(email, password);
+
+    dispatch(actions.signupSuccess());
+    return Promise.resolve(refreshToken);
+  } catch (err) {
+    dispatch(actions.signupFailed(err));
+    return Promise.reject(err);
+  }
+};
+
 /**
  *
  * @param {{refresh_token:string}} param
@@ -96,5 +112,6 @@ const fetchCacheToken = () => dispatch => {
 export default {
   fetchCacheToken,
   remoteCacheToken,
-  login
+  login,
+  signup
 };

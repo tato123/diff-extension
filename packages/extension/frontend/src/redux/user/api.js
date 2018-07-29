@@ -5,7 +5,7 @@
  * @param {string} refreshToken - refreshToken credential
  * @returns {Promise}
  */
-export const authenticate = async (username, password, refreshToken) => {
+const authenticate = async (username, password, refreshToken) => {
   const options = refreshToken
     ? {
         body: `refresh_token=${refreshToken}&grant_type=refresh_token`
@@ -26,4 +26,33 @@ export const authenticate = async (username, password, refreshToken) => {
   }
 
   return response.json();
+};
+
+const signup = async (email, password) => {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email,
+      password
+    })
+  };
+
+  const response = await fetch(`${process.env.API_SERVER}/signup`, {
+    ...options,
+    method: "POST"
+  });
+
+  if (!response.ok) {
+    return Promise.reject(response.statusText);
+  }
+
+  return response.json();
+};
+
+export default {
+  authenticate,
+  signup
 };
