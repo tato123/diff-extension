@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "baseUrl": ".",
+    "target": "esnext",
+    "jsx": "react",
     "paths": {
       "@diff/common": ["./packages/extension/common"],
       "@diff/common/*": ["./packages/extension/common/*"]

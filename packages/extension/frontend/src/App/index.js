@@ -33,7 +33,7 @@ export default class App extends React.Component {
 
   render() {
     const {
-      state: { launcherActive }
+      state: { launcherActive, showLauncher }
     } = this;
 
     return (
@@ -41,7 +41,10 @@ export default class App extends React.Component {
         <div>
           <Widget name="login">
             {({ token }) => (
-              <Unauthenticated token={token}>
+              <Unauthenticated
+                token={token}
+                onChangeVisibility={this.visibleChange}
+              >
                 <Login />
               </Unauthenticated>
             )}
@@ -61,12 +64,15 @@ export default class App extends React.Component {
             )}
           </Widget>
           <Widget name="launcher">
-            {props => (
-              <Launcher
-                showCount={!launcherActive}
-                onClick={this.handleLauncherClick(props.show, props.closeAll)}
-              />
-            )}
+            {props =>
+              props.token && (
+                <Launcher
+                  visible={showLauncher}
+                  showCount={!launcherActive}
+                  onClick={this.handleLauncherClick(props.show, props.closeAll)}
+                />
+              )
+            }
           </Widget>
         </div>
       </Provider>
