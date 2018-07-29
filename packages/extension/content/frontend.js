@@ -10,6 +10,17 @@ export const addScriptToPage = async (scriptName, scriptId) => {
       return resolve();
     }
 
+    const chromeUrl = chrome.runtime.getURL("");
+
+    const diffInfo = document.createElement("script");
+    diffInfo.setAttribute("type", "text/javascript");
+    diffInfo.innerHTML = `
+      window.diff = {
+        url: "${chromeUrl.substring(0, chromeUrl.lastIndexOf("/"))}"
+      }
+    `;
+    document.body.appendChild(diffInfo);
+
     // Add our page bridge
     const script = document.createElement("script");
     script.src = scriptName;
