@@ -1,19 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ShadowDom from "./styles/ShadowDOM";
-import styled, {
-  StyleSheetManager,
-  ThemeProvider,
-  injectGlobal
-} from "styled-components";
+import styled, { StyleSheetManager, ThemeProvider } from "styled-components";
 import mainTheme, { get } from "../../theme";
 
-injectGlobal`
-  @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:100,200,300,400,500,600,700,800,900');
-  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');  
-
-        
-`;
+// import our local fonts
+import "./styles/BarlowFont";
+import "./styles/RobotoFont";
 
 /* prettier-ignore */
 const View = styled.div`
@@ -52,7 +45,7 @@ const styleContent = `
   }
 `;
 
-export default class Widget extends React.PureComponent {
+export default class StyleBoundary extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
     shadowDom: PropTypes.bool,

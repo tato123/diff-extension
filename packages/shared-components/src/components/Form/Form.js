@@ -1,14 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
 // all of our available field types
 import FormInput from "./styles/FormInput";
 import FormField from "./styles/FormField";
+import styled from "styled-components";
 
-const Form = ({ children, ...rest }) => <form {...rest}>{children}</form>;
-
-Form.propTypes = {
-  children: PropTypes.node.isRequired
-};
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
 
 // Implements most of our basic form types
 Form.Input = FormInput;

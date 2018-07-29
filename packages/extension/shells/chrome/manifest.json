@@ -3,7 +3,7 @@
   "name": "Diff.app",
   "description": "Collaboration design tools",
   "minimum_chrome_version": "49",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "permissions": [
     "activeTab",
     "tabs",
@@ -17,6 +17,7 @@
   "web_accessible_resources": [
     "contentScript.js",
     "frontend/*",
+    "fonts/*.ttf",
     "http://localhost:9000/*",
     "https://api.getdiff.app/*"
   ],
