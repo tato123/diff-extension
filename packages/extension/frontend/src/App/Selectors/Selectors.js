@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ElementHighlight from "./components/ElementHighlight";
-import { inspect } from "api/window";
+import { inspect } from "api/highlightElement";
 import finder from "@medv/finder";
 
 /* eslint-disable */

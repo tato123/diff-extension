@@ -65,8 +65,9 @@ export const inspect = () => {
     background-color: rgba(60, 65, 255, 0.2)!important;
   `;
 
-  const clicks = fromEvent(window, "click", true).pipe(
+  const clicks = fromEvent(window, "click", { capture: true }).pipe(
     mergeMap(evt => {
+      evt.preventDefault();
       if (isSelectableElement(evt)) {
         return of(evt);
       } else if (isNotSelectableElement(evt)) {
@@ -77,7 +78,7 @@ export const inspect = () => {
     })
   );
 
-  const move = fromEvent(document.body, "mousemove");
+  const move = fromEvent(document.body, "mousemove", false);
 
   const stop$ = new Subject();
 
