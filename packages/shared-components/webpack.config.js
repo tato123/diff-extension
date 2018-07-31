@@ -1,10 +1,11 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
+const ENV = process.env.NODE_ENV || "development";
 
 // export our configurations
 module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
+  mode: ENV,
+  devtool: ENV === "development" ? "source-map" : "none",
   entry: {
     turbocharge: path.resolve(__dirname, "./src/index.js")
   },
