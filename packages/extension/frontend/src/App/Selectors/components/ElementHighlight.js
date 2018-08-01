@@ -26,13 +26,13 @@ export default class ElementHighlight extends React.Component {
     const portalDiv = document.createElement("div");
     portalDiv.id = "popper-" + Math.floor(Math.random() * 100000);
     document.body.appendChild(portalDiv);
-    setTimeout(() => {
-      this.setState({ portalDiv });
-    }, 10);
+    this.setState({ portalDiv });
   }
 
   componentWillUnmount() {
-    this.state.portalDiv.remove();
+    if (this.state.portalDiv != null) {
+      this.state.portalDiv.remove();
+    }
   }
 
   render() {

@@ -48,11 +48,35 @@ export default class PopperHandler extends React.Component {
     const targetedElement =
       typeof element === "string" ? document.querySelector(element) : element;
 
-    const popper = new Popper(targetedElement, popperElement, options);
-    this.setState({
-      popper
-    });
+    if (process.env.NODE_ENV === "development") {
+      console.group("Popper");
+      console.log("Popper Element", popperElement);
+      console.log("Selector", element);
+      console.groupEnd("Popper");
+    }
+
+    // element is still available on the page
+    if (targetedElement != null) {
+      const popper = new Popper(
+        targetedElement || document.body,
+        popperElement,
+        options
+      );
+      this.setState({
+        popper
+      });
+    } else {
+      console.error(
+        `The CSS Selector [${JSON.stringify(
+          element
+        )}] is not valid for this page.`
+      );
+    }
   };
+
+  componentDidCatch(err) {
+    console.error("error occured", err);
+  }
 
   componentWillUnmount() {
     const { popper } = this.state;
