@@ -53,7 +53,7 @@ const addNewComment = payload => async (dispatch, getState, { db }) => {
       created: Date.now()
     },
     attachments,
-    url: window.location.href
+    url: JSON.parse(JSON.stringify(window.location)) // convert to serializable only data
   };
   const newEvent = db.collection("events").doc();
   const result = await newEvent.set(record);

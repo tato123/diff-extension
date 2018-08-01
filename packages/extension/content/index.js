@@ -14,19 +14,22 @@ import _ from "lodash";
  * @returns {Boolean}
  */
 const isDomainMatch = (domainList, toMatch) => {
-  // if (!_.isArray(domainList) || _.isNil(toMatch)) {
-  //   return false;
-  // }
-  // console.log("domainlist", domainList);
-  // /* eslint-disable */
-  // const { hostname, pathname } = new URL(toMatch);
-  // const val = _.findIndex(
-  //   domainList,
-  //   o => !_.isNil(o) && _.isString(o) && o.indexOf(hostname + pathname)
-  // );
+  if (!_.isArray(domainList) || _.isNil(toMatch)) {
+    return false;
+  }
 
-  // return val !== -1;
-  return domainList.includes(toMatch);
+  const { hostname, pathname } = new URL(toMatch);
+  const val = _.filter(domainList, location => {
+    const fromPreferencesUrl = _.isString(location)
+      ? new URL(location)
+      : location;
+    return (
+      hostname === fromPreferencesUrl.hostname &&
+      pathname === fromPreferencesUrl.pathname
+    );
+  });
+
+  return val.length > 0;
 };
 
 /**

@@ -18,54 +18,49 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const readEvents = async () => {
-  const querySnapshot = await db
-    .collection("events")
-    .where("meta.userId", "==", "qJtKNnA9TlYeUFRaa1ANlXrMwSb2")
-    .get();
-  let validCount = 0;
-  let invalidCount = 0;
-  let upgraded = 0;
+  try {
+    const querySnapshot = await db.collection("events").get();
+    let validCount = 0;
+    let invalidCount = 0;
+    let upgraded = 0;
 
-  querySnapshot.forEach(doc => {
-    const data = doc.data();
+    querySnapshot.forEach(async doc => {
+      const data = doc.data();
 
-    // {
-    //     "protocol": "https:",
-    //     "slashes": true,
-    //     "auth": null,
-    //     "host": "storage.googleapis.com",
-    //     "port": null,
-    //     "hostname": "storage.googleapis.com",
-    //     "hash": null,
-    //     "search": null,
-    //     "query": null,
-    //     "pathname": "/diff-tester/index.html",
-    //     "path": "/diff-tester/index.html",
-    //     "href": "https://storage.googleapis.com/diff-tester/index.html"
-    // }
-    if (data.url) {
-      const url = urlParser.parse(data.url);
-      const record = _.omit(url, [
-        "slashes",
-        "auth",
-        "parse",
-        "format",
-        "resolve",
-        "resolveObject",
-        "parseHost"
-      ]);
-
-      console.log(data);
-      validCount++;
-    } else {
-      invalidCount++;
-    }
-  });
-
-  console.log("-------------------------------------");
-  console.log("Invalid Records: ", invalidCount);
-  console.log("Valid Records:   ", validCount);
-  console.log("Upgraded Records:", upgraded);
+      if (data.url && typeof data.url === "string") {
+        const url = urlParser.parse(data.url);
+        const record = _.omit(url, [
+          "slashes",
+          "auth",
+          "parse",
+          "format",
+          "resolve",
+          "resolveObject",
+          "parseHost"
+        ]);
+        validCount++;
+        console.log("old url", data.url);
+        const newObj = Object.assign(data, { url: record });
+        const docRef = doc.ref;
+        await docRef.set(newObj);
+        console.log("upgraded object");
+      } else if (data.url && typeof data.url === "object") {
+        console.log("------------------------------------------");
+        console.log(data);
+        validCount++;
+      } else {
+        const docRef = doc.ref;
+        await docRef.delete();
+        invalidCount++;
+      }
+    });
+    console.log("-------------------------------------");
+    console.log("Invalid Records: ", invalidCount);
+    console.log("Valid Records:   ", validCount);
+    console.log("Upgraded Records:", upgraded);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 readEvents();

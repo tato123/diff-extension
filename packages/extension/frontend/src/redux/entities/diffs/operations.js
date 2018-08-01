@@ -17,7 +17,8 @@ const getDiffs = () => (dispatch, getState, { db }) => {
     if (user) {
       db.collection("events")
         .where("type", "==", "diff")
-        .where("url", "==", window.location.href)
+        .where("url.hostname", "==", window.location.hostname)
+        .where("url.pathname", "==", window.location.pathname)
         .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             const data = doc.data();

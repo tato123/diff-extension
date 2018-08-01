@@ -11,7 +11,8 @@ import { actions as selectorActions } from "../selectors";
 const fetchComments = () => (dispatch, getState, { db }) => {
   db.collection("events")
     .where("type", "==", "comment")
-    .where("url", "==", window.location.href)
+    .where("url.hostname", "==", window.location.hostname)
+    .where("url.pathname", "==", window.location.pathname)
     .onSnapshot(querySnapshot => {
       querySnapshot.forEach(doc => {
         const data = doc.data();
