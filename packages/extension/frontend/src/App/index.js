@@ -21,8 +21,12 @@ export default class App extends React.Component {
     launcherActive: false
   };
 
-  handleLauncherClick = (show, closeAll) => () => {
-    if (this.state.launcherActive) {
+  handleLauncherClick = (show, closeAll) => launcherState => {
+    if (launcherState === this.state.launcherActive) {
+      return;
+    }
+
+    if (!launcherState) {
       this.setState({ launcherActive: false });
       return closeAll();
     }
@@ -30,12 +34,10 @@ export default class App extends React.Component {
     show("selectors");
     this.setState({ launcherActive: true });
   };
-
   render() {
     const {
-      state: { launcherActive, showLauncher }
+      state: { launcherActive }
     } = this;
-
     return (
       <Provider store={store}>
         <div>
@@ -64,13 +66,9 @@ export default class App extends React.Component {
             )}
           </Widget>
           <Widget name="launcher">
-            {props =>
-              props.token && (
-                <Launcher
-                  visible={showLauncher}
-                  showCount={!launcherActive}
-                  onClick={this.handleLauncherClick(props.show, props.closeAll)}
-                />
+            {({ token, closeAll, show }) =>
+              token && (
+                <Launcher onClick={this.handleLauncherClick(show, closeAll)} />
               )
             }
           </Widget>
