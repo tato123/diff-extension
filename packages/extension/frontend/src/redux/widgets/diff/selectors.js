@@ -35,7 +35,14 @@ const elementThreadSelector = cssSelector =>
 const allUsersSelector = () =>
   createSelector(usersSelector, users => users.byId);
 
+const visibleIdsForSelector = cssSelector =>
+  createSelector(
+    elementThreadSelector(cssSelector),
+    items => items.map(item => item.id) || []
+  );
+
 export default {
   elementThreadSelector,
-  allUsersSelector
+  allUsersSelector,
+  visibleIdsForSelector
 };

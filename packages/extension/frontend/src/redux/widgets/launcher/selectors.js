@@ -1,15 +1,33 @@
 import { createSelector } from "reselect";
+import _ from "lodash";
 
-const launcherSelector = state => state.widgets.launcher;
-const elementSelector = state => state.entities.selectors;
+const launcherSelectorDomain = state => state.widgets.launcher;
+const elementSelectorDomain = state => state.entities.selectors;
+const activitySelectorDomain = state => state.entities.activity;
 
 const busySelector = () =>
-  createSelector(launcherSelector, launcher => launcher.busy);
+  createSelector(launcherSelectorDomain, launcher => launcher.busy);
 
-const countSelector = () =>
-  createSelector(elementSelector, selectors => selectors.allIds.length || 0);
+const unseenCountSelector = () =>
+  createSelector(
+    elementSelectorDomain,
+    activitySelectorDomain,
+    (selectors, activity) => {
+      return _.defaultTo(
+        _.chain(selectors.byId)
+          .flatMap(x => _.values(x) || [])
+          .flattenDeep()
+          .union()
+
+          // remove
+          .filter(val => !_.has(activity.byId, val))
+          .value().length,
+        0
+      );
+    }
+  );
 
 export default {
   busySelector,
-  countSelector
+  unseenCountSelector
 };

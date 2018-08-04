@@ -4,8 +4,16 @@ import Launcher from "./Launcher";
 import { createStructuredSelector } from "reselect";
 import { selectors } from "redux/widgets/launcher";
 
+import { actions } from "redux/entities/activity";
 const mapStateToProps = createStructuredSelector({
-  count: selectors.countSelector()
+  count: selectors.unseenCountSelector()
 });
 
-export default connect(mapStateToProps)(Launcher);
+const mapDispatchToProps = dispatch => ({
+  test: () => dispatch(actions.createEventLogRequest("barney"))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Launcher);

@@ -52,6 +52,7 @@ export default class Launcher extends React.Component {
 
   onMenuClick = () => {
     this.props.onClick(true);
+    this.props.test();
     this.setState({ showClose: true });
   };
 
