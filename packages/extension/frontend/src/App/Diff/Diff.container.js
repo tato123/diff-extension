@@ -1,6 +1,6 @@
 import Diff from "./Diff";
 import { connect } from "react-redux";
-import { operations, selectors, actions } from "redux/widgets/diff";
+import { selectors, actions } from "redux/widgets/diff";
 
 const mapStateToProps = (state, props) => ({
   cssSelector: props.context.selector,
@@ -8,7 +8,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  close: () => dispatch(operations.closeDiff()),
+  close: selectorId => dispatch(actions.closeDiff(selectorId)),
   updateItemsSeen: ids => dispatch(actions.updateItemsSeen(ids))
 });
 

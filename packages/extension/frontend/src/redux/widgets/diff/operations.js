@@ -1,11 +1,4 @@
 import firebase from "firebase";
-import { actions as widgetActions } from "../state";
-import { actions as selectorActions } from "../selectors";
-
-const closeDiff = () => dispatch => {
-  dispatch(widgetActions.hide("diff"));
-  dispatch(selectorActions.inspect());
-};
 
 const uploadFile = file => (dispatch, getState) => {
   const storageRef = firebase.storage().ref(`attachments/${file.name}`);
@@ -62,6 +55,5 @@ const addNewComment = payload => async (dispatch, getState, { db }) => {
 
 export default {
   uploadFile,
-  closeDiff,
   addNewComment
 };

@@ -91,7 +91,7 @@ export default class DiffViewer extends React.Component {
     });
 
   close = () => {
-    this.props.close();
+    this.props.close(this.props.cssSelector);
   };
 
   render() {
@@ -104,13 +104,21 @@ export default class DiffViewer extends React.Component {
     if (!cssSelector) {
       return null;
     }
+    const options = {
+      placement: "auto",
+      modifiers: {
+        flip: {
+          enabled: false
+        }
+      }
+    };
 
     return (
       <Popper
         element={cssSelector}
-        options={{ placement: "right" }}
+        options={options}
         render={({ ref }) => (
-          <div ref={ref} style={{ zIndex: "999999999" }}>
+          <div ref={ref} style={{ zIndex: Number.MAX_SAFE_INTEGER }}>
             <StyleBoundary>
               <MainWindow>
                 <div

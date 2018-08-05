@@ -21,8 +21,17 @@ const writeUpdateItemsSeenFailed = (arrayOfIds, err) => ({
     err
   }
 });
+
+const closeDiff = selectorId => ({
+  type: types.CLOSE_DIFF,
+  payload: {
+    selectorId
+  }
+});
+
 export default {
   updateItemsSeen,
   writeUpdateItemsSeenFailed,
-  writeUpdateItemsSeenSuccess
+  writeUpdateItemsSeenSuccess,
+  closeDiff
 };

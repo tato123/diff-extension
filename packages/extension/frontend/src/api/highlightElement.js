@@ -7,13 +7,16 @@ import {
   mergeMap,
   catchError
 } from "rxjs/operators";
+
+import { lighten, opacify, darken } from "polished";
+
 import { injectGlobal } from "styled-components";
 
 injectGlobal`
   .diff-highlight {
-    cursor: pointer;
-    outline: 2px dashed #FF3C41;    
-    background-color: rgba(60, 65, 255, 0.2)!important;
+    outline: 1px dashed ${darken(0.9, "#1a1b3c")} !important;
+    background-color: ${opacify(0.7, lighten(0.7, "#1a1b3c"))} !important;
+    transition: all 250ms ease-out;
   }
 `;
 
