@@ -27,10 +27,7 @@ export default class PopperHandler extends React.Component {
 
   static defaultProps = {
     options: {
-      placement: "left-start",
-      modifiers: {
-        preventOverflow: { enabled: true }
-      }
+      placement: "left-start"
     }
   };
 

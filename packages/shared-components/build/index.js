@@ -17145,7 +17145,7 @@ Object.defineProperty(exports, "__esModule", {
 var _templateObject = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  flex: 1 auto;\n\n  > div {\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n  }\n\n  > div:last-child {\n    border-bottom: none;\n  }\n"], ["\n  display: flex;\n  flex-direction: column;\n  flex: 1 auto;\n\n  > div {\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n  }\n\n  > div:last-child {\n    border-bottom: none;\n  }\n"]),
     _templateObject2 = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: row;\n  margin: 0.5em 0;\n  flex: 1 auto;\n\n  > :first-child {\n    margin-right: 1em;\n  }\n\n  span,\n  img {\n    display: inline-block;\n  }\n"], ["\n  display: flex;\n  flex-direction: row;\n  margin: 0.5em 0;\n  flex: 1 auto;\n\n  > :first-child {\n    margin-right: 1em;\n  }\n\n  span,\n  img {\n    display: inline-block;\n  }\n"]),
     _templateObject3 = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  flex: 1 auto;\n  max-width: inherit;\n  line-height: 1.5;\n"], ["\n  display: flex;\n  flex-direction: column;\n  flex: 1 auto;\n  max-width: inherit;\n  line-height: 1.5;\n"]),
-    _templateObject4 = _taggedTemplateLiteral(["\n  margin: 0 !important;\n  padding: 0 !important;\n  text-transform: uppercase;\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n  font-size: 16px !important\n  letter-spacing: 1.2px !important;\n"], ["\n  margin: 0 !important;\n  padding: 0 !important;\n  text-transform: uppercase;\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n  font-size: 16px !important\n  letter-spacing: 1.2px !important;\n"]),
+    _templateObject4 = _taggedTemplateLiteral(["\n  margin: 0 !important;\n  padding: 0 !important;\n  text-transform: uppercase;\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n  font-size: 16px !important;\n  font-weight: 500 !important;\n  letter-spacing: 1.2px !important;\n  ", ";\n  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);\n"], ["\n  margin: 0 !important;\n  padding: 0 !important;\n  text-transform: uppercase;\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n  font-size: 16px !important;\n  font-weight: 500 !important;\n  letter-spacing: 1.2px !important;\n  ", ";\n  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);\n"]),
     _templateObject5 = _taggedTemplateLiteral(["\n  margin: -2px 0 0 0 !important;\n  text-transform: none;\n  color: ", ";\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n"], ["\n  margin: -2px 0 0 0 !important;\n  text-transform: none;\n  color: ", ";\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n"]),
     _templateObject6 = _taggedTemplateLiteral(["\n  margin: 8px 0 !important;\n  overflow-wrap: break-word;\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n  font-size: 14px !important;\n"], ["\n  margin: 8px 0 !important;\n  overflow-wrap: break-word;\n  max-width: inherit;\n  width: inherit;\n  min-width: inherit;\n  font-size: 14px !important;\n"]);
 
@@ -17169,7 +17169,9 @@ List.Item = _styledComponents2.default.div(_templateObject2);
 
 List.Content = _styledComponents2.default.div(_templateObject3);
 
-List.Header = (0, _styledComponents2.default)(_Header.types.h6)(_templateObject4);
+List.Header = (0, _styledComponents2.default)(_Header.types.h6)(_templateObject4, function (props) {
+  return props.new && "color: #dc377a !important;";
+});
 
 List.SubHeader = (0, _styledComponents2.default)(_Label.types.overline)(_templateObject5, (0, _theme.get)("colors.white1"));
 

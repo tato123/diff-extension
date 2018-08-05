@@ -37,8 +37,14 @@ export default class Selectors extends React.Component {
      * Whether elements should display a counter of the diffs
      */
     showCount: PropTypes.bool,
-
-    getSelectorCount: PropTypes.func.isRequired
+    /**
+     * All of the selectors that a user has viewed
+     */
+    getSeenCount: PropTypes.func.isRequired,
+    /**
+     * All of the selectors that a user has NOT viewed
+     */
+    getUnseenCount: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -120,7 +126,7 @@ export default class Selectors extends React.Component {
 
   render() {
     const {
-      props: { selectors, getSelectorCount }
+      props: { selectors, getSeenCount, getUnseenCount }
     } = this;
     return (
       <div>
@@ -128,7 +134,8 @@ export default class Selectors extends React.Component {
           <ElementHighlight
             key={idx}
             selector={selector}
-            count={getSelectorCount(selector)}
+            seenCount={getSeenCount(selector)}
+            unseenCount={getUnseenCount(selector)}
           />
         ))}
       </div>

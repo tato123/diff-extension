@@ -3,6 +3,7 @@ import _ from "lodash";
 
 // all of our comments
 const cssSelectorSelectors = state => state.entities.selectors;
+const activitySelectorDomain = state => state.entities.activity;
 
 // all of our users
 const usersSelector = state => state.entities.users;
@@ -41,8 +42,14 @@ const visibleIdsForSelector = cssSelector =>
     items => items.map(item => item.id) || []
   );
 
+const isNewItemSelector = itemId =>
+  createSelector(activitySelectorDomain, activity => {
+    return !_.has(activity.byId, itemId);
+  });
+
 export default {
   elementThreadSelector,
   allUsersSelector,
-  visibleIdsForSelector
+  visibleIdsForSelector,
+  isNewItemSelector
 };

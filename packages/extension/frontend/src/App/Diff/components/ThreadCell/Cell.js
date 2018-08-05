@@ -20,7 +20,8 @@ const AttachmentContainer = styled.div`
 export default class Comments extends React.Component {
   static propTypes = {
     thread: PropTypes.array,
-    users: PropTypes.any
+    users: PropTypes.any,
+    isNew: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -38,7 +39,7 @@ export default class Comments extends React.Component {
         src={_.get(this.props.users, `${[item.meta.userId]}.photoUrl`)}
       />
       <List.Content>
-        <List.Header>Diff</List.Header>
+        <List.Header new={this.props.isNew(item.id)}>Diff</List.Header>
         <List.SubHeader>
           <DateTime date={item.meta.created} />
         </List.SubHeader>
@@ -66,7 +67,7 @@ export default class Comments extends React.Component {
         src={_.get(this.props.users, `${[item.meta.userId]}.photoUrl`)}
       />
       <List.Content>
-        <List.Header>Comment</List.Header>
+        <List.Header new={this.props.isNew(item.id)}>Comment</List.Header>
         <List.SubHeader>
           <DateTime date={item.meta.created} />
         </List.SubHeader>

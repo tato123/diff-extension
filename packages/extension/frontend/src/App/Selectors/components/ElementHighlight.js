@@ -2,15 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Popper from "components/Popper";
-import { Outline, Bubble, StyleBoundary } from "@diff/shared-components";
+import { StyleBoundary, Outline } from "@diff/shared-components";
 import styled from "styled-components";
-
-const BubbleStyle = {
-  position: "absolute",
-  top: "-16px",
-  left: "-16px",
-  zIndex: "10"
-};
 
 const SeenCount = styled.div`
   height: 32px;
@@ -50,7 +43,6 @@ const UnseenCount = styled.div`
 export default class ElementHighlight extends React.Component {
   static propTypes = {
     selector: PropTypes.string.isRequired,
-    count: PropTypes.number,
 
     seenCount: PropTypes.number,
 
@@ -58,7 +50,6 @@ export default class ElementHighlight extends React.Component {
   };
 
   static defaultProps = {
-    count: 0,
     seenCount: 0,
     unseenCount: 0
   };
@@ -86,7 +77,7 @@ export default class ElementHighlight extends React.Component {
   render() {
     const {
       state: { portalDiv },
-      props: { selector, unseenCount, seenCount, count }
+      props: { selector, unseenCount, seenCount }
     } = this;
 
     const options = {
@@ -94,14 +85,10 @@ export default class ElementHighlight extends React.Component {
       modifiers: {
         offset: {
           offset: "-16px, -100%r - 16px"
-        },
-        preventOverflow: {
-          enabled: false,
-          padding: 0
         }
       }
     };
-    if (count === 0) {
+    if (seenCount === 0 && unseenCount === 0) {
       return null;
     }
 
@@ -115,10 +102,19 @@ export default class ElementHighlight extends React.Component {
             <div ref={ref}>
               <StyleBoundary>
                 <SeenCount>
-                  <div>{unseenCount}</div>
-                  <UnseenCount>{count}</UnseenCount>
+                  <div>{seenCount}</div>
+                  <UnseenCount>{unseenCount}</UnseenCount>
                 </SeenCount>
               </StyleBoundary>
+              <Outline
+                style={{
+                  transform: `translate(15px, 0px)`,
+                  position: "absolute"
+                }}
+                data-selector={selector}
+                width={`${elementWidth}px`}
+                height={`${elementHeight}px`}
+              />
             </div>
           )}
         />,
@@ -132,13 +128,5 @@ export default class ElementHighlight extends React.Component {
 //   <Bubble value={count} style={BubbleStyle} />
 
 /* <StyleBoundary shadowDom={false} selectable>
-<Outline
-  style={{
-    transform: `translate(15px, 0px)`,
-    position: "absolute"
-  }}
-  data-selector={selector}
-  width={`${elementWidth}px`}
-  height={`${elementHeight}px`}
-/>
+
 </StyleBoundary> */

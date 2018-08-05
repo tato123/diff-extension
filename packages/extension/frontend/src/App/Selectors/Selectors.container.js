@@ -11,7 +11,8 @@ import {
 const mapStateToProps = (state, props) => ({
   selectors: selectorEntitySelectors.cssSelectorIdsSelector()(state),
   inspectMode: widgetSelectors.inspectModeSelector()(state),
-  getSelectorCount: element => widgetSelectors.countForSelector(element)(state)
+  getSeenCount: element => widgetSelectors.seenCountSelector(element)(state),
+  getUnseenCount: element => widgetSelectors.unseenCountSelector(element)(state)
 });
 
 const mapDispatchToProps = dispatch => ({
