@@ -1,14 +1,24 @@
 import { createSelector } from "reselect";
 import _ from "lodash";
-/* eslint-disable */
-const selectorWidgetDomain = state => state.widgets.selectors;
 
+// select data from this widget
+const selectorWidgetDomain = state => state.widgets.selectors;
+const widgetStateDomain = state => state.widgets.state;
+
+//
 const elementSelectorDomain = state => state.entities.selectors;
 const activitySelectorDomain = state => state.entities.activity;
 
+/**
+ * Currently toggled mode, allows controlling this from a global level
+ */
 const inspectModeSelector = () =>
   createSelector(selectorWidgetDomain, selector => selector.inspectMode);
 
+/**
+ *
+ * @param {String} cssSelector
+ */
 const seenCountSelector = cssSelector =>
   createSelector(
     elementSelectorDomain,
@@ -45,10 +55,17 @@ const unseenCountSelector = cssSelector =>
     }
   );
 
+const displayedSelector = () =>
+  createSelector(widgetStateDomain, widgetState => {
+    const widget = _.find(widgetState, { name: "diff" });
+    return _.isNil(widget) ? null : widget.context.selector;
+  });
+
 export default {
   inspectModeSelector,
   elementSelectorDomain,
   activitySelectorDomain,
   seenCountSelector,
-  unseenCountSelector
+  unseenCountSelector,
+  displayedSelector
 };

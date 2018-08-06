@@ -5,8 +5,7 @@ import {
   distinctUntilChanged,
   last,
   mergeMap,
-  catchError,
-  multicast
+  catchError
 } from "rxjs/operators";
 
 import { lighten, opacify, darken } from "polished";
@@ -17,7 +16,6 @@ injectGlobal`
   .diff-highlight {
     outline: 1px dashed ${darken(0.9, "#1a1b3c")} !important;
     background-color: ${opacify(0.7, lighten(0.7, "#1a1b3c"))} !important;
-    transition: all 250ms ease-out;
   }
 `;
 
@@ -90,7 +88,6 @@ export const inspect = () => {
   const move$ = move.pipe(
     takeUntil(clicks),
     takeUntil(stop$),
-    debounceTime(5),
     distinctUntilChanged((oldValue, newValue) => {
       const val = oldValue.target.isSameNode(newValue.target);
 
@@ -118,8 +115,7 @@ export const inspect = () => {
         console.error(err.message);
       }
       return of(null);
-    }),
-    multicast(() => new Subject())
+    })
   );
 
   move$.subscribe(e => {
@@ -131,8 +127,6 @@ export const inspect = () => {
       e.classList.add("diff-selected");
     }
   });
-
-  move$.connect();
 
   move$.stop = () => stop$.next(null);
 

@@ -16,7 +16,8 @@ const mapStateToProps = (state, props) => ({
   getUnseenCount: element =>
     widgetSelectors.unseenCountSelector(element)(state),
   selectorForElement: finder,
-  domInspect: inspect
+  domInspect: inspect,
+  diffOpenForSelector: widgetSelectors.displayedSelector()(state)
 });
 
 const mapDispatchToProps = dispatch => ({

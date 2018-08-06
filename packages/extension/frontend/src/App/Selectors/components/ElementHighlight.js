@@ -46,7 +46,8 @@ export default class ElementHighlight extends React.Component {
 
     seenCount: PropTypes.number,
 
-    unseenCount: PropTypes.number
+    unseenCount: PropTypes.number,
+    styles: PropTypes.object
   };
 
   static defaultProps = {
@@ -101,7 +102,7 @@ export default class ElementHighlight extends React.Component {
           render={({ ref, elementWidth, elementHeight }) => (
             <div ref={ref}>
               <StyleBoundary>
-                <SeenCount>
+                <SeenCount style={this.props.styles}>
                   <div>{seenCount}</div>
                   <UnseenCount>{unseenCount}</UnseenCount>
                 </SeenCount>

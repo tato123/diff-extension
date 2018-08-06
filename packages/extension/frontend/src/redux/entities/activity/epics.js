@@ -26,10 +26,13 @@ const fetchEventLog$ = (db, cancelOn) => {
       .doc(user.uid)
       .collection(SUB_COLLECTION)
       .onSnapshot(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const data = doc.data();
-          console.warn("[Ambiguous add, update, or delete]");
-          observer.next(actions.readSeenActivity(_.values(data)[0]));
+        querySnapshot.docChanges().forEach(({ doc, type }) => {
+          if (type === "added") {
+            const data = doc.data();
+
+            console.warn("[Ambiguous add, update, or delete]");
+            observer.next(actions.readSeenActivity(_.values(data)[0]));
+          }
         });
       });
   }).pipe(cancelOn);

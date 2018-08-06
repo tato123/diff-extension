@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ElementHighlight from "./components/ElementHighlight";
 import VisibleElements from "components/VisibleElements";
 import styled from "styled-components";
+import { Spring } from "react-spring";
 import { StyleBoundary } from "@diff/shared-components";
 
 const StickyHeader = styled.div`
@@ -73,13 +74,20 @@ export default class Selectors extends React.Component {
      * Returns a CSS selector for an element
      */
     selectorForElement: PropTypes.func.isRequired,
-
-    domInspect: PropTypes.func.isRequired
+    /**
+     * function to start inspecting the DOM
+     */
+    domInspect: PropTypes.func.isRequired,
+    /**
+     * Diff was opened somewhere for a particular selector
+     */
+    diffOpenForSelector: PropTypes.string
   };
 
   static defaultProps = {
     inspectMode: false,
-    showCount: false
+    showCount: false,
+    diffOpenForSelector: null
   };
 
   componentDidMount() {
@@ -100,6 +108,7 @@ export default class Selectors extends React.Component {
 
   componentWillUnmount() {
     if (this.state) {
+      this.state.inspect$.unsubscribe();
       this.state.inspect$.stop();
     }
   }
@@ -137,7 +146,7 @@ export default class Selectors extends React.Component {
 
     return indexForSelector !== -1
       ? this.props.selectors[indexForSelector]
-      : this.this.createNewSelector(element);
+      : this.createNewSelector(element);
   };
 
   /**
@@ -156,6 +165,8 @@ export default class Selectors extends React.Component {
           this.props.showSelectorDetails(selector);
         }
 
+        subscriber.unsubscribe();
+
         this.props.cancelInspect();
       },
       e => {
@@ -168,8 +179,9 @@ export default class Selectors extends React.Component {
 
   render() {
     const {
-      props: { selectors, getSeenCount, getUnseenCount }
+      props: { selectors, getSeenCount, getUnseenCount, diffOpenForSelector }
     } = this;
+
     return (
       <VisibleElements selectors={selectors}>
         {visibility => {
@@ -192,12 +204,27 @@ export default class Selectors extends React.Component {
               </StyleBoundary>
 
               {visibility.map(({ selector, visible }, idx) => (
-                <ElementHighlight
+                <Spring
                   key={idx}
-                  selector={selector}
-                  seenCount={getSeenCount(selector)}
-                  unseenCount={getUnseenCount(selector)}
-                />
+                  from={{ opacity: 1 }}
+                  to={{
+                    opacity:
+                      diffOpenForSelector === null
+                        ? 1
+                        : diffOpenForSelector === selector
+                          ? 1
+                          : 0
+                  }}
+                >
+                  {styles => (
+                    <ElementHighlight
+                      styles={styles}
+                      selector={selector}
+                      seenCount={getSeenCount(selector)}
+                      unseenCount={getUnseenCount(selector)}
+                    />
+                  )}
+                </Spring>
               ))}
             </div>
           );
