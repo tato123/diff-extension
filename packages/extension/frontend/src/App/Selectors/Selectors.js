@@ -1,8 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ElementHighlight from "./components/ElementHighlight";
-import { inspect } from "api/highlightElement";
-import finder from "@medv/finder";
+import VisibleElements from "components/VisibleElements";
+import styled from "styled-components";
+import { StyleBoundary } from "@diff/shared-components";
+
+const StickyHeader = styled.div`
+  position: fixed;
+  top: 0px;
+  width: 162px;
+  height: 30px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  color: #fff;
+  background-color: #191b3b;
+  margin: 0 auto;
+  left: calc(50% - 81px);
+  text-align: center;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999999999999999;
+  transform: translate(0px, -165px, 0px);
+  will-change: transform;
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.2);
+`;
 
 /* eslint-disable */
 export default class Selectors extends React.Component {
@@ -44,7 +68,13 @@ export default class Selectors extends React.Component {
     /**
      * All of the selectors that a user has NOT viewed
      */
-    getUnseenCount: PropTypes.func.isRequired
+    getUnseenCount: PropTypes.func.isRequired,
+    /**
+     * Returns a CSS selector for an element
+     */
+    selectorForElement: PropTypes.func.isRequired,
+
+    domInspect: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -53,7 +83,7 @@ export default class Selectors extends React.Component {
   };
 
   componentDidMount() {
-    this.props.inspect();
+    this.getSelector();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -69,7 +99,7 @@ export default class Selectors extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.state.inspect$) {
+    if (this.state) {
       this.state.inspect$.stop();
     }
   }
@@ -81,7 +111,7 @@ export default class Selectors extends React.Component {
    * @returns string
    */
   createNewSelector = htmlElement => {
-    const newSelector = finder(htmlElement, {
+    const newSelector = this.props.selectorForElement(htmlElement, {
       seedMinLength: 4,
       className: name => {
         if (name.indexOf("df") === -1 && name.indexOf("diff") === -1) {
@@ -97,6 +127,19 @@ export default class Selectors extends React.Component {
     return newSelector;
   };
 
+  getSelectorForElement = element => {
+    const indexForSelector = _.findIndex(this.props.selectors, cssRule => {
+      const searchedElement = document.querySelector(cssRule);
+      return searchedElement === null
+        ? false
+        : element.isSameNode(searchedElement);
+    });
+
+    return indexForSelector !== -1
+      ? this.props.selectors[indexForSelector]
+      : this.this.createNewSelector(element);
+  };
+
   /**
    * Enables an inspector in the browser that allows a user
    * to target any element on the page
@@ -104,21 +147,20 @@ export default class Selectors extends React.Component {
    * @returns {Promise<string>}
    */
   getSelector() {
-    const inspect$ = inspect();
+    const inspect$ = this.props.domInspect();
 
     const subscriber = inspect$.subscribe(
       element => {
         if (element) {
-          const selector = element.hasAttribute("data-selector")
-            ? element.getAttribute("data-selector")
-            : this.createNewSelector(element);
-
+          const selector = this.getSelectorForElement(element);
           this.props.showSelectorDetails(selector);
         }
 
         this.props.cancelInspect();
       },
-      e => {}
+      e => {
+        console.error("Error selecting", e);
+      }
     );
 
     this.setState({ inspect$, subscriber });
@@ -129,16 +171,38 @@ export default class Selectors extends React.Component {
       props: { selectors, getSeenCount, getUnseenCount }
     } = this;
     return (
-      <div>
-        {selectors.map((selector, idx) => (
-          <ElementHighlight
-            key={idx}
-            selector={selector}
-            seenCount={getSeenCount(selector)}
-            unseenCount={getUnseenCount(selector)}
-          />
-        ))}
-      </div>
+      <VisibleElements selectors={selectors}>
+        {visibility => {
+          const val = visibility.reduce((acc, x) => {
+            return !x.visible ? ++acc : acc;
+          }, 0);
+          return (
+            <div>
+              <StyleBoundary>
+                <StickyHeader
+                  style={{
+                    transform:
+                      val > 0
+                        ? "translate3d(0, 0px, 0)"
+                        : "translate3d(0, -165px, 0)"
+                  }}
+                >
+                  Elements not shown {val}
+                </StickyHeader>
+              </StyleBoundary>
+
+              {visibility.map(({ selector, visible }, idx) => (
+                <ElementHighlight
+                  key={idx}
+                  selector={selector}
+                  seenCount={getSeenCount(selector)}
+                  unseenCount={getUnseenCount(selector)}
+                />
+              ))}
+            </div>
+          );
+        }}
+      </VisibleElements>
     );
   }
 }

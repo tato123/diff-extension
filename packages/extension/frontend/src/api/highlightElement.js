@@ -5,7 +5,8 @@ import {
   distinctUntilChanged,
   last,
   mergeMap,
-  catchError
+  catchError,
+  multicast
 } from "rxjs/operators";
 
 import { lighten, opacify, darken } from "polished";
@@ -68,6 +69,7 @@ export const inspect = () => {
     background-color: rgba(60, 65, 255, 0.2)!important;
   `;
 
+  /* eslint-disable */
   const clicks = fromEvent(window, "click", { capture: true }).pipe(
     mergeMap(evt => {
       evt.preventDefault();
@@ -116,7 +118,8 @@ export const inspect = () => {
         console.error(err.message);
       }
       return of(null);
-    })
+    }),
+    multicast(() => new Subject())
   );
 
   move$.subscribe(e => {
@@ -128,6 +131,8 @@ export const inspect = () => {
       e.classList.add("diff-selected");
     }
   });
+
+  move$.connect();
 
   move$.stop = () => stop$.next(null);
 

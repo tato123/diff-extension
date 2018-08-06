@@ -106,15 +106,6 @@ export default class ElementHighlight extends React.Component {
                   <UnseenCount>{unseenCount}</UnseenCount>
                 </SeenCount>
               </StyleBoundary>
-              <Outline
-                style={{
-                  transform: `translate(15px, 0px)`,
-                  position: "absolute"
-                }}
-                data-selector={selector}
-                width={`${elementWidth}px`}
-                height={`${elementHeight}px`}
-              />
             </div>
           )}
         />,
@@ -130,3 +121,13 @@ export default class ElementHighlight extends React.Component {
 /* <StyleBoundary shadowDom={false} selectable>
 
 </StyleBoundary> */
+
+// <Outline
+// style={{
+//   transform: `translate(15px, 0px)`,
+//   position: "absolute"
+// }}
+// data-selector={selector}
+// width={`${elementWidth}px`}
+// height={`${elementHeight}px`}
+// />
