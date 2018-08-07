@@ -12,7 +12,15 @@ const addNewSelector = cssSelector => ({
   }
 });
 
+const deleteSelector = selectorId => ({
+  type: types.DELETE_SELECTOR,
+  payload: {
+    selectorId
+  }
+});
+
 export default {
   addSelector,
-  addNewSelector
+  addNewSelector,
+  deleteSelector
 };

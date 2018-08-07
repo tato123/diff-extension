@@ -1,55 +1,49 @@
-import { applyMiddleware, createStore, compose, combineReducers } from "redux";
+import { applyMiddleware, createStore, combineReducers } from "redux";
 import thunkMiddleware from "redux-thunk";
+import { createEpicMiddleware, combineEpics } from "redux-observable";
+import { initializeFirestore } from "./firestore";
+import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
 import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
-import firebase from "firebase";
 
 import user from "redux/user";
-import widgets from "redux/widgets";
-import entities from "redux/entities";
+import widgets, { epics as widgetEpics } from "redux/widgets";
+import entities, { epics as entitiesEpic } from "redux/entities";
 
 console.log("[plugin - firebase] initializing connection");
-// connect to firebase
-const config = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_SENDER_ID
-};
 
-firebase.initializeApp(config);
-
-const firestore = firebase.firestore();
-const settings = { timestampsInSnapshots: true };
-firestore.settings(settings);
+const firestore = initializeFirestore();
 
 export default function configureStore(preloadedState) {
+  // Setup redux-observable
+  const rootEpic = combineEpics(entitiesEpic, widgetEpics);
+  const epicMiddleware = createEpicMiddleware({
+    dependencies: { db: firestore }
+  });
+
+  // Setup our middlewares
   const middlewares = [
     thunkMiddleware.withExtraArgument({ db: firestore }),
     asyncMiddleware,
+    epicMiddleware,
     postmessageMiddleware
   ];
-  const middlewareEnhancer = applyMiddleware(...middlewares);
 
-  const enhancers = [middlewareEnhancer];
-  const composeEnhancers =
-    typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-          // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-        })
-      : compose;
+  const composedEnhancers = composeWithDevTools(
+    applyMiddleware(...middlewares)
+  );
 
-  const composedEnhancers = composeEnhancers(...enhancers);
-
+  // Setup our reducers
   const rootReducer = combineReducers({
     user,
     widgets,
     entities
   });
 
+  // Finally - Create our store
   const store = createStore(rootReducer, preloadedState, composedEnhancers);
 
+  // Start watching our actions with our epic middleware
+  epicMiddleware.run(rootEpic);
   return store;
 }

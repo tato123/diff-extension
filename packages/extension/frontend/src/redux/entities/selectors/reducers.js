@@ -46,6 +46,13 @@ const addNewSelector = (state, { type, payload }) => {
   };
 };
 
+const deleteSelector = (state, { type, payload }) => {
+  return {
+    byId: _.omit(state.byId, payload.selectorId),
+    allIds: _.without(state.allIds, payload.selectorId)
+  };
+};
+
 /*eslint-disable */
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -53,6 +60,8 @@ const reducer = (state = initialState, action) => {
       return addExistingSelector(state, action);
     case types.ADD_NEW_SELECTOR:
       return addNewSelector(state, action);
+    case types.DELETE_SELECTOR:
+      return deleteSelector(state, action);
     default:
       return state;
   }

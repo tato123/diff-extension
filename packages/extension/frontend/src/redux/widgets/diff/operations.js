@@ -1,11 +1,4 @@
 import firebase from "firebase";
-import { actions as widgetActions } from "../state";
-import { actions as selectorActions } from "../selectors";
-
-const closeDiff = () => dispatch => {
-  dispatch(widgetActions.hide("diff"));
-  dispatch(selectorActions.inspect());
-};
 
 const uploadFile = file => (dispatch, getState) => {
   const storageRef = firebase.storage().ref(`attachments/${file.name}`);
@@ -17,7 +10,7 @@ const uploadFile = file => (dispatch, getState) => {
       function progress(snapshot) {
         var percentage =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(percentage);
+        // console.log(percentage);
       },
       function error(error) {
         reject(error);
@@ -57,11 +50,10 @@ const addNewComment = payload => async (dispatch, getState, { db }) => {
   };
   const newEvent = db.collection("events").doc();
   const result = await newEvent.set(record);
-  console.log(result);
+  // console.log(result);
 };
 
 export default {
   uploadFile,
-  closeDiff,
   addNewComment
 };

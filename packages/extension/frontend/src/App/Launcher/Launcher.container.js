@@ -5,7 +5,7 @@ import { createStructuredSelector } from "reselect";
 import { selectors } from "redux/widgets/launcher";
 
 const mapStateToProps = createStructuredSelector({
-  count: selectors.countSelector()
+  count: selectors.unseenCountSelector()
 });
 
 export default connect(mapStateToProps)(Launcher);

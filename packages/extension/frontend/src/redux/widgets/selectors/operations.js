@@ -10,7 +10,6 @@ const showDiffForSelector = selector => dispatch => {
 };
 
 const createNewSelector = selector => dispatch => {
-  console.log("creating a new selector", selector);
   dispatch(selectorEntityActions.addNewSelector(selector));
 };
 

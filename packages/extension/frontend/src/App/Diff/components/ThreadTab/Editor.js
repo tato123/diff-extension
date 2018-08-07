@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Button, TextArea, Label, Grid } from "@diff/shared-components";
 import Icon from "react-icons-kit";
 import { paperclip } from "react-icons-kit/fa/paperclip";
-import Attachment from "../../Attachment";
+import Attachment from "../Attachment";
 const BottomRow = styled(Grid.Row)`
   flex: 1;
   display: flex;

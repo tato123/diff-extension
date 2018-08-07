@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Editor from "./Editor";
 import { Button } from "@diff/shared-components";
-import Comments from "../../Comments";
+import ThreadCell from "../ThreadCell";
 
 /* prettier-ignore */
 const ThreadContainer = styled.div`
@@ -73,7 +73,6 @@ export default class Thread extends React.Component {
       props: { cssSelector }
     } = this;
 
-    console.log("my css selector", cssSelector);
     return (
       <ThreadContainer>
         <HeadArea gridArea="head">{this.renderEditor()}</HeadArea>
@@ -86,7 +85,7 @@ export default class Thread extends React.Component {
           }}
         >
           <div style={{ width: "calc(100% - 23px)" }}>
-            <Comments thread={cssSelector} />
+            <ThreadCell thread={cssSelector} />
           </div>
         </GridArea>
       </ThreadContainer>

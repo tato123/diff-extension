@@ -12,7 +12,10 @@ import {
 
 import styled from "styled-components";
 import Popper from "components/Popper";
-import { Assets, Diff, Thread } from "./components/Tabs";
+import Assets from "./components/AssetsTab";
+import Diff from "./components/DiffTab";
+import Thread from "./components/ThreadTab";
+
 import Icon from "react-icons-kit";
 import { ic_close as iconClose } from "react-icons-kit/md/ic_close";
 
@@ -36,15 +39,39 @@ const MainWindow = styled.div`
   }
 `;
 
-export default class Viewer extends React.Component {
+export default class DiffViewer extends React.Component {
   static propTypes = {
+    /**
+     * Element selector that we are currently displaying
+     * diff for
+     */
     cssSelector: PropTypes.string,
-    close: PropTypes.func.isRequired
+    /**
+     * Callback function to handle closing diff
+     */
+    close: PropTypes.func.isRequired,
+    /**
+     * All of the ids that are currently visible
+     */
+    visibleIds: PropTypes.array,
+    /**
+     * Record all of the items we have looked at so far
+     */
+    updateItemsSeen: PropTypes.func.isRequired
   };
 
   state = {
     selectedTab: 0
   };
+
+  componentDidMount() {
+    setTimeout(() => {
+      const {
+        props: { visibleIds, updateItemsSeen }
+      } = this;
+      updateItemsSeen(visibleIds);
+    }, 2000);
+  }
 
   onTabClick = val => () => {
     this.setState({ selectedTab: val });
@@ -64,7 +91,7 @@ export default class Viewer extends React.Component {
     });
 
   close = () => {
-    this.props.close();
+    this.props.close(this.props.cssSelector);
   };
 
   render() {
@@ -77,13 +104,21 @@ export default class Viewer extends React.Component {
     if (!cssSelector) {
       return null;
     }
+    const options = {
+      placement: "auto",
+      modifiers: {
+        flip: {
+          enabled: false
+        }
+      }
+    };
 
     return (
       <Popper
         element={cssSelector}
-        options={{ placement: "right" }}
+        options={options}
         render={({ ref }) => (
-          <div ref={ref} style={{ zIndex: "999999999" }}>
+          <div ref={ref} style={{ zIndex: Number.MAX_SAFE_INTEGER }}>
             <StyleBoundary>
               <MainWindow>
                 <div
