@@ -5,6 +5,7 @@ import Popper from "components/Popper";
 import { StyleBoundary } from "@diff/shared-components";
 import styled from "styled-components";
 import { Spring } from "react-spring";
+import { lighten } from "polished";
 
 const SeenCount = styled.div`
   height: 32px;
@@ -21,6 +22,13 @@ const SeenCount = styled.div`
   position: absolute;
   z-index: 9999999;
   overflow: hidden;
+  will-change: transform;
+
+  &:hover {
+    cursor: pointer;
+    background: ${lighten(0.08, "#181a3a")};
+    transform: scale3d(1.2, 1.2, 1) !important;
+  }
 
   > div:first-child {
     display: flex;
@@ -55,13 +63,15 @@ export default class ElementHighlight extends React.Component {
     unseenCount: PropTypes.number,
     styles: PropTypes.object,
     hovered: PropTypes.bool,
-    selected: PropTypes.bool
+    selected: PropTypes.bool,
+    onClick: PropTypes.func
   };
 
   static defaultProps = {
     seenCount: 0,
     unseenCount: 0,
-    hovered: false
+    hovered: false,
+    onClick: () => {}
   };
 
   state = {
@@ -87,7 +97,7 @@ export default class ElementHighlight extends React.Component {
   render() {
     const {
       state: { portalDiv },
-      props: { selector, unseenCount, seenCount, hovered, selected }
+      props: { selector, unseenCount, seenCount, hovered, selected, onClick }
     } = this;
 
     const options = {
@@ -128,7 +138,10 @@ export default class ElementHighlight extends React.Component {
                   }}
                 >
                   {styles => (
-                    <SeenCount style={{ ...this.props.styles, ...styles }}>
+                    <SeenCount
+                      style={{ ...this.props.styles, ...styles }}
+                      onClick={() => onClick(selector)}
+                    >
                       <div>{seenCount}</div>
                       <Spring
                         from={{ transform: "translateX(-32px)", opacity: 0 }}

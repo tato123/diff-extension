@@ -55,6 +55,9 @@ export default class PopperHandler extends React.Component {
         popperElement,
         options
       );
+      console.warn(
+        "Popper element set to document.body without avoiding overlaps"
+      );
       this.setState({
         popper
       });

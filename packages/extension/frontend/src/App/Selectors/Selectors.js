@@ -107,6 +107,11 @@ export default class Selectors extends React.Component {
       this.getSelector();
     }
   }
+  componentWillUnmount() {
+    document.querySelectorAll(".diff-selected").forEach(node => {
+      node.classList.remove("diff-selected");
+    });
+  }
 
   /**
    * Using the finder library to build out a new inspector
@@ -179,9 +184,16 @@ export default class Selectors extends React.Component {
     }
   };
 
+  elementHighlightClicked = selector => {
+    const element = document.querySelector(selector) || document.body;
+    element.classList.add("diff-selected");
+    this.props.showSelectorDetails(selector);
+  };
+
   render() {
     const {
-      props: { selectors, getSeenCount, getUnseenCount, diffOpenForSelector }
+      props: { selectors, getSeenCount, getUnseenCount, diffOpenForSelector },
+      elementHighlightClicked
     } = this;
 
     return (
@@ -201,7 +213,7 @@ export default class Selectors extends React.Component {
                         : "translate3d(0, -165px, 0)"
                   }}
                 >
-                  Elements not shown {val}
+                  {val} out of scrollview
                 </StickyHeader>
               </StyleBoundary>
 
@@ -220,6 +232,7 @@ export default class Selectors extends React.Component {
                 >
                   {styles => (
                     <ElementHighlight
+                      onClick={elementHighlightClicked}
                       hovered={selector === this.state.highlightedElement}
                       selected={diffOpenForSelector === selector}
                       styles={styles}
