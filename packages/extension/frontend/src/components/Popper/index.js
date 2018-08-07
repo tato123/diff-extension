@@ -48,13 +48,6 @@ export default class PopperHandler extends React.Component {
     const targetedElement =
       typeof element === "string" ? document.querySelector(element) : element;
 
-    if (process.env.NODE_ENV === "development") {
-      console.group("Popper");
-      console.log("Popper Element", popperElement);
-      console.log("Selector", element);
-      console.groupEnd("Popper");
-    }
-
     // element is still available on the page
     if (targetedElement != null) {
       const popper = new Popper(

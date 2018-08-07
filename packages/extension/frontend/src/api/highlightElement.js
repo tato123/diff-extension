@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { fromEvent, Subject, of } from "rxjs";
 import {
   takeUntil,
@@ -5,17 +6,32 @@ import {
   distinctUntilChanged,
   last,
   mergeMap,
-  catchError
+  catchError,
+  multicast,
+  tap
 } from "rxjs/operators";
 
 import { lighten, opacify, darken } from "polished";
 
 import { injectGlobal } from "styled-components";
 
+const SELECTION_CLASS = "diff-selected";
+const HIGHLIGHT_CLASS = "diff-highlight";
+
 injectGlobal`
   .diff-highlight {
     outline: 1px dashed ${darken(0.9, "#1a1b3c")} !important;
     background-color: ${opacify(0.7, lighten(0.7, "#1a1b3c"))} !important;
+  }
+
+  .diff-selected:after {
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #000;
+    position: relative;
+    content: '';
+    display: block;
+    border-radius: 2em;
   }
 `;
 
@@ -55,19 +71,23 @@ const isSelectableElement = evt => {
   );
 };
 
-/* eslint-disable */
+const clearStyles = () => {
+  document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach(node => {
+    node.classList.remove(HIGHLIGHT_CLASS);
+  });
+
+  document.querySelectorAll(`.${SELECTION_CLASS}`).forEach(node => {
+    node.classList.remove(SELECTION_CLASS);
+  });
+};
+
 /**
- *
+ * @param {Function} interceptFn a tap
  * @returns {Observable}
  */
-export const inspect = () => {
-  const style = `
-    cursor: pointer;
-    outline: 3px dashed #FF3C41;    
-    background-color: rgba(60, 65, 255, 0.2)!important;
-  `;
+export const inspect = (tapFn = _.noop) => {
+  clearStyles();
 
-  /* eslint-disable */
   const clicks = fromEvent(window, "click", { capture: true }).pipe(
     mergeMap(evt => {
       evt.preventDefault();
@@ -83,25 +103,24 @@ export const inspect = () => {
 
   const move = fromEvent(document.body, "mousemove", false);
 
-  const stop$ = new Subject();
-
   const move$ = move.pipe(
     takeUntil(clicks),
-    takeUntil(stop$),
+    debounceTime(2),
     distinctUntilChanged((oldValue, newValue) => {
       const val = oldValue.target.isSameNode(newValue.target);
 
       // value is not the same, remove the highlighting
       // from the previous value
       if (!val) {
-        oldValue.target.classList.remove("diff-highlight");
+        oldValue.target.classList.remove(HIGHLIGHT_CLASS);
       }
 
       return val;
     }),
     mergeMap(evt => {
       if (isSelectableElement(evt)) {
-        evt.target.classList.add("diff-highlight");
+        evt.target.classList.add(HIGHLIGHT_CLASS);
+        tapFn(evt);
         return of(evt.target);
       }
       return of(null);
@@ -115,20 +134,17 @@ export const inspect = () => {
         console.error(err.message);
       }
       return of(null);
-    })
+    }),
+    multicast(() => new Subject())
   );
 
   move$.subscribe(e => {
-    document.querySelectorAll(".diff-highlight").forEach(node => {
-      node.classList.remove("diff-highlight");
-    });
+    clearStyles();
 
     if (e) {
-      e.classList.add("diff-selected");
+      e.classList.add(SELECTION_CLASS);
     }
   });
-
-  move$.stop = () => stop$.next(null);
 
   return move$;
 };

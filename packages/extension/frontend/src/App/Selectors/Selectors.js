@@ -90,6 +90,10 @@ export default class Selectors extends React.Component {
     diffOpenForSelector: null
   };
 
+  state = {
+    highlightedElement: null
+  };
+
   componentDidMount() {
     this.getSelector();
   }
@@ -101,15 +105,6 @@ export default class Selectors extends React.Component {
 
     if (nextProps.inspectMode) {
       this.getSelector();
-    } else if (this.state.inspect$) {
-      this.state.inspect$.stop();
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.state) {
-      this.state.inspect$.unsubscribe();
-      this.state.inspect$.stop();
     }
   }
 
@@ -156,7 +151,7 @@ export default class Selectors extends React.Component {
    * @returns {Promise<string>}
    */
   getSelector() {
-    const inspect$ = this.props.domInspect();
+    const inspect$ = this.props.domInspect(this.highlightListener);
 
     const subscriber = inspect$.subscribe(
       element => {
@@ -174,8 +169,15 @@ export default class Selectors extends React.Component {
       }
     );
 
-    this.setState({ inspect$, subscriber });
+    inspect$.connect();
   }
+
+  highlightListener = evt => {
+    const selector = this.getSelectorForElement(evt.target);
+    if (selector !== this.state.highlightedElement) {
+      this.setState({ highlightedElement: selector });
+    }
+  };
 
   render() {
     const {
@@ -218,6 +220,8 @@ export default class Selectors extends React.Component {
                 >
                   {styles => (
                     <ElementHighlight
+                      hovered={selector === this.state.highlightedElement}
+                      selected={diffOpenForSelector === selector}
                       styles={styles}
                       selector={selector}
                       seenCount={getSeenCount(selector)}

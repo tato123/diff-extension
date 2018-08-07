@@ -2,8 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Popper from "components/Popper";
-import { StyleBoundary, Outline } from "@diff/shared-components";
+import { StyleBoundary } from "@diff/shared-components";
 import styled from "styled-components";
+import { Spring } from "react-spring";
 
 const SeenCount = styled.div`
   height: 32px;
@@ -19,9 +20,12 @@ const SeenCount = styled.div`
   padding-right: 4px;
   position: absolute;
   z-index: 9999999;
+  overflow: hidden;
 
   > div:first-child {
-    padding-left: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -38,6 +42,8 @@ const UnseenCount = styled.div`
   align-items: center;
 
   justify-content: center;
+  opacity: 0;
+  transform: translateX(-32px);
 `;
 
 export default class ElementHighlight extends React.Component {
@@ -47,12 +53,15 @@ export default class ElementHighlight extends React.Component {
     seenCount: PropTypes.number,
 
     unseenCount: PropTypes.number,
-    styles: PropTypes.object
+    styles: PropTypes.object,
+    hovered: PropTypes.bool,
+    selected: PropTypes.bool
   };
 
   static defaultProps = {
     seenCount: 0,
-    unseenCount: 0
+    unseenCount: 0,
+    hovered: false
   };
 
   state = {
@@ -78,7 +87,7 @@ export default class ElementHighlight extends React.Component {
   render() {
     const {
       state: { portalDiv },
-      props: { selector, unseenCount, seenCount }
+      props: { selector, unseenCount, seenCount, hovered, selected }
     } = this;
 
     const options = {
@@ -102,10 +111,44 @@ export default class ElementHighlight extends React.Component {
           render={({ ref, elementWidth, elementHeight }) => (
             <div ref={ref}>
               <StyleBoundary>
-                <SeenCount style={this.props.styles}>
-                  <div>{seenCount}</div>
-                  <UnseenCount>{unseenCount}</UnseenCount>
-                </SeenCount>
+                <Spring
+                  config={{ velocity: 30 }}
+                  from={{
+                    width: "32px",
+                    paddingLeft: "12px",
+                    transform: "scale3d(1,1,1)"
+                  }}
+                  to={{
+                    width: unseenCount === 0 ? "32px" : "64px",
+                    paddingLeft: unseenCount === 0 ? "12px" : "16px",
+                    transform:
+                      hovered && !selected
+                        ? "scale3d(1.2,1.2,1)"
+                        : "scale3d(1,1,1)"
+                  }}
+                >
+                  {styles => (
+                    <SeenCount style={{ ...this.props.styles, ...styles }}>
+                      <div>{seenCount}</div>
+                      <Spring
+                        from={{ transform: "translateX(-32px)", opacity: 0 }}
+                        to={{
+                          opacity: unseenCount > 0 ? 1 : 0,
+                          transform:
+                            unseenCount > 0
+                              ? "translateX(0px)"
+                              : "translateX(-32px)"
+                        }}
+                      >
+                        {styles => (
+                          <UnseenCount style={styles}>
+                            {unseenCount}
+                          </UnseenCount>
+                        )}
+                      </Spring>
+                    </SeenCount>
+                  )}
+                </Spring>
               </StyleBoundary>
             </div>
           )}
@@ -116,19 +159,3 @@ export default class ElementHighlight extends React.Component {
     return null;
   }
 }
-
-//   <Bubble value={count} style={BubbleStyle} />
-
-/* <StyleBoundary shadowDom={false} selectable>
-
-</StyleBoundary> */
-
-// <Outline
-// style={{
-//   transform: `translate(15px, 0px)`,
-//   position: "absolute"
-// }}
-// data-selector={selector}
-// width={`${elementWidth}px`}
-// height={`${elementHeight}px`}
-// />

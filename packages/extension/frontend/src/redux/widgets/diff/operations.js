@@ -10,7 +10,7 @@ const uploadFile = file => (dispatch, getState) => {
       function progress(snapshot) {
         var percentage =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(percentage);
+        // console.log(percentage);
       },
       function error(error) {
         reject(error);
@@ -50,7 +50,7 @@ const addNewComment = payload => async (dispatch, getState, { db }) => {
   };
   const newEvent = db.collection("events").doc();
   const result = await newEvent.set(record);
-  console.log(result);
+  // console.log(result);
 };
 
 export default {

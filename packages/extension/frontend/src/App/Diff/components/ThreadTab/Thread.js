@@ -73,7 +73,6 @@ export default class Thread extends React.Component {
       props: { cssSelector }
     } = this;
 
-    console.log("my css selector", cssSelector);
     return (
       <ThreadContainer>
         <HeadArea gridArea="head">{this.renderEditor()}</HeadArea>
