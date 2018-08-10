@@ -1,54 +1,15 @@
 import { combineEpics, ofType } from "redux-observable";
-import { Observable } from "rxjs";
-import { mergeMap } from "rxjs/operators";
+import { Observable, from, of } from "rxjs";
+import { mergeMap, catchError, map } from "rxjs/operators";
 
 import types from "./types";
 import actions from "./actions";
 
-const ROOT_COLLECTION = "workspaces";
-const SUB_COLLECTION = "collaborators";
+const ROOT_COLLECTION = "workspace";
 
 // ----------------------------------------------------------------
 // Observables
 
-/**
- *
- * @param {*} db
- * @param {*} state
- * @param {*} action
- */
-const createCollaboratorObservable = (db, state, action) => {
-  // check if a group exists
-
-  //
-  return Observable.create(observer => {
-    const docRef = db
-      .collection(ROOT_COLLECTION)
-      .doc(state.user.selectedAccount)
-      .collection(SUB_COLLECTION)
-      .doc(action.payload.email);
-
-    if (docRef.exists) {
-      observer.error(
-        actions.addWorkspaceUserFailed(
-          action.payload.email,
-          "User already invited"
-        )
-      );
-    } else {
-      const record = {
-        email: action.payload.email,
-        created: Date.now(),
-        accepted: false
-      };
-
-      docRef.set(record);
-
-      observer.next(actions.addWorkspaceUserSuccess(action.payload.email));
-      observer.complete();
-    }
-  });
-};
 /*eslint-disable */
 const createWorkspaceObservable = (db, state, action) => {
   return Observable.create(observer => {
@@ -88,7 +49,40 @@ const createWorkspaceObservable = (db, state, action) => {
 const addCollaboratorEpic = (action$, state$, { db }) =>
   action$.pipe(
     ofType(types.ADD_WORKSPACE_USER_REQUEST),
-    mergeMap(action => createCollaboratorObservable(db, state$.value, action))
+    mergeMap(action => {
+      return from(
+        db
+          .collection(ROOT_COLLECTION)
+          .doc(action.payload.workspace)
+          .get()
+      ).pipe(
+        map(doc => {
+          if (!doc.exists) {
+            return actions.addWorkspaceUserFailed(
+              action.payload.email,
+              "User already invited"
+            );
+          }
+          const data = doc.data();
+          const newValue = Object.assign({}, data, {
+            invites: {
+              ...data.invites,
+              [action.payload.email]: {
+                email: action.payload.email,
+                status: "pending",
+                created: Date.now()
+              }
+            }
+          });
+
+          doc.ref.set(newValue, { merge: true });
+          return actions.addWorkspaceUserSuccess(action.payload.email);
+        }),
+        catchError(err =>
+          of(actions.addWorkspaceUserFailed(action.payload.workspace, err))
+        )
+      );
+    })
   );
 /**
  *

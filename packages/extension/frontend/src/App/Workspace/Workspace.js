@@ -69,7 +69,9 @@ export default class Workspace extends React.Component {
 
     workspaceName: PropTypes.string,
 
-    workspaceUsers: PropTypes.array
+    workspaceUsers: PropTypes.array,
+
+    workspaceId: PropTypes.string
   };
 
   state = {
@@ -78,7 +80,9 @@ export default class Workspace extends React.Component {
 
   onSubmitCollaborator = evt => {
     evt.preventDefault();
-    this.props.addCollaborator(evt.target.email.value);
+    /* eslint-disable */
+    debugger;
+    this.props.addCollaborator(evt.target.email.value, this.props.workspaceId);
     this.setState({ addUser: false });
     return false;
   };

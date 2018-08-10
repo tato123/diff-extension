@@ -1,6 +1,6 @@
 import types from "./types";
 
-const addWorkspaceUserRequest = (email, workspace) => ({
+const addWorkspaceUser = (email, workspace) => ({
   type: types.ADD_WORKSPACE_USER_REQUEST,
   payload: {
     email,
@@ -48,7 +48,7 @@ const createWorkspaceFailed = (name, err) => ({
 });
 
 export default {
-  addWorkspaceUserRequest,
+  addWorkspaceUser,
   addWorkspaceUserSuccess,
   addWorkspaceUserFailed,
   createWorkspace,

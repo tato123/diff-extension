@@ -5,11 +5,12 @@ import { selectors } from "redux/entities/workspaces";
 
 const mapStateToProps = state => ({
   workspaceName: selectors.workspaceNameSelector()(state),
-  workspaceUsers: selectors.workspaceUsersSelector()(state)
+  workspaceUsers: selectors.workspaceUsersSelector()(state),
+  workspaceId: selectors.currentWorkspaceIdSelector()(state)
 });
 
 const mapDispatchToProps = dispatch => ({
-  addCollaborator: email => dispatch(actions.addWorkspaceUserRequest(email)),
+  addCollaborator: (...args) => dispatch(actions.addWorkspaceUser(...args)),
   createWorkspace: name => dispatch(actions.createWorkspace(name)),
   workspace: null
 });

@@ -24,7 +24,12 @@ const workspaceUsersSelector = id =>
       .value();
   });
 
+const currentWorkspaceIdSelector = id =>
+  createSelector(workspaceDomain, workspace => {
+    return workspace.allIds[0] || null;
+  });
 export default {
   workspaceNameSelector,
-  workspaceUsersSelector
+  workspaceUsersSelector,
+  currentWorkspaceIdSelector
 };
