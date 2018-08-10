@@ -1,9 +1,11 @@
 import { combineEpics, ofType } from "redux-observable";
 import { from, of } from "rxjs";
-import { mergeMap, map, catchError } from "rxjs/operators";
+import { mergeMap, flatMap, catchError } from "rxjs/operators";
 import { types as commonTypes } from "@diff/common";
 import types from "./types";
 import actions from "./actions";
+import { operations as userOperations } from "../users";
+import _ from "lodash";
 
 const getWorkspaceByIdEpic = (action$, state$, { db }) =>
   action$.pipe(
@@ -16,13 +18,22 @@ const getWorkspaceByIdEpic = (action$, state$, { db }) =>
           .doc(workspaceId)
           .get()
       ).pipe(
-        map(doc => {
+        flatMap(doc => {
           if (doc.exists) {
             const data = doc.data();
-            return actions.getWorkspaceByIdSuccess({
-              id: doc.id,
-              ...data
-            });
+
+            // resolve our user
+            const users = _.keys(data.users).map(user =>
+              userOperations.fetchUser(user)
+            );
+
+            return [
+              ...users,
+              actions.getWorkspaceByIdSuccess({
+                id: doc.id,
+                ...data
+              })
+            ];
           }
           return actions.getWorkspaceByIdFailed(
             workspaceId,

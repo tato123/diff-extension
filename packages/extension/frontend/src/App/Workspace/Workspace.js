@@ -61,27 +61,19 @@ export default class Workspace extends React.Component {
      * workspace
      */
     addCollaborator: PropTypes.func.isRequired,
-    /**
-     * Defined workspace
-     */
-    workspace: PropTypes.string,
+
     /**
      *
      */
-    createWorkspace: PropTypes.func.isRequired
+    createWorkspace: PropTypes.func.isRequired,
+
+    workspaceName: PropTypes.string,
+
+    workspaceUsers: PropTypes.array
   };
 
   state = {
     addUser: false
-  };
-
-  renderUser = user => {
-    return (
-      <UserRow>
-        <div>ME</div>
-        <div>jfontanez@getdiff.app</div>
-      </UserRow>
-    );
   };
 
   onSubmitCollaborator = evt => {
@@ -114,8 +106,18 @@ export default class Workspace extends React.Component {
     );
   };
 
+  renderUser = user => {
+    return (
+      <UserRow key={user.email}>
+        <div>ME</div>
+        <div>{user.email}</div>
+      </UserRow>
+    );
+  };
+
   renderWorkspace = () => {
     const {
+      props: { workspaceUsers },
       state: { addUser }
     } = this;
     return (
@@ -123,7 +125,7 @@ export default class Workspace extends React.Component {
         <Header as="h1">COLLABORATORS</Header>
         <HR />
         <UsersTable>
-          {this.renderUser()}
+          {workspaceUsers.map(user => this.renderUser(user))}
           {addUser && this.renderForm()}
           {!addUser && (
             <Button onClick={() => this.setState({ addUser: true })}>
@@ -156,14 +158,14 @@ export default class Workspace extends React.Component {
 
   render() {
     const {
-      props: { workspace }
+      props: { workspaceName }
     } = this;
     return (
       <Modal>
         <StyleBoundary>
           <Modal.Content>
-            {!workspace && this.renderCreateJoinWorkspace()}
-            {workspace && this.renderWorkspace()}
+            {!workspaceName && this.renderCreateJoinWorkspace()}
+            {workspaceName && this.renderWorkspace()}
           </Modal.Content>
         </StyleBoundary>
       </Modal>
