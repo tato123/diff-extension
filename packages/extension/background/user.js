@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import jwtDecode from "jwt-decode";
 
 const authenticate = async refreshToken => {
   const options = {
@@ -21,8 +22,12 @@ export const login = async refreshToken => {
   try {
     const token = await authenticate(refreshToken);
     await firebase.auth().signInWithCustomToken(token.access_token);
+    const jwt = jwtDecode(token.access_token);
 
-    return firebase.firestore();
+    return {
+      firestore: firebase.firestore(),
+      token: jwt
+    };
   } catch (err) {
     console.error(err);
   }

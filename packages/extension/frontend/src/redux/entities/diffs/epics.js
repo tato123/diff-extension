@@ -4,10 +4,12 @@ import { switchMap, takeUntil } from "rxjs/operators";
 import _ from "lodash";
 import { types as commonTypes } from "@diff/common";
 import actions from "./actions";
-import firebase from "firebase";
 
-const ROOT_COLLECTION = "activity";
-const SUB_COLLECTION = "seen";
+import { operations as userOperations } from "../users";
+import { actions as selectorActions } from "../selectors";
+
+const ROOT_COLLECTION = "events";
+const CONTENT_TYPE = "diff";
 
 /**
  * Observable that will automatically
@@ -17,20 +19,37 @@ const SUB_COLLECTION = "seen";
  * @param {firestore} db
  * @param {Observer} cancelOn
  */
-const fetchEventLog$ = (db, cancelOn) => {
+const fetchComments$ = (db, state, cancelOn) => {
   let unsubscribe = _.noop;
   const observer$ = Observable.create(observer => {
-    const user = firebase.auth().currentUser;
     unsubscribe = db
       .collection(ROOT_COLLECTION)
-      .doc(user.uid)
-      .collection(SUB_COLLECTION)
+      .where("type", "==", CONTENT_TYPE)
+      .where("meta.userId", "==", "system")
+      .where("url.hostname", "==", window.location.hostname)
+      .where("url.pathname", "==", window.location.pathname)
       .onSnapshot(querySnapshot => {
         querySnapshot.docChanges().forEach(({ doc, type }) => {
-          if (type === "added") {
+          if (type === "added" || type === "modified") {
             const data = doc.data();
+            observer.next(
+              actions.addDiff({
+                id: doc.id,
+                ...data
+              })
+            );
 
-            observer.next(actions.readSeenActivity(_.values(data)[0]));
+            // fetches single user
+            observer.next(userOperations.fetchUser(data.meta.userId));
+
+            // add our new selectors
+            observer.next(
+              selectorActions.addSelector({
+                id: data.selector,
+                type: data.type,
+                typeId: doc.id
+              })
+            );
           }
         });
       });
@@ -42,17 +61,18 @@ const fetchEventLog$ = (db, cancelOn) => {
   return observer$;
 };
 
-const fetchEventLogEpic = (action$, state$, { db }) =>
+const fetchCommentsEpic = (action$, state$, { db }) =>
   action$.pipe(
     ofType(commonTypes.LOGIN.SUCCESS),
     // automatically handles switching
     // to the latest observable
     switchMap(() =>
-      fetchEventLog$(
+      fetchComments$(
         db,
+        state$.value,
         takeUntil(action$.pipe(ofType(commonTypes.LOGIN.SUCCESS)))
       )
     )
   );
 
-export default combineEpics(fetchEventLogEpic);
+export default combineEpics(fetchCommentsEpic);

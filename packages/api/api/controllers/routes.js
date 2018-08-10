@@ -8,18 +8,22 @@ const firebase = require("firebase");
 
 const retrieveClaimsForUid = async uid => {
   const db = admin.firestore();
-  const docRef = await db
-    .collection("users")
-    .doc(uid)
-    .get();
 
-  if (docRef.exists) {
-    const data = docRef.data();
-    return {
-      accounts: data.accounts
-    };
-  }
-  return {};
+  const querySnapshot = await db
+    .collection("workspace")
+    .where(`users.${uid}`, "==", true)
+    .get();
+  const workspaces = {};
+  querySnapshot.forEach(doc => {
+    Object.assign(workspaces, {
+      workspaces: {
+        ...workspaces.workspaces,
+        [doc.id]: true
+      }
+    });
+  });
+
+  return workspaces;
 };
 
 const createAndStoreRefreshToken = async uid => {

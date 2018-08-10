@@ -9,6 +9,7 @@ import Launcher from "./Launcher";
 import Login from "./Login";
 import Selectors from "./Selectors";
 import Viewer from "./Diff";
+import Workspace from "./Workspace";
 
 // Redux store
 import configureStore from "./store";
@@ -62,6 +63,13 @@ export default class App extends React.Component {
             {props => (
               <Authenticated {...props}>
                 <Viewer context={props.values && props.values.context} />
+              </Authenticated>
+            )}
+          </Widget>
+          <Widget name="workspace">
+            {props => (
+              <Authenticated {...props}>
+                <Workspace context={props.values && props.values.context} />
               </Authenticated>
             )}
           </Widget>

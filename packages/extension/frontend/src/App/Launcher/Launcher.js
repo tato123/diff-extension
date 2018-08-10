@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyleBoundary } from "@diff/shared-components";
-import { Spring, Transition, config } from "react-spring";
+import { Spring, Transition } from "react-spring";
 import styled from "styled-components";
 
 import MainMenu from "./components/MainMenu";
 import CloseButton from "./components/CloseButton";
+import WorkspaceButton from "./components/WorkspaceButton";
 
 const MenuGroup = styled.div`
   position: fixed;
@@ -38,7 +39,11 @@ export default class Launcher extends React.Component {
     /**
      * Enable or disable visibilty of the count
      */
-    showCount: PropTypes.bool
+    showCount: PropTypes.bool,
+
+    showWidget: PropTypes.func.isRequired,
+
+    hideWidget: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -47,7 +52,8 @@ export default class Launcher extends React.Component {
   };
 
   state = {
-    showClose: false
+    showClose: false,
+    showWorkspace: false
   };
 
   onMenuClick = () => {
@@ -60,7 +66,19 @@ export default class Launcher extends React.Component {
     this.setState({ showClose: false });
   };
 
-  closer = () => {
+  onWorkspaceClick = () => {
+    const WORKSPACE = "workspace";
+
+    if (this.state.showWorkspace) {
+      this.props.hideWidget(WORKSPACE);
+      this.setState({ showWorkspace: false });
+    } else {
+      this.props.showWidget(WORKSPACE);
+      this.setState({ showWorkspace: true });
+    }
+  };
+
+  closeMenuOption = () => {
     const {
       state: { showClose }
     } = this;
@@ -82,6 +100,28 @@ export default class Launcher extends React.Component {
     );
   };
 
+  workspaceMenuOption = () => {
+    const {
+      state: { showClose }
+    } = this;
+
+    return (
+      <Spring
+        config={{ velocity: 15 }}
+        size={36}
+        from={{
+          transform: "translate(75px)",
+          position: "relative"
+        }}
+        to={{
+          transform: showClose ? "translate(0px)" : "translate(75px)"
+        }}
+        onClick={this.onWorkspaceClick}
+        render={WorkspaceButton}
+      />
+    );
+  };
+
   render() {
     const {
       props: { count, showCount }
@@ -97,7 +137,8 @@ export default class Launcher extends React.Component {
           >
             {styles => (
               <React.Fragment>
-                {this.closer()}
+                {this.closeMenuOption()}
+                {this.workspaceMenuOption()}
                 <MainMenu
                   count={count}
                   showCount={showCount}

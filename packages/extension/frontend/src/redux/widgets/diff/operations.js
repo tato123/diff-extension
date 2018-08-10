@@ -41,7 +41,6 @@ const addNewComment = payload => async (dispatch, getState, { db }) => {
     selector,
     type: "comment",
     meta: {
-      accountId: rootState.user.selectedAccount,
       userId: rootState.user.uid,
       created: Date.now()
     },

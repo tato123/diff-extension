@@ -19139,67 +19139,67 @@ var size = {
 var text = {
   fontFamily: "'Barlow Semi Condensed', sans-serif",
   overline: {
-    fontSize: remRatio(10),
+    fontSize: "9px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(1.5)
   },
   caption: {
-    fontSize: remRatio(12),
+    fontSize: "10px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0.4)
   },
   button: {
-    fontSize: remRatio(14),
+    fontSize: "14px",
     fontWeight: 500,
     letterSpacing: "1.1px"
   },
   body2: {
-    fontSize: remRatio(14),
+    fontSize: "14px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0.25)
   },
   body1: {
-    fontSize: remRatio(16),
+    fontSize: "16px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0.5)
   },
   subtitle2: {
-    fontSize: remRatio(14),
+    fontSize: "14px",
     fontWeight: 500,
     letterSpacing: toLetterSpacing(0.1)
   },
   subtitle1: {
-    fontSize: remRatio(16),
+    fontSize: "14px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0.15)
   },
   h6: {
-    fontSize: remRatio(20),
+    fontSize: "10px",
     fontWeight: 500,
     letterSpacing: toLetterSpacing(0.15)
   },
   h5: {
-    fontSize: remRatio(24),
+    fontSize: "14px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0)
   },
   h4: {
-    fontSize: remRatio(34),
+    fontSize: "16px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0.25)
   },
   h3: {
-    fontSize: remRatio(48),
+    fontSize: "18px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(0)
   },
   h2: {
-    fontSize: remRatio(60),
+    fontSize: "24px",
     fontWeight: 200,
     letterSpacing: toLetterSpacing(-0.5)
   },
   h1: {
-    fontSize: remRatio(96),
+    fontSize: "32px",
     fontWeight: 400,
     letterSpacing: toLetterSpacing(-1.5)
   }

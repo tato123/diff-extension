@@ -20,10 +20,16 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
     // get the user preferences
     const preferences = await get(PREFERENCES, {});
     const { token: refreshToken } = await getUserToken();
-    const firestore = await login(refreshToken);
+    const { firestore, token } = await login(refreshToken);
+
+    // grab the first account
+    const account = _.first(_.keys(token.claims.accounts));
 
     // get the remote domains
-    const querySnapshot = await firestore.collection("events").get();
+    const querySnapshot = await firestore
+      .collection("events")
+      .where("meta.userId", "==", token.uid)
+      .get();
     let sites = [];
     querySnapshot.forEach(doc => {
       const data = doc.data();

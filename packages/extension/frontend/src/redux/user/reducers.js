@@ -43,8 +43,11 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         access_token,
         refresh_token,
-        ...claims,
-        selectedAccount: Object.keys(claims.accounts)[0],
+        workspaces: {
+          byIds: claims.workspaces || {},
+          allIds: Object.keys(claims.workspaces || {})
+        },
+
         uid
       };
     case commonTypes.LOGIN.FAILED:
