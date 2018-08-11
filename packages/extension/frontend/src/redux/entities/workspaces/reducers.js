@@ -3,7 +3,8 @@ import _ from "lodash";
 
 const initialState = {
   byId: {},
-  allIds: []
+  allIds: [],
+  invites: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -16,6 +17,11 @@ const reducer = (state = initialState, action) => {
           [action.payload.data.id]: action.payload.data
         },
         allIds: _.uniq([...state.allIds, action.payload.data.id])
+      };
+    case types.ADD_INVITE_USER:
+      return {
+        ...state,
+        invites: [...state.invites, action.payload.email]
       };
     default:
       return state;

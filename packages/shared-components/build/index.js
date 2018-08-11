@@ -16129,7 +16129,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _jsxFileName = "C:\\Users\\Jonathan\\Repositories\\github\\diff\\diff\\packages\\shared-components\\src\\components\\Button\\styles\\Outline.js";
 
-var _templateObject = _taggedTemplateLiteral(["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n"], ["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n  background-color: ", " !important; \n  \n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n"], ["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n  background-color: ", " !important; \n  \n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n"]);
 
 var _react = __webpack_require__(/*! react */ "react");
 
@@ -16157,7 +16157,10 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var ButtonStyled = (0, _styledComponents2.default)(_Flat2.default)(_templateObject);
+// prettier-ignore
+var ButtonStyled = (0, _styledComponents2.default)(_Flat2.default)(_templateObject, function (props) {
+  return props.primary ? '#43cad9' : 'transparent';
+});
 
 var Button = function Button(_ref) {
   var loading = _ref.loading,
@@ -16169,7 +16172,7 @@ var Button = function Button(_ref) {
     Object.assign({}, rest, {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 19
+        lineNumber: 21
       },
       __self: undefined
     }),
@@ -16177,7 +16180,7 @@ var Button = function Button(_ref) {
     loading && _react2.default.createElement(_Loading2.default, {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 21
+        lineNumber: 23
       },
       __self: undefined
     })

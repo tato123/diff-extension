@@ -1,5 +1,12 @@
 import types from "./types";
 
+const addInviteUser = email => ({
+  type: types.ADD_INVITE_USER,
+  payload: {
+    email
+  }
+});
+
 const getWorkspaceById = id => ({
   type: types.GET_WORKSPACE_BY_ID,
   payload: {
@@ -25,5 +32,6 @@ const getWorkspaceByIdFailed = (id, err) => ({
 export default {
   getWorkspaceById,
   getWorkspaceByIdSuccess,
-  getWorkspaceByIdFailed
+  getWorkspaceByIdFailed,
+  addInviteUser
 };

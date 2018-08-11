@@ -4,9 +4,9 @@ info:
   title: Diff
 # during dev, should point to your local machine
 host: localhost:8080
-# basePath prefixes all resource paths 
+# basePath prefixes all resource paths
 basePath: /
-# 
+#
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -24,7 +24,7 @@ paths:
     get:
       description: Subscribes a user to the email mailing list
       # used as the method name of the controller
-      operationId: health          
+      operationId: health
       responses:
         "200":
           description: Success
@@ -64,7 +64,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /authenticate:
-    # binds a127 app logic to a route
     x-swagger-router-controller: routes
     post:
       description: Submits a comment
@@ -83,14 +82,14 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"    
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
   UserToken:
     required:
-      - access_token      
+      - access_token
     properties:
       access_token:
         type: string
@@ -101,4 +100,4 @@ definitions:
       - message
     properties:
       message:
-        type: string  
+        type: string

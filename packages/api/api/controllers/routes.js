@@ -145,7 +145,8 @@ const initializeUser = async user => {
       displayName: null,
       photoUrl: null,
       uid: user.uid,
-      email: user.email
+      email: user.email,
+      verified: false
     });
 };
 
@@ -216,3 +217,28 @@ exports.health = (req, res) => {
 // });
 
 // module.exports = router;
+
+exports.acceptInvite = async (req, res) => {
+  if (!req.params.inviteId) {
+    return res.send(400, "<h1>Uh oh, that invite id isn't valid</h1>");
+  }
+
+  // perform operations
+
+  const inviteSnapshot = await db
+    .collection("invites")
+    .doc(req.params.inviteId)
+    .get();
+
+  const invite = inviteSnapshot.data();
+
+  const workspaceSnapshot = await db
+    .collection("workspace")
+    .doc(invite.workspaceId)
+    .get();
+
+  // add our user to the workspace
+  const workspace = workspaceSnapshot.data();
+
+  res.send(500, "not accepted");
+};

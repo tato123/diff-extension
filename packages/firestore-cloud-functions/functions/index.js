@@ -1,40 +1,25 @@
-// emails
 const Mailgun = require("mailgun-js");
-
 const functions = require("firebase-functions");
+const templates = require("./templates");
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require("firebase-admin");
 admin.initializeApp();
 
-// configure mailgun
-//Your api key, from Mailgun’s Control Panel
-var api_key = "3bfbefa8dbdac9dd7833bf079e7e16ac-a5d1a068-8506b9b8";
+// Mailgun configuration
+const api_key = "3bfbefa8dbdac9dd7833bf079e7e16ac-a5d1a068-8506b9b8";
+const domain = "mail.getdiff.app";
+const from_who = "no-reply@getdiff.app";
 
-//Your domain, from the Mailgun Control Panel
-var domain = "mail.getdiff.app";
-
-//Your sending email address
-var from_who = "no-reply@getdiff.app";
-
-const sendEmail = (to, name) => {
+const sendEmail = (to, template) => {
   //We pass the api_key and domain to the wrapper, or it won't be able to identify + send emails
   const mailgun = new Mailgun({ apiKey: api_key, domain: domain });
 
   const data = {
-    //Specify email data
     from: from_who,
-    //The email to contact
     to,
-    //Subject and text data
     subject: "Welcome to Diff workspaces",
-    html: `
-      <h1>[Test Email]</h1>
-
-      <h3>Welcome to Diff Workspaces!</h3>
-
-      <p>You've just created your first workspace, "${name}"</p>
-    `
+    html: template
   };
 
   return new Promise((resolve, reject) => {
@@ -65,7 +50,6 @@ exports.upgradeEventsOnWorkspaceCreate = functions.firestore
       return Promise.reject(new Error("Invalid user record"));
     }
 
-    console.log();
     const users = Object.keys(newValue.users);
     console.log("Check and upgrade users", users);
 
@@ -118,9 +102,52 @@ exports.upgradeEventsOnWorkspaceCreate = functions.firestore
             console.log("Workspace name", newValue);
             return Promise.all([
               ...promises,
-              sendEmail(user.email, newValue.name)
+              sendEmail(
+                user.email,
+                templates.createWorkspace({ name: newValue.name })
+              )
             ]);
           });
       })
     );
+  });
+
+exports.onInviteUserToWorkspace = functions.firestore
+  .document("invites/{inviteId}")
+  .onCreate((snap, context) => {
+    // user information
+    const newValue = snap.data();
+
+    // get the workspace information
+    const db = admin.firestore();
+
+    console.log("New user record", newValue);
+    // get my user account
+    const workspacePromise = db
+      .collection("workspace")
+      .doc(newValue.workspaceId)
+      .get();
+
+    const userPromise = db
+      .collection("users")
+      .doc(newValue.invitedBy)
+      .get();
+
+    return Promise.all([workspacePromise, userPromise])
+      .then(([workspaceSnapshot, userSnapshot]) => [
+        workspaceSnapshot.data(),
+        userSnapshot.data()
+      ])
+      .then(([workspace, user]) => {
+        console.log("Workspace", workspace);
+        console.log("User", user);
+        return sendEmail(
+          newValue.email,
+          templates.inviteUserToWorkspace({
+            from: user.displayName || user.email,
+            name: workspace.name,
+            inviteId: context.params.inviteId
+          })
+        );
+      });
   });

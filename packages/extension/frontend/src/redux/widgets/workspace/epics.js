@@ -5,8 +5,6 @@ import { mergeMap, catchError, map } from "rxjs/operators";
 import types from "./types";
 import actions from "./actions";
 
-const ROOT_COLLECTION = "workspace";
-
 // ----------------------------------------------------------------
 // Observables
 
@@ -50,34 +48,16 @@ const addCollaboratorEpic = (action$, state$, { db }) =>
   action$.pipe(
     ofType(types.ADD_WORKSPACE_USER_REQUEST),
     mergeMap(action => {
-      return from(
-        db
-          .collection(ROOT_COLLECTION)
-          .doc(action.payload.workspace)
-          .get()
-      ).pipe(
-        map(doc => {
-          if (!doc.exists) {
-            return actions.addWorkspaceUserFailed(
-              action.payload.email,
-              "User already invited"
-            );
-          }
-          const data = doc.data();
-          const newValue = Object.assign({}, data, {
-            invites: {
-              ...data.invites,
-              [action.payload.email]: {
-                email: action.payload.email,
-                status: "pending",
-                created: Date.now()
-              }
-            }
-          });
+      const docRef = db.collection("invites").doc();
+      const record = {
+        email: action.payload.email,
+        workspaceId: action.payload.workspace,
+        created: Date.now(),
+        invitedBy: state$.value.user.uid
+      };
 
-          doc.ref.set(newValue, { merge: true });
-          return actions.addWorkspaceUserSuccess(action.payload.email);
-        }),
+      return from(docRef.set(record)).pipe(
+        map(doc => actions.addWorkspaceUserSuccess(action.payload.email)),
         catchError(err =>
           of(actions.addWorkspaceUserFailed(action.payload.workspace, err))
         )

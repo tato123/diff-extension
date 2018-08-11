@@ -71,7 +71,9 @@ export default class Workspace extends React.Component {
 
     workspaceUsers: PropTypes.array,
 
-    workspaceId: PropTypes.string
+    workspaceId: PropTypes.string,
+
+    invitedUsers: PropTypes.array
   };
 
   state = {
@@ -97,39 +99,48 @@ export default class Workspace extends React.Component {
     return (
       <Form onSubmit={this.onSubmitCollaborator} autoComplete="off">
         <Form.Input
-          label="Email"
+          label=""
           name="email"
           type="text"
           placeholder="email@domain.com"
         />
-        <Button onClick={() => this.setState({ addUser: false })} type="button">
-          Cancel
-        </Button>
-        <Button type="submit">Add User</Button>
+        <div style={{ display: "flex" }}>
+          <Button
+            onClick={() => this.setState({ addUser: false })}
+            type="button"
+          >
+            Cancel
+          </Button>
+          <Button primary={true} type="submit">
+            Add User
+          </Button>
+        </div>
       </Form>
     );
   };
 
-  renderUser = user => {
+  renderUser = email => {
     return (
-      <UserRow key={user.email}>
+      <UserRow key={email}>
         <div>ME</div>
-        <div>{user.email}</div>
+        <div>{email}</div>
       </UserRow>
     );
   };
 
   renderWorkspace = () => {
     const {
-      props: { workspaceUsers },
+      props: { workspaceUsers, invitedUsers },
       state: { addUser }
     } = this;
     return (
       <React.Fragment>
-        <Header as="h1">COLLABORATORS</Header>
+        <Header as="h2">{this.props.workspaceName}</Header>
         <HR />
         <UsersTable>
-          {workspaceUsers.map(user => this.renderUser(user))}
+          {workspaceUsers.map(user => this.renderUser(user.email))}
+          <small>Invited users</small>
+          {invitedUsers.map(user => this.renderUser(user))}
           {addUser && this.renderForm()}
           {!addUser && (
             <Button onClick={() => this.setState({ addUser: true })}>

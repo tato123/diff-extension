@@ -63,7 +63,7 @@ export default class Launcher extends React.Component {
 
   onCloseClick = () => {
     this.props.onClick(false);
-    this.setState({ showClose: false });
+    this.setState({ showClose: false, showWorkspace: false });
   };
 
   onWorkspaceClick = () => {
@@ -78,6 +78,8 @@ export default class Launcher extends React.Component {
     }
   };
 
+  animationVelocity = 18;
+
   closeMenuOption = () => {
     const {
       state: { showClose }
@@ -85,14 +87,14 @@ export default class Launcher extends React.Component {
 
     return (
       <Spring
-        config={{ velocity: 15 }}
+        config={{ velocity: this.animationVelocity }}
         size={36}
         from={{
-          transform: "translate(75px)",
+          transform: "translate(120px)",
           position: "relative"
         }}
         to={{
-          transform: showClose ? "translate(0px)" : "translate(75px)"
+          transform: showClose ? "translate(0px)" : "translate(120px)"
         }}
         onClick={this.onCloseClick}
         render={CloseButton}
@@ -102,19 +104,21 @@ export default class Launcher extends React.Component {
 
   workspaceMenuOption = () => {
     const {
-      state: { showClose }
+      state: { showClose, showWorkspace }
     } = this;
 
     return (
       <Spring
-        config={{ velocity: 15 }}
+        config={{ velocity: this.animationVelocity }}
         size={36}
         from={{
           transform: "translate(75px)",
-          position: "relative"
+          position: "relative",
+          backgroundColor: showWorkspace ? "#43cad9" : "#1a1b3c"
         }}
         to={{
-          transform: showClose ? "translate(0px)" : "translate(75px)"
+          transform: showClose ? "translate(0px)" : "translate(75px)",
+          backgroundColor: showWorkspace ? "#43cad9" : "#1a1b3c"
         }}
         onClick={this.onWorkspaceClick}
         render={WorkspaceButton}

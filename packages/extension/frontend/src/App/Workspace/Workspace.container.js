@@ -6,7 +6,8 @@ import { selectors } from "redux/entities/workspaces";
 const mapStateToProps = state => ({
   workspaceName: selectors.workspaceNameSelector()(state),
   workspaceUsers: selectors.workspaceUsersSelector()(state),
-  workspaceId: selectors.currentWorkspaceIdSelector()(state)
+  workspaceId: selectors.currentWorkspaceIdSelector()(state),
+  invitedUsers: selectors.invitedUsersSelector()(state)
 });
 
 const mapDispatchToProps = dispatch => ({

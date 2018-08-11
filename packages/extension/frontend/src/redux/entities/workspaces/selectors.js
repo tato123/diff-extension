@@ -28,8 +28,13 @@ const currentWorkspaceIdSelector = id =>
   createSelector(workspaceDomain, workspace => {
     return workspace.allIds[0] || null;
   });
+
+const invitedUsersSelector = () =>
+  createSelector(workspaceDomain, workspace => workspace.invites);
+
 export default {
   workspaceNameSelector,
   workspaceUsersSelector,
-  currentWorkspaceIdSelector
+  currentWorkspaceIdSelector,
+  invitedUsersSelector
 };
