@@ -16030,7 +16030,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(["\n  font-family: ", ";\n  background-color: transparent;\n  border: none;\n  outline: none;\n\n  border-radius: ", ";\n\n  cursor: pointer;\n  color: ", ";\n  padding: 0 8px;\n\n  font-size: ", ";\n  font-weight: ", ";\n  letter-spacing: ", ";\n  text-transform: uppercase;\n  transition: all 150ms ease-in;\n  will-change: transform, opacity;\n  height: 36px;\n  user-select: none;\n  -webkit-appearance: none;\n  overflow: hidden;\n  vertical-align: middle;\n  position: relative;\n\n  &:before {\n    content: \"\";\n    opacity: 0;\n    height: 100%;\n    width: 100%;\n    background-color: #fff;\n    position: absolute;\n    border-radius: ", ";\n    z-index: 1;\n    top: 0px;\n    left: 0px\n    transition: opacity 15ms linear;\n  }\n\n  &:hover:before {\n    opacity: 0.2;\n  }\n"], ["\n  font-family: ", ";\n  background-color: transparent;\n  border: none;\n  outline: none;\n\n  border-radius: ", ";\n\n  cursor: pointer;\n  color: ", ";\n  padding: 0 8px;\n\n  font-size: ", ";\n  font-weight: ", ";\n  letter-spacing: ", ";\n  text-transform: uppercase;\n  transition: all 150ms ease-in;\n  will-change: transform, opacity;\n  height: 36px;\n  user-select: none;\n  -webkit-appearance: none;\n  overflow: hidden;\n  vertical-align: middle;\n  position: relative;\n\n  &:before {\n    content: \"\";\n    opacity: 0;\n    height: 100%;\n    width: 100%;\n    background-color: #fff;\n    position: absolute;\n    border-radius: ", ";\n    z-index: 1;\n    top: 0px;\n    left: 0px\n    transition: opacity 15ms linear;\n  }\n\n  &:hover:before {\n    opacity: 0.2;\n  }\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n  font-family: ", ";\n  background-color: transparent;\n  border: none;\n  outline: none;\n\n  border-radius: ", ";\n\n  cursor: pointer;\n  color: ", ";\n  padding: 0 8px;\n\n  font-size: ", ";\n  font-weight: ", ";\n  letter-spacing: ", ";\n  text-transform: uppercase;\n  transition: all 150ms ease-in;\n  will-change: transform, opacity;\n  height: 36px;\n  user-select: none;\n  -webkit-appearance: none;\n  overflow: hidden;\n  vertical-align: middle;\n  position: relative;\n\n  &:before {\n    content: \"\";\n    opacity: 0;\n    height: 100%;\n    width: 100%;\n    background-color: #fff;\n    position: absolute;\n    border-radius: ", ";\n    z-index: 1;\n    top: 0px;\n    left: 0px;\n    transition: opacity 15ms linear;\n  }\n\n  &:hover:before {\n    opacity: 0.2;\n  }\n\n  &:focus,\n  &:active {\n    box-shadow: 0 0 0px 4px #43cad9;\n  }\n"], ["\n  font-family: ", ";\n  background-color: transparent;\n  border: none;\n  outline: none;\n\n  border-radius: ", ";\n\n  cursor: pointer;\n  color: ", ";\n  padding: 0 8px;\n\n  font-size: ", ";\n  font-weight: ", ";\n  letter-spacing: ", ";\n  text-transform: uppercase;\n  transition: all 150ms ease-in;\n  will-change: transform, opacity;\n  height: 36px;\n  user-select: none;\n  -webkit-appearance: none;\n  overflow: hidden;\n  vertical-align: middle;\n  position: relative;\n\n  &:before {\n    content: \"\";\n    opacity: 0;\n    height: 100%;\n    width: 100%;\n    background-color: #fff;\n    position: absolute;\n    border-radius: ", ";\n    z-index: 1;\n    top: 0px;\n    left: 0px;\n    transition: opacity 15ms linear;\n  }\n\n  &:hover:before {\n    opacity: 0.2;\n  }\n\n  &:focus,\n  &:active {\n    box-shadow: 0 0 0px 4px #43cad9;\n  }\n"]);
 
 var _styledComponents = __webpack_require__(/*! styled-components */ "styled-components");
 
@@ -16129,7 +16129,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _jsxFileName = "C:\\Users\\Jonathan\\Repositories\\github\\diff\\diff\\packages\\shared-components\\src\\components\\Button\\styles\\Outline.js";
 
-var _templateObject = _taggedTemplateLiteral(["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n  background-color: ", " !important; \n  \n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n"], ["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n  background-color: ", " !important; \n  \n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n  background-color: ", " !important; \n  \n  &:disabled {\n    background-color: ", " !important;\n    box-shadow: none !important;\n    cursor: default;\n\n    &:hover:before {\n      opacity: 0;\n    }\n  }\n\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n\n   &:focus,\n  &:active {\n    box-shadow: 0 0 0px 4px ", ";\n  }\n\n  \n"], ["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);\n  transition: box-shadow 25ms ease-in;\n  will-change: transform, opacity, box-shadow, contents;\n  font-weight: 200 !important;\n  background-color: ", " !important; \n  \n  &:disabled {\n    background-color: ", " !important;\n    box-shadow: none !important;\n    cursor: default;\n\n    &:hover:before {\n      opacity: 0;\n    }\n  }\n\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.9);\n  }\n\n   &:focus,\n  &:active {\n    box-shadow: 0 0 0px 4px ", ";\n  }\n\n  \n"]);
 
 var _react = __webpack_require__(/*! react */ "react");
 
@@ -16160,6 +16160,10 @@ function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defi
 // prettier-ignore
 var ButtonStyled = (0, _styledComponents2.default)(_Flat2.default)(_templateObject, function (props) {
   return props.primary ? '#43cad9' : 'transparent';
+}, function (props) {
+  return props.primary ? '#29748d' : '#ccc';
+}, function (props) {
+  return props.primary ? '#fff' : '43cad9';
 });
 
 var Button = function Button(_ref) {
@@ -16172,7 +16176,7 @@ var Button = function Button(_ref) {
     Object.assign({}, rest, {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 21
+        lineNumber: 39
       },
       __self: undefined
     }),
@@ -16180,7 +16184,7 @@ var Button = function Button(_ref) {
     loading && _react2.default.createElement(_Loading2.default, {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 23
+        lineNumber: 41
       },
       __self: undefined
     })
@@ -16737,7 +16741,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _jsxFileName = "C:\\Users\\Jonathan\\Repositories\\github\\diff\\diff\\packages\\shared-components\\src\\components\\Form\\styles\\FormField.js";
 
-var _templateObject = _taggedTemplateLiteral(["\n  margin: 0 0 ", ";\n  clear: both;\n\n  label,\n  span {\n    display: block;\n    margin: 0 0 0.28571429rem 0;\n  }\n\n  input {\n    margin: 0;\n    outline: 0;\n    -webkit-appearance: none;\n    tap-highlight-color: rgba(255, 255, 255, 0);\n    line-height: 1.21428571em;\n    padding: 0.67857143em 1em;\n    font-size: 1rem;\n    background: #fff;\n    border: 1px solid rgba(34, 36, 38, 0.15);\n    color: rgba(0, 0, 0, 0.87);\n    border-radius: ", ";\n    -webkit-box-shadow: 0 0 0 0 transparent inset;\n    box-shadow: 0 0 0 0 transparent inset;\n    -webkit-transition: color 0.1s ease, border-color 0.1s ease;\n    transition: color 0.1s ease, border-color 0.1s ease;\n    width: 100%;\n  }\n"], ["\n  margin: 0 0 ", ";\n  clear: both;\n\n  label,\n  span {\n    display: block;\n    margin: 0 0 0.28571429rem 0;\n  }\n\n  input {\n    margin: 0;\n    outline: 0;\n    -webkit-appearance: none;\n    tap-highlight-color: rgba(255, 255, 255, 0);\n    line-height: 1.21428571em;\n    padding: 0.67857143em 1em;\n    font-size: 1rem;\n    background: #fff;\n    border: 1px solid rgba(34, 36, 38, 0.15);\n    color: rgba(0, 0, 0, 0.87);\n    border-radius: ", ";\n    -webkit-box-shadow: 0 0 0 0 transparent inset;\n    box-shadow: 0 0 0 0 transparent inset;\n    -webkit-transition: color 0.1s ease, border-color 0.1s ease;\n    transition: color 0.1s ease, border-color 0.1s ease;\n    width: 100%;\n  }\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n  margin: 0 0 ", ";\n  clear: both;\n  will-change: transform, opacity;\n  \n  ", "\n\n  label,\n  span {\n    display: block;\n    margin: 0 0 12px 0;\n  }\n\n  input {\n    margin: 0;\n    outline: 0;\n    -webkit-appearance: none;\n    tap-highlight-color: rgba(255, 255, 255, 0);\n    line-height: 1.21428571em;\n    padding: 8px;\n    font-size: 16px;\n    background: #fff;\n    border: 1px solid rgba(34, 36, 38, 0.15);\n    color: rgba(0, 0, 0, 0.87);\n    border-radius: ", ";\n    -webkit-box-shadow: 0 0 0 0 transparent inset;\n    box-shadow: 0 0 0 0 transparent inset;\n    -webkit-transition: color 0.1s ease, border-color 0.1s ease;\n    transition: color 0.1s ease, border-color 0.1s ease;\n    transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);\n    width: 100%;\n\n    ", ";\n  }\n  input:focus,\n  input:active {\n    box-shadow: 0 0 0px 4px #43cad9;\n  }\n"], ["\n  margin: 0 0 ", ";\n  clear: both;\n  will-change: transform, opacity;\n  \n  ", "\n\n  label,\n  span {\n    display: block;\n    margin: 0 0 12px 0;\n  }\n\n  input {\n    margin: 0;\n    outline: 0;\n    -webkit-appearance: none;\n    tap-highlight-color: rgba(255, 255, 255, 0);\n    line-height: 1.21428571em;\n    padding: 8px;\n    font-size: 16px;\n    background: #fff;\n    border: 1px solid rgba(34, 36, 38, 0.15);\n    color: rgba(0, 0, 0, 0.87);\n    border-radius: ", ";\n    -webkit-box-shadow: 0 0 0 0 transparent inset;\n    box-shadow: 0 0 0 0 transparent inset;\n    -webkit-transition: color 0.1s ease, border-color 0.1s ease;\n    transition: color 0.1s ease, border-color 0.1s ease;\n    transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);\n    width: 100%;\n\n    ", ";\n  }\n  input:focus,\n  input:active {\n    box-shadow: 0 0 0px 4px #43cad9;\n  }\n"]),
+    _templateObject2 = _taggedTemplateLiteral(["\n  display: inline !important;\n  color: #c51162;\n"], ["\n  display: inline !important;\n  color: #c51162;\n"]),
+    _templateObject3 = _taggedTemplateLiteral(["\n  color: #c51162;\n  margin: 4px 0px 0px 0px !important;\n  font-size: 16px;\n  padding-bottom: 0px;\n"], ["\n  color: #c51162;\n  margin: 4px 0px 0px 0px !important;\n  font-size: 16px;\n  padding-bottom: 0px;\n"]);
 
 var _react = __webpack_require__(/*! react */ "react");
 
@@ -16759,34 +16765,73 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var FormFieldContainer = _styledComponents2.default.div(_templateObject, (0, _theme.get)("size.grid.grid-2"), (0, _theme.get)("size.borderRadius"));
+// prettier-ignore
+var FormFieldContainer = _styledComponents2.default.div(_templateObject, (0, _theme.get)("size.grid.grid-2"), function (props) {
+  return props.hide && 'transform: translate(-1000px, -1000px)';
+}, (0, _theme.get)("size.borderRadius"), function (props) {
+  return props.error ? "box-shadow: 0 0 0px 3px #C51162 !important;" : " box-shadow: 0 0 0px 0px #43cad9;";
+});
+
+var Required = _styledComponents2.default.span(_templateObject2);
+
+var ErrorLabel = (0, _styledComponents2.default)(_Text.Label)(_templateObject3);
 
 var FormField = function FormField(_ref) {
   var label = _ref.label,
-      children = _ref.children;
+      hide = _ref.hide,
+      name = _ref.name,
+      error = _ref.error,
+      required = _ref.required,
+      children = _ref.children,
+      style = _ref.style;
   return _react2.default.createElement(
     FormFieldContainer,
-    { className: "field", __source: {
+    { error: error, className: "field", style: style, hide: hide, __source: {
         fileName: _jsxFileName,
-        lineNumber: 38
+        lineNumber: 64
       },
       __self: undefined
     },
     _react2.default.createElement(
       _Text.Label,
-      { as: "subtitle2", __source: {
+      { as: "subtitle2", "for": name, __source: {
           fileName: _jsxFileName,
-          lineNumber: 39
+          lineNumber: 65
         },
         __self: undefined
       },
-      label
+      label,
+      " ",
+      required && _react2.default.createElement(
+        Required,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 66
+          },
+          __self: undefined
+        },
+        "*"
+      )
     ),
-    children
+    children,
+    _react2.default.createElement(
+      ErrorLabel,
+      { as: "subtitle2", __source: {
+          fileName: _jsxFileName,
+          lineNumber: 69
+        },
+        __self: undefined
+      },
+      error
+    )
   );
 };
 
 FormField.propTypes = {
+  name: _propTypes2.default.string,
+  error: _propTypes2.default.string,
+  required: _propTypes2.default.bool,
   label: _propTypes2.default.string,
   children: _propTypes2.default.node.isRequired
 };
@@ -16831,44 +16876,37 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var FormInput = function FormInput(_ref) {
-  var type = _ref.type,
-      value = _ref.value,
-      placeholder = _ref.placeholder,
-      name = _ref.name,
-      rest = _objectWithoutProperties(_ref, ["type", "value", "placeholder", "name"]);
+  var children = _ref.children,
+      hide = _ref.hide,
+      style = _ref.style,
+      rest = _objectWithoutProperties(_ref, ["children", "hide", "style"]);
 
   return _react2.default.createElement(
     _FormField2.default,
-    Object.assign({}, rest, {
-      __source: {
+    Object.assign({ style: style }, rest, { hide: hide, __source: {
         fileName: _jsxFileName,
         lineNumber: 7
       },
       __self: undefined
     }),
-    _react2.default.createElement("input", { type: type, value: value, placeholder: placeholder, name: name, __source: {
+    _react2.default.createElement("input", Object.assign({}, rest, {
+      __source: {
         fileName: _jsxFileName,
         lineNumber: 8
       },
       __self: undefined
-    })
+    }))
   );
 };
 
 FormInput.propTypes = {
-  label: _propTypes2.default.string,
-  type: _propTypes2.default.oneOf(["password", "email", "text"]),
-  value: _propTypes2.default.string,
-  placeholder: _propTypes2.default.string,
-  name: _propTypes2.default.string
+  style: _propTypes2.default.any,
+  children: _propTypes2.default.any
 };
 
 FormInput.defaultProps = {
-  label: null,
-  value: null,
-  type: "text",
-  placeholder: null,
-  name: null
+  style: {},
+  children: null
 };
 
 exports.default = FormInput;

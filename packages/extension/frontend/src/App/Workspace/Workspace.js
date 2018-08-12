@@ -44,14 +44,6 @@ const UserRow = styled.div`
   display: flex;
   flex-direction: row;
   flex: 1;
-
-  > div:first-child {
-    width: 64px;
-    font-weight: 700;
-  }
-
-  > div:last-child {
-  }
 `;
 
 export default class Workspace extends React.Component {
@@ -122,7 +114,6 @@ export default class Workspace extends React.Component {
   renderUser = email => {
     return (
       <UserRow key={email}>
-        <div>ME</div>
         <div>{email}</div>
       </UserRow>
     );
@@ -139,7 +130,6 @@ export default class Workspace extends React.Component {
         <HR />
         <UsersTable>
           {workspaceUsers.map(user => this.renderUser(user.email))}
-          <small>Invited users</small>
           {invitedUsers.map(user => this.renderUser(user))}
           {addUser && this.renderForm()}
           {!addUser && (

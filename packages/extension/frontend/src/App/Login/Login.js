@@ -1,11 +1,62 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Transition } from "react-spring";
-
+import { Keyframes, animated, config } from "react-spring";
+import { TimingAnimation } from "react-spring/dist/addons";
+import styled from "styled-components";
 import Modal from "./components/Modal";
-import { StyleBoundary } from "@diff/shared-components";
-import CredentialsForm from "./components/CredentialForm";
-import SignupForm from "./components/SignupForm";
+import {
+  StyleBoundary,
+  Form,
+  Button,
+  Header,
+  HR,
+  Logo
+} from "@diff/shared-components";
+import { Formik } from "formik";
+import { string, object } from "yup";
+// prettier-ignore
+const Container = styled.div`
+  position: absolute;
+  z-index: 1;
+  will-change: transform, opacity;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-areas:
+    "."
+    "."
+    "."
+    ".";
+  grid-template-rows: 24px 64px 1fr auto;
+  grid-template-columns: 100%;
+  grid-gap: 8px;
+  min-height: 100%;
+  padding: 20px;
+    
+  > div:last-child {
+    flex: 0 0 100px;
+    justify-content: space-between;
+    display: flex;
+  }
+`;
+
+const fast = {
+  ...config.stiff,
+  restSpeedThreshold: 1,
+  restDisplacementThreshold: 0.01
+};
+
+const ModalContainer = Keyframes.Spring({
+  signup: { to: { height: 450 }, config: fast },
+  login: { delay: 150, to: { height: 280 }, config: fast }
+});
+
+const Content = Keyframes.Trail({
+  signup: {
+    to: { y: 0, opacity: 1 }
+  },
+  login: { to: { y: -32, opacity: 0 } }
+});
 
 /**
  * Login widget handles our authentication lifecycle, both
@@ -33,7 +84,9 @@ export default class Login extends React.Component {
 
   state = {
     requiresLogin: false,
-    signup: false
+    signup: false,
+    form: "login",
+    formFields: "login"
   };
 
   async componentDidMount() {
@@ -57,10 +110,6 @@ export default class Login extends React.Component {
     return this.props.login({ username, password });
   };
 
-  onShowSignup = () => {
-    this.setState({ signup: true });
-  };
-
   onSignup = evt => {
     evt.preventDefault();
     const email = evt.target.email.value;
@@ -75,48 +124,193 @@ export default class Login extends React.Component {
       });
   };
 
-  renderSignup = styles => (
-    <SignupForm
-      onSubmit={this.onSignup}
-      onCancel={() => this.setState({ signup: false })}
-      style={styles}
-    />
-  );
+  showForm = formType => () => {
+    // delay setting for the form fields
+    // type to accomodate the animating fields
+    // in and out
+    this.showFormFields(formType);
 
-  renderCredentials = styles => (
-    <CredentialsForm
-      style={styles}
-      onSubmit={this.onLoginRequest}
-      onSignup={this.onShowSignup}
-    />
-  );
+    // change our form dynamically
+    this.setState({
+      form: formType
+    });
+  };
+
+  showFormFields = formType => {
+    if (formType === "login") {
+      setTimeout(() => {
+        this.setState({
+          formFields: formType
+        });
+      }, 100);
+    } else if (formType === "signup") {
+      this.setState({
+        formFields: formType
+      });
+    }
+  };
+
+  formFields = () => {
+    switch (this.state.formFields) {
+      case "login":
+      default:
+        return [];
+      case "signup":
+        return [
+          {
+            key: 0,
+            type: "password",
+            label: "Password",
+            name: "password",
+            required: true
+          },
+          {
+            key: 1,
+            type: "text",
+            label: "Username",
+            name: "username"
+          }
+        ];
+    }
+  };
+
+  getValidationSchema = () => {
+    switch (this.state.form) {
+      case "login":
+        return object().shape({
+          email: string()
+            .email()
+            .required()
+        });
+      case "signup":
+        return object().shape({
+          email: string()
+            .email()
+            .required(),
+          password: string().required()
+        });
+    }
+  };
+
+  submitForm = (values, { setSubmitting, setErrors }) => {
+    console.log("submitting");
+    if (this.state.form === "login") {
+      setSubmitting(false);
+      this.showForm("signup")();
+      return;
+    }
+
+    if (this.state.form === "signup") {
+      setSubmitting(false);
+      console.log("arent you fancy signing up");
+      return;
+    }
+  };
 
   render() {
     const {
-      state: { requiresLogin, signup }
+      state: { requiresLogin, form }
     } = this;
 
     if (requiresLogin) {
       return (
         <Modal>
           <StyleBoundary>
-            <Modal.Content
-              id="login-modal"
-              style={{
-                position: "relative",
-                overflow: "hidden",
-                width: "500px",
-                height: "375px"
-              }}
-            >
-              <Transition
-                from={{ opacity: 0 }}
-                enter={{ opacity: 1, left: 20 }}
-                leave={{ opacity: 0, left: -700 }}
-              >
-                {signup ? this.renderSignup : this.renderCredentials}
-              </Transition>
-            </Modal.Content>
+            <ModalContainer state={form}>
+              {({ height }) => (
+                <animated.div style={{ height: height }}>
+                  <Modal.Content id="login-modal">
+                    <Formik
+                      initialValues={{ email: "", password: "", username: "" }}
+                      validationSchema={this.getValidationSchema()}
+                      onSubmit={this.submitForm}
+                      render={({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting
+                      }) => (
+                        <form onSubmit={handleSubmit}>
+                          <Container>
+                            <div>
+                              <Logo.Text />
+                            </div>
+                            <div>
+                              <Header as="h3">Signin with your email</Header>
+                              <HR />
+                            </div>
+                            <div>
+                              <Form.Input
+                                type="text"
+                                name="email"
+                                label="Email"
+                                error={touched.email && errors.email}
+                                required
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.email}
+                              />
+
+                              <Content
+                                native
+                                config={{ tension: 200, friction: 20 }}
+                                state={form}
+                                keys={this.formFields().map(item => item.key)}
+                              >
+                                {this.formFields().map(
+                                  (item, idx) => ({ y, opacity }) => (
+                                    <animated.div
+                                      style={{
+                                        opacity,
+                                        transform: y.interpolate(
+                                          y => `translate3d(0, ${y}px, 0`
+                                        )
+                                      }}
+                                    >
+                                      <Form.Input
+                                        {...item}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name={touched[item.name] && item.name}
+                                        error={errors[item.name]}
+                                        value={values[item.name]}
+                                      />
+                                    </animated.div>
+                                  )
+                                )}
+                              </Content>
+                            </div>
+                            <div>
+                              <Button.Flat
+                                type="button"
+                                onClick={this.showForm(
+                                  form !== "signup" ? "signup" : "login"
+                                )}
+                              >
+                                {form !== "signup" ? "Create Account" : "Login"}
+                              </Button.Flat>
+                              <Button
+                                type="submit"
+                                primary
+                                disabled={
+                                  isSubmitting || Object.keys(errors).length > 0
+                                }
+                              >
+                                {form === "login" && "Next"}
+                                {form === "signup" && "Create Account"}
+                              </Button>
+                            </div>
+                          </Container>
+                        </form>
+                      )}
+                    />
+                  </Modal.Content>
+                </animated.div>
+              )}
+            </ModalContainer>
           </StyleBoundary>
         </Modal>
       );

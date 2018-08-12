@@ -1,18 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Form, Button, Header, Anchor, HR } from "@diff/shared-components";
+import {
+  Form,
+  Button,
+  Header,
+  Anchor,
+  HR,
+  Logo
+} from "@diff/shared-components";
 import styled from "styled-components";
 
-const LoginButton = styled(Button)`
-  margin-top: 16px !important;
-`;
-
+// prettier-ignore
 const Container = styled.div`
   position: absolute;
   z-index: 1;
   will-change: transform, opacity;
   width: calc(100% - 45px);
   height: 100%;
+  display: grid;
+  grid-template-areas:
+    "header"
+    "body";
 `;
 
 export default class CredentialForm extends React.Component {
@@ -46,27 +54,27 @@ export default class CredentialForm extends React.Component {
 
     return (
       <Container style={style}>
-        <Header as="h4">Login</Header>
+        <div>
+          <Logo.Text />
+          <Header as="h2" uppercase>
+            Sign in
+          </Header>
+          <p>with your Diff Account</p>
+        </div>
         <Form onSubmit={handleOnSubmit} autoComplete="off">
           <Form.Input
-            label="Username"
+            label="Email"
             name="user"
             type="text"
             placeholder="email@domain.com"
           />
-          <Form.Input
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Password"
-          />
-          <LoginButton loading={loading} type="submit">
-            Submit
-          </LoginButton>
+          <div style={{ display: "flex" }}>
+            <Button.Flat>Create Account</Button.Flat>
+            <Button primary loading={loading} type="submit">
+              Next
+            </Button>
+          </div>
         </Form>
-        <HR />
-        {"Don't have an account?"}{" "}
-        <Anchor onClick={onSignup}>Create one now</Anchor>
       </Container>
     );
   }
