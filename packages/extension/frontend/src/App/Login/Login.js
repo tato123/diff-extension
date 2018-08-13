@@ -162,13 +162,15 @@ export default class Login extends React.Component {
             type: "password",
             label: "Password",
             name: "password",
-            required: true
+            required: true,
+            autoComplete: "off"
           },
           {
             key: 1,
             type: "text",
             label: "Username",
-            name: "username"
+            name: "username",
+            autoComplete: "off"
           }
         ];
     }
@@ -202,8 +204,21 @@ export default class Login extends React.Component {
 
     if (this.state.form === "signup") {
       setSubmitting(false);
-      console.log("arent you fancy signing up");
-      return;
+      console.log("Signing up");
+      setSubmitting(true);
+      return this.props
+        .signup(values.email, values.password)
+        .then(successAction => {
+          this.props.login({
+            refreshToken: successAction.payload.refreshToken.refresh_token
+          });
+          setSubmitting(false);
+        })
+        .catch(err => {
+          debugger;
+          setSubmitting(false);
+          setErrors(err);
+        });
     }
   };
 
@@ -252,6 +267,8 @@ export default class Login extends React.Component {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.email}
+                                autoFocus
+                                autoComplete="off"
                               />
 
                               <Content
@@ -298,6 +315,7 @@ export default class Login extends React.Component {
                                 disabled={
                                   isSubmitting || Object.keys(errors).length > 0
                                 }
+                                loading={isSubmitting}
                               >
                                 {form === "login" && "Next"}
                                 {form === "signup" && "Create Account"}

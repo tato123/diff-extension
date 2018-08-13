@@ -47,21 +47,6 @@ const login = credentials => async dispatch => {
   }
 };
 
-const signup = (email, password) => async dispatch => {
-  try {
-    // dispatch a notification that we are working on a request
-    dispatch(actions.signupRequest(email, password));
-
-    const { refresh_token: refreshToken } = await api.signup(email, password);
-
-    dispatch(actions.signupSuccess());
-    return Promise.resolve(refreshToken);
-  } catch (err) {
-    dispatch(actions.signupFailed(err));
-    return Promise.reject(err);
-  }
-};
-
 /**
  *
  * @param {{refresh_token:string}} param
@@ -95,6 +80,5 @@ const fetchCacheToken = () => dispatch => {
 export default {
   fetchCacheToken,
   remoteCacheToken,
-  login,
-  signup
+  login
 };

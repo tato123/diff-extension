@@ -6,7 +6,7 @@ import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
 import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
 
-import user from "redux/user";
+import user, { epics as userEpics } from "redux/user";
 import widgets, { epics as widgetEpics } from "redux/widgets";
 import entities, { epics as entitiesEpic } from "redux/entities";
 
@@ -16,7 +16,7 @@ const firestore = initializeFirestore();
 
 export default function configureStore(preloadedState) {
   // Setup redux-observable
-  const rootEpic = combineEpics(entitiesEpic, widgetEpics);
+  const rootEpic = combineEpics(entitiesEpic, widgetEpics, userEpics);
   const epicMiddleware = createEpicMiddleware({
     dependencies: { db: firestore }
   });

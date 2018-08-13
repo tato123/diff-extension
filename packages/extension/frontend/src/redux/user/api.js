@@ -29,6 +29,8 @@ const authenticate = async (username, password, refreshToken) => {
 };
 
 const signup = async (email, password) => {
+  /*eslint disable */
+  debugger;
   const options = {
     method: "POST",
     headers: {
