@@ -18,4 +18,17 @@ const signupEpic = action$ =>
     })
   );
 
-export default combineEpics(signupEpic);
+const validateUserEpic = action$ =>
+  action$.pipe(
+    ofType(types.VALIDATE_USER_REQUEST),
+    mergeMap(action => {
+      return from(api.isUser(action.payload.email)).pipe(
+        map(result => actions.validateUserSuccess(result)),
+        catchError(err =>
+          of(actions.validateUserFailed(action.payload.email, err))
+        )
+      );
+    })
+  );
+
+export default combineEpics(signupEpic, validateUserEpic);

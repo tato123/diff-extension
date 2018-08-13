@@ -5,6 +5,7 @@ const querystring = require("querystring");
 const admin = require("firebase-admin");
 const db = admin.firestore();
 const firebase = require("firebase");
+const _ = require("lodash");
 
 const retrieveClaimsForUid = async uid => {
   const db = admin.firestore();
@@ -241,4 +242,25 @@ exports.acceptInvite = async (req, res) => {
   const workspace = workspaceSnapshot.data();
 
   res.send(500, "not accepted");
+};
+
+exports.verifyUser = async (req, res) => {
+  if (_.isNil(req.query.email)) {
+    return res.send(404, "");
+  }
+
+  try {
+    const querySnapshot = await db
+      .collection("users")
+      .where("email", "==", req.query.email)
+      .limit(1)
+      .get();
+
+    if (!querySnapshot.empty) {
+      return res.send(200, "");
+    }
+    return res.send(404, "");
+  } catch (err) {
+    res.send(404);
+  }
 };

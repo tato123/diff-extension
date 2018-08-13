@@ -7,7 +7,8 @@ const mapStateToProps = state => ({});
 const mapDispatchToProps = dispatch => ({
   login: credentials => dispatch(operations.login(credentials)),
   getCacheToken: () => dispatch(operations.fetchCacheToken()),
-  signup: (email, password) => actions.asyncSignup(email, password, dispatch)
+  signup: (email, password) => actions.asyncSignup(email, password, dispatch),
+  validateEmail: email => actions.asyncValidate(email, dispatch)
 });
 
 export default connect(

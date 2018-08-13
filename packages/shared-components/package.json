@@ -1,5 +1,6 @@
 {
   "name": "@diff/shared-components",
+  "sideEffects": false,
   "version": "1.0.0",
   "description": "A common library for building out react-components",
   "main": "./build/index.js",

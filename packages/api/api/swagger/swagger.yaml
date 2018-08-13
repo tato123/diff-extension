@@ -83,6 +83,23 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /validate:
+    x-swagger-router-controller: routes
+    get:
+      description: Verifies an email
+      # used as the method name of the controller
+      operationId: verifyUser
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            type: string
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            type: string
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions

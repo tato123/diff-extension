@@ -79,7 +79,11 @@ export default class Login extends React.Component {
     /**
      * Getter to fetch our cache token
      */
-    getCacheToken: PropTypes.func.isRequired
+    getCacheToken: PropTypes.func.isRequired,
+    /**
+     * Validates whether we can use an email
+     */
+    validateEmail: PropTypes.func.isRequired
   };
 
   state = {
@@ -195,10 +199,21 @@ export default class Login extends React.Component {
   };
 
   submitForm = (values, { setSubmitting, setErrors }) => {
-    console.log("submitting");
     if (this.state.form === "login") {
-      setSubmitting(false);
-      this.showForm("signup")();
+      console.log("submitting login form");
+      setSubmitting(true);
+      this.props
+        .validateEmail(values.email)
+        .then(() => {
+          setSubmitting(false);
+          // is an email
+          console.log("already have this email");
+        })
+        .catch(err => {
+          setSubmitting(false);
+          this.showForm("signup")();
+        });
+
       return;
     }
 
@@ -215,7 +230,6 @@ export default class Login extends React.Component {
           setSubmitting(false);
         })
         .catch(err => {
-          debugger;
           setSubmitting(false);
           setErrors(err);
         });

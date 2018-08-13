@@ -32,9 +32,44 @@ const asyncSignup = (email, password, dispatch) =>
     dispatch
   });
 
+const validateUser = email => ({
+  type: types.VALIDATE_USER_REQUEST,
+  payload: {
+    email
+  }
+});
+
+const validateUserSuccess = email => ({
+  type: types.VALIDATE_USER_SUCCESS,
+  payload: {
+    email
+  }
+});
+
+const validateUserFailed = (email, err) => ({
+  type: types.VALIDATE_USER_FAILED,
+  payload: {
+    email,
+    err
+  }
+});
+
+const asyncValidate = (email, dispatch) =>
+  remoteActions.promisedAction({
+    submit: validateUser(email),
+    success: types.VALIDATE_USER_SUCCESS,
+    failed: types.VALIDATE_USER_FAILED,
+    dispatch
+  });
+
 export default {
   signupRequest,
   signupSuccess,
   signupFailed,
-  asyncSignup
+  asyncSignup,
+
+  validateUser,
+  validateUserSuccess,
+  validateUserFailed,
+  asyncValidate
 };

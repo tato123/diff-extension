@@ -29,8 +29,6 @@ const authenticate = async (username, password, refreshToken) => {
 };
 
 const signup = async (email, password) => {
-  /*eslint disable */
-  debugger;
   const options = {
     method: "POST",
     headers: {
@@ -54,7 +52,20 @@ const signup = async (email, password) => {
   return response.json();
 };
 
+const isUser = async email => {
+  const response = await fetch(
+    `${process.env.API_SERVER}/validate?email=${email}`
+  );
+
+  if (!response.ok) {
+    return Promise.reject(response.statusText);
+  }
+
+  return response.text();
+};
+
 export default {
   authenticate,
-  signup
+  signup,
+  isUser
 };
