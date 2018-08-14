@@ -20,7 +20,7 @@ produces:
 paths:
   /ah/health:
     # binds a127 app logic to a route
-    x-swagger-router-controller: routes
+    x-swagger-router-controller: health
     get:
       description: Subscribes a user to the email mailing list
       # used as the method name of the controller
@@ -37,7 +37,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /signup:
     # binds a127 app logic to a route
-    x-swagger-router-controller: routes
+    x-swagger-router-controller: user
     post:
       description: Subscribes a user to the email mailing list
       # used as the method name of the controller
@@ -64,7 +64,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /authenticate:
-    x-swagger-router-controller: routes
+    x-swagger-router-controller: user
     post:
       description: Submits a comment
       # used as the method name of the controller
@@ -84,7 +84,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /validate:
-    x-swagger-router-controller: routes
+    x-swagger-router-controller: user
     get:
       description: Verifies an email
       # used as the method name of the controller

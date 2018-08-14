@@ -53,6 +53,7 @@ const addCollaboratorEpic = (action$, state$, { db }) =>
         email: action.payload.email,
         workspaceId: action.payload.workspace,
         created: Date.now(),
+        status: "pending",
         invitedBy: state$.value.user.uid
       };
 

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Keyframes, animated, config } from "react-spring";
-import { TimingAnimation } from "react-spring/dist/addons";
 import styled from "styled-components";
 import Modal from "./components/Modal";
 import {
@@ -14,6 +13,13 @@ import {
 } from "@diff/shared-components";
 import { Formik } from "formik";
 import { string, object } from "yup";
+
+const FORM_TYPES = {
+  LOGIN: "login",
+  PRECHECK: "precheck",
+  SIGNUP: "signup"
+};
+
 // prettier-ignore
 const Container = styled.div`
   position: absolute;
@@ -47,15 +53,15 @@ const fast = {
 };
 
 const ModalContainer = Keyframes.Spring({
-  signup: { to: { height: 450 }, config: fast },
-  login: { delay: 150, to: { height: 280 }, config: fast }
+  [FORM_TYPES.SIGNUP]: { to: { height: 450 }, config: fast },
+  [FORM_TYPES.PRECHECK]: { delay: 150, to: { height: 280 }, config: fast }
 });
 
 const Content = Keyframes.Trail({
-  signup: {
+  [FORM_TYPES.SIGNUP]: {
     to: { y: 0, opacity: 1 }
   },
-  login: { to: { y: -32, opacity: 0 } }
+  [FORM_TYPES.PRECHECK]: { to: { y: -32, opacity: 0 } }
 });
 
 /**
@@ -88,9 +94,8 @@ export default class Login extends React.Component {
 
   state = {
     requiresLogin: false,
-    signup: false,
-    form: "login",
-    formFields: "login"
+    form: FORM_TYPES.PRECHECK,
+    formFields: FORM_TYPES.PRECHECK
   };
 
   async componentDidMount() {
@@ -141,13 +146,13 @@ export default class Login extends React.Component {
   };
 
   showFormFields = formType => {
-    if (formType === "login") {
+    if (formType === FORM_TYPES.PRECHECK) {
       setTimeout(() => {
         this.setState({
           formFields: formType
         });
       }, 100);
-    } else if (formType === "signup") {
+    } else if (formType === FORM_TYPES.SIGNUP) {
       this.setState({
         formFields: formType
       });
@@ -156,10 +161,18 @@ export default class Login extends React.Component {
 
   formFields = () => {
     switch (this.state.formFields) {
-      case "login":
-      default:
-        return [];
-      case "signup":
+      case FORM_TYPES.LOGIN:
+        return [
+          {
+            key: 0,
+            type: "password",
+            label: "Password",
+            name: "password",
+            required: true,
+            autoComplete: "off"
+          }
+        ];
+      case FORM_TYPES.SIGNUP:
         return [
           {
             key: 0,
@@ -177,18 +190,22 @@ export default class Login extends React.Component {
             autoComplete: "off"
           }
         ];
+      case FORM_TYPES.PRECHECK:
+      default:
+        return [];
     }
   };
 
   getValidationSchema = () => {
     switch (this.state.form) {
-      case "login":
+      case FORM_TYPES.PRECHECK:
         return object().shape({
           email: string()
             .email()
             .required()
         });
-      case "signup":
+      case FORM_TYPES.LOGIN:
+      case FORM_TYPES.SIGNUP:
         return object().shape({
           email: string()
             .email()
@@ -199,7 +216,7 @@ export default class Login extends React.Component {
   };
 
   submitForm = (values, { setSubmitting, setErrors }) => {
-    if (this.state.form === "login") {
+    if (this.state.form === FORM_TYPES.PRECHECK) {
       console.log("submitting login form");
       setSubmitting(true);
       this.props
@@ -217,7 +234,7 @@ export default class Login extends React.Component {
       return;
     }
 
-    if (this.state.form === "signup") {
+    if (this.state.form === FORM_TYPES.SIGNUP) {
       setSubmitting(false);
       console.log("Signing up");
       setSubmitting(true);
@@ -318,10 +335,14 @@ export default class Login extends React.Component {
                               <Button.Flat
                                 type="button"
                                 onClick={this.showForm(
-                                  form !== "signup" ? "signup" : "login"
+                                  form !== FORM_TYPES.SIGNUP
+                                    ? FORM_TYPES.SIGNUP
+                                    : FORM_TYPES.PRECHECK
                                 )}
                               >
-                                {form !== "signup" ? "Create Account" : "Login"}
+                                {form !== FORM_TYPES.SIGNUP
+                                  ? "Create Account"
+                                  : "Login"}
                               </Button.Flat>
                               <Button
                                 type="submit"
@@ -331,8 +352,8 @@ export default class Login extends React.Component {
                                 }
                                 loading={isSubmitting}
                               >
-                                {form === "login" && "Next"}
-                                {form === "signup" && "Create Account"}
+                                {form === FORM_TYPES.PRECHECK && "Next"}
+                                {form === FORM_TYPES.SIGNUP && "Create Account"}
                               </Button>
                             </div>
                           </Container>

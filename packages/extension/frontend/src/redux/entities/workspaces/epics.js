@@ -15,6 +15,7 @@ const getInvitesEpic = (action$, state$, { db }) =>
       const subject = new Subject();
       db.collection("invites")
         .where("workspaceId", "==", workspaceId)
+        .where("status", "==", "pending")
         .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             const data = doc.data();
