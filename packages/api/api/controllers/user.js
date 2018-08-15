@@ -47,3 +47,19 @@ exports.verifyUser = async (req, res) => {
     res.send(404);
   }
 };
+
+exports.inviteUsersToWorkspace = async (req, res) => {
+  const { emails, workspaceId } = req.body;
+  const { authorization } = req.headers;
+
+  try {
+    const creatorUid =
+      (await userManager.bearerToUid(authorization)) || "anoynomous";
+    await userManager.inviteUsers(emails, workspaceId, creatorUid);
+    res.send(200, {
+      status: "invited"
+    });
+  } catch (err) {
+    res.send(400, { message: "not invited" });
+  }
+};

@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
 import _ from "lodash";
 import { types as commonTypes } from "@diff/common";
+import { types as workspaceTypes } from "redux/entities/workspaces";
 import actions from "./actions";
 
 import { operations as userOperations } from "../users";
@@ -63,14 +64,24 @@ const fetchComments$ = (db, state, cancelOn) => {
 
 const fetchCommentsEpic = (action$, state$, { db }) =>
   action$.pipe(
-    ofType(commonTypes.LOGIN.SUCCESS),
+    ofType(
+      commonTypes.LOGIN.SUCCESS,
+      workspaceTypes.GET_WORKSPACE_BY_ID_SUCCESS
+    ),
     // automatically handles switching
     // to the latest observable
     switchMap(() =>
       fetchComments$(
         db,
         state$.value,
-        takeUntil(action$.pipe(ofType(commonTypes.LOGIN.SUCCESS)))
+        takeUntil(
+          action$.pipe(
+            ofType(
+              commonTypes.LOGIN.SUCCESS,
+              workspaceTypes.GET_WORKSPACE_BY_ID_SUCCESS
+            )
+          )
+        )
       )
     )
   );

@@ -74,8 +74,6 @@ export default class Workspace extends React.Component {
 
   onSubmitCollaborator = evt => {
     evt.preventDefault();
-    /* eslint-disable */
-    debugger;
     this.props.addCollaborator(evt.target.email.value, this.props.workspaceId);
     this.setState({ addUser: false });
     return false;

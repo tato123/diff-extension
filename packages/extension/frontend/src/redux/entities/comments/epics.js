@@ -1,12 +1,15 @@
 import { combineEpics, ofType } from "redux-observable";
 import { Subject } from "rxjs";
-import { switchMap, takeUntil } from "rxjs/operators";
+import { mergeMap, takeUntil } from "rxjs/operators";
 
 import { types as commonTypes } from "@diff/common";
+import { types as workspaceTypes } from "redux/entities/workspaces";
+
 import actions from "./actions";
 
 import { operations as userOperations } from "../users";
 import { actions as selectorActions } from "../selectors";
+import _ from "lodash";
 
 const ROOT_COLLECTION = "events";
 
@@ -48,15 +51,18 @@ const fetchComments$ = (db, state, cancelOn) => {
     });
   };
 
-  if (state.user.workspaces.allIds.length === 0) {
-    db.collection(ROOT_COLLECTION)
+  let unsubscribe = null;
+  let pathway;
+  if (state.entities.workspaces.allIds.length === 0) {
+    unsubscribe = db
+      .collection(ROOT_COLLECTION)
       .where("type", "==", "comment")
       .where("meta.userId", "==", state.user.uid)
       .where("url.hostname", "==", window.location.hostname)
       .where("url.pathname", "==", window.location.pathname)
       .onSnapshot(processMessage);
   } else {
-    state.user.workspaces.allIds.forEach(workspaceId => {
+    unsubscribe = state.entities.workspaces.allIds.forEach(workspaceId => {
       db.collection(ROOT_COLLECTION)
         .where("type", "==", "comment")
         .where("meta.workspaceId", "==", workspaceId)
@@ -66,19 +72,34 @@ const fetchComments$ = (db, state, cancelOn) => {
     });
   }
 
-  return subject.asObservable();
+  const logUnsubscribe = () => {
+    console.log("unsubscribing from comments", pathway);
+    unsubscribe();
+  };
+  const observer$ = subject.pipe(cancelOn);
+  observer$.subscribe(_.noop, logUnsubscribe, logUnsubscribe);
+
+  return observer$;
 };
 
 const fetchCommentsEpic = (action$, state$, { db }) =>
   action$.pipe(
-    ofType(commonTypes.LOGIN.SUCCESS),
-    // automatically handles switching
-    // to the latest observable
-    switchMap(() =>
+    ofType(
+      commonTypes.LOGIN.SUCCESS,
+      workspaceTypes.GET_WORKSPACE_BY_ID_SUCCESS
+    ),
+    mergeMap(() =>
       fetchComments$(
         db,
         state$.value,
-        takeUntil(action$.pipe(ofType(commonTypes.LOGIN.SUCCESS)))
+        takeUntil(
+          action$.pipe(
+            ofType(
+              commonTypes.LOGIN.SUCCESS,
+              workspaceTypes.GET_WORKSPACE_BY_ID_SUCCESS
+            )
+          )
+        )
       )
     )
   );

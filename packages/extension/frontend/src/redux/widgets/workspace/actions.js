@@ -1,26 +1,26 @@
 import types from "./types";
 
-const addWorkspaceUser = (email, workspace) => ({
+const addWorkspaceUser = (email, workspaceId) => ({
   type: types.ADD_WORKSPACE_USER_REQUEST,
   payload: {
     email,
-    workspace
+    workspaceId
   }
 });
 
-const addWorkspaceUserSuccess = (email, workspace) => ({
+const addWorkspaceUserSuccess = (email, workspaceId) => ({
   type: types.ADD_WORKSPACE_USER_SUCCESS,
   payload: {
     email,
-    workspace
+    workspaceId
   }
 });
 
-const addWorkspaceUserFailed = (email, workspace, err) => ({
+const addWorkspaceUserFailed = (email, workspaceId, err) => ({
   type: types.ADD_WORKSPACE_USER_FAILED,
   payload: {
     email,
-    workspace,
+    workspaceId,
     err
   }
 });

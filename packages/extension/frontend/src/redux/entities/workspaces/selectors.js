@@ -12,16 +12,18 @@ const usersDomain = state => state.entities.users;
 const workspaceNameSelector = id =>
   createSelector(workspaceDomain, workspace => {
     const targetId = _.isNil(id) ? workspace.allIds[0] : id;
-    return workspace.byId[targetId].name || null;
+    return !_.isNil(targetId) ? workspace.byId[targetId].name : null;
   });
 
 const workspaceUsersSelector = id =>
   createSelector(workspaceDomain, usersDomain, (workspace, users) => {
     const targetId = _.isNil(id) ? workspace.allIds[0] : id;
 
-    return _.chain(_.keys(workspace.byId[targetId].users))
-      .map(user => users.byId[user])
-      .value();
+    return _.isNil(targetId)
+      ? []
+      : _.chain(_.keys(workspace.byId[targetId].users))
+          .map(user => users.byId[user])
+          .value();
   });
 
 const currentWorkspaceIdSelector = id =>
@@ -32,9 +34,13 @@ const currentWorkspaceIdSelector = id =>
 const invitedUsersSelector = () =>
   createSelector(workspaceDomain, workspace => workspace.invites);
 
+const defaultWorkspaceSelector = () =>
+  createSelector(workspaceDomain, workspace => _.first(workspace.allIds));
+
 export default {
   workspaceNameSelector,
   workspaceUsersSelector,
   currentWorkspaceIdSelector,
-  invitedUsersSelector
+  invitedUsersSelector,
+  defaultWorkspaceSelector
 };

@@ -35,15 +35,25 @@ const sendEmail = (to, template) => {
   });
 };
 
-exports.acceptInviteToWorkspace = (to, workspaceName) => {
+exports.autoAcceptWorkspaceInvites = (to, workspaceName) => {
   return sendEmail(
     to,
     `
       <h1>[Test Email]</h1>
   
-      <h3>Diff - Accepted workspace invite to ${workspaceName}!</h3>
+      <h3>Diff - Welcome to your new workspace <strong>${workspaceName}</strong></h3>
   
       <p>Congrats on joining ${workspaceName}</p>
+    `
+  );
+};
+
+exports.inviteNewUserToWorkspace = (to, workspaceName) => {
+  return sendEmail(
+    to,
+    `
+      <h1>[Test Email]</h1>
+      <p>You've been invited to join <strong>${workspaceName}</strong></p>
     `
   );
 };

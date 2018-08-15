@@ -4,24 +4,19 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const firebase = require("firebase");
 const emailNotify = require("./email");
+const _ = require("lodash");
 
+/**
+ * Placeholder for adding additional claims
+ * needed for this particular user. These should be
+ * static claims that we want to ensure that a user
+ * needs to refetch
+ * @param {*} uid
+ */
 const retrieveClaimsForUid = async uid => {
-  const querySnapshot = await db
-    .collection("workspace")
-    .where(`users.${uid}`, "==", true)
-    .get();
+  const claims = {};
 
-  const workspaces = {};
-  querySnapshot.forEach(doc => {
-    Object.assign(workspaces, {
-      workspaces: {
-        ...workspaces.workspaces,
-        [doc.id]: true
-      }
-    });
-  });
-
-  return workspaces;
+  return claims;
 };
 
 const createAndStoreRefreshToken = async uid => {
@@ -123,7 +118,7 @@ const tokenAuthentication = async (req, res) => {
   }
 };
 
-const acceptWorkspaceInvites = async (email, uid) => {
+const autoAcceptWorkspaceInvites = async (email, uid) => {
   const querySnapshot = await db
     .collection("invites")
     .where("email", "==", email)
@@ -153,7 +148,7 @@ const acceptWorkspaceInvites = async (email, uid) => {
       inviteDoc.ref.update(invite);
 
       // 5. send an email
-      emailNotify.acceptInviteToWorkspace(invite.email, workspace.name);
+      emailNotify.autoAcceptWorkspaceInvites(invite.email, workspace.name);
     });
   }
   return uid;
@@ -168,7 +163,7 @@ const signupUser = (email, password) => {
       password
     })
     .then(credential => initializeUser(credential).then(() => credential.uid))
-    .then(uid => acceptWorkspaceInvites(email, uid))
+    .then(uid => autoAcceptWorkspaceInvites(email, uid))
     .then(uid => createTokenForUid(uid, offlineScope));
 };
 
@@ -185,6 +180,112 @@ const isUser = async email => {
   return Promise.reject(new Error("empty user"));
 };
 
+const bearerToUid = async authorizationBearer => {
+  if (
+    !_.isNil(authorizationBearer) &&
+    authorizationBearer.toLowerCase().startsWith("bearer")
+  ) {
+    const idToken = authorizationBearer.split(" ")[1];
+    return admin
+      .auth()
+      .verifyIdToken(idToken)
+      .then(decodedToken => decodedToken.uid);
+  }
+
+  return null;
+};
+
+const inviteUsers = async (emails, workspaceId, creatorUid) => {
+  const workspaceDoc = await db
+    .collection("workspace")
+    .doc(workspaceId)
+    .get();
+
+  if (!workspaceDoc.exists) {
+    throw new Error("workspace does not exist");
+  }
+
+  const workspaceRecord = workspaceDoc.data();
+
+  return Promise.all(
+    emails.map(async email => {
+      // check if we already have an invite for this user and workspace id
+      const inviteEmailToWorkspaceRef = await db
+        .collection("invites")
+        .where("email", "==", email)
+        .where("workspaceId", "==", workspaceId)
+        .get();
+
+      if (!inviteEmailToWorkspaceRef.empty) {
+        console.log(
+          `[Already invited to workspace] ${creatorUid} - Attempted to invite user [${email}] to ${workspaceId}`
+        );
+        return;
+      }
+
+      // check if we have a user for this email
+      const userQuerySnapshot = await db
+        .collection("users")
+        .where("email", "==", email)
+        .limit(1)
+        .get();
+      const userExists = !userQuerySnapshot.empty;
+
+      // create a new invite for this user
+      const invite = {
+        email: email,
+        workspaceId,
+        created: Date.now(),
+        status: userExists ? "accept.review" : "pending",
+        invitedBy: creatorUid
+      };
+
+      await db
+        .collection("invites")
+        .doc()
+        .set(invite);
+
+      if (userExists) {
+        userQuerySnapshot.forEach(async doc => {
+          const user = await doc.data();
+          // this is a secondary check that should be more rare, however
+          // if we no longer have an invite record, at minimum check the workspace to
+          // see if the user is part of it
+          if (_.has(workspaceRecord.users, user.uid)) {
+            console.log(
+              `[Already in workspace] ${creatorUid} - Attempted to invite user [${email}] to ${workspaceId}`
+            );
+            return;
+          }
+
+          workspaceRecord.users[user.uid] = true;
+          workspaceDoc.ref.update(workspaceRecord);
+
+          // add to workspace if its an existing user and notify them that they've been added
+          console.log(
+            `[Existing user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
+          );
+
+          return emailNotify.autoAcceptWorkspaceInvites(
+            email,
+            workspaceRecord.name
+          );
+        });
+      } else {
+        // this is a brand new user, send the appropriate email
+        console.log(
+          `[New user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
+        );
+
+        return emailNotify.inviteNewUserToWorkspace(
+          email,
+          workspaceRecord.name
+        );
+      }
+    })
+  );
+};
+
 module.exports = {
   retrieveClaimsForUid,
   createAndStoreRefreshToken,
@@ -194,5 +295,7 @@ module.exports = {
   tokenAuthentication,
   initializeUser,
   signupUser,
-  isUser
+  isUser,
+  bearerToUid,
+  inviteUsers
 };

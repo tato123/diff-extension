@@ -5,13 +5,17 @@ import { types as commonTypes } from "@diff/common";
 import types from "./types";
 import actions from "./actions";
 import { operations as userOperations } from "../users";
+import selectors from "./selectors";
 import _ from "lodash";
 
 const getInvitesEpic = (action$, state$, { db }) =>
   action$.pipe(
     ofType(commonTypes.LOGIN.SUCCESS),
     mergeMap(action => {
-      const workspaceId = state$.value.user.workspaces.allIds[0];
+      const workspaceId = selectors.defaultWorkspaceSelector()(state$.value);
+      if (_.isNil(workspaceId)) {
+        return of(actions.addInviteUserFailed("No default workspace to check"));
+      }
       const subject = new Subject();
       db.collection("invites")
         .where("workspaceId", "==", workspaceId)
@@ -26,11 +30,48 @@ const getInvitesEpic = (action$, state$, { db }) =>
     })
   );
 
+const getWorkspacesEpic = (action$, state$, { db }) =>
+  action$.pipe(
+    ofType(commonTypes.LOGIN.SUCCESS),
+    mergeMap(action => {
+      const subject = new Subject();
+      const uid = state$.value.user.uid;
+      const unsubscribe = db
+        .collection("workspace")
+        .where(`users.${uid}`, "==", true)
+        .onSnapshot(querySnapshot => {
+          // review only the changes that occured`
+          querySnapshot.docChanges().forEach(({ doc, type }) => {
+            if (type === "added" || type === "modified") {
+              const workspace = doc.data();
+
+              subject.next(
+                actions.getWorkspaceByIdSuccess({
+                  id: doc.id,
+                  ...workspace
+                })
+              );
+            } else {
+              // handle removal
+            }
+          });
+        });
+      subject.subscribe(_.noop, _.noop, unsubscribe);
+      return subject.asObservable();
+    })
+  );
+
 const getWorkspaceByIdEpic = (action$, state$, { db }) =>
   action$.pipe(
     ofType(commonTypes.LOGIN.SUCCESS, types.GET_WORKSPACE_BY_ID),
     mergeMap(action => {
-      const workspaceId = state$.value.user.workspaces.allIds[0];
+      const workspaceId = selectors.defaultWorkspaceSelector()(state$.value);
+      if (_.isNil(workspaceId)) {
+        return of(
+          actions.getWorkspaceByIdFailed(workspaceId, "No default workspace")
+        );
+      }
+
       return from(
         db
           .collection("workspace")
@@ -65,4 +106,8 @@ const getWorkspaceByIdEpic = (action$, state$, { db }) =>
     })
   );
 
-export default combineEpics(getWorkspaceByIdEpic, getInvitesEpic);
+export default combineEpics(
+  getWorkspaceByIdEpic,
+  getInvitesEpic,
+  getWorkspacesEpic
+);

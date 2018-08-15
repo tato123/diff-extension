@@ -7,6 +7,13 @@ const addInviteUser = email => ({
   }
 });
 
+const addInviteUserFailed = err => ({
+  type: types.ADD_INVITE_USER_FAILED,
+  payload: {
+    err
+  }
+});
+
 const getWorkspaceById = id => ({
   type: types.GET_WORKSPACE_BY_ID,
   payload: {
@@ -33,5 +40,6 @@ export default {
   getWorkspaceById,
   getWorkspaceByIdSuccess,
   getWorkspaceByIdFailed,
-  addInviteUser
+  addInviteUser,
+  addInviteUserFailed
 };

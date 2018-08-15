@@ -4,14 +4,13 @@ import { mergeMap, catchError, map } from "rxjs/operators";
 
 import types from "./types";
 import actions from "./actions";
+import api from "./api";
 
 // ----------------------------------------------------------------
 // Observables
 
-/*eslint-disable */
 const createWorkspaceObservable = (db, state, action) => {
   return Observable.create(observer => {
-    debugger;
     const workspace = action.payload.name;
     const docRef = db.collection("workspace").doc();
 
@@ -48,19 +47,26 @@ const addCollaboratorEpic = (action$, state$, { db }) =>
   action$.pipe(
     ofType(types.ADD_WORKSPACE_USER_REQUEST),
     mergeMap(action => {
-      const docRef = db.collection("invites").doc();
-      const record = {
-        email: action.payload.email,
-        workspaceId: action.payload.workspace,
-        created: Date.now(),
-        status: "pending",
-        invitedBy: state$.value.user.uid
-      };
-
-      return from(docRef.set(record)).pipe(
-        map(doc => actions.addWorkspaceUserSuccess(action.payload.email)),
+      return from(
+        api.addSingleCollaborator(
+          action.payload.email,
+          action.payload.workspaceId
+        )
+      ).pipe(
+        map(() =>
+          actions.addWorkspaceUserSuccess(
+            action.payload.email,
+            action.payload.workspaceId
+          )
+        ),
         catchError(err =>
-          of(actions.addWorkspaceUserFailed(action.payload.workspace, err))
+          of(
+            actions.addWorkspaceUserFailed(
+              action.payload.workspace,
+              action.payload.workspaceId,
+              err
+            )
+          )
         )
       );
     })

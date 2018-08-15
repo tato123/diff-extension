@@ -79,10 +79,6 @@ module.exports = (env, argv) => [
     plugins:
       ENV === "production"
         ? [...std.plugins]
-        : [
-            ...std.plugins,
-            new webpack.HotModuleReplacementPlugin(),
-            new BundleAnalyzerPlugin()
-          ]
+        : [...std.plugins, new webpack.HotModuleReplacementPlugin()]
   }
 ];

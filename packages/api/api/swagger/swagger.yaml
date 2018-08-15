@@ -100,10 +100,48 @@ paths:
           description: Error
           schema:
             type: string
+  /invite:
+    x-swagger-router-controller: user
+    post:
+      description: Verifies an email
+      operationId: inviteUsersToWorkspace
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          description: User emails
+          required: true
+          name: emails
+          schema:
+            $ref: "#/definitions/WorkspaceInvite"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Response"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Response:
+    properties:
+      status:
+        type: string
+  WorkspaceInvite:
+    required:
+      - emails
+      - workspaceId
+    properties:
+      emails:
+        type: array
+        items:
+          type: string
+      workspaceId:
+        type: string
   UserToken:
     required:
       - access_token
