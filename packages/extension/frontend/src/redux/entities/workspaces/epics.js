@@ -45,6 +45,11 @@ const getWorkspacesEpic = (action$, state$, { db }) =>
             if (type === "added" || type === "modified") {
               const workspace = doc.data();
 
+              Object.keys(workspace.users).forEach(userId => {
+                // resolve our user
+                subject.next(userOperations.fetchUser(userId));
+              });
+
               subject.next(
                 actions.getWorkspaceByIdSuccess({
                   id: doc.id,

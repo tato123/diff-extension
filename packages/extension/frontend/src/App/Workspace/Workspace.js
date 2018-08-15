@@ -109,10 +109,10 @@ export default class Workspace extends React.Component {
     );
   };
 
-  renderUser = email => {
+  renderUser = user => {
     return (
-      <UserRow key={email}>
-        <div>{email}</div>
+      <UserRow key={user.email}>
+        <div>{user.email}</div>
       </UserRow>
     );
   };
@@ -127,8 +127,8 @@ export default class Workspace extends React.Component {
         <Header as="h2">{this.props.workspaceName}</Header>
         <HR />
         <UsersTable>
-          {workspaceUsers.map(user => this.renderUser(user.email))}
-          {invitedUsers.map(user => this.renderUser(user))}
+          {workspaceUsers.map(user => user && this.renderUser(user))}
+          {invitedUsers.map(user => user && this.renderUser(user))}
           {addUser && this.renderForm()}
           {!addUser && (
             <Button onClick={() => this.setState({ addUser: true })}>
