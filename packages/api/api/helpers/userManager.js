@@ -175,10 +175,7 @@ const isUser = async email => {
     .limit(1)
     .get();
 
-  if (!querySnapshot.empty) {
-    return Promise.resolve();
-  }
-  return Promise.reject(new Error("empty user"));
+  return !querySnapshot.empty;
 };
 
 const bearerToUid = async authorizationBearer => {

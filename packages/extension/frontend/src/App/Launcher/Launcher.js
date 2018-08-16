@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { StyleBoundary } from "@diff/shared-components";
 import { Spring, Transition } from "react-spring";
 import styled from "styled-components";
+import { TimingAnimation, Easing } from "react-spring/dist/addons";
 
 import MainMenu from "./components/MainMenu";
 import CloseButton from "./components/CloseButton";
@@ -134,15 +135,16 @@ export default class Launcher extends React.Component {
       <StyleBoundary>
         <MenuGroup>
           <Transition
-            config={{ velocity: 30, friction: 8 }}
-            from={{ transform: "scale3d(0.5, 0.5, 0.5)", opacity: 0 }}
-            enter={{ transform: "scale3d(1, 1, 1)", opacity: 1 }}
-            leave={{ transform: "scale3d(0.5, 0.5, 0.5)" }}
+            impl={TimingAnimation}
+            config={{ duration: 200, easing: Easing.linear }}
+            from={{ opacity: 0 }}
+            enter={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
           >
             {styles => (
               <React.Fragment>
-                {this.closeMenuOption()}
-                {this.workspaceMenuOption()}
+                {styles.opacity === 1 && this.closeMenuOption()}
+                {styles.opacity === 1 && this.workspaceMenuOption()}
                 <MainMenu
                   count={count}
                   showCount={showCount}

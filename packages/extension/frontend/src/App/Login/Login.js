@@ -9,7 +9,8 @@ import {
   Button,
   Header,
   HR,
-  Logo
+  Logo,
+  Label
 } from "@diff/shared-components";
 import { Formik } from "formik";
 import { string, object } from "yup";
@@ -46,6 +47,15 @@ const Container = styled.div`
   }
 `;
 
+const ErrorLabel = styled(Label)`
+  color: #c51162;
+  margin: 4px 0px 0px 0px !important;
+  font-size: 16px;
+  padding-bottom: 0px;
+  top: -8px;
+  position: relative;
+`;
+
 const fast = {
   ...config.stiff,
   restSpeedThreshold: 1,
@@ -54,11 +64,15 @@ const fast = {
 
 const ModalContainer = Keyframes.Spring({
   [FORM_TYPES.SIGNUP]: { to: { height: 450 }, config: fast },
+  [FORM_TYPES.LOGIN]: { to: { height: 360 }, config: fast },
   [FORM_TYPES.PRECHECK]: { delay: 150, to: { height: 280 }, config: fast }
 });
 
 const Content = Keyframes.Trail({
   [FORM_TYPES.SIGNUP]: {
+    to: { y: 0, opacity: 1 }
+  },
+  [FORM_TYPES.LOGIN]: {
     to: { y: 0, opacity: 1 }
   },
   [FORM_TYPES.PRECHECK]: { to: { y: -32, opacity: 0 } }
@@ -112,28 +126,8 @@ export default class Login extends React.Component {
     }
   }
 
-  onLoginRequest = evt => {
-    evt.preventDefault();
-    const username = evt.target.user.value;
-    const password = evt.target.password.value;
-    return this.props.login({ username, password });
-  };
-
-  onSignup = evt => {
-    evt.preventDefault();
-    const email = evt.target.email.value;
-    const password = evt.target.password.value;
-    return this.props
-      .signup(email, password)
-      .then(refreshToken => {
-        return this.props.login({ refreshToken });
-      })
-      .catch(err => {
-        console.error("Error occured signing up", err);
-      });
-  };
-
   showForm = formType => () => {
+    console.log("Showing form", formType);
     // delay setting for the form fields
     // type to accomodate the animating fields
     // in and out
@@ -146,16 +140,19 @@ export default class Login extends React.Component {
   };
 
   showFormFields = formType => {
-    if (formType === FORM_TYPES.PRECHECK) {
-      setTimeout(() => {
+    switch (formType) {
+      case FORM_TYPES.PRECHECK:
+        setTimeout(() => {
+          this.setState({
+            formFields: formType
+          });
+        }, 100);
+        break;
+      default:
         this.setState({
           formFields: formType
         });
-      }, 100);
-    } else if (formType === FORM_TYPES.SIGNUP) {
-      this.setState({
-        formFields: formType
-      });
+        break;
     }
   };
 
@@ -217,26 +214,36 @@ export default class Login extends React.Component {
 
   submitForm = (values, { setSubmitting, setErrors }) => {
     if (this.state.form === FORM_TYPES.PRECHECK) {
-      console.log("submitting login form");
       setSubmitting(true);
       this.props
         .validateEmail(values.email)
         .then(() => {
           setSubmitting(false);
-          // is an email
-          console.log("already have this email");
+          this.showForm(FORM_TYPES.LOGIN)();
         })
-        .catch(err => {
+        .catch(() => {
           setSubmitting(false);
-          this.showForm("signup")();
+          this.showForm(FORM_TYPES.SIGNUP)();
         });
 
       return;
     }
 
+    if (this.state.form === FORM_TYPES.LOGIN) {
+      setSubmitting(true);
+
+      return this.props
+        .login({ username: values.email, password: values.password })
+        .then(() => {
+          setSubmitting(true);
+        })
+        .catch(() => {
+          setSubmitting(false);
+          setErrors({ form: "The username or password is incorrect" });
+        });
+    }
+
     if (this.state.form === FORM_TYPES.SIGNUP) {
-      setSubmitting(false);
-      console.log("Signing up");
       setSubmitting(true);
       return this.props
         .signup(values.email, values.password)
@@ -286,9 +293,11 @@ export default class Login extends React.Component {
                             </div>
                             <div>
                               <Header as="h3">Signin with your email</Header>
+
                               <HR />
                             </div>
                             <div>
+                              <ErrorLabel>{errors.form}</ErrorLabel>
                               <Form.Input
                                 type="text"
                                 name="email"
@@ -354,6 +363,7 @@ export default class Login extends React.Component {
                               >
                                 {form === FORM_TYPES.PRECHECK && "Next"}
                                 {form === FORM_TYPES.SIGNUP && "Create Account"}
+                                {form === FORM_TYPES.LOGIN && "Login"}
                               </Button>
                             </div>
                           </Container>
