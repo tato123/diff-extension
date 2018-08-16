@@ -35,6 +35,19 @@ const sendEmail = (to, template) => {
   });
 };
 
+exports.createWorkspace = (to, name) => {
+  return sendEmail(
+    to,
+    `
+    <h1>[Test Email]</h1>
+
+    <h3>Welcome to Diff Workspaces!</h3>
+
+    <p>You've just created your first workspace, "${name}"</p>
+  `
+  );
+};
+
 exports.autoAcceptWorkspaceInvites = (to, workspaceName) => {
   return sendEmail(
     to,

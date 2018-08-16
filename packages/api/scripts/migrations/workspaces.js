@@ -21,7 +21,7 @@ const readEvents = async () => {
   try {
     const querySnapshot = await db
       .collection("events")
-      .where("meta.workspaceId", "==", "workspaceId7")
+      .where("meta.workspaceId", "==", "7G46svcFXw5YuCKSXAtp")
       .get();
     let objectCount = 0;
     querySnapshot.forEach(async doc => {

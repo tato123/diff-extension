@@ -38,7 +38,7 @@ const getWorkspacesEpic = (action$, state$, { db }) =>
       const uid = state$.value.user.uid;
       const unsubscribe = db
         .collection("workspace")
-        .where(`users.${uid}`, "==", true)
+        .where(`users.${uid}.role`, ">", "")
         .onSnapshot(querySnapshot => {
           // review only the changes that occured`
           querySnapshot.docChanges().forEach(({ doc, type }) => {

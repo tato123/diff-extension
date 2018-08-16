@@ -5,6 +5,7 @@ const db = admin.firestore();
 const firebase = require("firebase");
 const emailNotify = require("./email");
 const _ = require("lodash");
+const workspaceHelper = require("./workspace");
 
 /**
  * Placeholder for adding additional claims
@@ -27,7 +28,7 @@ const createAndStoreRefreshToken = async uid => {
     .set({
       uid,
       token,
-      created: Date.now()
+      created: admin.firestore.FieldValue.serverTimestamp()
     });
 
   return token;
@@ -235,7 +236,7 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
       const invite = {
         email: email,
         workspaceId,
-        created: Date.now(),
+        created: admin.firestore.FieldValue.serverTimestamp(),
         status: userExists ? "accept.review" : "pending",
         invitedBy: creatorUid
       };
@@ -246,8 +247,8 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
         .set(invite);
 
       if (userExists) {
-        userQuerySnapshot.forEach(async doc => {
-          const user = await doc.data();
+        userQuerySnapshot.forEach(async userDoc => {
+          const user = await userDoc.data();
           // this is a secondary check that should be more rare, however
           // if we no longer have an invite record, at minimum check the workspace to
           // see if the user is part of it
@@ -258,8 +259,17 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
             return;
           }
 
-          workspaceRecord.users[user.uid] = true;
-          workspaceDoc.ref.update(workspaceRecord);
+          workspaceRecord.users[user.uid] = {
+            role: "collaborator",
+            created: admin.firestore.FieldValue.serverTimestamp()
+          };
+          await workspaceDoc.ref.update(workspaceRecord);
+
+          // upgrade all of the events
+          await workspaceHelper.updateEventsForWorkspaceId(
+            workspaceDoc.id,
+            userDoc.id
+          );
 
           // add to workspace if its an existing user and notify them that they've been added
           console.log(
@@ -286,6 +296,42 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
   );
 };
 
+const createWorkspace = async (name, userId) => {
+  const userDoc = await db
+    .collection("users")
+    .doc(userId)
+    .get();
+
+  if (!userDoc.exists) {
+    return Promise.reject(new Error(`User ${userId} does not exist`));
+  }
+  const user = userDoc.data();
+
+  console.log(`Creating a new workspace ${name}`);
+  // 1. create the workspace
+  const workspaceDocRef = db.collection("workspace").doc();
+  const workspace = {
+    users: {
+      [userId]: {
+        role: "creator",
+        created: admin.firestore.FieldValue.serverTimestamp()
+      }
+    },
+    name
+  };
+  await workspaceDocRef.set(workspace);
+
+  // 2. Upgrade the user
+  const upgradedEvents = await workspaceHelper.updateEventsForWorkspaceId(
+    workspaceDocRef.id,
+    userId
+  );
+  console.log(`Updated ${upgradedEvents} for ${userId} and workspace ${name}`);
+
+  // 3. send email that we have created a new workspace
+  return emailNotify.createWorkspace(user.email, name);
+};
+
 module.exports = {
   retrieveClaimsForUid,
   createAndStoreRefreshToken,
@@ -297,5 +343,6 @@ module.exports = {
   signupUser,
   isUser,
   bearerToUid,
-  inviteUsers
+  inviteUsers,
+  createWorkspace
 };

@@ -53,13 +53,33 @@ exports.inviteUsersToWorkspace = async (req, res) => {
   const { authorization } = req.headers;
 
   try {
-    const creatorUid =
-      (await userManager.bearerToUid(authorization)) || "anoynomous";
+    const creatorUid = await userManager.bearerToUid(authorization);
+    if (!creatorUid) {
+      return res.send(401, { message: "Cannot invite user anonymously" });
+    }
     await userManager.inviteUsers(emails, workspaceId, creatorUid);
     res.send(200, {
       status: "invited"
     });
   } catch (err) {
     res.send(400, { message: "not invited" });
+  }
+};
+
+exports.createWorkspace = async (req, res) => {
+  const { name } = req.body;
+  const { authorization } = req.headers;
+
+  try {
+    const creatorUid = await userManager.bearerToUid(authorization);
+    if (!creatorUid) {
+      return res.send(401, { message: "Cannot create workspace anonymously" });
+    }
+    await userManager.createWorkspace(name, creatorUid);
+    res.send(200, {
+      status: "workspace created"
+    });
+  } catch (err) {
+    res.send(400, { message: "Workspace not created: " + err.message });
   }
 };

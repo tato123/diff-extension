@@ -1,9 +1,6 @@
 import firebase from "firebase";
 
 const addCollaborators = async (emails, workspaceId) => {
-  /* eslint-disable */
-  debugger;
-
   const idToken = await firebase.auth().currentUser.getIdToken(true);
   const options = {
     method: "POST",
@@ -16,14 +13,13 @@ const addCollaborators = async (emails, workspaceId) => {
       workspaceId
     })
   };
-  debugger;
+
   const response = await fetch(`${process.env.API_SERVER}/invite`, {
     ...options,
     method: "POST"
   });
 
   if (!response.ok) {
-    debugger;
     return Promise.reject(response.statusText);
   }
 
@@ -33,7 +29,33 @@ const addCollaborators = async (emails, workspaceId) => {
 const addSingleCollaborator = async (email, workspaceId) =>
   addCollaborators([email], workspaceId);
 
+const createWorkspace = async name => {
+  const idToken = await firebase.auth().currentUser.getIdToken(true);
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`
+    },
+    body: JSON.stringify({
+      name
+    })
+  };
+
+  const response = await fetch(`${process.env.API_SERVER}/workspace`, {
+    ...options,
+    method: "POST"
+  });
+
+  if (!response.ok) {
+    return Promise.reject(response.statusText);
+  }
+
+  return response.json();
+};
+
 export default {
   addCollaborators,
-  addSingleCollaborator
+  addSingleCollaborator,
+  createWorkspace
 };

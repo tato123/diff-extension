@@ -123,10 +123,39 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /workspace:
+    x-swagger-router-controller: user
+    post:
+      description: Creates a new workspace
+      operationId: createWorkspace
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          description: Workspace name
+          required: true
+          name: "name"
+          schema:
+            $ref: "#/definitions/WorkspaceRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Response"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  WorkspaceRequest:
+    required:
+      - name
+    properties:
+      name:
+        type: string
   Response:
     properties:
       status:
