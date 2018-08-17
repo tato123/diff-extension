@@ -28,6 +28,13 @@ export default class VisibleElement extends React.Component {
     this.checkVisibility();
   }
 
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (prevProps.selectors.length !== this.props.selectors.length) {
+      this.checkVisibility();
+    }
+    return null;
+  }
+
   onWindowChange = evt => {
     // allow us to do any additional processing here
     // otherwise defer out to our update check

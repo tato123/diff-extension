@@ -17106,7 +17106,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var StyledImage = _styledComponents2.default.img(_templateObject, function (props) {
-  return props.small && "\n    width: 24px;\n    height: 24px;\n    min-width: 24px;\n    min-height: 24px;\n  ";
+  return props.small && "\n    width: 32px;\n    height: 32px;\n    min-width: 32px;\n    min-height: 32px;\n  ";
 });
 
 var Avatar = (0, _styledComponents2.default)(StyledImage)(_templateObject2);
@@ -17551,6 +17551,107 @@ Object.defineProperty(exports, "Outline", {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_Outline).default;
+  }
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+
+/***/ "./src/components/Placeholder/Placeholder.js":
+/*!***************************************************!*\
+  !*** ./src/components/Placeholder/Placeholder.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = "C:\\Users\\Jonathan\\Repositories\\github\\diff\\diff\\packages\\shared-components\\src\\components\\Placeholder\\Placeholder.js";
+
+var _templateObject = _taggedTemplateLiteral(["\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  background: #ccc;\n  text-transform: uppercase;\n    font-weight: bold;\n    color: black;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n"], ["\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  background: #ccc;\n  text-transform: uppercase;\n    font-weight: bold;\n    color: black;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n"]);
+
+var _react = __webpack_require__(/*! react */ "react");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "../../node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _styledComponents = __webpack_require__(/*! styled-components */ "styled-components");
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var PlaceholderContainer = _styledComponents2.default.div(_templateObject);
+
+var Placeholder = function Placeholder(_ref) {
+  var value = _ref.value;
+
+  var splits = value.split(" ");
+  if (splits.length > 1) {
+    return _react2.default.createElement(
+      PlaceholderContainer,
+      {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 23
+        },
+        __self: undefined
+      },
+      splits[0][0] + splits[1][0]
+    );
+  } else {
+    return _react2.default.createElement(
+      PlaceholderContainer,
+      {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 26
+        },
+        __self: undefined
+      },
+      value.substring(0, 2)
+    );
+  }
+};
+
+Placeholder.propTypes = {
+  value: _propTypes2.default.string.isRequired
+};
+
+exports.default = Placeholder;
+
+/***/ }),
+
+/***/ "./src/components/Placeholder/index.js":
+/*!*********************************************!*\
+  !*** ./src/components/Placeholder/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Placeholder = __webpack_require__(/*! ./Placeholder */ "./src/components/Placeholder/Placeholder.js");
+
+Object.defineProperty(exports, "Placeholder", {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_Placeholder).default;
   }
 });
 
@@ -19086,6 +19187,18 @@ Object.keys(_HR).forEach(function (key) {
     enumerable: true,
     get: function get() {
       return _HR[key];
+    }
+  });
+});
+
+var _Placeholder = __webpack_require__(/*! ./components/Placeholder */ "./src/components/Placeholder/index.js");
+
+Object.keys(_Placeholder).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _Placeholder[key];
     }
   });
 });

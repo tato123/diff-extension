@@ -6,9 +6,10 @@ import {
   Header,
   HR,
   Button,
-  Form
+  Form,
+  Image,
+  Placeholder
 } from "@diff/shared-components";
-import { Transition } from "react-spring";
 
 const Modal = styled.div`
   position: fixed;
@@ -35,15 +36,36 @@ const UsersTable = styled.div`
   flex-direction: column;
   flex: 1;
 
+  .listing {
+    display: flex;
+    flex-direction: column;
+    > div.userRow {
+      margin-top: 8px;
+    }
+    > div.userRow:first-child {
+      margin-top: 0px;
+    }
+
+    .displaynameCell {
+      align-self: center;
+    }
+  }
+
   > button {
     margin-top: 16px;
   }
 `;
 
 const UserRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex: 1;
+  display: grid;
+  grid-template-areas: ". .";
+  grid-template-columns: 48px 1fr;
+  grid-template-rows: 1fr;
+`;
+
+const TightHeader = styled(Header)`
+  font-weight: 500 !important;
+  margin: 0;
 `;
 
 export default class Workspace extends React.Component {
@@ -111,8 +133,14 @@ export default class Workspace extends React.Component {
 
   renderUser = user => {
     return (
-      <UserRow key={user.email}>
-        <div>{user.email}</div>
+      <UserRow key={user.email} className="userRow">
+        <div>
+          {user.photoUrl && <Image small src={user.photoUrl} avatar />}
+          {!user.photoUrl && (
+            <Placeholder value={user.displayName || user.email} />
+          )}
+        </div>
+        <div className="displaynameCell">{user.displayName || user.email}</div>
       </UserRow>
     );
   };
@@ -124,11 +152,13 @@ export default class Workspace extends React.Component {
     } = this;
     return (
       <React.Fragment>
-        <Header as="h2">{this.props.workspaceName}</Header>
+        <TightHeader as="h2">{this.props.workspaceName}</TightHeader>
         <HR />
         <UsersTable>
-          {workspaceUsers.map(user => user && this.renderUser(user))}
-          {invitedUsers.map(user => user && this.renderUser(user))}
+          <div className="listing">
+            {workspaceUsers.map(user => user && this.renderUser(user))}
+            {invitedUsers.map(user => user && this.renderUser(user))}
+          </div>
           {addUser && this.renderForm()}
           {!addUser && (
             <Button onClick={() => this.setState({ addUser: true })}>
@@ -143,7 +173,7 @@ export default class Workspace extends React.Component {
   renderCreateJoinWorkspace = () => {
     return (
       <React.Fragment>
-        <Header as="h2">Start with a workspace</Header>
+        <TightHeader as="h2">Start with a workspace</TightHeader>
         <p>In Diff, teams are called workspaces</p>
         <Form onSubmit={this.onCreateWorkspace} autoComplete="off">
           <Form.Input

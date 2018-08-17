@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import Popper from "components/Popper";
 import { StyleBoundary } from "@diff/shared-components";
 import styled from "styled-components";
-import { Spring } from "react-spring";
+import { Spring, animated } from "react-spring";
 import { lighten } from "polished";
 
-const SeenCount = styled.div`
+const SeenCount = styled(animated.div)`
   height: 32px;
   width: 64px;
   border-radius: 16px;
@@ -37,7 +37,7 @@ const SeenCount = styled.div`
   }
 `;
 
-const UnseenCount = styled.div`
+const UnseenCount = styled(animated.div)`
   height: 26px;
   width: 26px;
   min-height: 26px;
@@ -122,7 +122,7 @@ export default class ElementHighlight extends React.Component {
             <div ref={ref}>
               <StyleBoundary>
                 <Spring
-                  config={{ velocity: 30 }}
+                  native
                   from={{
                     width: "32px",
                     paddingLeft: "12px",
@@ -133,7 +133,7 @@ export default class ElementHighlight extends React.Component {
                     paddingLeft: unseenCount === 0 ? "12px" : "16px",
                     transform:
                       hovered && !selected
-                        ? "scale3d(1.2,1.2,1)"
+                        ? "scale3d(1.1,1.1,1)"
                         : "scale3d(1,1,1)"
                   }}
                 >
@@ -144,6 +144,7 @@ export default class ElementHighlight extends React.Component {
                     >
                       <div>{seenCount}</div>
                       <Spring
+                        native
                         from={{ transform: "translateX(-32px)", opacity: 0 }}
                         to={{
                           opacity: unseenCount > 0 ? 1 : 0,

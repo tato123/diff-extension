@@ -219,7 +219,7 @@ export default class Selectors extends React.Component {
 
               {visibility.map(({ selector, visible }, idx) => (
                 <Spring
-                  key={idx}
+                  key={selector}
                   from={{ opacity: 1 }}
                   to={{
                     opacity:
