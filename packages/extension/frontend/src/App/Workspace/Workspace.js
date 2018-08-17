@@ -40,10 +40,20 @@ const UsersTable = styled.div`
     display: flex;
     flex-direction: column;
     > div.userRow {
-      margin-top: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 0;
+
+      > div:last-child {
+        display: flex;
+        align-items: center;
+      }
     }
     > div.userRow:first-child {
-      margin-top: 0px;
+      padding-top: 0;
+    }
+
+    > div.userRow:last-child {
+      border-bottom: none;
     }
 
     .displaynameCell {
@@ -56,10 +66,18 @@ const UsersTable = styled.div`
   }
 `;
 
+const Status = styled.div`
+  width: 16px;
+  height: 16px;
+  background: #5ebf4b;
+  border-radius: 50%;
+  align-items: center;
+`;
+
 const UserRow = styled.div`
   display: grid;
-  grid-template-areas: ". .";
-  grid-template-columns: 48px 1fr;
+  grid-template-areas: ". . .";
+  grid-template-columns: 48px 1fr 48px;
   grid-template-rows: 1fr;
 `;
 
@@ -141,6 +159,9 @@ export default class Workspace extends React.Component {
           )}
         </div>
         <div className="displaynameCell">{user.displayName || user.email}</div>
+        <div>
+          <Status />
+        </div>
       </UserRow>
     );
   };

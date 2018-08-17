@@ -71,9 +71,11 @@ const fetchCacheToken = () => dispatch => {
       failed: commonTypes.FETCH_CACHE_TOKEN.FAILED,
       dispatch
     })
-    .then(successAction => successAction.payload.token)
+    .then(successAction => {
+      return successAction.payload.token;
+    })
     .catch(errorAction => {
-      Promise.reject(new Error("No Token available", errorAction));
+      return Promise.reject(new Error("No Token available", errorAction));
     });
 };
 

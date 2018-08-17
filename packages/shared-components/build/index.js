@@ -17106,7 +17106,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var StyledImage = _styledComponents2.default.img(_templateObject, function (props) {
-  return props.small && "\n    width: 32px;\n    height: 32px;\n    min-width: 32px;\n    min-height: 32px;\n  ";
+  return props.small && "\n    width: 24px;\n    height: 24px;\n    min-width: 24px;\n    min-height: 24px;\n  ";
 });
 
 var Avatar = (0, _styledComponents2.default)(StyledImage)(_templateObject2);
@@ -17573,7 +17573,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _jsxFileName = "C:\\Users\\Jonathan\\Repositories\\github\\diff\\diff\\packages\\shared-components\\src\\components\\Placeholder\\Placeholder.js";
 
-var _templateObject = _taggedTemplateLiteral(["\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  background: #ccc;\n  text-transform: uppercase;\n    font-weight: bold;\n    color: black;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n"], ["\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  background: #ccc;\n  text-transform: uppercase;\n    font-weight: bold;\n    color: black;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n  width: 24px;\n  height: 24px;\n  border-radius: 8px;\n  background: #ccc;\n  text-transform: uppercase;\n    font-weight: bold;\n    color: black;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 13px;\n    letter-spacing: 0.8px;\n}\n"], ["\n  width: 24px;\n  height: 24px;\n  border-radius: 8px;\n  background: #ccc;\n  text-transform: uppercase;\n    font-weight: bold;\n    color: black;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 13px;\n    letter-spacing: 0.8px;\n}\n"]);
 
 var _react = __webpack_require__(/*! react */ "react");
 
@@ -17603,7 +17603,7 @@ var Placeholder = function Placeholder(_ref) {
       {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 23
+          lineNumber: 25
         },
         __self: undefined
       },
@@ -17615,7 +17615,7 @@ var Placeholder = function Placeholder(_ref) {
       {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 26
+          lineNumber: 28
         },
         __self: undefined
       },

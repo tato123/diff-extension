@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const PlaceholderContainer = styled.div`
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 8px;
   background: #ccc;
   text-transform: uppercase;
@@ -13,6 +13,8 @@ const PlaceholderContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 13px;
+    letter-spacing: 0.8px;
 }
 `;
 
