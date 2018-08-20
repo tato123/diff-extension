@@ -1,153 +1,57 @@
-import handlers from "./handlers";
-import { rememberUserClickedSite } from "./storage";
-import firebase from "firebase";
+import { rememberUserClickedSite, getUserToken } from "./storage";
+import { connectToDatastore } from "./datastore";
+import { postMessageToTab } from "./postmessage";
+import { login } from "./user";
 
+import { registerPort, removeListener, messageListener } from "./ports";
 import { sources, actions } from "@diff/common";
 
-// connect to firebase
-const config = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_SENDER_ID
-};
-firebase.initializeApp(config);
+// initialize our connection
+connectToDatastore();
 
-// all of our tabs in the browser
-const ports = {};
+console.log("Starting up");
+getUserToken()
+  .then(({ token: refreshToken }) => {
+    console.log("logged in succesfully");
+    login(refreshToken);
+  })
+  .catch(err => {
+    console.error("Unable to login on startup", err);
+  });
 
-/**
- * Handles storing the port object in memory
- *
- * @param {Object} port - port object provided by chrome
- */
-const registerPort = port => {
-  const id = port.sender.tab.id;
-
-  if (id in ports) {
-    console.warn("Overwriting tab id", id);
-  }
-  ports[id] = port;
-  return port.sender.tab.id;
-};
-
-/**
- * Generalized listener for all chrome messages that then applies
- * some sort of handler specified in handlers
- */
-const messageListener = tabId => msg => {
-  const postDestContentScript = postMessageToTabWithDestination(
-    sources.CONTENT_SCRIPT_SOURCE_NAME
-  );
-  const postDestFrontend = postMessageToTabWithDestination(
-    sources.MESSAGES_FRONTEND_SOURCE
-  );
-
-  if (
-    msg.source === sources.CONTENT_SCRIPT_SOURCE_NAME &&
-    msg.type in handlers
-  ) {
-    handlers[msg.type](tabId, postDestContentScript, msg);
-  } else if (
-    msg.source === sources.MESSAGES_FRONTEND_SOURCE &&
-    msg.type in handlers
-  ) {
-    handlers[msg.type](tabId, postDestFrontend, msg);
-  } else {
-    postDestContentScript(tabId, {
-      err: "No action found for request"
-    });
-  }
-};
-
-const removeListener = tabId => () => {
-  if (tabId in ports) {
-    delete ports[tabId];
-  }
-};
-
-const portForId = tabId => {
-  return ports[tabId];
-};
-
-/**
- * Allows us to message a particular Tab
- * @param {*} tabId
- * @param {*} message
- */
-const postMessageToTab = (tabId, message) => {
-  postMessageToTabWithDestination(sources.CONTENT_SCRIPT_SOURCE_NAME)(
-    tabId,
-    message
-  );
-};
-
-/**
- * Allows us to message a particular Tab
- * @param {*} tabId
- * @param {*} message
- */
-const postMessageToTabWithDestination = destination => (tabId, message) => {
-  const port = portForId(tabId);
-  if (!port) {
-    console.error("Unable to post message");
-    return;
-  }
-  port.postMessage(
-    actions.composeRemoteAction(
-      message,
-      sources.BACKGROUND_SCRIPT_PORT_NAME,
-      destination
-    )
-  );
-};
-
-/**
- * Handle our initial connection from content scripts
- */
-const handleOnConnect = port => {
+chrome.runtime.onConnect.addListener(port => {
   if (port.name === sources.CONTENT_SCRIPT_PORT_NAME) {
     // add me to the ports list
     const id = registerPort(port);
+
+    // receive a message
     port.onMessage.addListener(messageListener(id));
+
+    // disconnect a particular subject
     port.onDisconnect.addListener(removeListener(id));
   }
-};
+});
 
-/**
- * Create a context menu items to allow encode/decode
- */
-const handleOnInstalled = () => {
+chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
-    id: "log-selection",
+    id: "diff-inspect",
     title: "Inspect with diff",
     contexts: ["all"]
   });
-};
+});
 
-const rememberUserClickedPreference = tab => {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  // remember the user clicked this site
   rememberUserClickedSite(tab.url);
-};
-
-const handleOnContextMenuClicked = (info, tab) => {
-  // remember the user clicked this site
-  rememberUserClickedPreference(tab);
 
   postMessageToTab(tab.id, actions.runRequest());
   return true;
-};
+});
 
-const handleOnBrowserActionClicked = tab => {
+chrome.browserAction.onClicked.addListener(tab => {
   // remember the user clicked this site
-  rememberUserClickedPreference(tab);
+  rememberUserClickedSite(tab.url);
 
   postMessageToTab(tab.id, actions.runRequest());
   return true;
-};
-
-chrome.runtime.onConnect.addListener(handleOnConnect);
-chrome.runtime.onInstalled.addListener(handleOnInstalled);
-chrome.contextMenus.onClicked.addListener(handleOnContextMenuClicked);
-chrome.browserAction.onClicked.addListener(handleOnBrowserActionClicked);
+});

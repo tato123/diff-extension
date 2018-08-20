@@ -12,7 +12,6 @@ module.exports = (env, argv) => [
   // Configure our frontend
   {
     ...std,
-    mode: "development",
     entry: {
       main:
         ENV === "production"
