@@ -1,7 +1,8 @@
 import React from "react";
+import _ from "lodash";
 
 const UnAuthenticatedWidget = ({ token, children }) => {
-  if (!token) {
+  if (_.isNil(token)) {
     return children;
   }
   return null;

@@ -4,9 +4,6 @@ import actions from "./actions";
 import api from "./api";
 import { actions as remoteActions } from "redux/remote";
 
-import { operations as diffOperations } from "redux/entities/diffs";
-import { operations as commentOperations } from "redux/entities/comments";
-
 /**
  * Async login operation that should be used for logging in via refresh credentials
  * or via username / password strategy
@@ -34,7 +31,6 @@ const login = credentials => async dispatch => {
         // cache our token
         dispatch(remoteCacheToken(token));
 
-        dispatch(postLogin());
         // perform post login
         // fetch our
 
@@ -47,34 +43,6 @@ const login = credentials => async dispatch => {
       });
   } catch (err) {
     dispatch(commonActions.loginFailed(err));
-    return Promise.reject(err);
-  }
-};
-
-/**
- * Prelogin attempts to pre-fetch some of our data
- */
-const postLogin = () => async dispatch => {
-  // fetch all of our diff comments
-  dispatch(commentOperations.fetchComments());
-
-  // fetch all of our diffs
-  dispatch(diffOperations.getDiffs());
-
-  return Promise.resolve();
-};
-
-const signup = (email, password) => async dispatch => {
-  try {
-    // dispatch a notification that we are working on a request
-    dispatch(actions.signupRequest(email, password));
-
-    const { refresh_token: refreshToken } = await api.signup(email, password);
-
-    dispatch(actions.signupSuccess());
-    return Promise.resolve(refreshToken);
-  } catch (err) {
-    dispatch(actions.signupFailed(err));
     return Promise.reject(err);
   }
 };
@@ -103,15 +71,16 @@ const fetchCacheToken = () => dispatch => {
       failed: commonTypes.FETCH_CACHE_TOKEN.FAILED,
       dispatch
     })
-    .then(successAction => successAction.payload.token)
+    .then(successAction => {
+      return successAction.payload.token;
+    })
     .catch(errorAction => {
-      Promise.reject(new Error("No Token available", errorAction));
+      return Promise.reject(new Error("No Token available", errorAction));
     });
 };
 
 export default {
   fetchCacheToken,
   remoteCacheToken,
-  login,
-  signup
+  login
 };

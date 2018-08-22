@@ -136,7 +136,7 @@ export default class Selectors extends React.Component {
     return newSelector;
   };
 
-  getSelectorForElement = element => {
+  getSelectorForElement = (element, shouldCreate = false) => {
     const indexForSelector = _.findIndex(this.props.selectors, cssRule => {
       const searchedElement = document.querySelector(cssRule);
       return searchedElement === null
@@ -146,7 +146,7 @@ export default class Selectors extends React.Component {
 
     return indexForSelector !== -1
       ? this.props.selectors[indexForSelector]
-      : this.createNewSelector(element);
+      : shouldCreate && this.createNewSelector(element);
   };
 
   /**
@@ -161,7 +161,7 @@ export default class Selectors extends React.Component {
     const subscriber = inspect$.subscribe(
       element => {
         if (element) {
-          const selector = this.getSelectorForElement(element);
+          const selector = this.getSelectorForElement(element, true);
           this.props.showSelectorDetails(selector);
         }
 
@@ -219,7 +219,7 @@ export default class Selectors extends React.Component {
 
               {visibility.map(({ selector, visible }, idx) => (
                 <Spring
-                  key={idx}
+                  key={selector}
                   from={{ opacity: 1 }}
                   to={{
                     opacity:

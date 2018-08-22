@@ -30,7 +30,6 @@ const fetchEventLog$ = (db, cancelOn) => {
           if (type === "added") {
             const data = doc.data();
 
-            console.warn("[Ambiguous add, update, or delete]");
             observer.next(actions.readSeenActivity(_.values(data)[0]));
           }
         });

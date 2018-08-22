@@ -5,7 +5,7 @@ import {
   getUserToken,
   rememberUserClickedSite
 } from "./storage";
-import { login } from "./user";
+import { getRemoteDomains, invalidateToken } from "./user";
 import _ from "lodash";
 import { types, actions } from "@diff/common";
 const PREFERENCES = "_DIFF_PREFERENCES";
@@ -19,16 +19,7 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
   try {
     // get the user preferences
     const preferences = await get(PREFERENCES, {});
-    const { token: refreshToken } = await getUserToken();
-    const firestore = await login(refreshToken);
-
-    // get the remote domains
-    const querySnapshot = await firestore.collection("events").get();
-    let sites = [];
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      sites = _.union(sites, [data.url]);
-    });
+    const sites = await getRemoteDomains();
 
     // get the local sites theyve opened diff for
     const localSites = await rememberUserClickedSite();
@@ -42,7 +33,7 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
   }
 };
 
-const handlStoreUserPreferences = (
+const handleStoreUserPreferences = (
   tabId,
   postMessageToTab,
   { payload: { preferences } }
@@ -54,7 +45,25 @@ const handlStoreUserPreferences = (
     );
 };
 
-const handleCacheTokenRequest = (tabId, postMessageToTab, action) => {
+const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
+  const previousToken = await getUserToken();
+  const nextToken = action.payload.token;
+
+  if (
+    previousToken &&
+    previousToken.token &&
+    previousToken.token === nextToken
+  ) {
+    postMessageToTab(tabId, actions.cacheTokenSuccess());
+    return;
+  } else if (
+    previousToken &&
+    previousToken.token &&
+    previousToken.token !== nextToken
+  ) {
+    invalidateToken();
+  }
+
   storeUserToken(action.payload.token)
     .then(() => postMessageToTab(tabId, actions.cacheTokenSuccess()))
     .catch(() =>
@@ -77,7 +86,7 @@ const handleFetchCacheTokenRequest = (tabId, postMessageToTab, action) => {
 
 export default {
   [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [types.STORE_USER_PREFERENCES.REQUEST]: handlStoreUserPreferences,
+  [types.STORE_USER_PREFERENCES.REQUEST]: handleStoreUserPreferences,
   [types.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
   [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
 };

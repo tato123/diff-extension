@@ -2,6 +2,8 @@ const path = require("path");
 const package = require("../package.json");
 const webpack = require("webpack");
 const { OUTPUT_PATH, ENV, std } = require("./webpack.common");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 const WEB_OUTPUT_PATH = `${OUTPUT_PATH}/frontend/${package.version}`;
 
@@ -10,7 +12,6 @@ module.exports = (env, argv) => [
   // Configure our frontend
   {
     ...std,
-    mode: "development",
     entry: {
       main:
         ENV === "production"

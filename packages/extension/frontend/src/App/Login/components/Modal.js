@@ -20,9 +20,15 @@ Modal.Content = styled.div`
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 500px;
   color: #fff;
   border-radius: 8px;
+
+  position: relative;
+  overflow: hidden;
+  width: ${props => props.width || 500}px;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
 `;
 
 export default Modal;

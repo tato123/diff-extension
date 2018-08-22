@@ -41,16 +41,20 @@ const addNewComment = payload => async (dispatch, getState, { db }) => {
     selector,
     type: "comment",
     meta: {
-      accountId: rootState.user.selectedAccount,
       userId: rootState.user.uid,
       created: Date.now()
     },
     attachments,
     url: JSON.parse(JSON.stringify(window.location)) // convert to serializable only data
   };
+
+  const allWorkspaces = rootState.entities.workspaces.allIds;
+  if (allWorkspaces && allWorkspaces.length > 0) {
+    record.meta.workspaceId = allWorkspaces[0];
+  }
+
   const newEvent = db.collection("events").doc();
-  const result = await newEvent.set(record);
-  // console.log(result);
+  await newEvent.set(record);
 };
 
 export default {

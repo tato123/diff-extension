@@ -4,7 +4,7 @@ import types from "./types";
 import { sources, actions } from "@diff/common";
 
 const onMessageObservable = store => {
-  return fromEvent(window, "message")
+  return fromEvent(window, "message", false)
     .pipe(
       filter(evt => {
         if (typeof evt.source === "object" && evt.data) {

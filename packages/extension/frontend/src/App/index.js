@@ -9,9 +9,12 @@ import Launcher from "./Launcher";
 import Login from "./Login";
 import Selectors from "./Selectors";
 import Viewer from "./Diff";
+import Workspace from "./Workspace";
 
 // Redux store
 import configureStore from "./store";
+
+import { Spring, animated, config } from "react-spring";
 
 // Create our new store
 const store = configureStore();
@@ -54,14 +57,25 @@ export default class App extends React.Component {
           <Widget name="selectors">
             {props => (
               <Authenticated {...props}>
-                <Selectors showCount={launcherActive} />
+                {props.shown && <Selectors showCount={launcherActive} />}
               </Authenticated>
             )}
           </Widget>
           <Widget name="diff">
             {props => (
               <Authenticated {...props}>
-                <Viewer context={props.values && props.values.context} />
+                {props.shown && (
+                  <Viewer context={props.values && props.values.context} />
+                )}
+              </Authenticated>
+            )}
+          </Widget>
+          <Widget name="workspace">
+            {props => (
+              <Authenticated {...props}>
+                {props.shown && (
+                  <Workspace context={props.values && props.values.context} />
+                )}
               </Authenticated>
             )}
           </Widget>

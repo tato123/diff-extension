@@ -3,26 +3,20 @@ import PropTypes from "prop-types";
 
 import FormField from "./FormField";
 
-const FormInput = ({ type, value, placeholder, name, ...rest }) => (
-  <FormField {...rest}>
-    <input type={type} value={value} placeholder={placeholder} name={name} />
+const FormInput = ({ children, hide, style, ...rest }) => (
+  <FormField style={style} {...rest} hide={hide}>
+    <input {...rest} />
   </FormField>
 );
 
 FormInput.propTypes = {
-  label: PropTypes.string,
-  type: PropTypes.oneOf(["password", "email", "text"]),
-  value: PropTypes.string,
-  placeholder: PropTypes.string,
-  name: PropTypes.string
+  style: PropTypes.any,
+  children: PropTypes.any
 };
 
 FormInput.defaultProps = {
-  label: null,
-  value: null,
-  type: "text",
-  placeholder: null,
-  name: null
+  style: {},
+  children: null
 };
 
 export default FormInput;

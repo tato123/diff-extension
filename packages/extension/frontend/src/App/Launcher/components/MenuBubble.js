@@ -8,6 +8,7 @@ const MenuBubble = styled.div`
   background-color: #191b3b;
   box-shadow: 2px 3px 3px 0px rgba(41, 41, 41, 0.3);
   display: flex;
+  will-change: transform;
 
   cursor: pointer;
 

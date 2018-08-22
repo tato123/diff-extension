@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyleBoundary } from "@diff/shared-components";
-import { Spring, Transition, config } from "react-spring";
+import { Spring, Transition } from "react-spring";
 import styled from "styled-components";
+import { TimingAnimation, Easing } from "react-spring/dist/addons";
 
 import MainMenu from "./components/MainMenu";
 import CloseButton from "./components/CloseButton";
+import WorkspaceButton from "./components/WorkspaceButton";
 
 const MenuGroup = styled.div`
   position: fixed;
@@ -38,7 +40,11 @@ export default class Launcher extends React.Component {
     /**
      * Enable or disable visibilty of the count
      */
-    showCount: PropTypes.bool
+    showCount: PropTypes.bool,
+
+    showWidget: PropTypes.func.isRequired,
+
+    hideWidget: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -47,7 +53,8 @@ export default class Launcher extends React.Component {
   };
 
   state = {
-    showClose: false
+    showClose: false,
+    showWorkspace: false
   };
 
   onMenuClick = () => {
@@ -57,27 +64,65 @@ export default class Launcher extends React.Component {
 
   onCloseClick = () => {
     this.props.onClick(false);
-    this.setState({ showClose: false });
+    this.setState({ showClose: false, showWorkspace: false });
   };
 
-  closer = () => {
+  onWorkspaceClick = () => {
+    const WORKSPACE = "workspace";
+
+    if (this.state.showWorkspace) {
+      this.props.hideWidget(WORKSPACE);
+      this.setState({ showWorkspace: false });
+    } else {
+      this.props.showWidget(WORKSPACE);
+      this.setState({ showWorkspace: true });
+    }
+  };
+
+  animationVelocity = 18;
+
+  closeMenuOption = () => {
     const {
       state: { showClose }
     } = this;
 
     return (
       <Spring
-        config={{ velocity: 15 }}
+        config={{ velocity: this.animationVelocity }}
         size={36}
         from={{
-          transform: "translate(75px)",
+          transform: "translate(120px)",
           position: "relative"
         }}
         to={{
-          transform: showClose ? "translate(0px)" : "translate(75px)"
+          transform: showClose ? "translate(0px)" : "translate(120px)"
         }}
         onClick={this.onCloseClick}
         render={CloseButton}
+      />
+    );
+  };
+
+  workspaceMenuOption = () => {
+    const {
+      state: { showClose, showWorkspace }
+    } = this;
+
+    return (
+      <Spring
+        config={{ velocity: this.animationVelocity }}
+        size={36}
+        from={{
+          transform: "translate(75px)",
+          position: "relative",
+          backgroundColor: showWorkspace ? "#43cad9" : "#1a1b3c"
+        }}
+        to={{
+          transform: showClose ? "translate(0px)" : "translate(75px)",
+          backgroundColor: showWorkspace ? "#43cad9" : "#1a1b3c"
+        }}
+        onClick={this.onWorkspaceClick}
+        render={WorkspaceButton}
       />
     );
   };
@@ -90,14 +135,16 @@ export default class Launcher extends React.Component {
       <StyleBoundary>
         <MenuGroup>
           <Transition
-            config={{ velocity: 30, friction: 8 }}
-            from={{ transform: "scale3d(0.5, 0.5, 0.5)", opacity: 0 }}
-            enter={{ transform: "scale3d(1, 1, 1)", opacity: 1 }}
-            leave={{ transform: "scale3d(0.5, 0.5, 0.5)" }}
+            impl={TimingAnimation}
+            config={{ duration: 200, easing: Easing.linear }}
+            from={{ opacity: 0 }}
+            enter={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
           >
             {styles => (
               <React.Fragment>
-                {this.closer()}
+                {styles.opacity === 1 && this.closeMenuOption()}
+                {styles.opacity === 1 && this.workspaceMenuOption()}
                 <MainMenu
                   count={count}
                   showCount={showCount}

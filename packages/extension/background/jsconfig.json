@@ -1,14 +1,9 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "jsx": "react",
     "baseUrl": "./",
     "paths": {
-      "@diff/common": ["./packages/extension/common"],
-      "@diff/common/*": ["./packages/extension/common/*"],
-      "redux/*": ["frontend/src/redux/*"],
-      "components/*": ["frontend/src/components/*"],
-      "App/*": ["frontend/src/App/*"]
+      "@diff/common/*": ["../common/*"]
     }
   },
   "exclude": ["../node_modules", "../dist"]
