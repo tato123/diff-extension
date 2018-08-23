@@ -10,6 +10,10 @@ const bootstrap = () => {
   rootElement.style.position = "absolute";
   rootElement.style.top = 0;
   rootElement.style.left = 0;
+  rootElement.style.width = 0;
+  rootElement.style.height = 0;
+  // give us layers at the end of the safe spectrum
+  rootElement.style.zIndex = Number.MAX_SAFE_INTEGER - 100;
   document.body.appendChild(rootElement);
   return Promise.resolve(ROOT_ID);
 };

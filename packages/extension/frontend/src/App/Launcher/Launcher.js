@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyleBoundary } from "@diff/shared-components";
 import { Spring, Transition } from "react-spring";
 import styled from "styled-components";
 import { TimingAnimation, Easing } from "react-spring/dist/addons";
@@ -132,30 +131,28 @@ export default class Launcher extends React.Component {
       props: { count, showCount }
     } = this;
     return (
-      <StyleBoundary>
-        <MenuGroup>
-          <Transition
-            impl={TimingAnimation}
-            config={{ duration: 200, easing: Easing.linear }}
-            from={{ opacity: 0 }}
-            enter={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
-          >
-            {styles => (
-              <React.Fragment>
-                {styles.opacity === 1 && this.closeMenuOption()}
-                {styles.opacity === 1 && this.workspaceMenuOption()}
-                <MainMenu
-                  count={count}
-                  showCount={showCount}
-                  onClick={this.onMenuClick}
-                  styles={styles}
-                />
-              </React.Fragment>
-            )}
-          </Transition>
-        </MenuGroup>
-      </StyleBoundary>
+      <MenuGroup>
+        <Transition
+          impl={TimingAnimation}
+          config={{ duration: 200, easing: Easing.linear }}
+          from={{ opacity: 0 }}
+          enter={{ opacity: 1 }}
+          leave={{ opacity: 0 }}
+        >
+          {styles => (
+            <React.Fragment>
+              {styles.opacity === 1 && this.closeMenuOption()}
+              {styles.opacity === 1 && this.workspaceMenuOption()}
+              <MainMenu
+                count={count}
+                showCount={showCount}
+                onClick={this.onMenuClick}
+                styles={styles}
+              />
+            </React.Fragment>
+          )}
+        </Transition>
+      </MenuGroup>
     );
   }
 }

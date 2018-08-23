@@ -19,6 +19,7 @@ const StyledSelect = styled.div`
   justify-content: space-between;
   flex: 1;
   display: flex;
+  height: 32px;
 
   &:hover {
     box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.5);
@@ -42,6 +43,6 @@ const Select = ({ children, ...rest }) => (
 
 Select.propTypes = {
   children: PropTypes.node
-}
+};
 
 export default Select;

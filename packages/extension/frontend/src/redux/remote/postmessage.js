@@ -26,6 +26,9 @@ const onMessageObservable = store => {
           return false;
         }
         return true;
+      }),
+      filter(msg => {
+        return msg && msg.data && msg.data.type;
       })
     )
     .subscribe(({ data: action }) => {

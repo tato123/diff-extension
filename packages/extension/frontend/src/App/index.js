@@ -2,7 +2,10 @@ import React from "react";
 import { Provider } from "react-redux";
 
 // common components
-import Widget, { Unauthenticated, Authenticated } from "components/Widget";
+import Widget, {
+  ImplAuthenticated,
+  ImplUnAuthenticated
+} from "components/Widget";
 
 // Application specific views
 import Launcher from "./Launcher";
@@ -13,8 +16,6 @@ import Workspace from "./Workspace";
 
 // Redux store
 import configureStore from "./store";
-
-import { Spring, animated, config } from "react-spring";
 
 // Create our new store
 const store = configureStore();
@@ -44,42 +45,30 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <div>
-          <Widget name="login">
-            {({ token }) => (
-              <Unauthenticated
-                token={token}
-                onChangeVisibility={this.visibleChange}
-              >
-                <Login />
-              </Unauthenticated>
-            )}
+          <Widget name="login" shouldRender={ImplUnAuthenticated}>
+            <Login />
           </Widget>
-          <Widget name="selectors">
+          <Widget
+            name="selectors"
+            shouldRender={props => ImplAuthenticated(props) && props.shown}
+          >
+            <Selectors showCount={launcherActive} />
+          </Widget>
+          <Widget
+            name="diff"
+            shouldRender={props => ImplAuthenticated(props) && props.shown}
+          >
+            {props => <Viewer context={props.values && props.values.context} />}
+          </Widget>
+          <Widget
+            name="workspace"
+            shouldRender={props => ImplAuthenticated(props) && props.shown}
+          >
             {props => (
-              <Authenticated {...props}>
-                {props.shown && <Selectors showCount={launcherActive} />}
-              </Authenticated>
+              <Workspace context={props.values && props.values.context} />
             )}
           </Widget>
-          <Widget name="diff">
-            {props => (
-              <Authenticated {...props}>
-                {props.shown && (
-                  <Viewer context={props.values && props.values.context} />
-                )}
-              </Authenticated>
-            )}
-          </Widget>
-          <Widget name="workspace">
-            {props => (
-              <Authenticated {...props}>
-                {props.shown && (
-                  <Workspace context={props.values && props.values.context} />
-                )}
-              </Authenticated>
-            )}
-          </Widget>
-          <Widget name="launcher">
+          <Widget name="launcher" shouldRender={ImplAuthenticated}>
             {({ token, closeAll, show }) =>
               token && (
                 <Launcher onClick={this.handleLauncherClick(show, closeAll)} />

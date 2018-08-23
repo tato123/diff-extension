@@ -3,15 +3,7 @@ import PropTypes from "prop-types";
 import { Keyframes, animated, config } from "react-spring";
 import styled from "styled-components";
 import Modal from "./components/Modal";
-import {
-  StyleBoundary,
-  Form,
-  Button,
-  Header,
-  HR,
-  Logo,
-  Label
-} from "@diff/shared-components";
+import { Form, Button, Header, HR, Logo, Label } from "@diff/shared-components";
 import { Formik } from "formik";
 import { string, object } from "yup";
 
@@ -268,113 +260,111 @@ export default class Login extends React.Component {
     if (requiresLogin) {
       return (
         <Modal>
-          <StyleBoundary>
-            <ModalContainer state={form}>
-              {({ height }) => (
-                <animated.div style={{ height: height }}>
-                  <Modal.Content id="login-modal">
-                    <Formik
-                      initialValues={{ email: "", password: "", username: "" }}
-                      validationSchema={this.getValidationSchema()}
-                      onSubmit={this.submitForm}
-                      render={({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                        isSubmitting
-                      }) => (
-                        <form onSubmit={handleSubmit}>
-                          <Container>
-                            <div>
-                              <Logo.Text />
-                            </div>
-                            <div>
-                              <Header as="h3">Signin with your email</Header>
+          <ModalContainer state={form}>
+            {({ height }) => (
+              <animated.div style={{ height: height }}>
+                <Modal.Content id="login-modal">
+                  <Formik
+                    initialValues={{ email: "", password: "", username: "" }}
+                    validationSchema={this.getValidationSchema()}
+                    onSubmit={this.submitForm}
+                    render={({
+                      values,
+                      errors,
+                      touched,
+                      handleChange,
+                      handleBlur,
+                      handleSubmit,
+                      isSubmitting
+                    }) => (
+                      <form onSubmit={handleSubmit}>
+                        <Container>
+                          <div>
+                            <Logo.Text />
+                          </div>
+                          <div>
+                            <Header as="h3">Signin with your email</Header>
 
-                              <HR />
-                            </div>
-                            <div>
-                              <ErrorLabel>{errors.form}</ErrorLabel>
-                              <Form.Input
-                                type="text"
-                                name="email"
-                                label="Email"
-                                error={touched.email && errors.email}
-                                required
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.email}
-                                autoFocus
-                                autoComplete="off"
-                              />
+                            <HR />
+                          </div>
+                          <div>
+                            <ErrorLabel>{errors.form}</ErrorLabel>
+                            <Form.Input
+                              type="text"
+                              name="email"
+                              label="Email"
+                              error={touched.email && errors.email}
+                              required
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.email}
+                              autoFocus
+                              autoComplete="off"
+                            />
 
-                              <Content
-                                native
-                                config={{ tension: 200, friction: 20 }}
-                                state={form}
-                                keys={this.formFields().map(item => item.key)}
-                              >
-                                {this.formFields().map(
-                                  (item, idx) => ({ y, opacity }) => (
-                                    <animated.div
-                                      style={{
-                                        opacity,
-                                        transform: y.interpolate(
-                                          y => `translate3d(0, ${y}px, 0`
-                                        )
-                                      }}
-                                    >
-                                      <Form.Input
-                                        {...item}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        name={touched[item.name] && item.name}
-                                        error={errors[item.name]}
-                                        value={values[item.name]}
-                                      />
-                                    </animated.div>
-                                  )
-                                )}
-                              </Content>
-                            </div>
-                            <div>
-                              <Button.Flat
-                                type="button"
-                                onClick={this.showForm(
-                                  form !== FORM_TYPES.SIGNUP
-                                    ? FORM_TYPES.SIGNUP
-                                    : FORM_TYPES.PRECHECK
-                                )}
-                              >
-                                {form !== FORM_TYPES.SIGNUP
-                                  ? "Create Account"
-                                  : "Login"}
-                              </Button.Flat>
-                              <Button
-                                type="submit"
-                                primary
-                                disabled={
-                                  isSubmitting || Object.keys(errors).length > 0
-                                }
-                                loading={isSubmitting}
-                              >
-                                {form === FORM_TYPES.PRECHECK && "Next"}
-                                {form === FORM_TYPES.SIGNUP && "Create Account"}
-                                {form === FORM_TYPES.LOGIN && "Login"}
-                              </Button>
-                            </div>
-                          </Container>
-                        </form>
-                      )}
-                    />
-                  </Modal.Content>
-                </animated.div>
-              )}
-            </ModalContainer>
-          </StyleBoundary>
+                            <Content
+                              native
+                              config={{ tension: 200, friction: 20 }}
+                              state={form}
+                              keys={this.formFields().map(item => item.key)}
+                            >
+                              {this.formFields().map(
+                                (item, idx) => ({ y, opacity }) => (
+                                  <animated.div
+                                    style={{
+                                      opacity,
+                                      transform: y.interpolate(
+                                        y => `translate3d(0, ${y}px, 0`
+                                      )
+                                    }}
+                                  >
+                                    <Form.Input
+                                      {...item}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                      name={touched[item.name] && item.name}
+                                      error={errors[item.name]}
+                                      value={values[item.name]}
+                                    />
+                                  </animated.div>
+                                )
+                              )}
+                            </Content>
+                          </div>
+                          <div>
+                            <Button.Flat
+                              type="button"
+                              onClick={this.showForm(
+                                form !== FORM_TYPES.SIGNUP
+                                  ? FORM_TYPES.SIGNUP
+                                  : FORM_TYPES.PRECHECK
+                              )}
+                            >
+                              {form !== FORM_TYPES.SIGNUP
+                                ? "Create Account"
+                                : "Login"}
+                            </Button.Flat>
+                            <Button
+                              type="submit"
+                              primary
+                              disabled={
+                                isSubmitting || Object.keys(errors).length > 0
+                              }
+                              loading={isSubmitting}
+                            >
+                              {form === FORM_TYPES.PRECHECK && "Next"}
+                              {form === FORM_TYPES.SIGNUP && "Create Account"}
+                              {form === FORM_TYPES.LOGIN && "Login"}
+                            </Button>
+                          </div>
+                        </Container>
+                      </form>
+                    )}
+                  />
+                </Modal.Content>
+              </animated.div>
+            )}
+          </ModalContainer>
         </Modal>
       );
     }
