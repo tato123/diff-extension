@@ -1,3 +1,7 @@
+import { isNil } from "lodash";
+
 export { default } from "./Widget.container";
-export { default as Unauthenticated } from "./Unauthenticated";
-export { default as Authenticated } from "./Authenticated";
+
+export const ImplAuthenticated = props => !!props.token;
+
+export const ImplUnAuthenticated = props => isNil(props.token);

@@ -17821,7 +17821,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _jsxFileName = "C:\\Users\\Jonathan\\Repositories\\github\\diff\\diff\\packages\\shared-components\\src\\components\\Select\\Select.js";
 
-var _templateObject = _taggedTemplateLiteral(["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.5);\n  padding-left: ", " !important;\n  padding-right: ", " !important;\n  transition: all 150ms ease-in;\n  background-color: transparent;\n  will-change: transform, opacity, box-shadow, contents;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: ", ";\n  justify-content: space-between;\n  flex: 1;\n  display: flex;\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.5);\n  }\n\n  &:visited {\n    background-color: rgba(255, 255, 255, 0.3);\n  }\n"], ["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.5);\n  padding-left: ", " !important;\n  padding-right: ", " !important;\n  transition: all 150ms ease-in;\n  background-color: transparent;\n  will-change: transform, opacity, box-shadow, contents;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: ", ";\n  justify-content: space-between;\n  flex: 1;\n  display: flex;\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.5);\n  }\n\n  &:visited {\n    background-color: rgba(255, 255, 255, 0.3);\n  }\n"]),
+var _templateObject = _taggedTemplateLiteral(["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.5);\n  padding-left: ", " !important;\n  padding-right: ", " !important;\n  transition: all 150ms ease-in;\n  background-color: transparent;\n  will-change: transform, opacity, box-shadow, contents;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: ", ";\n  justify-content: space-between;\n  flex: 1;\n  display: flex;\n  height: 32px;\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.5);\n  }\n\n  &:visited {\n    background-color: rgba(255, 255, 255, 0.3);\n  }\n"], ["\n  box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.5);\n  padding-left: ", " !important;\n  padding-right: ", " !important;\n  transition: all 150ms ease-in;\n  background-color: transparent;\n  will-change: transform, opacity, box-shadow, contents;\n  cursor: pointer;\n  padding: 8px;\n  border-radius: ", ";\n  justify-content: space-between;\n  flex: 1;\n  display: flex;\n  height: 32px;\n\n  &:hover {\n    box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.5);\n  }\n\n  &:visited {\n    background-color: rgba(255, 255, 255, 0.3);\n  }\n"]),
     _templateObject2 = _taggedTemplateLiteral(["\n  font-weight: 200 !important;\n"], ["\n  font-weight: 200 !important;\n"]);
 
 var _react = __webpack_require__(/*! react */ "react");
@@ -17873,7 +17873,7 @@ var Select = function Select(_ref3) {
     {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 37
+        lineNumber: 38
       },
       __self: undefined
     },
@@ -17881,7 +17881,7 @@ var Select = function Select(_ref3) {
       SelectLabel,
       { as: "button", __source: {
           fileName: _jsxFileName,
-          lineNumber: 38
+          lineNumber: 39
         },
         __self: undefined
       },
@@ -17889,7 +17889,7 @@ var Select = function Select(_ref3) {
     ),
     _react2.default.createElement(_reactIconsKit2.default, { icon: _angleDown.angleDown, __source: {
         fileName: _jsxFileName,
-        lineNumber: 39
+        lineNumber: 40
       },
       __self: undefined
     })
@@ -18902,7 +18902,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(["\n  border: 1px solid ", " !important;\n  border-radius: ", ";\n  padding: ", " !important;\n  box-sizing: border-box;\n  resize: none;\n  background: ", " !important;\n  color: ", " !important;\n"], ["\n  border: 1px solid ", " !important;\n  border-radius: ", ";\n  padding: ", " !important;\n  box-sizing: border-box;\n  resize: none;\n  background: ", " !important;\n  color: ", " !important;\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n  border: 1px solid ", " !important;\n  border-radius: ", ";\n  padding: ", " !important;\n  box-sizing: border-box;\n  resize: none;\n  background: ", " !important;\n  color: ", " !important;\n  font-size: 16px !important;\n\n  &:focus,\n  &:active {\n    box-shadow: 0 0 0px 4px #43cad9;\n  }\n"], ["\n  border: 1px solid ", " !important;\n  border-radius: ", ";\n  padding: ", " !important;\n  box-sizing: border-box;\n  resize: none;\n  background: ", " !important;\n  color: ", " !important;\n  font-size: 16px !important;\n\n  &:focus,\n  &:active {\n    box-shadow: 0 0 0px 4px #43cad9;\n  }\n"]);
 
 var _rebass = __webpack_require__(/*! rebass */ "../../node_modules/rebass/dist/index.js");
 

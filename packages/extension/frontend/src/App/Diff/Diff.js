@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
-  StyleBoundary,
   Form,
   Logo,
   Select,
@@ -119,45 +118,43 @@ export default class DiffViewer extends React.Component {
         options={options}
         render={({ ref }) => (
           <div ref={ref} style={{ zIndex: Number.MAX_SAFE_INTEGER }}>
-            <StyleBoundary>
-              <MainWindow>
-                <div
-                  style={{
-                    display: "flex",
-                    height: "24px",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <div>
-                    <Logo.Text />
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Anchor onClick={this.close}>
-                      <Icon icon={iconClose} />
-                    </Anchor>
-                  </div>
+            <MainWindow>
+              <div
+                style={{
+                  display: "flex",
+                  height: "24px",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <Logo.Text />
                 </div>
-                <Grid.Row scale={1}>
-                  <Form.Field label="Date Range">
-                    <Select>
-                      <option>Since last visit</option>
-                    </Select>
-                  </Form.Field>
-                </Grid.Row>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <Tabs>
-                    {renderTabs([
-                      { title: "Thread" },
-                      { title: "Diff" },
-                      { title: "Assets" }
-                    ])}
-                  </Tabs>
-                  {selectedTab === 0 && <Thread cssSelector={cssSelector} />}
-                  {selectedTab === 1 && <Diff />}
-                  {selectedTab === 2 && <Assets />}
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Anchor onClick={this.close}>
+                    <Icon icon={iconClose} />
+                  </Anchor>
                 </div>
-              </MainWindow>
-            </StyleBoundary>
+              </div>
+              <Grid.Row scale={1}>
+                <Form.Field label="Date Range">
+                  <Select>
+                    <option>Since last visit</option>
+                  </Select>
+                </Form.Field>
+              </Grid.Row>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <Tabs>
+                  {renderTabs([
+                    { title: "Thread" },
+                    { title: "Diff" },
+                    { title: "Assets" }
+                  ])}
+                </Tabs>
+                {selectedTab === 0 && <Thread cssSelector={cssSelector} />}
+                {selectedTab === 1 && <Diff />}
+                {selectedTab === 2 && <Assets />}
+              </div>
+            </MainWindow>
           </div>
         )}
       />

@@ -8,7 +8,8 @@ import {
   Button,
   Form,
   Image,
-  Placeholder
+  Placeholder,
+  Label
 } from "@diff/shared-components";
 
 const Modal = styled.div`
@@ -23,7 +24,7 @@ Modal.Content = styled.div`
   position: relative;
   background-color: #191b3b;
   padding: 16px;
-  border: 1px solid #888;
+  border: none;
   width: 350px;
   color: #fff;
   border-radius: 8px;
@@ -158,7 +159,9 @@ export default class Workspace extends React.Component {
             <Placeholder value={user.displayName || user.email} />
           )}
         </div>
-        <div className="displaynameCell">{user.displayName || user.email}</div>
+        <div className="displaynameCell">
+          <Label as="body1">{user.displayName || user.email}</Label>
+        </div>
         <div>
           <Status />
         </div>
