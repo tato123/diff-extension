@@ -14,6 +14,7 @@ import Popper from "components/Popper";
 import Assets from "./components/AssetsTab";
 import Diff from "./components/DiffTab";
 import Thread from "./components/ThreadTab";
+import Draggable from "react-draggable";
 
 import Icon from "react-icons-kit";
 import { ic_close as iconClose } from "react-icons-kit/md/ic_close";
@@ -36,6 +37,26 @@ const MainWindow = styled.div`
   * {
     box-sizing: border-box;
   }
+`;
+
+const TitleBar = styled.div`
+  display: flex;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  img {
+    user-select: none;
+  }
+`;
+
+const SelectRegion = styled.div`
+  height: 64px;
+  min-height: 64px;
+  max-height: 64px;
+  margin-bottom: 16px;
 `;
 
 export default class DiffViewer extends React.Component {
@@ -106,8 +127,9 @@ export default class DiffViewer extends React.Component {
     const options = {
       placement: "auto",
       modifiers: {
-        flip: {
-          enabled: false
+        preventOverflow: {
+          enabled: true,
+          boundariesElement: "viewport"
         }
       }
     };
@@ -117,44 +139,40 @@ export default class DiffViewer extends React.Component {
         element={cssSelector}
         options={options}
         render={({ ref }) => (
-          <div ref={ref} style={{ zIndex: Number.MAX_SAFE_INTEGER }}>
-            <MainWindow>
-              <div
-                style={{
-                  display: "flex",
-                  height: "24px",
-                  justifyContent: "space-between"
-                }}
-              >
-                <div>
-                  <Logo.Text />
+          <div ref={ref}>
+            <Draggable>
+              <MainWindow>
+                <TitleBar>
+                  <div>
+                    <Logo.Text />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Anchor onClick={this.close}>
+                      <Icon icon={iconClose} />
+                    </Anchor>
+                  </div>
+                </TitleBar>
+                <SelectRegion>
+                  <Form.Field label="Date Range">
+                    <Select>
+                      <option>Since last visit</option>
+                    </Select>
+                  </Form.Field>
+                </SelectRegion>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <Tabs>
+                    {renderTabs([
+                      { title: "Thread" },
+                      { title: "Diff" },
+                      { title: "Assets" }
+                    ])}
+                  </Tabs>
+                  {selectedTab === 0 && <Thread cssSelector={cssSelector} />}
+                  {selectedTab === 1 && <Diff />}
+                  {selectedTab === 2 && <Assets />}
                 </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Anchor onClick={this.close}>
-                    <Icon icon={iconClose} />
-                  </Anchor>
-                </div>
-              </div>
-              <Grid.Row scale={1}>
-                <Form.Field label="Date Range">
-                  <Select>
-                    <option>Since last visit</option>
-                  </Select>
-                </Form.Field>
-              </Grid.Row>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <Tabs>
-                  {renderTabs([
-                    { title: "Thread" },
-                    { title: "Diff" },
-                    { title: "Assets" }
-                  ])}
-                </Tabs>
-                {selectedTab === 0 && <Thread cssSelector={cssSelector} />}
-                {selectedTab === 1 && <Diff />}
-                {selectedTab === 2 && <Assets />}
-              </div>
-            </MainWindow>
+              </MainWindow>
+            </Draggable>
           </div>
         )}
       />

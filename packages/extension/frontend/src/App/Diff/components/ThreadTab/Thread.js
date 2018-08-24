@@ -81,10 +81,13 @@ export default class Thread extends React.Component {
           style={{
             overflow: "auto",
             flex: 1,
-            width: "calc(100% + 23px)"
+            width: "calc(100% + 23px)",
+            height: "calc(100% + 40px)"
           }}
         >
-          <div style={{ width: "calc(100% - 23px)" }}>
+          <div
+            style={{ width: "calc(100% - 23px)", height: "calc(100% + 40px)" }}
+          >
             <ThreadCell thread={cssSelector} />
           </div>
         </GridArea>
