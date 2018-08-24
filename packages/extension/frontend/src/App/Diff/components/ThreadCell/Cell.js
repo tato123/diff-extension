@@ -12,6 +12,8 @@ import {
 } from "@diff/shared-components";
 
 import styled from "styled-components";
+import { Trail, animated } from "react-spring";
+import { TimingAnimation, Easing } from "react-spring/dist/addons";
 
 const AttachmentContainer = styled.div`
   > div:first-child {
@@ -108,13 +110,12 @@ export default class Comments extends React.Component {
 
     return (
       <List>
-        {thread.map((item, idx) => {
-          if (item.type === "diff") {
-            return this.renderDiff(item, idx);
-          } else if (item.type === "comment") {
-            return this.renderComment(item, idx);
-          }
-        })}
+        {thread.map((item, idx) => (
+          <React.Fragment key={item.id}>
+            {item.type === "diff" && this.renderDiff(item, idx)}
+            {item.type === "comment" && this.renderComment(item, idx)}
+          </React.Fragment>
+        ))}
       </List>
     );
   }

@@ -81,13 +81,16 @@ export default class Selectors extends React.Component {
     /**
      * Diff was opened somewhere for a particular selector
      */
-    diffOpenForSelector: PropTypes.string
+    diffOpenForSelector: PropTypes.string,
+
+    showBoundWarning: PropTypes.bool
   };
 
   static defaultProps = {
     inspectMode: false,
     showCount: false,
-    diffOpenForSelector: null
+    diffOpenForSelector: null,
+    showBoundWarning: false
   };
 
   state = {
@@ -192,7 +195,13 @@ export default class Selectors extends React.Component {
 
   render() {
     const {
-      props: { selectors, getSeenCount, getUnseenCount, diffOpenForSelector },
+      props: {
+        selectors,
+        getSeenCount,
+        getUnseenCount,
+        diffOpenForSelector,
+        showBoundWarning
+      },
       elementHighlightClicked
     } = this;
 
@@ -204,18 +213,20 @@ export default class Selectors extends React.Component {
           }, 0);
           return (
             <div>
-              <StyleBoundary>
-                <StickyHeader
-                  style={{
-                    transform:
-                      val > 0
-                        ? "translate3d(0, 0px, 0)"
-                        : "translate3d(0, -165px, 0)"
-                  }}
-                >
-                  {val} out of scrollview
-                </StickyHeader>
-              </StyleBoundary>
+              {showBoundWarning && (
+                <StyleBoundary>
+                  <StickyHeader
+                    style={{
+                      transform:
+                        val > 0
+                          ? "translate3d(0, 0px, 0)"
+                          : "translate3d(0, -165px, 0)"
+                    }}
+                  >
+                    {val} out of scrollview
+                  </StickyHeader>
+                </StyleBoundary>
+              )}
 
               {visibility.map(({ selector, visible }, idx) => (
                 <Spring
