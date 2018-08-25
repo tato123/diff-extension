@@ -7,7 +7,7 @@ import {
   operations,
   actions
 } from "redux/widgets/selectors";
-import { inspect } from "api/highlightElement";
+import { inspect } from "./utils/highlightElement";
 
 const mapStateToProps = (state, props) => ({
   selectors: selectorEntitySelectors.cssSelectorIdsSelector()(state),
