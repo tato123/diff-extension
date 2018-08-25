@@ -4,7 +4,9 @@ import actions from "./actions";
 
 import { Observable } from "rxjs";
 import { switchMap, flatMap, filter } from "rxjs/operators";
-import firebase from "firebase";
+import { firebase } from "@firebase/app";
+import "@firebase/auth";
+import "@firebase/firestore";
 
 import {
   selectors,

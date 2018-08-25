@@ -1,7 +1,10 @@
 import { getDb } from "./datastore";
-import firebase from "firebase";
+
 import jwtDecode from "jwt-decode";
 import _ from "lodash";
+import { firebase } from "@firebase/app";
+import "@firebase/firestore";
+import "@firebase/auth";
 
 let cachedToken = null;
 let unsubscribeList = [];

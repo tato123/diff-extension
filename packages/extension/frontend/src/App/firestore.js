@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import { firebase } from "@firebase/app";
+import "@firebase/firestore";
 
 /**
  * Handles initializion that is required for our firebase application

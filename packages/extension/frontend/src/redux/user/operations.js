@@ -1,8 +1,12 @@
 import { actions as commonActions, types as commonTypes } from "@diff/common";
-import firebase from "firebase";
+
 import actions from "./actions";
 import api from "./api";
 import { actions as remoteActions } from "redux/remote";
+
+import { firebase } from "@firebase/app";
+import "@firebase/auth";
+import "@firebase/firestore";
 
 /**
  * Async login operation that should be used for logging in via refresh credentials

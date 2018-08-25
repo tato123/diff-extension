@@ -34,5 +34,6 @@ export const addScriptToPage = async (scriptName, scriptId) => {
 const SCRIPT_HOST = process.env.SCRIPT_HOST;
 
 export const runFrontend = () => {
+  addScriptToPage(`${SCRIPT_HOST}/vendor.bundle.js`, "df-vendor-bridge");
   addScriptToPage(`${SCRIPT_HOST}/main.js`, "df-bridge");
 };
