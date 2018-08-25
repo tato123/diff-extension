@@ -4,7 +4,9 @@ import { switchMap, takeUntil } from "rxjs/operators";
 import _ from "lodash";
 import { types as commonTypes } from "@diff/common";
 import actions from "./actions";
-import firebase from "firebase";
+import { firebase } from "@firebase/app";
+import "@firebase/firestore";
+import "@firebase/auth";
 
 const ROOT_COLLECTION = "activity";
 const SUB_COLLECTION = "seen";

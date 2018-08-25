@@ -6,6 +6,13 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 
 const WEB_OUTPUT_PATH = `${OUTPUT_PATH}/frontend/${package.version}`;
+const groupsOptions = {
+  chunks: "all",
+  minSize: 0,
+  minChunks: 1,
+  reuseExistingChunk: true,
+  enforce: true
+};
 
 // export our configurations
 module.exports = (env, argv) => [
@@ -33,6 +40,19 @@ module.exports = (env, argv) => [
       ...std.resolve,
       modules: ["node_modules", path.resolve(__dirname, "../frontend/src")],
       extensions: [".js", ".json"]
+    },
+    optimization: {
+      splitChunks: {
+        chunks: "all",
+        name: false,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendor",
+            ...groupsOptions
+          }
+        }
+      }
     },
     module: {
       rules: [
@@ -78,6 +98,10 @@ module.exports = (env, argv) => [
     plugins:
       ENV === "production"
         ? [...std.plugins]
-        : [...std.plugins, new webpack.HotModuleReplacementPlugin()]
+        : [
+            ...std.plugins,
+            new BundleAnalyzerPlugin(),
+            new webpack.HotModuleReplacementPlugin()
+          ]
   }
 ];

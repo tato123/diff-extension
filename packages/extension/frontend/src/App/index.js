@@ -10,15 +10,33 @@ import Widget, {
 // Application specific views
 import Launcher from "./Launcher";
 import Login from "./Login";
-import Selectors from "./Selectors";
-import Viewer from "./Diff";
-import Workspace from "./Workspace";
 
 // Redux store
 import configureStore from "./store";
+import Workspace from "./Workspace";
+import Diff from "./Diff";
+import Selectors from "./Selectors";
+
+// import Loadable from "react-loadable";
 
 // Create our new store
 const store = configureStore();
+
+// const Workspace = Loadable({
+//   loader: () =>
+//     import(/* webpackChunkName: "workspace-widget" */ "./Workspace"),
+//   loading: () => <div />
+// });
+
+// const Diff = Loadable({
+//   loader: () => import(/* webpackChunkName: "diff-widget" */ "./Diff"),
+//   loading: () => <div />
+// });
+
+// const Selectors = Loadable({
+//   loader: () => import(/* webpackChunkName: "selector-widget" */ "./Selectors"),
+//   loading: () => <div />
+// });
 
 export default class App extends React.Component {
   state = {
@@ -58,7 +76,7 @@ export default class App extends React.Component {
             name="diff"
             shouldRender={props => ImplAuthenticated(props) && props.shown}
           >
-            {props => <Viewer context={props.values && props.values.context} />}
+            {props => <Diff context={props.values && props.values.context} />}
           </Widget>
           <Widget
             name="workspace"

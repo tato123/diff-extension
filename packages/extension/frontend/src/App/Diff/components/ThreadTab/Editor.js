@@ -42,6 +42,7 @@ export default class Editor extends React.Component {
    * Comment text area state
    */
   handleChange = event => {
+    console.log("change occuring");
     this.setState({ textValue: event.target.value });
   };
 

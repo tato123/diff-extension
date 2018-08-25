@@ -140,9 +140,9 @@ export default class DiffViewer extends React.Component {
         options={options}
         render={({ ref }) => (
           <div ref={ref}>
-            <Draggable>
+            <Draggable handle=".handle">
               <MainWindow>
-                <TitleBar>
+                <TitleBar className="handle">
                   <div>
                     <Logo.Text />
                   </div>
