@@ -1,3 +1,5 @@
+import firebase from "firebase";
+
 /**
  *
  * @param {string} username - username credential
@@ -64,8 +66,16 @@ const isUser = async email => {
   return response.text();
 };
 
+const login = async (username, password, refreshToken) => {
+  const token = await authenticate(username, password, refreshToken);
+
+  // login to firebase
+  return firebase.auth().signInWithCustomToken(token.access_token);
+};
+
 export default {
   authenticate,
   signup,
-  isUser
+  isUser,
+  login
 };

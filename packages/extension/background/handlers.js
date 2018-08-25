@@ -71,17 +71,26 @@ const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
     );
 };
 
-const handleFetchCacheTokenRequest = (tabId, postMessageToTab, action) => {
-  getUserToken()
-    .then(value =>
-      postMessageToTab(tabId, actions.fetchCacheTokenSuccess(value.token))
-    )
-    .catch(() =>
-      postMessageToTab(
+const handleFetchCacheTokenRequest = async (
+  tabId,
+  postMessageToTab,
+  action
+) => {
+  try {
+    const value = await getUserToken();
+    if (!_.isNil(value)) {
+      return postMessageToTab(
         tabId,
-        actions.fetchCacheTokenSuccess("No token available")
-      )
+        actions.fetchCacheTokenSuccess(value.token)
+      );
+    }
+    return postMessageToTab(
+      tabId,
+      actions.fetchCacheTokenFailed("No Token Set")
     );
+  } catch (err) {
+    postMessageToTab(tabId, actions.fetchCacheTokenFailed(err));
+  }
 };
 
 export default {

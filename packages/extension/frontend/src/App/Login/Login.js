@@ -207,7 +207,7 @@ export default class Login extends React.Component {
   submitForm = (values, { setSubmitting, setErrors }) => {
     if (this.state.form === FORM_TYPES.PRECHECK) {
       setSubmitting(true);
-      this.props
+      return this.props
         .validateEmail(values.email)
         .then(() => {
           setSubmitting(false);
@@ -217,8 +217,6 @@ export default class Login extends React.Component {
           setSubmitting(false);
           this.showForm(FORM_TYPES.SIGNUP)();
         });
-
-      return;
     }
 
     if (this.state.form === FORM_TYPES.LOGIN) {
@@ -256,6 +254,8 @@ export default class Login extends React.Component {
     const {
       state: { requiresLogin, form }
     } = this;
+
+    const formFields = this.formFields();
 
     if (requiresLogin) {
       return (
@@ -306,9 +306,9 @@ export default class Login extends React.Component {
                               native
                               config={{ tension: 200, friction: 20 }}
                               state={form}
-                              keys={this.formFields().map(item => item.key)}
+                              keys={formFields.map(item => item.key)}
                             >
-                              {this.formFields().map(
+                              {formFields.map(
                                 (item, idx) => ({ y, opacity }) => (
                                   <animated.div
                                     style={{
@@ -322,7 +322,7 @@ export default class Login extends React.Component {
                                       {...item}
                                       onChange={handleChange}
                                       onBlur={handleBlur}
-                                      name={touched[item.name] && item.name}
+                                      name={item.name}
                                       error={errors[item.name]}
                                       value={values[item.name]}
                                     />

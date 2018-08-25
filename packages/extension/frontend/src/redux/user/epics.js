@@ -1,9 +1,11 @@
 import { combineEpics, ofType } from "redux-observable";
 import types from "./types";
 import { from, of } from "rxjs";
-import { mergeMap, catchError, map } from "rxjs/operators";
+import { mergeMap, catchError, map, flatMap } from "rxjs/operators";
 import actions from "./actions";
 import api from "./api";
+import { actions as commonActions } from "@diff/common";
+import { actions as remoteActions } from "redux/remote";
 
 const signupEpic = action$ =>
   action$.pipe(
@@ -31,4 +33,23 @@ const validateUserEpic = action$ =>
     })
   );
 
-export default combineEpics(signupEpic, validateUserEpic);
+const loginEpic = action$ =>
+  action$.pipe(
+    ofType(types.LOGIN_REQUEST),
+    mergeMap(action => {
+      /* eslint-disable */
+      debugger;
+      const { username, password, refreshToken } = action.payload;
+      return from(api.login(username, password, refreshToken)).pipe(
+        flatMap(response => {
+          return [
+            actions.loginSuccess(token),
+            remoteActions.postMessage(commonActions.cacheTokenRequest(token))
+          ];
+        }),
+        catchError(error => of(commonActions.loginFailed(error)))
+      );
+    })
+  );
+
+export default combineEpics(signupEpic, validateUserEpic, loginEpic);
