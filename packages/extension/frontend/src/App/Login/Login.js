@@ -199,7 +199,9 @@ export default class Login extends React.Component {
           email: string()
             .email()
             .required(),
-          password: string().required()
+          password: string()
+            .min(6)
+            .required()
         });
     }
   };
@@ -283,7 +285,14 @@ export default class Login extends React.Component {
                             <Logo.Text />
                           </div>
                           <div>
-                            <Header as="h3">Signin with your email</Header>
+                            <Header as="h3">
+                              {form === FORM_TYPES.PRECHECK &&
+                                "Enter your email"}
+                              {form === FORM_TYPES.LOGIN &&
+                                "Sign in your email"}
+                              {form === FORM_TYPES.SIGNUP &&
+                                "Sign up your email"}
+                            </Header>
 
                             <HR />
                           </div>

@@ -26,6 +26,11 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
 
     preferences.autorunDomains = _.union(sites, localSites);
 
+    const value = await getUserToken();
+    if (_.isNil(value) || !value.token) {
+      preferences.autorunDomains = [];
+    }
+
     // combine and send back
     postMessageToTab(tabId, actions.fetchUserPreferencesSuccess(preferences));
   } catch (err) {
