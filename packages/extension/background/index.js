@@ -41,7 +41,8 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  // remember the user clicked this site
+  // only remember the site if we have a token
+
   rememberUserClickedSite(tab.url);
 
   postMessageToTab(tab.id, actions.runRequest());
