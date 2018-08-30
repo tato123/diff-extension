@@ -5,3 +5,6 @@ styleguide
 
 build
 build/*.js
+
+dist
+dist/**/*.js

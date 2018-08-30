@@ -52,7 +52,8 @@ module.exports = (env, argv) => [
             ...groupsOptions
           }
         }
-      }
+      },
+      namedModules: true
     },
     module: {
       rules: [
@@ -60,7 +61,25 @@ module.exports = (env, argv) => [
           test: /\.js$/,
           exclude: /node_modules/,
           use: {
-            loader: "babel-loader"
+            loader: "babel-loader",
+            options: {
+              presets: [
+                [
+                  "@babel/preset-env",
+                  {
+                    targets: {
+                      browsers: ["last 2 Chrome versions"]
+                    },
+                    modules: false
+                  }
+                ],
+                "@babel/preset-react"
+              ],
+              plugins: [
+                "@babel/plugin-proposal-class-properties",
+                "react-hot-loader/babel"
+              ]
+            }
           }
         },
         {

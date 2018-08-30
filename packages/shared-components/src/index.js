@@ -17,3 +17,4 @@ export * from "./components/Code";
 export * from "./components/DateTime";
 export * from "./components/HR";
 export * from "./components/Placeholder";
+export * from "./theme";
