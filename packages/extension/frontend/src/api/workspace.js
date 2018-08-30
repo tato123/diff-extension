@@ -1,12 +1,32 @@
 import { Observable } from "rxjs";
 
-export const onUserWorkspaces = db => uid => {
-  return Observable.create(observer => {
-    const unsubscribe = db
-      .collection("workspace")
-      .where(`users.${uid}.role`, ">", "")
-      .where("status", "==", "pending")
-      .onSnapshot(
+export default db => {
+  const workspaceRef = db.collection("workspaces");
+  const invitesRef = db.collection("invites");
+
+  const workspaces$ = uid => {
+    return Observable.create(observer => {
+      const unsubscribe = workspaceRef
+        .where(`users.${uid}.role`, ">", "")
+        .onSnapshot(
+          querySnapshot => {
+            querySnapshot.docChanges().forEach(({ doc, type }) => {
+              const data = doc.data();
+              observer.next({ data, type });
+            });
+          },
+          err => {
+            observer.err(err);
+          }
+        );
+
+      return unsubscribe;
+    });
+  };
+
+  const invites$ = email => {
+    return Observable.create(observer => {
+      const unsubscribe = invitesRef.where(`email`, "==", email).onSnapshot(
         querySnapshot => {
           querySnapshot.docChanges().forEach(({ doc, type }) => {
             const data = doc.data();
@@ -18,28 +38,12 @@ export const onUserWorkspaces = db => uid => {
         }
       );
 
-    return () => {
-      unsubscribe();
-    };
-  });
-};
+      return unsubscribe;
+    });
+  };
 
-export const getUserWorkspaces = db => uid => {
-  return Observable.create(observer => {
-    db.collection("workspace")
-      .where(`users.${uid}.role`, ">", "")
-      .where("status", "==", "pending")
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          observer.next(doc.data());
-        });
-        observer.complete();
-      })
-      .catch(err => observer.err(err));
-
-    return () => {
-      // empty teardown
-    };
-  });
+  return {
+    workspaces$,
+    invites$
+  };
 };

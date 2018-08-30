@@ -1,4 +1,5 @@
 import types from "./types";
+import _ from "lodash";
 let queue = [];
 
 const asyncMiddleware = store => next => action => {
@@ -31,6 +32,7 @@ const asyncMiddleware = store => next => action => {
     // submit the next value
     store.dispatch(submit);
   }
+
   return next(action);
 };
 

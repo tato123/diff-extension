@@ -5,6 +5,8 @@ import "@firebase/firestore";
  * Handles initializion that is required for our firebase application
  */
 export const initializeFirestore = () => {
+  console.log("[plugin - firebase] initializing connection");
+
   // connect to firebase
   const config = {
     apiKey: process.env.FIREBASE_API_KEY,
