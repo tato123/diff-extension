@@ -2,7 +2,7 @@
 const path = require("path");
 module.exports = {
   styleguideComponents: {
-    Wrapper: path.join(__dirname, "lib/styleguide/Wrapper")
+    Wrapper: path.join(__dirname, "lib/Wrapper")
   },
   ignore: ["**/index.js", "**/styles/*"]
 };
