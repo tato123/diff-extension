@@ -329,6 +329,51 @@ const createWorkspace = async (name, userId) => {
   return emailNotify.createWorkspace(user.email, name);
 };
 
+const getDomains = async refreshToken => {
+  const snapshot = await db
+    .collection("refreshToken")
+    .where("token", "==", refreshToken)
+    .get();
+
+  const { uid } = snapshot.docs[0].data();
+
+  const workspaceSnapshot = await db
+    .collection("workspace")
+    .where(`users.${uid}.role`, ">", "")
+    .get();
+
+  const ids = [{ type: "uid", val: uid }];
+  workspaceSnapshot.forEach(doc =>
+    ids.push({ type: "workspace", val: doc.id })
+  );
+
+  const eventsRef = db.collection("events");
+  const sitesQueries = await Promise.all(
+    _.chain(ids)
+      .map(({ type, val }) => {
+        return eventsRef
+          .where(type === "uid" ? `meta.userId` : "meta.workspaceId", "==", val)
+          .get();
+      })
+      .value()
+  );
+
+  const sites = _.chain(sitesQueries)
+    .flatMap(querySnapshot => {
+      const docs = [];
+      querySnapshot.forEach(doc => docs.push(doc));
+      return docs;
+    })
+    .map(doc => {
+      const data = doc.data();
+      return data.url.href;
+    })
+    .uniq()
+    .value();
+
+  return sites;
+};
+
 module.exports = {
   retrieveClaimsForUid,
   createAndStoreRefreshToken,
@@ -341,5 +386,6 @@ module.exports = {
   isUser,
   bearerToUid,
   inviteUsers,
-  createWorkspace
+  createWorkspace,
+  getDomains
 };

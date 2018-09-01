@@ -1,8 +1,7 @@
 import { applyMiddleware, createStore, combineReducers } from "redux";
-import thunkMiddleware from "redux-thunk";
 import { createEpicMiddleware, combineEpics } from "redux-observable";
 
-import initApi from "../api";
+import initApi from "@diff/common/api";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
 import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
@@ -21,12 +20,7 @@ export default function configureStore(preloadedState) {
   });
 
   // Setup our middlewares
-  const middlewares = [
-    thunkMiddleware.withExtraArgument({ db: api.db$, api: api }),
-    asyncMiddleware,
-    epicMiddleware,
-    postmessageMiddleware
-  ];
+  const middlewares = [asyncMiddleware, epicMiddleware, postmessageMiddleware];
 
   const composedEnhancers = composeWithDevTools(
     applyMiddleware(...middlewares)

@@ -83,3 +83,23 @@ exports.createWorkspace = async (req, res) => {
     res.send(400, { message: "Workspace not created: " + err.message });
   }
 };
+
+exports.getDomains = async (req, res) => {
+  const refreshToken = req.swagger.params.token.value;
+  if (!refreshToken) {
+    res.json({
+      domains: []
+    });
+  }
+
+  try {
+    const domains = await userManager.getDomains(refreshToken);
+    res.json({
+      domains
+    });
+  } catch (err) {
+    res.json({
+      message: err.message
+    });
+  }
+};

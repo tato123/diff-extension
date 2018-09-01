@@ -1,4 +1,4 @@
-import { sources, actions } from "@diff/common";
+import { sources, actions } from "../common";
 import { portForId } from "./ports";
 
 /**
@@ -6,7 +6,7 @@ import { portForId } from "./ports";
  * @param {*} tabId
  * @param {*} message
  */
-export const postMessageToTab = (tabId, message) => {
+export const postMessageToTab = (tabId: string, message: Object): void => {
   postMessageToTabWithDestination(sources.CONTENT_SCRIPT_SOURCE_NAME)(
     tabId,
     message
@@ -18,10 +18,9 @@ export const postMessageToTab = (tabId, message) => {
  * @param {*} tabId
  * @param {*} message
  */
-export const postMessageToTabWithDestination = destination => (
-  tabId,
-  message
-) => {
+export const postMessageToTabWithDestination = (
+  destination: string
+): Function => (tabId: string, message: Object): void => {
   const port = portForId(tabId);
   if (!port) {
     console.error("Unable to post message");
