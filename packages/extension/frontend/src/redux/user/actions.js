@@ -1,6 +1,6 @@
 import types from "./types";
 import { actions as remoteActions } from "redux/remote";
-import { actions as commonActions, types as commonTypes } from "@diff/common";
+import { actions as commonActions } from "@diff/common";
 
 const signupRequest = (email, password) => ({
   type: types.SIGNUP_REQUEST,
@@ -63,27 +63,7 @@ const asyncValidate = (email, dispatch) =>
     dispatch
   });
 
-/**
- * Calls a backend to retrieve a fetch cache token
- *
- * @param {}
- * @returns {Promise}
- */
-const fetchCacheToken = () => dispatch => {
-  return remoteActions
-    .promisedAction({
-      submit: remoteActions.postMessage(commonActions.fetchCacheToken()),
-      success: commonTypes.FETCH_CACHE_TOKEN.SUCCESS,
-      failed: commonTypes.FETCH_CACHE_TOKEN.FAILED,
-      dispatch
-    })
-    .then(successAction => {
-      return successAction.payload.token;
-    })
-    .catch(errorAction => {
-      return Promise.reject(new Error("No Token available", errorAction));
-    });
-};
+const fetchCacheToken = () => commonActions.fetchCacheToken();
 
 const login = credentials => ({
   type: types.LOGIN_REQUEST,
@@ -93,9 +73,16 @@ const login = credentials => ({
 });
 
 const loginSuccess = token => ({
-  type: types.LOGIN.SUCCESS,
+  type: types.LOGIN_SUCCESS,
   payload: {
     token
+  }
+});
+
+const loginFailed = error => ({
+  type: types.LOGIN_FAILED,
+  payload: {
+    error
   }
 });
 
@@ -111,5 +98,6 @@ export default {
   asyncValidate,
   fetchCacheToken,
   login,
-  loginSuccess
+  loginSuccess,
+  loginFailed
 };

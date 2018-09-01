@@ -54,6 +54,7 @@ const postMessageMiddleware = store => {
     if (action.type === types.POST_MESSAGE) {
       onSendMessage(action.payload.action);
     }
+
     return next(action);
   };
 };

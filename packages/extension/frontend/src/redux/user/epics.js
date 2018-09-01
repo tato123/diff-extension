@@ -3,16 +3,15 @@ import types from "./types";
 import { from, of } from "rxjs";
 import { mergeMap, catchError, map, flatMap } from "rxjs/operators";
 import actions from "./actions";
-import api from "./api";
-import { actions as commonActions } from "@diff/common";
+import { actions as commonActions, types as commonTypes } from "@diff/common";
 import { actions as remoteActions } from "redux/remote";
 
-const signupEpic = action$ =>
+const signupEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.SIGNUP_REQUEST),
     mergeMap(action => {
       return from(
-        api.signup(action.payload.email, action.payload.password)
+        api.auth.signup(action.payload.email, action.payload.password)
       ).pipe(
         map(result => actions.signupSuccess(result)),
         catchError(err => of(actions.signupFailed(err, action.payload.email)))
@@ -20,11 +19,11 @@ const signupEpic = action$ =>
     })
   );
 
-const validateUserEpic = action$ =>
+const validateUserEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.VALIDATE_USER_REQUEST),
     mergeMap(action => {
-      return from(api.isUser(action.payload.email)).pipe(
+      return from(api.auth.isUser(action.payload.email)).pipe(
         map(result => actions.validateUserSuccess(result)),
         catchError(err =>
           of(actions.validateUserFailed(action.payload.email, err))
@@ -33,23 +32,38 @@ const validateUserEpic = action$ =>
     })
   );
 
-const loginEpic = action$ =>
+const loginEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.LOGIN_REQUEST),
     mergeMap(action => {
-      /* eslint-disable */
-      debugger;
       const { username, password, refreshToken } = action.payload;
-      return from(api.login(username, password, refreshToken)).pipe(
-        flatMap(response => {
+      return from(api.auth.login(username, password, refreshToken)).pipe(
+        flatMap(token => {
           return [
             actions.loginSuccess(token),
-            remoteActions.postMessage(commonActions.cacheTokenRequest(token))
+            remoteActions.postMessage(
+              commonActions.cacheTokenRequest(token.refresh_token)
+            )
           ];
         }),
-        catchError(error => of(commonActions.loginFailed(error)))
+        catchError(error => {
+          return of(actions.loginFailed(error));
+        })
       );
     })
   );
 
-export default combineEpics(signupEpic, validateUserEpic, loginEpic);
+const fetchCacheTokenEpic = action$ =>
+  action$.pipe(
+    ofType(commonTypes.FETCH_CACHE_TOKEN.REQUEST),
+    map(action => {
+      return remoteActions.postMessage(action);
+    })
+  );
+
+export default combineEpics(
+  signupEpic,
+  validateUserEpic,
+  loginEpic,
+  fetchCacheTokenEpic
+);

@@ -1,9 +1,14 @@
 import jwtDecode from "jwt-decode";
 import { types as commonTypes } from "@diff/common";
+import types from "./types";
 
 const initialState = {
+  user: null,
   access_token: null,
-  refresh_token: null
+  refresh_token: null,
+  meta: {
+    isFetchingToken: false
+  }
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -12,27 +17,36 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         access_token: null,
-        refresh_token: null
+        refresh_token: null,
+        meta: {
+          isFetchingToken: true
+        }
       };
     case commonTypes.FETCH_CACHE_TOKEN.SUCCESS:
       return {
         ...state,
         access_token: null,
-        refresh_token: payload.token
+        refresh_token: payload.token,
+        meta: {
+          isFetchingToken: false
+        }
       };
     case commonTypes.FETCH_CACHE_TOKEN.FAILED:
       return {
         ...state,
         access_token: null,
-        refresh_token: null
+        refresh_token: null,
+        meta: {
+          isFetchingToken: false
+        }
       };
-    case commonTypes.LOGIN.REQUEST:
+    case types.LOGIN_REQUEST:
       return {
         ...state,
         access_token: null,
         refresh_token: null
       };
-    case commonTypes.LOGIN.SUCCESS:
+    case types.LOGIN_SUCCESS:
       const {
         token: { access_token, refresh_token }
       } = payload;
@@ -46,7 +60,7 @@ const reducer = (state = initialState, { type, payload }) => {
         claims,
         uid
       };
-    case commonTypes.LOGIN.FAILED:
+    case types.LOGIN_FAILED:
       return {
         ...state,
         access_token: null,

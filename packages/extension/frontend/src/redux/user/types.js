@@ -1,5 +1,6 @@
 const LOGIN_REQUEST = "@diff/user/loginRequest";
 const LOGIN_SUCCESS = "@diff/user/loginSuccess";
+const LOGIN_FAILED = "@diff/user/loginFailed";
 
 // signup
 const SIGNUP_REQUEST = "@diff/user/signupRequest";
@@ -14,6 +15,7 @@ const VALIDATE_USER_FAILED = "@diff/user/validateFailed";
 export default {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
+  LOGIN_FAILED,
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
   SIGNUP_FAILED,

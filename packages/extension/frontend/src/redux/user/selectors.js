@@ -8,7 +8,14 @@ const accessTokenSelector = () =>
 const refreshTokenSelector = () =>
   createSelector(userSelector, user => user.refresh_token);
 
+const isFetchingTokenSelector = () =>
+  createSelector(
+    userSelector,
+    user => (user.meta && user.meta.isFetchingToken) || false
+  );
+
 export default {
   accessTokenSelector,
-  refreshTokenSelector
+  refreshTokenSelector,
+  isFetchingTokenSelector
 };
