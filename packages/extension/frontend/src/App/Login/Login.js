@@ -244,18 +244,21 @@ export default class Login extends React.Component {
     }
   };
 
+  componentDidUpdate(prevProps) {
+    const {
+      props: { isFetchingToken, refreshToken }
+    } = this;
+
+    if (!isFetchingToken && refreshToken) {
+      this.props.login({ refreshToken });
+    }
+  }
+
   render() {
     const {
       state: { form },
-      props: { isFetchingToken, refreshToken, requiresLogin, isSubmitting }
+      props: { requiresLogin, isSubmitting }
     } = this;
-
-    if (isFetchingToken) {
-      return null;
-    } else if (!isFetchingToken && refreshToken) {
-      this.props.login({ refreshToken });
-      return null;
-    }
 
     if (requiresLogin) {
       const formFields = this.formFields();
