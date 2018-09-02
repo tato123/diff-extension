@@ -99,7 +99,11 @@ export default class Login extends React.Component {
 
     refreshToken: PropTypes.string,
 
-    isFetchingToken: PropTypes.bool
+    isFetchingToken: PropTypes.bool,
+
+    requiresLogin: PropTypes.bool,
+
+    isSubmitting: PropTypes.bool
   };
 
   static defaultProps = {
@@ -114,18 +118,6 @@ export default class Login extends React.Component {
 
   componentDidMount() {
     this.props.getCacheToken();
-    // try {
-    //   const refreshToken = await this.props.getCacheToken();
-
-    //   if (refreshToken) {
-    //     await this.props.login({ refreshToken });
-    //   } else {
-    //     this.setState({ requiresLogin: true });
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    //   this.setState({ requiresLogin: true });
-    // }
   }
 
   showForm = formType => () => {
@@ -218,15 +210,12 @@ export default class Login extends React.Component {
 
   submitForm = (values, { setSubmitting, setErrors }) => {
     if (this.state.form === FORM_TYPES.PRECHECK) {
-      setSubmitting(true);
       return this.props
         .validateEmail(values.email)
         .then(() => {
-          setSubmitting(false);
           this.showForm(FORM_TYPES.LOGIN)();
         })
         .catch(() => {
-          setSubmitting(false);
           this.showForm(FORM_TYPES.SIGNUP)();
         });
     }
@@ -236,27 +225,20 @@ export default class Login extends React.Component {
 
       return this.props
         .login({ username: values.email, password: values.password })
-        .then(() => {
-          setSubmitting(true);
-        })
         .catch(() => {
-          setSubmitting(false);
           setErrors({ form: "The username or password is incorrect" });
         });
     }
 
     if (this.state.form === FORM_TYPES.SIGNUP) {
-      setSubmitting(true);
       return this.props
         .signup(values.email, values.password)
         .then(successAction => {
           this.props.login({
             refreshToken: successAction.payload.refreshToken.refresh_token
           });
-          setSubmitting(false);
         })
         .catch(err => {
-          setSubmitting(false);
           setErrors(err);
         });
     }
@@ -265,7 +247,7 @@ export default class Login extends React.Component {
   render() {
     const {
       state: { form },
-      props: { isFetchingToken, refreshToken }
+      props: { isFetchingToken, refreshToken, requiresLogin, isSubmitting }
     } = this;
 
     if (isFetchingToken) {
@@ -274,118 +256,126 @@ export default class Login extends React.Component {
       this.props.login({ refreshToken });
       return null;
     }
-    const formFields = this.formFields();
 
-    return (
-      <Modal>
-        <ModalContainer state={form}>
-          {({ height }) => (
-            <animated.div style={{ height: height }}>
-              <Modal.Content id="login-modal">
-                <Formik
-                  initialValues={{ email: "", password: "", username: "" }}
-                  validationSchema={this.getValidationSchema()}
-                  onSubmit={this.submitForm}
-                  render={({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    isSubmitting
-                  }) => (
-                    <form onSubmit={handleSubmit}>
-                      <Container>
-                        <div>
-                          <Logo.Text />
-                        </div>
-                        <div>
-                          <Header as="h3">
-                            {form === FORM_TYPES.PRECHECK && "Enter your email"}
-                            {form === FORM_TYPES.LOGIN && "Sign in your email"}
-                            {form === FORM_TYPES.SIGNUP && "Sign up your email"}
-                          </Header>
+    if (requiresLogin) {
+      const formFields = this.formFields();
+      return (
+        <Modal>
+          <ModalContainer state={form}>
+            {({ height }) => (
+              <animated.div style={{ height: height }}>
+                <Modal.Content id="login-modal">
+                  <Formik
+                    initialValues={{ email: "", password: "", username: "" }}
+                    validationSchema={this.getValidationSchema()}
+                    onSubmit={this.submitForm}
+                    render={({
+                      values,
+                      errors,
+                      touched,
+                      handleChange,
+                      handleBlur,
+                      handleSubmit
+                    }) => (
+                      <form onSubmit={handleSubmit}>
+                        <Container>
+                          <div>
+                            <Logo.Text />
+                          </div>
+                          <div>
+                            <Header as="h3">
+                              {form === FORM_TYPES.PRECHECK &&
+                                "Enter your email"}
+                              {form === FORM_TYPES.LOGIN &&
+                                "Sign in your email"}
+                              {form === FORM_TYPES.SIGNUP &&
+                                "Sign up your email"}
+                            </Header>
 
-                          <HR />
-                        </div>
-                        <div>
-                          <ErrorLabel>{errors.form}</ErrorLabel>
-                          <Form.Input
-                            type="text"
-                            name="email"
-                            label="Email"
-                            error={touched.email && errors.email}
-                            required
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.email}
-                            autoFocus
-                            autoComplete="off"
-                          />
+                            <HR />
+                          </div>
+                          <div>
+                            <ErrorLabel>{errors.form}</ErrorLabel>
+                            <Form.Input
+                              type="text"
+                              name="email"
+                              label="Email"
+                              error={touched.email && errors.email}
+                              required
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.email}
+                              autoFocus
+                              autoComplete="off"
+                            />
 
-                          <Content
-                            native
-                            config={{ tension: 200, friction: 20 }}
-                            state={form}
-                            keys={formFields.map(item => item.key)}
-                          >
-                            {formFields.map((item, idx) => ({ y, opacity }) => (
-                              <animated.div
-                                style={{
-                                  opacity,
-                                  transform: y.interpolate(
-                                    y => `translate3d(0, ${y}px, 0`
-                                  )
-                                }}
-                              >
-                                <Form.Input
-                                  {...item}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  name={item.name}
-                                  error={errors[item.name]}
-                                  value={values[item.name]}
-                                />
-                              </animated.div>
-                            ))}
-                          </Content>
-                        </div>
-                        <div>
-                          <Button.Flat
-                            type="button"
-                            onClick={this.showForm(
-                              form !== FORM_TYPES.SIGNUP
-                                ? FORM_TYPES.SIGNUP
-                                : FORM_TYPES.PRECHECK
-                            )}
-                          >
-                            {form !== FORM_TYPES.SIGNUP
-                              ? "Create Account"
-                              : "Login"}
-                          </Button.Flat>
-                          <Button
-                            type="submit"
-                            primary
-                            disabled={
-                              isSubmitting || Object.keys(errors).length > 0
-                            }
-                            loading={isSubmitting}
-                          >
-                            {form === FORM_TYPES.PRECHECK && "Next"}
-                            {form === FORM_TYPES.SIGNUP && "Create Account"}
-                            {form === FORM_TYPES.LOGIN && "Login"}
-                          </Button>
-                        </div>
-                      </Container>
-                    </form>
-                  )}
-                />
-              </Modal.Content>
-            </animated.div>
-          )}
-        </ModalContainer>
-      </Modal>
-    );
+                            <Content
+                              native
+                              config={{ tension: 200, friction: 20 }}
+                              state={form}
+                              keys={formFields.map(item => item.key)}
+                            >
+                              {formFields.map(
+                                (item, idx) => ({ y, opacity }) => (
+                                  <animated.div
+                                    style={{
+                                      opacity,
+                                      transform: y.interpolate(
+                                        y => `translate3d(0, ${y}px, 0`
+                                      )
+                                    }}
+                                  >
+                                    <Form.Input
+                                      {...item}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                      name={item.name}
+                                      error={errors[item.name]}
+                                      value={values[item.name]}
+                                    />
+                                  </animated.div>
+                                )
+                              )}
+                            </Content>
+                          </div>
+                          <div>
+                            <Button.Flat
+                              type="button"
+                              onClick={this.showForm(
+                                form !== FORM_TYPES.SIGNUP
+                                  ? FORM_TYPES.SIGNUP
+                                  : FORM_TYPES.PRECHECK
+                              )}
+                            >
+                              {form !== FORM_TYPES.SIGNUP
+                                ? "Create Account"
+                                : "Login"}
+                            </Button.Flat>
+                            <Button
+                              type="submit"
+                              primary
+                              disabled={
+                                isSubmitting || Object.keys(errors).length > 0
+                              }
+                              loading={isSubmitting}
+                            >
+                              {form === FORM_TYPES.PRECHECK && "Next"}
+                              {form === FORM_TYPES.SIGNUP && "Create Account"}
+                              {form === FORM_TYPES.LOGIN && "Login"}
+                            </Button>
+                          </div>
+                        </Container>
+                      </form>
+                    )}
+                  />
+                </Modal.Content>
+              </animated.div>
+            )}
+          </ModalContainer>
+        </Modal>
+      );
+    }
+
+    return null;
   }
 }

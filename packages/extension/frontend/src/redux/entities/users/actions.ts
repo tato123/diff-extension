@@ -13,7 +13,7 @@ export interface FetchUserAction extends AnyAction {
   };
 }
 
-const fetchUserRequest = (uid: string): FetchUserAction => ({
+const fetchUser = (uid: string): FetchUserAction => ({
   type: types.FETCH_USER_REQUEST,
   payload: {
     uid
@@ -33,7 +33,7 @@ const fetchUserFailed = (err: string): ErrorAction => ({
 });
 
 export default {
-  fetchUserRequest,
+  fetchUser,
   fetchUserSuccess,
   fetchUserFailed
 };

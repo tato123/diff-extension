@@ -7,7 +7,8 @@ const initialState = {
   access_token: null,
   refresh_token: null,
   meta: {
-    isFetchingToken: false
+    isFetchingToken: false,
+    requiresLogin: false
   }
 };
 
@@ -28,7 +29,8 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token: null,
         refresh_token: payload.token,
         meta: {
-          isFetchingToken: false
+          isFetchingToken: false,
+          requiresLogin: false
         }
       };
     case commonTypes.FETCH_CACHE_TOKEN.FAILED:
@@ -37,7 +39,8 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token: null,
         refresh_token: null,
         meta: {
-          isFetchingToken: false
+          isFetchingToken: false,
+          requiresLogin: true
         }
       };
     case types.LOGIN_REQUEST:

@@ -5,10 +5,13 @@ import { actions, selectors } from "redux/user";
 const makeCustomSelector = () => {
   const refreshTokenSelector = selectors.refreshTokenSelector();
   const isFetchingTokenSelector = selectors.isFetchingTokenSelector();
+  const requiresLoginSelector = selectors.requiresLoginSelector();
   const mapStateToProps = (state, props) => {
     return {
       refreshToken: refreshTokenSelector(state),
-      isFetchingToken: isFetchingTokenSelector(state)
+      isFetchingToken: isFetchingTokenSelector(state),
+      requiresLogin: requiresLoginSelector(state),
+      isSubmitting: false
     };
   };
   return mapStateToProps;

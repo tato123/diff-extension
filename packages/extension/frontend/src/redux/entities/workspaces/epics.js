@@ -1,16 +1,16 @@
 import { combineEpics, ofType } from "redux-observable";
 import { from, of, Subject } from "rxjs";
 import { mergeMap, flatMap, catchError } from "rxjs/operators";
-import { types as commonTypes } from "@diff/common";
 import types from "./types";
 import actions from "./actions";
-import { operations as userOperations } from "../users";
+import { operations as userOperations } from "redux/entities/users";
+import { types as userTypes } from "redux/user";
 import selectors from "./selectors";
 import _ from "lodash";
 
 const getInvitesEpic = (action$, state$, { db }) =>
   action$.pipe(
-    ofType(commonTypes.LOGIN.SUCCESS),
+    ofType(userTypes.LOGIN_SUCCESS),
     mergeMap(action => {
       const workspaceId = selectors.defaultWorkspaceSelector()(state$.value);
       if (_.isNil(workspaceId)) {
@@ -32,7 +32,7 @@ const getInvitesEpic = (action$, state$, { db }) =>
 
 const getWorkspacesEpic = (action$, state$, { db }) =>
   action$.pipe(
-    ofType(commonTypes.LOGIN.SUCCESS),
+    ofType(userTypes.LOGIN_SUCCESS),
     mergeMap(action => {
       const subject = new Subject();
       const uid = state$.value.user.uid;
@@ -68,7 +68,7 @@ const getWorkspacesEpic = (action$, state$, { db }) =>
 
 const getWorkspaceByIdEpic = (action$, state$, { db }) =>
   action$.pipe(
-    ofType(commonTypes.LOGIN.SUCCESS, types.GET_WORKSPACE_BY_ID),
+    ofType(userTypes.LOGIN_SUCCESS, types.GET_WORKSPACE_BY_ID),
     mergeMap(action => {
       const workspaceId = selectors.defaultWorkspaceSelector()(state$.value);
       if (_.isNil(workspaceId)) {

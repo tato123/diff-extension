@@ -28,6 +28,7 @@
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@types/lodash": "^4.14.116",
     "babel-eslint": "8",
     "babel-loader": "^8.0.0",
     "chrome-webstore-upload-cli": "^1.1.1",
