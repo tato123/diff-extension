@@ -13,6 +13,12 @@ export interface FetchUserAction extends AnyAction {
   };
 }
 
+export interface AddUserAction extends AnyAction {
+  payload: {
+    user: Object;
+  };
+}
+
 const fetchUser = (uid: string): FetchUserAction => ({
   type: types.FETCH_USER_REQUEST,
   payload: {
@@ -32,8 +38,16 @@ const fetchUserFailed = (err: string): ErrorAction => ({
   }
 });
 
+const addUser = (user: Object): AddUserAction => ({
+  type: types.ADD_USER,
+  payload: {
+    user
+  }
+});
+
 export default {
   fetchUser,
   fetchUserSuccess,
-  fetchUserFailed
+  fetchUserFailed,
+  addUser
 };

@@ -3,7 +3,8 @@ import { types as commonTypes } from "@diff/common";
 import types from "./types";
 
 const initialState = {
-  user: null,
+  uid: null,
+  workspaceId: null,
   access_token: null,
   refresh_token: null,
   meta: {
@@ -12,7 +13,7 @@ const initialState = {
   }
 };
 
-const reducer = (state = initialState, { type, payload }) => {
+const handleFetchToken = (state, { type, payload }) => {
   switch (type) {
     case commonTypes.FETCH_CACHE_TOKEN.REQUEST:
       return {
@@ -20,6 +21,7 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token: null,
         refresh_token: null,
         meta: {
+          ...state.meta,
           isFetchingToken: true
         }
       };
@@ -29,6 +31,7 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token: null,
         refresh_token: payload.token,
         meta: {
+          ...state.meta,
           isFetchingToken: false,
           requiresLogin: false
         }
@@ -39,13 +42,21 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token: null,
         refresh_token: null,
         meta: {
+          ...state.meta,
           isFetchingToken: false,
           requiresLogin: true
         }
       };
+  }
+};
+
+const handleLogin = (state, { type, payload }) => {
+  switch (type) {
     case types.LOGIN_REQUEST:
       return {
         ...state,
+        uid: null,
+        workspaceId: null,
         access_token: null,
         refresh_token: null
       };
@@ -61,13 +72,34 @@ const reducer = (state = initialState, { type, payload }) => {
         access_token,
         refresh_token,
         claims,
-        uid
+        uid,
+        workspaceId: null
       };
     case types.LOGIN_FAILED:
       return {
         ...state,
         access_token: null,
-        refresh_token: null
+        refresh_token: null,
+        uid: null,
+        workspaceId: null
+      };
+  }
+};
+
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case commonTypes.FETCH_CACHE_TOKEN.REQUEST:
+    case commonTypes.FETCH_CACHE_TOKEN.SUCCESS:
+    case commonTypes.FETCH_CACHE_TOKEN.FAILED:
+      return handleFetchToken(state, action);
+    case types.LOGIN_REQUEST:
+    case types.LOGIN_SUCCESS:
+    case types.LOGIN_FAILED:
+      return handleLogin(state, action);
+    case types.SELECT_WORKSPACE:
+      return {
+        ...state,
+        workspaceId: action.payload.workspaceId
       };
     default:
       return state;

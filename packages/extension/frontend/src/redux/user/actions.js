@@ -101,6 +101,13 @@ const sessionInitFailed = (err, uid) => ({
   }
 });
 
+const selectWorkspace = workspaceId => ({
+  type: types.SELECT_WORKSPACE,
+  payload: {
+    workspaceId
+  }
+});
+
 export default {
   signupRequest,
   signupSuccess,
@@ -117,5 +124,7 @@ export default {
   loginFailed,
 
   sessionInit,
-  sessionInitFailed
+  sessionInitFailed,
+
+  selectWorkspace
 };

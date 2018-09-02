@@ -1,7 +1,6 @@
 import { createSelector } from "reselect";
 
 const userSelector = state => state.user;
-const workspaceSelector = state => state.entities.workspaces;
 
 const accessTokenSelector = () =>
   createSelector(userSelector, user => user.access_token);
@@ -22,7 +21,7 @@ const requiresLoginSelector = () =>
   );
 
 const currentWorkspaceSelector = () =>
-  createSelector(workspaceSelector, workspaces => workspaces.allIds[0] || null);
+  createSelector(userSelector, user => user.workspaceId);
 
 export default {
   accessTokenSelector,

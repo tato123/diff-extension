@@ -15,6 +15,8 @@ const VALIDATE_USER_FAILED = "@diff/user/validateFailed";
 const SESSION_INIT = "@diff/user/session/init";
 const SESSION_INIT_FAILED = "@diff/user/session/initFailed";
 
+const SELECT_WORKSPACE = "@diff/user/selectWorkspace";
+
 export default {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -26,5 +28,6 @@ export default {
   VALIDATE_USER_SUCCESS,
   VALIDATE_USER_FAILED,
   SESSION_INIT,
-  SESSION_INIT_FAILED
+  SESSION_INIT_FAILED,
+  SELECT_WORKSPACE
 };

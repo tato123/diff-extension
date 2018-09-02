@@ -3,6 +3,7 @@ import types from "./types";
 import { from, of } from "rxjs";
 import { mergeMap, catchError, map, flatMap } from "rxjs/operators";
 import actions from "./actions";
+import { actions as userEntityActions } from "redux/entities/users";
 import { actions as commonActions, types as commonTypes } from "@diff/common";
 import { actions as remoteActions } from "redux/remote";
 
@@ -67,7 +68,10 @@ const initializeSession = (action$, state$, { api }) =>
     mergeMap(action => {
       const uid = state$.value.user.uid;
       return api.user.getUser(uid).pipe(
-        map(user => actions.sessionInit(user)),
+        flatMap(user => [
+          userEntityActions.addUser(user),
+          actions.selectWorkspace(null)
+        ]),
         catchError(err => of(actions.sessionInitFailed(err.message, uid)))
       );
     })

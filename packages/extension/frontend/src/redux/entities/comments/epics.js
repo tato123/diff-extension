@@ -1,7 +1,6 @@
 import { combineEpics, ofType } from "redux-observable";
 import { switchMap, flatMap, mapTo } from "rxjs/operators";
 
-import { types as workspaceTypes } from "redux/entities/workspaces";
 import { types as userTypes, selectors as userSelectors } from "redux/user";
 
 import actions from "./actions";
@@ -9,24 +8,20 @@ import actions from "./actions";
 import { actions as userActions } from "redux/entities/users";
 import { actions as selectorActions } from "redux/entities/selectors";
 
-console.warn("fake initializer set for comments types");
-const fakeType = "faker";
-
 const cleanCommentsEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(fakeType),
+    ofType(userTypes.SELECT_WORKSPACE),
     mapTo(actions.clearComments())
   );
 
 const fetchCommentsEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(fakeType),
-
+    ofType(userTypes.SELECT_WORKSPACE),
     switchMap(() =>
       api.comments
         .comments$(
           state$.value.user.uid,
-          userSelectors.currentWorkspaceSelector(state$.value)
+          userSelectors.currentWorkspaceSelector()(state$.value)
         )
         .pipe(
           flatMap(({ data, type, id }) => [
