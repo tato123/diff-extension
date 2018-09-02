@@ -16,7 +16,7 @@ export default function configureStore(preloadedState) {
   // Setup redux-observable
   const rootEpic = combineEpics(entitiesEpic, widgetEpics, userEpics);
   const epicMiddleware = createEpicMiddleware({
-    dependencies: { db: api.db$, api: api }
+    dependencies: { api: api }
   });
 
   // Setup our middlewares

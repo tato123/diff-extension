@@ -52,8 +52,7 @@ module.exports = (env, argv) => [
             ...groupsOptions
           }
         }
-      },
-      namedModules: true
+      }
     },
     module: {
       rules: [

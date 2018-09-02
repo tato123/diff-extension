@@ -2,7 +2,7 @@ import "./message";
 import { runFrontend } from "./frontend";
 import { sendMessageToBackground, portMessages$ } from "./backgroundClient";
 import { filter } from "rxjs/operators";
-import { types, actions, logger } from "@diff/common";
+import { types, actions } from "@diff/common";
 import _ from "lodash";
 
 /**
@@ -46,7 +46,7 @@ const main = () => {
       } = action;
 
       if (isDomainMatch(preferences.autorunDomains, window.location.href)) {
-        logger.debug("Running frontend");
+        console.log("Running frontend");
         runFrontend();
       } else {
         console.log("not running");

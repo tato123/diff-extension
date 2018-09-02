@@ -1,10 +1,10 @@
-import { firebase } from "@firebase/app";
-import "@firebase/firestore";
+import * as firebase from "firebase/app";
+import "firebase/firestore";
 
 /**
  * Handles initializion that is required for our firebase application
  */
-export const initializeFirestore = () => {
+export const initializeFirestore = (): firebase.firestore.Firestore => {
   console.log("[plugin - firebase] initializing connection");
 
   // connect to firebase

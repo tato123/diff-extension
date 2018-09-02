@@ -83,6 +83,7 @@
     "color": "^3.0.0",
     "date-fns": "^1.29.0",
     "dotenv-webpack": "^1.5.5",
+    "firebase": "^5.4.2",
     "formik": "^1.0.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",

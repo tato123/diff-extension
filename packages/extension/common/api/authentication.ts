@@ -1,4 +1,4 @@
-import "@firebase/auth";
+import "firebase/auth";
 
 export interface AuthenticationResponse {
   refresh_token: string;

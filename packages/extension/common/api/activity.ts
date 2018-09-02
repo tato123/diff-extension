@@ -1,10 +1,17 @@
-import { Observable } from "rxjs";
+import * as firebase from "firebase";
+import { Observable, Observer } from "rxjs";
 
-export default db => {
+export interface QueryResponse {
+  data: Object;
+  type: string;
+  id: string;
+}
+
+export default (db: firebase.firestore.Firestore): Object => {
   const activityRef = db.collection("activity");
 
-  const userActivity$ = uid => {
-    return Observable.create(observer => {
+  const userActivity$ = (uid: string) => {
+    return Observable.create((observer: Observer<QueryResponse>) => {
       const unsubscribe = activityRef
         .doc(uid)
         .collection("seen")
@@ -17,8 +24,8 @@ export default db => {
     });
   };
 
-  const createUserActivity$ = (uid, eventIds) => {
-    return Observable.create(observer => {
+  const createUserActivity$ = (uid: string, eventIds: Array<string>) => {
+    return Observable.create((observer: Observer<Array<string>>) => {
       const batch = db.batch();
 
       // create a batch record for everything

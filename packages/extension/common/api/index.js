@@ -15,8 +15,7 @@ export default () => {
     workspace: workspaceFactory(db$),
     auth: authenticationFactory(db$),
     activity: activityFactory(db$),
-    invites: inviteFactory(db$),
-    db$
+    invites: inviteFactory(db$)
   };
 
   window.obs = obs;

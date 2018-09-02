@@ -1,4 +1,4 @@
-import "@firebase/auth";
+import "firebase/auth";
 
 import { Observable } from "rxjs";
 

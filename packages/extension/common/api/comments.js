@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import _ from "lodash";
-import "@firebase/storage";
+import "firebase/storage";
 
 export default db => {
   const eventsRef = db.collection("events");
