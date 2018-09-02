@@ -86,6 +86,21 @@ const loginFailed = error => ({
   }
 });
 
+const sessionInit = user => ({
+  type: types.SESSION_INIT,
+  payload: {
+    user
+  }
+});
+
+const sessionInitFailed = (err, uid) => ({
+  type: types.SESSION_INIT_FAILED,
+  payload: {
+    uid,
+    err
+  }
+});
+
 export default {
   signupRequest,
   signupSuccess,
@@ -99,5 +114,8 @@ export default {
   fetchCacheToken,
   login,
   loginSuccess,
-  loginFailed
+  loginFailed,
+
+  sessionInit,
+  sessionInitFailed
 };

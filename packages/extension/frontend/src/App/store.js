@@ -22,9 +22,9 @@ export default function configureStore(preloadedState) {
   // Setup our middlewares
   const middlewares = [asyncMiddleware, epicMiddleware, postmessageMiddleware];
 
-  const composedEnhancers = composeWithDevTools(
-    applyMiddleware(...middlewares)
-  );
+  const composedEnhancers = composeWithDevTools({
+    maxAge: 10000000
+  });
 
   // Setup our reducers
   const rootReducer = combineReducers({
@@ -34,7 +34,11 @@ export default function configureStore(preloadedState) {
   });
 
   // Finally - Create our store
-  const store = createStore(rootReducer, preloadedState, composedEnhancers);
+  const store = createStore(
+    rootReducer,
+    preloadedState,
+    composedEnhancers(applyMiddleware(...middlewares))
+  );
 
   // Start watching our actions with our epic middleware
   epicMiddleware.run(rootEpic);

@@ -12,6 +12,9 @@ const VALIDATE_USER_REQUEST = "@diff/user/validateRequest";
 const VALIDATE_USER_SUCCESS = "@diff/user/validateSuccess";
 const VALIDATE_USER_FAILED = "@diff/user/validateFailed";
 
+const SESSION_INIT = "@diff/user/session/init";
+const SESSION_INIT_FAILED = "@diff/user/session/initFailed";
+
 export default {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -21,5 +24,7 @@ export default {
   SIGNUP_FAILED,
   VALIDATE_USER_REQUEST,
   VALIDATE_USER_SUCCESS,
-  VALIDATE_USER_FAILED
+  VALIDATE_USER_FAILED,
+  SESSION_INIT,
+  SESSION_INIT_FAILED
 };

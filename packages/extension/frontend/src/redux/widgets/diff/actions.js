@@ -7,14 +7,14 @@ const updateItemsSeen = arrayOfIds => ({
   }
 });
 
-const writeUpdateItemsSeenSuccess = arrayOfIds => ({
+const updateItemsSeenSuccess = arrayOfIds => ({
   type: types.WRITE_UPDATE_ITEMS_SEEN_SUCCESS,
   payload: {
     ids: arrayOfIds
   }
 });
 
-const writeUpdateItemsSeenFailed = (arrayOfIds, err) => ({
+const updateItemsSeenFailed = (err, arrayOfIds) => ({
   type: types.WRITE_UPDATE_ITEMS_SEEN_SUCCESS,
   payload: {
     ids: arrayOfIds,
@@ -29,9 +29,36 @@ const closeDiff = selectorId => ({
   }
 });
 
+const addComment = (comment, selector, attachments) => ({
+  type: types.ADD_NEW_COMMENT,
+  payload: {
+    comment,
+    selector,
+    attachments
+  }
+});
+
+const addCommentSuccess = id => ({
+  type: types.ADD_NEW_COMMENT_SUCCESS,
+  payload: {
+    id
+  }
+});
+
+const addCommentFailed = err => ({
+  type: types.ADD_NEW_COMMENT_FAILED,
+  payload: {
+    err
+  }
+});
+
 export default {
   updateItemsSeen,
-  writeUpdateItemsSeenFailed,
-  writeUpdateItemsSeenSuccess,
-  closeDiff
+  updateItemsSeenSuccess,
+  updateItemsSeenFailed,
+  closeDiff,
+
+  addComment,
+  addCommentSuccess,
+  addCommentFailed
 };

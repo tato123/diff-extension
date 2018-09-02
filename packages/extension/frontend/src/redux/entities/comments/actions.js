@@ -5,6 +5,11 @@ const addComment = payload => ({
   payload
 });
 
+const clearComments = payload => ({
+  type: types.CLEAR_COMMENTS
+});
+
 export default {
-  addComment
+  addComment,
+  clearComments
 };

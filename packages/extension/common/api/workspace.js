@@ -2,7 +2,6 @@ import { Observable } from "rxjs";
 
 export default db => {
   const workspaceRef = db.collection("workspaces");
-  const invitesRef = db.collection("invites");
 
   const workspaces$ = uid => {
     return Observable.create(observer => {
@@ -12,7 +11,7 @@ export default db => {
           querySnapshot => {
             querySnapshot.docChanges().forEach(({ doc, type }) => {
               const data = doc.data();
-              observer.next({ data, type });
+              observer.next({ data, type, id: doc.id });
             });
           },
           err => {
@@ -24,13 +23,13 @@ export default db => {
     });
   };
 
-  const invites$ = email => {
+  const workspaceForId$ = workspaceId => {
     return Observable.create(observer => {
-      const unsubscribe = invitesRef.where(`email`, "==", email).onSnapshot(
+      const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(
         querySnapshot => {
           querySnapshot.docChanges().forEach(({ doc, type }) => {
             const data = doc.data();
-            observer.next({ data, type });
+            observer.next({ data, type, id: doc.id });
           });
         },
         err => {
@@ -42,8 +41,63 @@ export default db => {
     });
   };
 
+  const addCollaborators = async (emails, workspaceId, accessToken) => {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        emails,
+        workspaceId
+      })
+    };
+
+    const response = await fetch(`${process.env.API_SERVER}/invite`, {
+      ...options,
+      method: "POST"
+    });
+
+    if (!response.ok) {
+      return Promise.reject(response.statusText);
+    }
+
+    return response.json();
+  };
+
+  const addSingleCollaborator = async (email, workspaceId) =>
+    addCollaborators([email], workspaceId);
+
+  const createWorkspace = async (name, accessToken) => {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        name
+      })
+    };
+
+    const response = await fetch(`${process.env.API_SERVER}/workspace`, {
+      ...options,
+      method: "POST"
+    });
+
+    if (!response.ok) {
+      return Promise.reject(response.statusText);
+    }
+
+    return response.json();
+  };
+
   return {
     workspaces$,
-    invites$
+    workspaceForId$,
+    addCollaborators,
+    addSingleCollaborator,
+    createWorkspace
   };
 };

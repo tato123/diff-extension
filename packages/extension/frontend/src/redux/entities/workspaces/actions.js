@@ -28,7 +28,7 @@ const getWorkspaceByIdSuccess = data => ({
   }
 });
 
-const getWorkspaceByIdFailed = (id, err) => ({
+const getWorkspaceByIdFailed = (err, id) => ({
   type: types.GET_WORKSPACE_BY_ID_FAILED,
   payload: {
     id,

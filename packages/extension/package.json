@@ -59,6 +59,8 @@
     "stylelint-config-standard": "^18.2.0",
     "svg-url-loader": "^2.3.2",
     "text-loader": "0.0.1",
+    "tslint-config-prettier": "^1.15.0",
+    "typescript": "^3.0.3",
     "url-loader": "^1.0.1",
     "webpack": "^4.17.1",
     "webpack-bundle-analyzer": "^2.13.1",

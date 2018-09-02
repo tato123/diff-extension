@@ -61,9 +61,22 @@ const fetchCacheTokenEpic = action$ =>
     })
   );
 
+const initializeSession = (action$, state$, { api }) =>
+  action$.pipe(
+    ofType(types.LOGIN_SUCCESS),
+    mergeMap(action => {
+      const uid = state$.value.user.uid;
+      return api.user.getUser(uid).pipe(
+        map(user => actions.sessionInit(user)),
+        catchError(err => of(actions.sessionInitFailed(err.message, uid)))
+      );
+    })
+  );
+
 export default combineEpics(
   signupEpic,
   validateUserEpic,
   loginEpic,
-  fetchCacheTokenEpic
+  fetchCacheTokenEpic,
+  initializeSession
 );

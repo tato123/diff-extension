@@ -2,11 +2,8 @@ import { combineEpics, ofType } from "redux-observable";
 import types from "./types";
 import actions from "./actions";
 
-import { Observable } from "rxjs";
-import { switchMap, flatMap, filter } from "rxjs/operators";
-import { firebase } from "@firebase/app";
-import "@firebase/auth";
-import "@firebase/firestore";
+import { from } from "rxjs";
+import { switchMap, flatMap, filter, map, catchError } from "rxjs/operators";
 
 import {
   selectors,
@@ -14,52 +11,24 @@ import {
 } from "redux/entities/selectors";
 import { actions as widgetActions } from "redux/widgets/state";
 import { actions as selectorActions } from "redux/widgets/selectors";
+import mySelectors from "./selectors";
 
-const ROOT_COLLECTION = "activity";
-const SUB_COLLECTION = "seen";
-
-/* eslint-disable */
-const updateItemsInDb$ = (action, db) => {
-  return Observable.create(observer => {
-    const batch = db.batch();
-    // get our current user
-    const user = firebase.auth().currentUser;
-
-    // create a batch of updates for all of our
-    // records
-    action.payload.ids.forEach(docId => {
-      const record = {
-        [docId]: {
-          id: docId,
-          created: Date.now()
-        }
-      };
-      const activityRef = db
-        .collection(ROOT_COLLECTION)
-        .doc(user.uid)
-        .collection(SUB_COLLECTION)
-        .doc(docId);
-
-      batch.set(activityRef, record);
-    });
-    batch
-      .commit()
-      .then(() => {
-        observer.next(actions.writeUpdateItemsSeenSuccess(action.payload.ids));
-        observer.complete();
-      })
-      .catch(err => {
-        observer.error(err);
-      });
-  });
-};
-
-const updateItemsSeenEpic = (action$, state$, { db }) =>
+const updateItemsSeenEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.UPDATE_ITEMS_SEEN),
-    // automatically handles switching
-    // to the latest observable
-    switchMap(action => updateItemsInDb$(action, db))
+    switchMap(action =>
+      api.activity
+        .createUserActivity$(
+          mySelectors.getCurrentUserId()(state$.value),
+          action.payload.ids
+        )
+        .pipe(
+          map(eventIds => actions.updateItemsSeenSuccess(eventIds)),
+          catchError(err =>
+            actions.updateItemsSeenFailed(err, action.payload.ids)
+          )
+        )
+    )
   );
 
 const onCloseDiffEpic = (action$, state$) =>
@@ -82,4 +51,24 @@ const onCloseDiffEpic = (action$, state$) =>
     filter(x => x)
   );
 
-export default combineEpics(updateItemsSeenEpic, onCloseDiffEpic);
+const addNewCommentEpic = (action$, state$, { api }) =>
+  action$.pipe(
+    ofType(types.ADD_NEW_COMMENT),
+    map(action =>
+      from(
+        api.comments.addNewComment(
+          action.payload.comment,
+          action.payload.selector,
+          action.payload.attachments,
+          mySelectors.getCurrentUserId()(state$.value),
+          mySelectors.getCurrentWorkspace()(state$.value``)
+        )
+      )
+    )
+  );
+
+export default combineEpics(
+  updateItemsSeenEpic,
+  onCloseDiffEpic,
+  addNewCommentEpic
+);

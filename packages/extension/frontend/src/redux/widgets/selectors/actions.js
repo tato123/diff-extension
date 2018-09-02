@@ -8,7 +8,23 @@ const inspect = () => ({
   type: types.INSPECT
 });
 
+const showDiff = selector => ({
+  type: types.SHOW_DIFF,
+  payload: {
+    selector
+  }
+});
+
+const createNewSelector = selector => ({
+  type: types.CREATE_NEW_SELECTOR,
+  payload: {
+    selector
+  }
+});
+
 export default {
   cancelInspect,
-  inspect
+  inspect,
+  showDiff,
+  createNewSelector
 };

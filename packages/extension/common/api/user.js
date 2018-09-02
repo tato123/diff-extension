@@ -17,17 +17,23 @@ export default db => {
   };
 
   const getUser = uid => {
-    return Observable.create(async observer => {
-      const doc = await db
-        .collection("users")
+    return Observable.create(observer => {
+      db.collection("users")
         .doc(uid)
-        .get();
-      if (doc.exists) {
-        observer.error("no user");
-      } else {
-        observer.next(doc.data());
-      }
-      observer.complete();
+        .get()
+        .then(doc => {
+          if (!doc.exists) {
+            observer.error("no user");
+          } else {
+            observer.next(doc.data());
+          }
+        })
+        .catch(err => {
+          observer.error(err.message);
+        })
+        .finally(() => {
+          observer.complete();
+        });
     });
   };
 

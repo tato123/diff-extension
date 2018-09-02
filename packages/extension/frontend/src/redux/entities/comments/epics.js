@@ -8,17 +8,19 @@ import actions from "./actions";
 
 import { actions as userActions } from "redux/entities/users";
 import { actions as selectorActions } from "redux/entities/selectors";
-import _ from "lodash";
 
-const cleanCommentsEpic = (action$, state$, { db, api }) =>
+console.warn("fake initializer set for comments types");
+const fakeType = "faker";
+
+const cleanCommentsEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(userTypes.LOGIN_SUCCESS, workspaceTypes.GET_WORKSPACE_BY_ID_SUCCESS),
-    mapTo({ type: "clean" })
+    ofType(fakeType),
+    mapTo(actions.clearComments())
   );
 
-const fetchCommentsEpic = (action$, state$, { db, api }) =>
+const fetchCommentsEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(userTypes.LOGIN_SUCCESS, workspaceTypes.GET_WORKSPACE_BY_ID_SUCCESS),
+    ofType(fakeType),
 
     switchMap(() =>
       api.comments
