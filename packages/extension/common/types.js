@@ -1,4 +1,4 @@
-const namespacedAction = name => `@diff/${name}`;
+const namespacedAction = name => `@diff/common/${name}`;
 
 const asyncAction = actionType => ({
   REQUEST: namespacedAction(`${actionType}/request`),
@@ -7,9 +7,7 @@ const asyncAction = actionType => ({
 });
 
 export default {
-  AUTHENTICATION: asyncAction("authentication"),
   FETCH_USER_PREFERENCES: asyncAction("fetchUserPreferences"),
-  STORE_USER_PREFERENCES: asyncAction("storeUserPreferences"),
   RUN_REQUEST: asyncAction("runRequest"),
   LOGIN: asyncAction("login"),
   CACHE_TOKEN: asyncAction("cacheToken"),

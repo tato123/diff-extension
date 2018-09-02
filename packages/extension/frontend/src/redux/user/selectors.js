@@ -20,6 +20,9 @@ const requiresLoginSelector = () =>
     user => (user.meta && user.meta.requiresLogin) || false
   );
 
+const currentUserIdSelector = () =>
+  createSelector(userSelector, user => user.uid);
+
 const currentWorkspaceSelector = () =>
   createSelector(userSelector, user => user.workspaceId);
 
@@ -28,5 +31,6 @@ export default {
   refreshTokenSelector,
   isFetchingTokenSelector,
   requiresLoginSelector,
-  currentWorkspaceSelector
+  currentWorkspaceSelector,
+  currentUserIdSelector
 };

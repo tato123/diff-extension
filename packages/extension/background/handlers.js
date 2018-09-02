@@ -38,18 +38,6 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
   }
 };
 
-const handleStoreUserPreferences = (
-  tabId,
-  postMessageToTab,
-  { payload: { preferences } }
-) => {
-  set(PREFERENCES, preferences)
-    .then(() => postMessageToTab(tabId, actions.storeUserPreferencesSuccess()))
-    .catch(err =>
-      postMessageToTab(tabId, actions.storeUserPreferencesFailed(err.message))
-    );
-};
-
 const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
   // const previousToken = await getUserToken();
   // const nextToken = action.payload.token;
@@ -100,7 +88,6 @@ const handleFetchCacheTokenRequest = async (
 
 export default {
   [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [types.STORE_USER_PREFERENCES.REQUEST]: handleStoreUserPreferences,
   [types.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
   [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
 };

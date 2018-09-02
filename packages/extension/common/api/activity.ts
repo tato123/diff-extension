@@ -15,11 +15,14 @@ export default (db: firebase.firestore.Firestore): Object => {
       const unsubscribe = activityRef
         .doc(uid)
         .collection("seen")
-        .onSnapshot(querySnapshot => {
-          querySnapshot.docChanges().forEach(({ doc, type }) => {
-            observer.next({ data: doc.data(), type, id: doc.id });
-          });
-        });
+        .onSnapshot(
+          querySnapshot => {
+            querySnapshot.docChanges().forEach(({ doc, type }) => {
+              observer.next({ data: doc.data(), type, id: doc.id });
+            });
+          },
+          err => observer.error(err)
+        );
       return unsubscribe;
     });
   };

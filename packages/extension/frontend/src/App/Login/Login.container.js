@@ -20,8 +20,8 @@ const makeCustomSelector = () => {
 const mapDispatchToProps = dispatch => ({
   login: credentials => dispatch(actions.login(credentials)),
   getCacheToken: () => dispatch(actions.fetchCacheToken()),
-  signup: (email, password) => actions.asyncSignup(email, password, dispatch),
-  validateEmail: email => actions.asyncValidate(email, dispatch)
+  signup: (email, password) => dispatch(actions.signupRequest(email, password)),
+  validateEmail: email => dispatch(actions.validateUser(email, dispatch))
 });
 
 export default connect(

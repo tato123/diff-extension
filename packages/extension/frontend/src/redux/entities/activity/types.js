@@ -2,9 +2,9 @@ const CREATE_EVENTLOG_REQUEST = "@diff/activity/createRequest";
 const CREATE_EVENTLOG_SUCCESS = "@diff/activity/createSuccess";
 const CREATE_EVENTLOG_FAILED = "@diff/activity/createFailed";
 
-const ADD_USER_SEEN_ACTIVITY = "@diff/activity/addUserSeenActivity";
+const ADD_USER_SEEN_ACTIVITY = "@diff/activity/addEventSeenActivity";
 const ADD_USER_SEEN_ACTIVITY_FAILED =
-  "@diff/activity/addUserSeenActivityFailed";
+  "@diff/activity/addEventSeenActivityFailed";
 
 export default {
   CREATE_EVENTLOG_REQUEST,

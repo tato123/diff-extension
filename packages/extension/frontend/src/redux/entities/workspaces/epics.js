@@ -3,15 +3,13 @@ import { of } from "rxjs";
 import { catchError, switchMap, map } from "rxjs/operators";
 import types from "./types";
 import actions from "./actions";
-
-console.warn("[workspace epics] - no workspace selected, faking type");
-const faker = "faker";
+import { types as userTypes } from "redux/user";
 
 const getInvitesEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(faker),
+    ofType(userTypes.SELECT_WORKSPACE),
     switchMap(action =>
-      api.invites.invitesForWorkspace(action.payload.workspaceId).pipe(
+      api.invites.invitesForWorkspace$(action.payload.workspaceId).pipe(
         map(response => {
           if (response.type === "added" || response.type === "modified") {
             return actions.addInviteUser(response.data.email);

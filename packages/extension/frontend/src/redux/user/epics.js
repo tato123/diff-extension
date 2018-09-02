@@ -39,19 +39,22 @@ const loginEpic = (action$, state$, { api }) =>
     mergeMap(action => {
       const { username, password, refreshToken } = action.payload;
       return from(api.auth.login(username, password, refreshToken)).pipe(
-        flatMap(token => {
-          return [
-            actions.loginSuccess(token),
-            remoteActions.postMessage(
-              commonActions.cacheTokenRequest(token.refresh_token)
-            )
-          ];
-        }),
+        map(token => actions.loginSuccess(token)),
         catchError(error => {
           return of(actions.loginFailed(error));
         })
       );
     })
+  );
+
+const storeTokenOnLoginEpic = action$ =>
+  action$.pipe(
+    ofType(types.LOGIN_SUCCESS),
+    map(action =>
+      remoteActions.postMessage(
+        commonActions.cacheTokenRequest(action.payload.token.refresh_token)
+      )
+    )
   );
 
 const fetchCacheTokenEpic = action$ =>
@@ -70,7 +73,7 @@ const initializeSession = (action$, state$, { api }) =>
       return api.user.getUser(uid).pipe(
         flatMap(user => [
           userEntityActions.addUser(user),
-          actions.selectWorkspace(null)
+          actions.selectWorkspace(user.selectedWorkspace || null)
         ]),
         catchError(err => of(actions.sessionInitFailed(err.message, uid)))
       );
@@ -82,5 +85,6 @@ export default combineEpics(
   validateUserEpic,
   loginEpic,
   fetchCacheTokenEpic,
+  storeTokenOnLoginEpic,
   initializeSession
 );

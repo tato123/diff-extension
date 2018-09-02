@@ -25,14 +25,6 @@ const signupFailed = (email, err) => ({
   }
 });
 
-const asyncSignup = (email, password, dispatch) =>
-  remoteActions.promisedAction({
-    submit: signupRequest(email, password),
-    success: types.SIGNUP_SUCCESS,
-    failed: types.SIGNUP_FAILED,
-    dispatch
-  });
-
 const validateUser = email => ({
   type: types.VALIDATE_USER_REQUEST,
   payload: {
@@ -54,14 +46,6 @@ const validateUserFailed = (email, err) => ({
     err
   }
 });
-
-const asyncValidate = (email, dispatch) =>
-  remoteActions.promisedAction({
-    submit: validateUser(email),
-    success: types.VALIDATE_USER_SUCCESS,
-    failed: types.VALIDATE_USER_FAILED,
-    dispatch
-  });
 
 const fetchCacheToken = () => commonActions.fetchCacheToken();
 
@@ -112,12 +96,10 @@ export default {
   signupRequest,
   signupSuccess,
   signupFailed,
-  asyncSignup,
 
   validateUser,
   validateUserSuccess,
   validateUserFailed,
-  asyncValidate,
   fetchCacheToken,
   login,
   loginSuccess,

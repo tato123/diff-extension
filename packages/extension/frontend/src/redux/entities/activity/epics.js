@@ -3,16 +3,15 @@ import { combineEpics, ofType } from "redux-observable";
 import { of } from "rxjs";
 import { switchMap, map, catchError } from "rxjs/operators";
 import { values } from "lodash";
-import { types as userTypes } from "redux/user";
+import { types as userTypes, selectors as userSelectors } from "redux/user";
 import actions from "./actions";
-import selectors from "./selectors";
 
 const fetchEventLogEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(userTypes.SESSION_INIT),
+    ofType(userTypes.SELECT_WORKSPACE),
     switchMap(() =>
       api.activity
-        .userActivity$(selectors.getCurrentUserSelector()(state$.value))
+        .userActivity$(userSelectors.currentUserIdSelector()(state$.value))
         .pipe(
           map(({ data, type }) => {
             if (type === "added") {

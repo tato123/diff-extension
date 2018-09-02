@@ -17,8 +17,8 @@ const cleanCommentsEpic = (action$, state$, { api }) =>
 const fetchCommentsEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(userTypes.SELECT_WORKSPACE),
-    switchMap(() =>
-      api.comments
+    switchMap(() => {
+      return api.comments
         .comments$(
           state$.value.user.uid,
           userSelectors.currentWorkspaceSelector()(state$.value)
@@ -36,8 +36,8 @@ const fetchCommentsEpic = (action$, state$, { api }) =>
               typeId: id
             })
           ])
-        )
-    )
+        );
+    })
   );
 
 export default combineEpics(cleanCommentsEpic, fetchCommentsEpic);

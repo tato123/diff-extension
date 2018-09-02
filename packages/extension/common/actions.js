@@ -42,18 +42,6 @@ const fetchUserPreferencesFailed = err => ({
   }
 });
 
-const storeUserPreferencesSuccess = () => ({
-  type: types.STORE_USER_PREFERENCES.SUCCESS,
-  payload: {}
-});
-
-const storeUserPreferencesFailed = err => ({
-  type: types.STORE_USER_PREFERENCES.FAILED,
-  meta: {
-    err
-  }
-});
-
 // -------------------------------------------------------
 // Token actions
 // -------------------------------------------------------
@@ -94,50 +82,17 @@ const fetchCacheTokenSuccess = token => ({
   }
 });
 
-const validateCanRunRequest = domain => ({
-  type: types.VALIDATE_CAN_RUN.REQUEST,
-  payload: {
-    domain: window.location.hostname
-  }
-});
-
-const loginRequest = credentials => ({
-  type: types.LOGIN.REQUEST,
-  payload: {
-    ...credentials
-  }
-});
-
-const loginSuccess = token => ({
-  type: types.LOGIN.SUCCESS,
-  payload: {
-    token
-  }
-});
-
-const loginFailed = err => ({
-  type: types.LOGIN.FAILED,
-  meta: {
-    err
-  }
-});
-
 export default {
   composeRemoteAction,
   runRequest,
   fetchUserPreferences,
   fetchUserPreferencesSuccess,
   fetchUserPreferencesFailed,
-  storeUserPreferencesSuccess,
-  storeUserPreferencesFailed,
+
   cacheTokenRequest,
   cacheTokenFailed,
   cacheTokenSuccess,
   fetchCacheToken,
   fetchCacheTokenFailed,
-  fetchCacheTokenSuccess,
-  validateCanRunRequest,
-  loginSuccess,
-  loginFailed,
-  loginRequest
+  fetchCacheTokenSuccess
 };
