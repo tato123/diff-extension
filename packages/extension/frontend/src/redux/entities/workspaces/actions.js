@@ -21,10 +21,11 @@ const getWorkspaceById = id => ({
   }
 });
 
-const getWorkspaceByIdSuccess = data => ({
+const getWorkspaceByIdSuccess = (data, id) => ({
   type: types.GET_WORKSPACE_BY_ID_SUCCESS,
   payload: {
-    data
+    data,
+    id
   }
 });
 

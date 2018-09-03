@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
 export default db => {
-  const workspaceRef = db.collection("workspaces");
+  const workspaceRef = db.collection("workspace");
 
   const workspaces$ = uid => {
     return Observable.create(observer => {
@@ -26,11 +26,12 @@ export default db => {
   const workspaceForId$ = workspaceId => {
     return Observable.create(observer => {
       const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(
-        querySnapshot => {
-          querySnapshot.docChanges().forEach(({ doc, type }) => {
-            const data = doc.data();
-            observer.next({ data, type, id: doc.id });
-          });
+        doc => {
+          if (doc.exists) {
+            observer.next({ data: doc.data(), type: null, id: doc.id });
+          } else {
+            observer.error("document does not exist");
+          }
         },
         err => {
           observer.err(err);

@@ -24,11 +24,10 @@ const getWorkspaceByIdEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.GET_WORKSPACE_BY_ID),
     switchMap(action =>
-      api.workspace.workspaceForId(action.payload.workspaceId).pipe(
+      api.workspace.workspaceForId$(action.payload.id).pipe(
         map(response => {
-          if (response.type === "added" || response.type === "modified") {
-            return actions.getWorkspaceByIdSuccess(response.data);
-          }
+          console.warn("[frontend] [workspace epic] unknown response type");
+          return actions.getWorkspaceByIdSuccess(response.data, response.id);
         }),
         catchError(err =>
           of(

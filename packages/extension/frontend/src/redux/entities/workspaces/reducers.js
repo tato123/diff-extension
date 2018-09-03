@@ -14,9 +14,9 @@ const reducer = (state = initialState, action) => {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.data.id]: action.payload.data
+          [action.payload.id]: action.payload.data
         },
-        allIds: _.uniq([...state.allIds, action.payload.data.id])
+        allIds: _.uniq([...state.allIds, action.payload.id])
       };
     case types.ADD_INVITE_USER:
       return {

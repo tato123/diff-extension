@@ -6,6 +6,8 @@ import actions from "./actions";
 import { actions as userEntityActions } from "redux/entities/users";
 import { actions as commonActions, types as commonTypes } from "@diff/common";
 import { actions as remoteActions } from "redux/remote";
+import { actions as workspaceActions } from "redux/entities/workspaces";
+import selectors from "./selectors";
 
 const signupEpic = (action$, state$, { api }) =>
   action$.pipe(
@@ -69,11 +71,17 @@ const initializeSession = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.LOGIN_SUCCESS),
     mergeMap(action => {
-      const uid = state$.value.user.uid;
+      const uid = selectors.currentUserIdSelector()(state$.value);
+
       return api.user.getUser(uid).pipe(
         flatMap(user => [
           userEntityActions.addUser(user),
-          actions.selectWorkspace(user.selectedWorkspace || null)
+          ...Object.keys(user.workspaces).map(workspaceId =>
+            workspaceActions.getWorkspaceById(workspaceId)
+          ),
+          actions.selectWorkspace(
+            (user.workspaces && Object.keys(user.workspaces)[0]) || null
+          )
         ]),
         catchError(err => of(actions.sessionInitFailed(err.message, uid)))
       );
