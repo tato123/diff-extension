@@ -1,14 +1,17 @@
 import types from "./types";
+import { AnyAction } from "redux";
 
-const composeRemoteAction = (action, source, dest) =>
-  Object.assign(
-    {},
-    {
-      source,
-      dest
-    },
-    action
-  );
+import * as diffTypes from "./index.d";
+
+const composeRemoteAction = (
+  action: AnyAction,
+  source: string,
+  dest: string
+): diffTypes.RemoteAction => ({
+  source,
+  dest,
+  action
+});
 
 // -------------------------------------------------------
 // User actions
@@ -22,11 +25,11 @@ const runRequest = () => ({
 // User actions
 // -------------------------------------------------------
 
-const fetchUserPreferences = () => ({
+const fetchUserPreferences = (): AnyAction => ({
   type: types.FETCH_USER_PREFERENCES.REQUEST
 });
 
-const fetchUserPreferencesSuccess = preferences => ({
+const fetchUserPreferencesSuccess = (preferences: Object): AnyAction => ({
   type: types.FETCH_USER_PREFERENCES.SUCCESS,
   payload: {
     preferences: {
@@ -35,7 +38,7 @@ const fetchUserPreferencesSuccess = preferences => ({
   }
 });
 
-const fetchUserPreferencesFailed = err => ({
+const fetchUserPreferencesFailed = (err: string): AnyAction => ({
   type: types.FETCH_USER_PREFERENCES.FAILED,
   meta: {
     err
@@ -46,36 +49,36 @@ const fetchUserPreferencesFailed = err => ({
 // Token actions
 // -------------------------------------------------------
 
-const cacheTokenRequest = token => ({
+const cacheTokenRequest = (token: string): AnyAction => ({
   type: types.CACHE_TOKEN.REQUEST,
   payload: {
     token
   }
 });
 
-const cacheTokenFailed = err => ({
+const cacheTokenFailed = (err: string): AnyAction => ({
   type: types.CACHE_TOKEN.FAILED,
   meta: {
     err
   }
 });
 
-const cacheTokenSuccess = () => ({
+const cacheTokenSuccess = (): AnyAction => ({
   type: types.CACHE_TOKEN.SUCCESS
 });
 
-const fetchCacheToken = () => ({
+const fetchCacheToken = (): AnyAction => ({
   type: types.FETCH_CACHE_TOKEN.REQUEST
 });
 
-const fetchCacheTokenFailed = err => ({
+const fetchCacheTokenFailed = (err: string): AnyAction => ({
   type: types.FETCH_CACHE_TOKEN.FAILED,
   meta: {
     err
   }
 });
 
-const fetchCacheTokenSuccess = token => ({
+const fetchCacheTokenSuccess = (token: diffTypes.Token): AnyAction => ({
   type: types.FETCH_CACHE_TOKEN.SUCCESS,
   payload: {
     token

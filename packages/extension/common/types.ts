@@ -1,6 +1,14 @@
-const namespacedAction = name => `@diff/common/${name}`;
+import { AnyAction } from "redux";
 
-const asyncAction = actionType => ({
+const namespacedAction = (name: string): string => `@diff/common/${name}`;
+
+export interface AsyncType {
+  REQUEST: string;
+  SUCCESS: string;
+  FAILED: string;
+}
+
+const asyncAction = (actionType: string): AsyncType => ({
   REQUEST: namespacedAction(`${actionType}/request`),
   SUCCESS: namespacedAction(`${actionType}/success`),
   FAILED: namespacedAction(`${actionType}/failed`)

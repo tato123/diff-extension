@@ -1,0 +1,19 @@
+{
+  "presets": [
+    "@babel/preset-react",
+    "@babel/typescript",
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": ["last 2 Chrome versions"]
+        },
+        "modules": false
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "react-hot-loader/babel"
+  ]
+}
