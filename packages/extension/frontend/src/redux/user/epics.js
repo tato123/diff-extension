@@ -14,9 +14,16 @@ const signupEpic = (action$, state$, { api }) =>
     ofType(types.SIGNUP_REQUEST),
     mergeMap(action => {
       return from(
-        api.auth.signup(action.payload.email, action.payload.password)
+        api.auth.signup(
+          action.payload.email,
+          action.payload.password,
+          action.payload.displayName
+        )
       ).pipe(
-        map(result => actions.signupSuccess(result)),
+        flatMap(result => [
+          actions.signupSuccess(result),
+          actions.login({ refreshToken: result.refresh_token })
+        ]),
         catchError(err => of(actions.signupFailed(err, action.payload.email)))
       );
     })
@@ -48,8 +55,10 @@ const loginEpic = (action$, state$, { api }) =>
       const { username, password, refreshToken } = action.payload;
       return from(api.auth.login(username, password, refreshToken)).pipe(
         map(token => actions.loginSuccess(token)),
-        catchError(error => {
-          return of(actions.loginFailed(error));
+        catchError(() => {
+          return of(
+            actions.loginFailed("The username or password is incorrect")
+          );
         })
       );
     })

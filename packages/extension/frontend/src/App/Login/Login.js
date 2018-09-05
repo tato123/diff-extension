@@ -106,12 +106,14 @@ export default class Login extends React.Component {
     isSubmitting: PropTypes.bool,
 
     showForm: PropTypes.func.isRequired,
-    form: PropTypes.string.isRequired
+    form: PropTypes.string.isRequired,
+    error: PropTypes.string
   };
 
   static defaultProps = {
     refreshToken: null,
-    isFetchingToken: false
+    isFetchingToken: false,
+    error: ""
   };
 
   state = {
@@ -211,45 +213,27 @@ export default class Login extends React.Component {
     }
   };
 
-  submitForm = (values, { setSubmitting, setErrors }) => {
+  submitForm = values => {
     if (this.props.form === FORM_TYPES.PRECHECK) {
       return this.props.validateEmail(values.email);
-      // .then(() => {
-      //   this.showForm(FORM_TYPES.LOGIN)();
-      // })
-      // .catch(() => {
-      //   this.showForm(FORM_TYPES.SIGNUP)();
-      // });
     }
 
     if (this.props.form === FORM_TYPES.LOGIN) {
-      setSubmitting(true);
-
       return this.props.login({
         username: values.email,
-        password: values.password
+        password: values.password,
+        displayName: values.username
       });
-      // .catch(() => {
-      //   setErrors({ form: "The username or password is incorrect" });
-      // });
     }
 
     if (this.props.form === FORM_TYPES.SIGNUP) {
       return this.props.signup(values.email, values.password);
-      // .then(successAction => {
-      //   this.props.login({
-      //     refreshToken: successAction.payload.refreshToken.refresh_token
-      //   });
-      // })
-      // .catch(err => {
-      //   setErrors(err);
-      // });
     }
   };
 
   render() {
     const {
-      props: { requiresLogin, isSubmitting, showForm, form }
+      props: { requiresLogin, isSubmitting, showForm, form, error }
     } = this;
 
     if (requiresLogin) {
@@ -290,7 +274,7 @@ export default class Login extends React.Component {
                             <HR />
                           </div>
                           <div>
-                            <ErrorLabel>{errors.form}</ErrorLabel>
+                            <ErrorLabel>{error}</ErrorLabel>
                             <Form.Input
                               type="text"
                               name="email"

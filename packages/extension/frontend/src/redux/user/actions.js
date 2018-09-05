@@ -1,11 +1,12 @@
 import types from "./types";
 import { actions as commonActions } from "@diff/common";
 
-const signupRequest = (email, password) => ({
+const signupRequest = (email, password, displayName) => ({
   type: types.SIGNUP_REQUEST,
   payload: {
     email,
-    password
+    password,
+    displayName
   }
 });
 
@@ -16,10 +17,10 @@ const signupSuccess = refreshToken => ({
   }
 });
 
-const signupFailed = (email, err) => ({
+const signupFailed = (email, error) => ({
   type: types.SIGNUP_FAILED,
   payload: {
-    err,
+    error,
     email
   }
 });

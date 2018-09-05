@@ -33,7 +33,11 @@ export default (db: any) => {
     return response.json();
   };
 
-  const signup = async (email: string, password: string): Promise<any> => {
+  const signup = async (
+    email: string,
+    password: string,
+    displayName: string
+  ): Promise<any> => {
     const options = {
       method: "POST",
       headers: {
@@ -41,7 +45,8 @@ export default (db: any) => {
       },
       body: JSON.stringify({
         email,
-        password
+        password,
+        displayName
       })
     };
 

@@ -28,6 +28,12 @@ const currentWorkspaceSelector = () =>
 
 const formSelector = () => createSelector(userSelector, user => user.meta.form);
 
+const errorSelector = () =>
+  createSelector(userSelector, user => user.meta.error);
+
+const isSubmittingSelector = () =>
+  createSelector(userSelector, user => user.meta.submitting);
+
 export default {
   accessTokenSelector,
   refreshTokenSelector,
@@ -35,5 +41,7 @@ export default {
   requiresLoginSelector,
   currentWorkspaceSelector,
   currentUserIdSelector,
-  formSelector
+  formSelector,
+  errorSelector,
+  isSubmittingSelector
 };

@@ -10,7 +10,8 @@ const initialState = {
   meta: {
     isFetchingToken: false,
     requiresLogin: false,
-    form: "precheck"
+    form: "precheck",
+    error: null
   }
 };
 
@@ -59,7 +60,12 @@ const handleLogin = (state, { type, payload }) => {
         uid: null,
         workspaceId: null,
         access_token: null,
-        refresh_token: null
+        refresh_token: null,
+        meta: {
+          ...state.meta,
+          error: null,
+          submitting: true
+        }
       };
     case types.LOGIN_SUCCESS:
       const {
@@ -74,7 +80,12 @@ const handleLogin = (state, { type, payload }) => {
         refresh_token,
         claims,
         uid,
-        workspaceId: null
+        workspaceId: null,
+        meta: {
+          ...state.meta,
+          error: null,
+          submitting: false
+        }
       };
     case types.LOGIN_FAILED:
       return {
@@ -82,7 +93,44 @@ const handleLogin = (state, { type, payload }) => {
         access_token: null,
         refresh_token: null,
         uid: null,
-        workspaceId: null
+        workspaceId: null,
+        meta: {
+          ...state.meta,
+          error: payload.error,
+          submitting: false
+        }
+      };
+  }
+};
+
+const handleSignup = (state, action) => {
+  switch (action.type) {
+    case types.SIGNUP_REQUEST:
+      return {
+        ...state,
+        meta: {
+          ...state.meta,
+          submitting: true,
+          error: null
+        }
+      };
+    case types.SIGNUP_SUCCESS:
+      return {
+        ...state,
+        meta: {
+          ...state.meta,
+          submitting: false,
+          error: null
+        }
+      };
+    case types.SIGNUP_FAILED:
+      return {
+        ...state,
+        meta: {
+          ...state.meta,
+          submitting: false,
+          error: action.payload.error
+        }
       };
   }
 };
@@ -97,6 +145,10 @@ const reducer = (state = initialState, action) => {
     case types.LOGIN_SUCCESS:
     case types.LOGIN_FAILED:
       return handleLogin(state, action);
+    case types.SIGNUP_REQUEST:
+    case types.SIGNUP_SUCCESS:
+    case types.SIGNUP_FAILED:
+      return handleSignup(state, action);
     case types.SELECT_WORKSPACE:
       return {
         ...state,
@@ -107,6 +159,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         meta: {
           ...state.meta,
+          submitting: false,
           form: action.payload.form
         }
       };
