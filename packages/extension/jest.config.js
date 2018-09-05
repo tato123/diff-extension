@@ -1,7 +1,9 @@
 module.exports = {
   verbose: true,
   transform: {
-    "^.+\\.jsx?$": "babel-jest"
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest"
   },
-  moduleFileExtensions: ["js", "json", "ts"]
+  moduleDirectories: ["node_modules", "<rootDir>/node_modules"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"]
 };

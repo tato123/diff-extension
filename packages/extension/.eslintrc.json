@@ -6,7 +6,7 @@
     "prettier/react",
     "prettier/standard"
   ],
-  "plugins": ["react", "prettier", "standard"],
+  "plugins": ["react", "prettier", "standard", "jest"],
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
@@ -19,7 +19,8 @@
   },
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
   "globals": {
     "chrome": true

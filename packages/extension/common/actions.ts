@@ -38,15 +38,15 @@ const fetchUserPreferencesSuccess = (preferences: Object): AnyAction => ({
   }
 });
 
-const fetchUserPreferencesFailed = (err: string): AnyAction => ({
+const fetchUserPreferencesFailed = (error: string): AnyAction => ({
   type: types.FETCH_USER_PREFERENCES.FAILED,
-  meta: {
-    err
+  payload: {
+    error
   }
 });
 
 // -------------------------------------------------------
-// Token actions
+// Set cache token actions
 // -------------------------------------------------------
 
 const cacheTokenRequest = (token: string): AnyAction => ({
@@ -56,10 +56,10 @@ const cacheTokenRequest = (token: string): AnyAction => ({
   }
 });
 
-const cacheTokenFailed = (err: string): AnyAction => ({
+const cacheTokenFailed = (error: string): AnyAction => ({
   type: types.CACHE_TOKEN.FAILED,
-  meta: {
-    err
+  payload: {
+    error
   }
 });
 
@@ -67,14 +67,18 @@ const cacheTokenSuccess = (): AnyAction => ({
   type: types.CACHE_TOKEN.SUCCESS
 });
 
+// -------------------------------------------------------
+// get cache token actions
+// -------------------------------------------------------
+
 const fetchCacheToken = (): AnyAction => ({
   type: types.FETCH_CACHE_TOKEN.REQUEST
 });
 
-const fetchCacheTokenFailed = (err: string): AnyAction => ({
+const fetchCacheTokenFailed = (error: string): AnyAction => ({
   type: types.FETCH_CACHE_TOKEN.FAILED,
-  meta: {
-    err
+  payload: {
+    error
   }
 });
 
