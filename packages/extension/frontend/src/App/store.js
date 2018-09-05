@@ -4,7 +4,7 @@ import { createEpicMiddleware, combineEpics } from "redux-observable";
 import initApi from "@diff/common/api";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
-import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
+import { postmessageMiddleware } from "redux/remote";
 
 import user, { epics as userEpics } from "redux/user";
 import widgets, { epics as widgetEpics } from "redux/widgets";
@@ -20,7 +20,7 @@ export default function configureStore(preloadedState) {
   });
 
   // Setup our middlewares
-  const middlewares = [asyncMiddleware, epicMiddleware, postmessageMiddleware];
+  const middlewares = [epicMiddleware, postmessageMiddleware];
 
   const composedEnhancers = composeWithDevTools({
     maxAge: 10000000

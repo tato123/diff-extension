@@ -1,5 +1,5 @@
 import * as firebase from "firebase";
-import { Observable, Observer } from "rxjs";
+import { Observable, Observer, from } from "rxjs";
 
 export interface QueryResponse {
   data: Object;
@@ -28,37 +28,27 @@ export default (db: firebase.firestore.Firestore): Object => {
   };
 
   const createUserActivity$ = (uid: string, eventIds: Array<string>) => {
-    return Observable.create((observer: Observer<Array<string>>) => {
-      const batch = db.batch();
+    const batch = db.batch();
 
-      // create a batch record for everything
-      eventIds.forEach(docId => {
-        const record = {
-          [docId]: {
-            id: docId,
-            created: Date.now()
-          }
-        };
+    // create a batch record for everything
+    eventIds.forEach(docId => {
+      const record = {
+        [docId]: {
+          id: docId,
+          created: Date.now()
+        }
+      };
 
-        const seenActivityRef = activityRef
-          .doc(uid)
-          .collection("seen")
-          .doc(docId);
+      const seenActivityRef = activityRef
+        .doc(uid)
+        .collection("seen")
+        .doc(docId);
 
-        batch.set(seenActivityRef, record);
-      });
-
-      // batch everything
-      batch
-        .commit()
-        .then(() => {
-          observer.next(eventIds);
-          observer.complete();
-        })
-        .catch(err => {
-          observer.error(err);
-        });
+      batch.set(seenActivityRef, record);
     });
+
+    // batch everything
+    return from(batch.commit());
   };
 
   return {

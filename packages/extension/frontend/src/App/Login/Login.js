@@ -103,7 +103,10 @@ export default class Login extends React.Component {
 
     requiresLogin: PropTypes.bool,
 
-    isSubmitting: PropTypes.bool
+    isSubmitting: PropTypes.bool,
+
+    showForm: PropTypes.func.isRequired,
+    form: PropTypes.string.isRequired
   };
 
   static defaultProps = {
@@ -112,7 +115,6 @@ export default class Login extends React.Component {
   };
 
   state = {
-    form: FORM_TYPES.PRECHECK,
     formFields: FORM_TYPES.PRECHECK
   };
 
@@ -120,18 +122,19 @@ export default class Login extends React.Component {
     this.props.getCacheToken();
   }
 
-  showForm = formType => () => {
-    console.log("Showing form", formType);
-    // delay setting for the form fields
-    // type to accomodate the animating fields
-    // in and out
-    this.showFormFields(formType);
+  componentDidUpdate(prevProps) {
+    const {
+      props: { isFetchingToken, refreshToken }
+    } = this;
 
-    // change our form dynamically
-    this.setState({
-      form: formType
-    });
-  };
+    if (!isFetchingToken && refreshToken) {
+      this.props.login({ refreshToken });
+    }
+
+    if (prevProps.form !== this.props.form) {
+      this.showFormFields(this.props.form);
+    }
+  }
 
   showFormFields = formType => {
     switch (formType) {
@@ -188,7 +191,7 @@ export default class Login extends React.Component {
   };
 
   getValidationSchema = () => {
-    switch (this.state.form) {
+    switch (this.props.form) {
       case FORM_TYPES.PRECHECK:
         return object().shape({
           email: string()
@@ -209,55 +212,44 @@ export default class Login extends React.Component {
   };
 
   submitForm = (values, { setSubmitting, setErrors }) => {
-    if (this.state.form === FORM_TYPES.PRECHECK) {
-      return this.props
-        .validateEmail(values.email)
-        .then(() => {
-          this.showForm(FORM_TYPES.LOGIN)();
-        })
-        .catch(() => {
-          this.showForm(FORM_TYPES.SIGNUP)();
-        });
+    if (this.props.form === FORM_TYPES.PRECHECK) {
+      return this.props.validateEmail(values.email);
+      // .then(() => {
+      //   this.showForm(FORM_TYPES.LOGIN)();
+      // })
+      // .catch(() => {
+      //   this.showForm(FORM_TYPES.SIGNUP)();
+      // });
     }
 
-    if (this.state.form === FORM_TYPES.LOGIN) {
+    if (this.props.form === FORM_TYPES.LOGIN) {
       setSubmitting(true);
 
-      return this.props
-        .login({ username: values.email, password: values.password })
-        .catch(() => {
-          setErrors({ form: "The username or password is incorrect" });
-        });
+      return this.props.login({
+        username: values.email,
+        password: values.password
+      });
+      // .catch(() => {
+      //   setErrors({ form: "The username or password is incorrect" });
+      // });
     }
 
-    if (this.state.form === FORM_TYPES.SIGNUP) {
-      return this.props
-        .signup(values.email, values.password)
-        .then(successAction => {
-          this.props.login({
-            refreshToken: successAction.payload.refreshToken.refresh_token
-          });
-        })
-        .catch(err => {
-          setErrors(err);
-        });
+    if (this.props.form === FORM_TYPES.SIGNUP) {
+      return this.props.signup(values.email, values.password);
+      // .then(successAction => {
+      //   this.props.login({
+      //     refreshToken: successAction.payload.refreshToken.refresh_token
+      //   });
+      // })
+      // .catch(err => {
+      //   setErrors(err);
+      // });
     }
   };
 
-  componentDidUpdate(prevProps) {
-    const {
-      props: { isFetchingToken, refreshToken }
-    } = this;
-
-    if (!isFetchingToken && refreshToken) {
-      this.props.login({ refreshToken });
-    }
-  }
-
   render() {
     const {
-      state: { form },
-      props: { requiresLogin, isSubmitting }
+      props: { requiresLogin, isSubmitting, showForm, form }
     } = this;
 
     if (requiresLogin) {
@@ -344,11 +336,13 @@ export default class Login extends React.Component {
                           <div>
                             <Button.Flat
                               type="button"
-                              onClick={this.showForm(
-                                form !== FORM_TYPES.SIGNUP
-                                  ? FORM_TYPES.SIGNUP
-                                  : FORM_TYPES.PRECHECK
-                              )}
+                              onClick={() =>
+                                showForm(
+                                  form !== FORM_TYPES.SIGNUP
+                                    ? FORM_TYPES.SIGNUP
+                                    : FORM_TYPES.PRECHECK
+                                )
+                              }
                             >
                               {form !== FORM_TYPES.SIGNUP
                                 ? "Create Account"

@@ -2,8 +2,8 @@ import { combineEpics, ofType } from "redux-observable";
 import types from "./types";
 import actions from "./actions";
 
-import { from } from "rxjs";
-import { switchMap, flatMap, filter, map, catchError } from "rxjs/operators";
+import { from, of } from "rxjs";
+import { flatMap, filter, map, catchError, mergeMap } from "rxjs/operators";
 
 import {
   selectors,
@@ -11,22 +11,24 @@ import {
 } from "redux/entities/selectors";
 import { actions as widgetActions } from "redux/widgets/state";
 import { actions as selectorActions } from "redux/widgets/selectors";
-import mySelectors from "./selectors";
+import { selectors as userSelectors } from "redux/user";
 
 const updateItemsSeenEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.UPDATE_ITEMS_SEEN),
-    switchMap(action =>
+    mergeMap(action =>
       api.activity
         .createUserActivity$(
-          mySelectors.getCurrentUserId()(state$.value),
+          userSelectors.currentUserIdSelector()(state$.value),
           action.payload.ids
         )
         .pipe(
-          map(eventIds => actions.updateItemsSeenSuccess(eventIds)),
-          catchError(err =>
-            actions.updateItemsSeenFailed(err, action.payload.ids)
-          )
+          map(() => {
+            return actions.updateItemsSeenSuccess(action.payload.ids);
+          }),
+          catchError(err => {
+            return of(actions.updateItemsSeenFailed(err, action.payload.ids));
+          })
         )
     )
   );
@@ -60,8 +62,8 @@ const addNewCommentEpic = (action$, state$, { api }) =>
           action.payload.comment,
           action.payload.selector,
           action.payload.attachments,
-          mySelectors.getCurrentUserId()(state$.value),
-          mySelectors.getCurrentWorkspace()(state$.value``)
+          userSelectors.currentUserIdSelector()(state$.value),
+          userSelectors.currentWorkspaceSelector()(state$.value``)
         )
       )
     )

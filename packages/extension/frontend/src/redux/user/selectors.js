@@ -26,11 +26,14 @@ const currentUserIdSelector = () =>
 const currentWorkspaceSelector = () =>
   createSelector(userSelector, user => user.workspaceId);
 
+const formSelector = () => createSelector(userSelector, user => user.meta.form);
+
 export default {
   accessTokenSelector,
   refreshTokenSelector,
   isFetchingTokenSelector,
   requiresLoginSelector,
   currentWorkspaceSelector,
-  currentUserIdSelector
+  currentUserIdSelector,
+  formSelector
 };

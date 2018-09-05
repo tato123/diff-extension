@@ -27,9 +27,15 @@ const validateUserEpic = (action$, state$, { api }) =>
     ofType(types.VALIDATE_USER_REQUEST),
     mergeMap(action => {
       return from(api.auth.isUser(action.payload.email)).pipe(
-        map(result => actions.validateUserSuccess(result)),
+        flatMap(result => [
+          actions.validateUserSuccess(result),
+          actions.showForm("login")
+        ]),
         catchError(err =>
-          of(actions.validateUserFailed(action.payload.email, err))
+          of(
+            actions.validateUserFailed(action.payload.email, err),
+            actions.showForm("signup")
+          )
         )
       );
     })

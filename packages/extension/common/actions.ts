@@ -10,7 +10,7 @@ const composeRemoteAction = (
 ): diffTypes.RemoteAction => ({
   source,
   dest,
-  action
+  ...action
 });
 
 // -------------------------------------------------------

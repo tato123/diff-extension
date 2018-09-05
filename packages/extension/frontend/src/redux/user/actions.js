@@ -1,5 +1,4 @@
 import types from "./types";
-import { actions as remoteActions } from "redux/remote";
 import { actions as commonActions } from "@diff/common";
 
 const signupRequest = (email, password) => ({
@@ -92,6 +91,13 @@ const selectWorkspace = workspaceId => ({
   }
 });
 
+const showForm = form => ({
+  type: types.SHOW_FORM,
+  payload: {
+    form
+  }
+});
+
 export default {
   signupRequest,
   signupSuccess,
@@ -108,5 +114,6 @@ export default {
   sessionInit,
   sessionInitFailed,
 
-  selectWorkspace
+  selectWorkspace,
+  showForm
 };

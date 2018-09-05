@@ -9,7 +9,8 @@ const initialState = {
   refresh_token: null,
   meta: {
     isFetchingToken: false,
-    requiresLogin: false
+    requiresLogin: false,
+    form: "precheck"
   }
 };
 
@@ -100,6 +101,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         workspaceId: action.payload.workspaceId
+      };
+    case types.SHOW_FORM:
+      return {
+        ...state,
+        meta: {
+          ...state.meta,
+          form: action.payload.form
+        }
       };
     default:
       return state;

@@ -14,7 +14,7 @@ const fetchEventLogEpic = (action$, state$, { api }) =>
         .userActivity$(userSelectors.currentUserIdSelector()(state$.value))
         .pipe(
           map(({ data, type }) => {
-            if (type === "added") {
+            if (type === "added" || type === "modified") {
               return actions.addUserSeenActivity(values(data)[0]);
             }
           }),
