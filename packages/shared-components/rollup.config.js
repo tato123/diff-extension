@@ -14,15 +14,10 @@ const includePathOptions = {
 
 export default {
   input: "src/index.js",
-  output: [
-    { file: "dist/bundle.js", format: "cjs", sourcemap: true },
-    { file: "dist/bundle.es.js", format: "es", sourcemap: true }
-  ],
+  output: [{ file: "dist/bundle.es.js", format: "es", sourcemap: true }],
   plugins: [
     resolve({
-      module: true,
-      jsnext: true,
-      main: true
+      module: true
     }),
     babel({
       exclude: "node_modules/**"
