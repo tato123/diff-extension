@@ -97,7 +97,8 @@ export default db => {
     }
 
     const newEvent = eventsRef.doc();
-    return newEvent.set(record);
+    await newEvent.set(record);
+    return newEvent.id;
   };
 
   return {

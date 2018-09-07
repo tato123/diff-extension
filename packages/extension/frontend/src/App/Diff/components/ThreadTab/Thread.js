@@ -43,7 +43,11 @@ export default class Thread extends React.Component {
   };
 
   handleEditorSubmit = vals => {
-    this.props.addComment({ ...vals, selector: this.props.cssSelector });
+    this.props.addComment(
+      vals.comment,
+      this.props.cssSelector,
+      vals.attachments
+    );
     this.setState({ addComment: false });
   };
 

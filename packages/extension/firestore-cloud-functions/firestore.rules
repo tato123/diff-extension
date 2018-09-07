@@ -1,0 +1,21 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Match any document in the 'cities' collection
+    match /events/{event} {
+      allow read, write: if request.auth.uid != null;
+    }
+    
+    
+    match /refreshTokens/{token} {
+      allow read: if request.auth.uid != null;
+      allow write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).roles.admin == true
+    }
+    
+    match /{document=**} {
+      allow read, write;
+    }
+    
+    
+  }
+}

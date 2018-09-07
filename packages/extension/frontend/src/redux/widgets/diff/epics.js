@@ -56,17 +56,23 @@ const onCloseDiffEpic = (action$, state$) =>
 const addNewCommentEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.ADD_NEW_COMMENT),
-    map(action =>
-      from(
+    mergeMap(action => {
+      const uid = userSelectors.currentUserIdSelector()(state$.value);
+      const workspace = userSelectors.currentWorkspaceSelector()(state$.value);
+
+      return from(
         api.comments.addNewComment(
           action.payload.comment,
           action.payload.selector,
           action.payload.attachments,
-          userSelectors.currentUserIdSelector()(state$.value),
-          userSelectors.currentWorkspaceSelector()(state$.value``)
+          uid,
+          workspace
         )
-      )
-    )
+      ).pipe(
+        map(newId => actions.addCommentSuccess(newId)),
+        catchError(err => of(actions.addCommentFailed(err)))
+      );
+    })
   );
 
 export default combineEpics(

@@ -45,10 +45,10 @@ const addCommentSuccess = id => ({
   }
 });
 
-const addCommentFailed = err => ({
+const addCommentFailed = error => ({
   type: types.ADD_NEW_COMMENT_FAILED,
   payload: {
-    err
+    error
   }
 });
 
