@@ -1,6 +1,6 @@
 {
   "name": "@diff/shared-components",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A common library for building out react-components",
   "main": "dist/bundle.js",
   "module": "dist/bundle.es.js",
