@@ -28,7 +28,9 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npx lerna exec -- yarn test
+      - run:
+          name: "Execute tests"
+          command: npx lerna run test
   build:
     <<: *defaults
     steps:
