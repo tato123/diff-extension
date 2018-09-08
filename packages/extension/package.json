@@ -10,7 +10,7 @@
     "start:dev": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.extension.js",
     "frontend": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.frontend.js",
     "start": "npm run start:dev",
-    "test": "jest"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
