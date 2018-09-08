@@ -64,7 +64,8 @@ const handleLogin = (state, { type, payload }) => {
         meta: {
           ...state.meta,
           error: null,
-          submitting: true
+          submitting: true,
+          requiresLogin: false
         }
       };
     case types.LOGIN_SUCCESS:
@@ -84,7 +85,8 @@ const handleLogin = (state, { type, payload }) => {
         meta: {
           ...state.meta,
           error: null,
-          submitting: false
+          submitting: false,
+          requiresLogin: false
         }
       };
     case types.LOGIN_FAILED:
@@ -97,7 +99,8 @@ const handleLogin = (state, { type, payload }) => {
         meta: {
           ...state.meta,
           error: payload.error,
-          submitting: false
+          submitting: false,
+          requiresLogin: true
         }
       };
   }

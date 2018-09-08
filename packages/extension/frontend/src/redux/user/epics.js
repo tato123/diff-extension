@@ -55,11 +55,7 @@ const loginEpic = (action$, state$, { api }) =>
       const { username, password, refreshToken } = action.payload;
       return from(api.auth.login(username, password, refreshToken)).pipe(
         map(token => actions.loginSuccess(token)),
-        catchError(() => {
-          return of(
-            actions.loginFailed("The username or password is incorrect")
-          );
-        })
+        catchError(err => of(actions.loginFailed(err)))
       );
     })
   );

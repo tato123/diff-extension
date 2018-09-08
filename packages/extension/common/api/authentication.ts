@@ -27,7 +27,7 @@ export default (db: any) => {
     });
 
     if (!response.ok) {
-      return Promise.reject(response.statusText);
+      return Promise.reject("The username or password is incorrect");
     }
 
     return response.json();
