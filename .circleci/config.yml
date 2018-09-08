@@ -1,4 +1,5 @@
 defaults: &defaults
+  working_directory: ~/app
   docker:
     - image: circleci/node:10.5.0
 
@@ -17,10 +18,10 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
-            - ./node_modules
-            - ./packages/extension/node_modules
-            - ./packages/api/node_modules
-            - ./packages/shared-components/node_modules
+            - node_modules
+            - packages/extension/node_modules
+            - packages/api/node_modules
+            - packages/shared-components/node_modules
   test:
     <<: *defaults
     steps:
