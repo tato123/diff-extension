@@ -16,7 +16,7 @@ jobs:
           name: Install dependencies with yarn workspaces
           command: npx lerna bootstrap
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
           paths:
             - node_modules
             - packages/extension/node_modules
@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           name: "Execute tests"
           command: npx lerna run test
@@ -36,7 +36,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           name: Build frontend
           command: |
@@ -59,7 +59,7 @@ jobs:
       - attach_workspace:
           at: packages
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           name: Upload to webstore
           command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
