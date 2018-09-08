@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/tato123/diff.git"
   },
-  "author": "Jonathan Fontanez <jfontanez@forage.ai>",
+  "author": "Jonathan Fontanez <jfontanez@getdiff.app>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/tato123/diff/issues"
@@ -118,25 +118,5 @@
     "styled-components": "3.4.5",
     "yup": "^0.26.2",
     "zip-folder": "^1.0.0"
-  },
-  "jest": {
-    "verbose": true,
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest",
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "moduleDirectories": [
-      "node_modules",
-      "<rootDir>/../../node_modules",
-      "<rootDir>/node_modules",
-      "~/app/node_modules"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
   }
 }
