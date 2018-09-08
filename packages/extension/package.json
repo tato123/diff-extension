@@ -10,7 +10,8 @@
     "start:dev": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.extension.js",
     "frontend": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.frontend.js",
     "start": "npm run start:dev",
-    "test": "npx jest --ci"
+    "test": "npx jest --ci",
+    "test:watch": "jest --watchAll --coverage"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
+    "cypress": "^3.1.0",
     "eslint": "4.x",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",

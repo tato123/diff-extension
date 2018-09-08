@@ -4,14 +4,13 @@ import { mergeMap, catchError, map } from "rxjs/operators";
 
 import types from "./types";
 import actions from "./actions";
-import { selectors as userSelectors } from "redux/user";
 
 const addCollaboratorEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.ADD_WORKSPACE_USER_REQUEST),
     mergeMap(action => {
       return from(
-        api.addSingleCollaborator(
+        api.workspace.addSingleCollaborator(
           action.payload.email,
           action.payload.workspaceId
         )

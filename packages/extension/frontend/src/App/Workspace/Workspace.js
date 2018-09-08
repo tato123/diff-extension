@@ -174,6 +174,7 @@ export default class Workspace extends React.Component {
       props: { workspaceUsers, invitedUsers },
       state: { addUser }
     } = this;
+
     return (
       <React.Fragment>
         <TightHeader as="h2">{this.props.workspaceName}</TightHeader>

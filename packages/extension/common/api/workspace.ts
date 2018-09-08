@@ -13,6 +13,12 @@ export default (db: firebase.firestore.Firestore): Object => {
 
   const workspaces$ = (uid: string): Observable<QueryResponse> => {
     return Observable.create((observer: Observer<QueryResponse>) => {
+      if (_.isNil(uid)) {
+        observer.error("uid cannot be null");
+        observer.complete();
+        return;
+      }
+
       const unsubscribe = workspaceRef
         .where(`users.${uid}.role`, ">", "")
         .onSnapshot(
@@ -33,6 +39,12 @@ export default (db: firebase.firestore.Firestore): Object => {
 
   const workspaceForId$ = (workspaceId: string): Observable<QueryResponse> => {
     return Observable.create((observer: Observer<QueryResponse>) => {
+      if (_.isNil(workspaceId)) {
+        observer.error("workspaceId cannot be null");
+        observer.complete();
+        return;
+      }
+
       const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(
         doc => {
           if (doc.exists) {
@@ -72,6 +84,10 @@ export default (db: firebase.firestore.Firestore): Object => {
   ): Promise<Object> => {
     if (_.isEmpty(emails) || _.isNil(emails)) {
       throw new Error("emails is required");
+    }
+
+    if (_.isNil(workspaceId)) {
+      throw new Error("workspace id is required");
     }
 
     const idToken = await getIdToken();

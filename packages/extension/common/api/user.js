@@ -7,6 +7,12 @@ export default db => {
 
   const user$ = uid => {
     return Observable.create(observer => {
+      if (uid == null || uid === undefined) {
+        observer.error("uid cannot be null");
+        observer.complete();
+        return;
+      }
+
       const unsubscribe = userRef.doc(uid).onSnapshot(doc => {
         const data = doc.data();
         observer.next(data);

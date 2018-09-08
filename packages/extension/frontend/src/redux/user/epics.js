@@ -84,16 +84,29 @@ const initializeSession = (action$, state$, { api }) =>
     mergeMap(action => {
       const uid = selectors.currentUserIdSelector()(state$.value);
 
-      return api.user.getUser(uid).pipe(
-        flatMap(user => [
-          userEntityActions.addUser(user),
-          ...Object.keys(user.workspaces).map(workspaceId =>
-            workspaceActions.getWorkspaceById(workspaceId)
-          ),
-          actions.selectWorkspace(
-            (user.workspaces && Object.keys(user.workspaces)[0]) || null
-          )
-        ]),
+      // synchronize our workspace
+      return api.user.user$(uid).pipe(
+        flatMap(user => {
+          const actionMap = [
+            userEntityActions.addUser(user),
+            workspaceActions.clearWorkspaces(),
+            ...Object.keys(user.workspaces).map(workspaceId =>
+              workspaceActions.getWorkspaceById(workspaceId)
+            )
+          ];
+
+          const currentWorkspace = selectors.currentWorkspaceSelector()(
+            state$.value
+          );
+
+          const nextWorkspace =
+            (user.workspaces && Object.keys(user.workspaces)[0]) || null;
+
+          if (currentWorkspace !== nextWorkspace) {
+            actionMap.push(actions.selectWorkspace(nextWorkspace));
+          }
+          return actionMap;
+        }),
         catchError(err => of(actions.sessionInitFailed(err.message, uid)))
       );
     })

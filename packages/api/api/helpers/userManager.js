@@ -268,6 +268,9 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
             userDoc.id
           );
 
+          // 2. add the workspace to the user account
+          await updateUserWorkspace(userDoc.id, workspaceDoc.id);
+
           // add to workspace if its an existing user and notify them that they've been added
           console.log(
             `[Existing user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
@@ -291,6 +294,24 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
       }
     })
   );
+};
+
+const updateUserWorkspace = async (uid, workspaceId) => {
+  if (_.isNil(uid) || _.isNil(workspaceId)) {
+    throw new Error("uid or workspaceid cannot be null");
+  }
+
+  const doc = await db
+    .collection("users")
+    .doc(uid)
+    .get();
+  const userRecord = doc.data();
+
+  userRecord.workspaces = Object.assign({}, userRecord.workspaces, {
+    [workspaceId]: true
+  });
+
+  return doc.ref.update(userRecord);
 };
 
 const createWorkspace = async (name, userId) => {
@@ -317,6 +338,9 @@ const createWorkspace = async (name, userId) => {
     name
   };
   await workspaceDocRef.set(workspace);
+
+  // 2. add the workspace to the user account
+  await updateUserWorkspace(userId, workspaceDocRef.id);
 
   // 2. Upgrade the user
   const upgradedEvents = await workspaceHelper.updateEventsForWorkspaceId(

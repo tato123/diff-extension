@@ -3,6 +3,17 @@ import { AnyAction } from "redux";
 
 import * as diffTypes from "./index.d";
 
+export interface RemoteAction {
+  source: string;
+  dest: string;
+  action: AnyAction;
+}
+
+export interface Token {
+  access_token: string;
+  refresh_token: string;
+}
+
 const composeRemoteAction = (
   action: AnyAction,
   source: string,

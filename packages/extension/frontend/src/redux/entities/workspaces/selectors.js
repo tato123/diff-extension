@@ -3,44 +3,44 @@ import _ from "lodash";
 
 const workspaceDomain = state => state.entities.workspaces;
 
+const loggedInUserDomain = state => state.user;
+
 const usersDomain = state => state.entities.users;
 
-/**
- * When no id is provided the default workspace is selected
- * (which maps back to the first workspace)
- */
-const workspaceNameSelector = id =>
-  createSelector(workspaceDomain, workspace => {
-    const targetId = _.isNil(id) ? workspace.allIds[0] : id;
-    return !_.isNil(targetId) ? workspace.byId[targetId].name : null;
-  });
+const currentWorkspaceNameSelector = () =>
+  createSelector(
+    workspaceDomain,
+    loggedInUserDomain,
+    (workspace, loggedInUser) => {
+      return _.isNil(loggedInUser.workspaceId)
+        ? ""
+        : workspace.byId[loggedInUser.workspaceId].name;
+    }
+  );
 
-const workspaceUsersSelector = id =>
-  createSelector(workspaceDomain, usersDomain, (workspace, users) => {
-    const targetId = _.isNil(id) ? workspace.allIds[0] : id;
+const currentWorkspaceUsersSelector = () =>
+  createSelector(
+    workspaceDomain,
+    loggedInUserDomain,
+    usersDomain,
+    (workspace, loggedInUser, users) => {
+      return _.isNil(loggedInUser.workspaceId)
+        ? []
+        : _.chain(_.keys(workspace.byId[loggedInUser.workspaceId].users))
+            .map(user => users.byId[user])
+            .value();
+    }
+  );
 
-    return _.isNil(targetId)
-      ? []
-      : _.chain(_.keys(workspace.byId[targetId].users))
-          .map(user => users.byId[user])
-          .value();
-  });
-
-const currentWorkspaceIdSelector = id =>
-  createSelector(workspaceDomain, workspace => {
-    return workspace.allIds[0] || null;
-  });
+const currentWorkspaceIdSelector = () =>
+  createSelector(loggedInUserDomain, user => user.workspaceId);
 
 const invitedUsersSelector = () =>
   createSelector(workspaceDomain, workspace => workspace.invites);
 
-const defaultWorkspaceSelector = () =>
-  createSelector(workspaceDomain, workspace => _.first(workspace.allIds));
-
 export default {
-  workspaceNameSelector,
-  workspaceUsersSelector,
+  currentWorkspaceNameSelector,
+  currentWorkspaceUsersSelector,
   currentWorkspaceIdSelector,
-  invitedUsersSelector,
-  defaultWorkspaceSelector
+  invitedUsersSelector
 };

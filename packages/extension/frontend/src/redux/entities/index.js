@@ -5,7 +5,7 @@ import { combineEpics } from "redux-observable";
 import comments, { epics as commentEpics } from "./comments";
 import diffs, { epics as diffEpics } from "./diffs";
 import selectors from "./selectors";
-import users from "./users";
+import users, { epics as userEpics } from "./users";
 import activity, { epics as activityEpic } from "./activity";
 import workspaces, { epics as workspaceEpics } from "./workspaces";
 
@@ -22,5 +22,6 @@ export const epics = combineEpics(
   activityEpic,
   commentEpics,
   diffEpics,
-  workspaceEpics
+  workspaceEpics,
+  userEpics
 );

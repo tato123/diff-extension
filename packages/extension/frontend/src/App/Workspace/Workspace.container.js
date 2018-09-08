@@ -4,8 +4,8 @@ import { actions } from "redux/widgets/workspace";
 import { selectors } from "redux/entities/workspaces";
 
 const mapStateToProps = state => ({
-  workspaceName: selectors.workspaceNameSelector()(state),
-  workspaceUsers: selectors.workspaceUsersSelector()(state),
+  workspaceName: selectors.currentWorkspaceNameSelector()(state),
+  workspaceUsers: selectors.currentWorkspaceUsersSelector()(state),
   workspaceId: selectors.currentWorkspaceIdSelector()(state),
   invitedUsers: selectors.invitedUsersSelector()(state)
 });
