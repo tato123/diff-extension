@@ -44,10 +44,6 @@ portMessages$
 const actionHandler$ = ACTION_TYPE =>
   portMessages$.pipe(filter(({ type }) => type === ACTION_TYPE));
 
-actionHandler$(types.AUTHENTICATION.REQUEST).subscribe(msg => {
-  runFrontend();
-});
-
 actionHandler$(types.RUN_REQUEST.REQUEST).subscribe(msg => {
   runFrontend();
 });

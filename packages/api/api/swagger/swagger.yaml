@@ -146,6 +146,26 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /tokens/{token}/domains:
+    x-swagger-router-controller: user
+    get:
+      description: Fetches the domains available for a given user based on refresh token
+      operationId: getDomains
+      parameters:
+        - name: token
+          in: path
+          description: Refresh Token
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/DomainResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -156,6 +176,12 @@ definitions:
     properties:
       name:
         type: string
+  DomainResponse:
+    properties:
+      domains:
+        type: array
+        items:
+          type: string
   Response:
     properties:
       status:

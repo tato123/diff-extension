@@ -95,41 +95,48 @@ export default class Login extends React.Component {
     /**
      * Validates whether we can use an email
      */
-    validateEmail: PropTypes.func.isRequired
+    validateEmail: PropTypes.func.isRequired,
+
+    refreshToken: PropTypes.string,
+
+    isFetchingToken: PropTypes.bool,
+
+    requiresLogin: PropTypes.bool,
+
+    isSubmitting: PropTypes.bool,
+
+    showForm: PropTypes.func.isRequired,
+    form: PropTypes.string.isRequired,
+    error: PropTypes.string
+  };
+
+  static defaultProps = {
+    refreshToken: null,
+    isFetchingToken: false,
+    error: ""
   };
 
   state = {
-    requiresLogin: false,
-    form: FORM_TYPES.PRECHECK,
     formFields: FORM_TYPES.PRECHECK
   };
 
-  async componentDidMount() {
-    try {
-      const refreshToken = await this.props.getCacheToken();
-
-      if (refreshToken) {
-        await this.props.login({ refreshToken });
-      } else {
-        this.setState({ requiresLogin: true });
-      }
-    } catch (err) {
-      this.setState({ requiresLogin: true });
-    }
+  componentDidMount() {
+    this.props.getCacheToken();
   }
 
-  showForm = formType => () => {
-    console.log("Showing form", formType);
-    // delay setting for the form fields
-    // type to accomodate the animating fields
-    // in and out
-    this.showFormFields(formType);
+  componentDidUpdate(prevProps) {
+    const {
+      props: { isFetchingToken, refreshToken }
+    } = this;
 
-    // change our form dynamically
-    this.setState({
-      form: formType
-    });
-  };
+    if (!isFetchingToken && refreshToken) {
+      this.props.login({ refreshToken });
+    }
+
+    if (prevProps.form !== this.props.form) {
+      this.showFormFields(this.props.form);
+    }
+  }
 
   showFormFields = formType => {
     switch (formType) {
@@ -186,7 +193,7 @@ export default class Login extends React.Component {
   };
 
   getValidationSchema = () => {
-    switch (this.state.form) {
+    switch (this.props.form) {
       case FORM_TYPES.PRECHECK:
         return object().shape({
           email: string()
@@ -206,60 +213,31 @@ export default class Login extends React.Component {
     }
   };
 
-  submitForm = (values, { setSubmitting, setErrors }) => {
-    if (this.state.form === FORM_TYPES.PRECHECK) {
-      setSubmitting(true);
-      return this.props
-        .validateEmail(values.email)
-        .then(() => {
-          setSubmitting(false);
-          this.showForm(FORM_TYPES.LOGIN)();
-        })
-        .catch(() => {
-          setSubmitting(false);
-          this.showForm(FORM_TYPES.SIGNUP)();
-        });
+  submitForm = values => {
+    if (this.props.form === FORM_TYPES.PRECHECK) {
+      return this.props.validateEmail(values.email);
     }
 
-    if (this.state.form === FORM_TYPES.LOGIN) {
-      setSubmitting(true);
-
-      return this.props
-        .login({ username: values.email, password: values.password })
-        .then(() => {
-          setSubmitting(true);
-        })
-        .catch(() => {
-          setSubmitting(false);
-          setErrors({ form: "The username or password is incorrect" });
-        });
+    if (this.props.form === FORM_TYPES.LOGIN) {
+      return this.props.login({
+        username: values.email,
+        password: values.password,
+        displayName: values.username
+      });
     }
 
-    if (this.state.form === FORM_TYPES.SIGNUP) {
-      setSubmitting(true);
-      return this.props
-        .signup(values.email, values.password)
-        .then(successAction => {
-          this.props.login({
-            refreshToken: successAction.payload.refreshToken.refresh_token
-          });
-          setSubmitting(false);
-        })
-        .catch(err => {
-          setSubmitting(false);
-          setErrors(err);
-        });
+    if (this.props.form === FORM_TYPES.SIGNUP) {
+      return this.props.signup(values.email, values.password);
     }
   };
 
   render() {
     const {
-      state: { requiresLogin, form }
+      props: { requiresLogin, isSubmitting, showForm, form, error }
     } = this;
 
-    const formFields = this.formFields();
-
     if (requiresLogin) {
+      const formFields = this.formFields();
       return (
         <Modal>
           <ModalContainer state={form}>
@@ -276,8 +254,7 @@ export default class Login extends React.Component {
                       touched,
                       handleChange,
                       handleBlur,
-                      handleSubmit,
-                      isSubmitting
+                      handleSubmit
                     }) => (
                       <form onSubmit={handleSubmit}>
                         <Container>
@@ -297,7 +274,7 @@ export default class Login extends React.Component {
                             <HR />
                           </div>
                           <div>
-                            <ErrorLabel>{errors.form}</ErrorLabel>
+                            <ErrorLabel>{error}</ErrorLabel>
                             <Form.Input
                               type="text"
                               name="email"
@@ -343,11 +320,13 @@ export default class Login extends React.Component {
                           <div>
                             <Button.Flat
                               type="button"
-                              onClick={this.showForm(
-                                form !== FORM_TYPES.SIGNUP
-                                  ? FORM_TYPES.SIGNUP
-                                  : FORM_TYPES.PRECHECK
-                              )}
+                              onClick={() =>
+                                showForm(
+                                  form !== FORM_TYPES.SIGNUP
+                                    ? FORM_TYPES.SIGNUP
+                                    : FORM_TYPES.PRECHECK
+                                )
+                              }
                             >
                               {form !== FORM_TYPES.SIGNUP
                                 ? "Create Account"
@@ -377,6 +356,7 @@ export default class Login extends React.Component {
         </Modal>
       );
     }
+
     return null;
   }
 }

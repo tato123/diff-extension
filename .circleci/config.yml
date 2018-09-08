@@ -1,77 +1,82 @@
+defaults: &defaults
+  working_directory: ~/app
+  docker:
+    - image: circleci/node:10.5.0
+
 version: 2
 jobs:
   dependencies:
-    docker:
-      - image: circleci/node:10.5.0
+    <<: *defaults
     steps:
       - checkout
-      - run: sudo npm install -g yarn@latest
-      - run: 
+      - run:
+          name: Install Npx
+          command: yarn global add npx
+      - run:
           name: Install dependencies with yarn workspaces
-          command: yarn install
+          command: npx lerna bootstrap
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
           paths:
-            - ./node_modules
-            - ./packages/extension/node_modules
-            - ./packages/api/node_modules
-            - ./packages/shared-components/node_modules
+            - node_modules
+            - packages/extension/node_modules
+            - packages/api/node_modules
+            - packages/shared-components/node_modules
   test:
-    docker:
-      - image: circleci/node:10.5.0
+    <<: *defaults
     steps:
       - checkout
-      - restore_cache: 
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run: ./node_modules/.bin/lerna exec -- yarn test      
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
+      - run:
+          name: "Execute tests"
+          command: npx lerna run test
   build:
-    docker:
-      - image: circleci/node:10.5.0
+    <<: *defaults
     steps:
       - checkout
-      - restore_cache: 
-          key: dependency-cache-{{ checksum "package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           name: Build frontend
           command: |
             yarn install
-            ./node_modules/.bin/lerna run --scope @diff/extension build
+            npx lerna run --scope @diff/extension build
       - run:
           name: Build styles
           command: |
-            ./node_modules/.bin/lerna run --scope @diff/shared-components build:styles
+            npx lerna run --scope @diff/shared-components build:styles
       - persist_to_workspace:
           root: packages
           paths:
             - extension/dist/chrome
-            - extension/dist/frontend  
+            - extension/dist/frontend
             - shared-components/styleguide
   deploy-chrome-extension:
-    docker:
-      - image: circleci/node:10.5.0 
+    <<: *defaults
     steps:
       - checkout
       - attach_workspace:
           at: packages
-      - restore_cache: 
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:  
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
+      - run:
           name: Upload to webstore
           command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
-      # - run:  
+      # - run:
       #     name: Publish to webstore
       #     command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
   deploy-frontend:
     docker:
-      - image: google/cloud-sdk:latest 
+      - image: google/cloud-sdk:latest
     steps:
       - checkout
       - attach_workspace:
           at: packages
-      - run: 
+      - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
-            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json      
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
       - run:
           name: Set project default
           command: gcloud config set project $GCLOUD_PROJECT
@@ -90,10 +95,10 @@ jobs:
       - image: google/cloud-sdk:latest
     steps:
       - checkout
-      - run: 
+      - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
-            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json      
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
       - run:
           name: Set project default
           command: gcloud config set project $GCLOUD_PROJECT
@@ -149,4 +154,3 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-            

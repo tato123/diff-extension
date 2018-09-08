@@ -3,9 +3,9 @@ import {
   set,
   storeUserToken,
   getUserToken,
-  rememberUserClickedSite
+  getSitePreference
 } from "./storage";
-import { getRemoteDomains, invalidateToken } from "./user";
+import { getUserDomains } from "./user";
 import _ from "lodash";
 import { types, actions } from "@diff/common";
 const PREFERENCES = "_DIFF_PREFERENCES";
@@ -19,12 +19,12 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
   try {
     // get the user preferences
     const preferences = await get(PREFERENCES, {});
-    const sites = await getRemoteDomains();
+    const sites = await getUserDomains();
 
     // get the local sites theyve opened diff for
-    const localSites = await rememberUserClickedSite();
+    const localSites = await getSitePreference();
 
-    preferences.autorunDomains = _.union(sites, localSites);
+    preferences.autorunDomains = _.union(sites.domains, localSites);
 
     const value = await getUserToken();
     if (_.isNil(value) || !value.token) {
@@ -38,36 +38,24 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
   }
 };
 
-const handleStoreUserPreferences = (
-  tabId,
-  postMessageToTab,
-  { payload: { preferences } }
-) => {
-  set(PREFERENCES, preferences)
-    .then(() => postMessageToTab(tabId, actions.storeUserPreferencesSuccess()))
-    .catch(err =>
-      postMessageToTab(tabId, actions.storeUserPreferencesFailed(err.message))
-    );
-};
-
 const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
-  const previousToken = await getUserToken();
-  const nextToken = action.payload.token;
+  // const previousToken = await getUserToken();
+  // const nextToken = action.payload.token;
 
-  if (
-    previousToken &&
-    previousToken.token &&
-    previousToken.token === nextToken
-  ) {
-    postMessageToTab(tabId, actions.cacheTokenSuccess());
-    return;
-  } else if (
-    previousToken &&
-    previousToken.token &&
-    previousToken.token !== nextToken
-  ) {
-    invalidateToken();
-  }
+  // if (
+  //   previousToken &&
+  //   previousToken.token &&
+  //   previousToken.token === nextToken
+  // ) {
+  //   postMessageToTab(tabId, actions.cacheTokenSuccess());
+  //   return;
+  // } else if (
+  //   previousToken &&
+  //   previousToken.token &&
+  //   previousToken.token !== nextToken
+  // ) {
+  //   invalidateToken();
+  // }
 
   storeUserToken(action.payload.token)
     .then(() => postMessageToTab(tabId, actions.cacheTokenSuccess()))
@@ -100,7 +88,6 @@ const handleFetchCacheTokenRequest = async (
 
 export default {
   [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [types.STORE_USER_PREFERENCES.REQUEST]: handleStoreUserPreferences,
   [types.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
   [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
 };

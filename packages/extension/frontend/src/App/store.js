@@ -1,37 +1,30 @@
 import { applyMiddleware, createStore, combineReducers } from "redux";
-import thunkMiddleware from "redux-thunk";
 import { createEpicMiddleware, combineEpics } from "redux-observable";
-import { initializeFirestore } from "./firestore";
+
+import initApi from "@diff/common/api";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
-import { postmessageMiddleware, asyncMiddleware } from "redux/remote";
+import { postmessageMiddleware } from "redux/remote";
 
 import user, { epics as userEpics } from "redux/user";
 import widgets, { epics as widgetEpics } from "redux/widgets";
 import entities, { epics as entitiesEpic } from "redux/entities";
 
-console.log("[plugin - firebase] initializing connection");
-
-const firestore = initializeFirestore();
-
 export default function configureStore(preloadedState) {
+  const api = initApi();
+
   // Setup redux-observable
   const rootEpic = combineEpics(entitiesEpic, widgetEpics, userEpics);
   const epicMiddleware = createEpicMiddleware({
-    dependencies: { db: firestore }
+    dependencies: { api: api }
   });
 
   // Setup our middlewares
-  const middlewares = [
-    thunkMiddleware.withExtraArgument({ db: firestore }),
-    asyncMiddleware,
-    epicMiddleware,
-    postmessageMiddleware
-  ];
+  const middlewares = [epicMiddleware, postmessageMiddleware];
 
-  const composedEnhancers = composeWithDevTools(
-    applyMiddleware(...middlewares)
-  );
+  const composedEnhancers = composeWithDevTools({
+    maxAge: 10000000
+  });
 
   // Setup our reducers
   const rootReducer = combineReducers({
@@ -41,7 +34,11 @@ export default function configureStore(preloadedState) {
   });
 
   // Finally - Create our store
-  const store = createStore(rootReducer, preloadedState, composedEnhancers);
+  const store = createStore(
+    rootReducer,
+    preloadedState,
+    composedEnhancers(applyMiddleware(...middlewares))
+  );
 
   // Start watching our actions with our epic middleware
   epicMiddleware.run(rootEpic);

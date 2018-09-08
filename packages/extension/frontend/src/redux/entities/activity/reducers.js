@@ -8,7 +8,7 @@ const initialState = {
 /* eslint-disable */
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.READ_SEEN_ACTIVITY:
+    case types.ADD_USER_SEEN_ACTIVITY:
       return {
         byId: {
           ...state.byId,

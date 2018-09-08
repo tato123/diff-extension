@@ -1,15 +1,15 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "targets": {
-          "browsers": ["last 2 Chrome versions"]
-        }
+          "esmodules": true
+        },
+        "modules": false
       }
     ],
-
-    "react-app",
-    "flow"
-  ]
+    "@babel/preset-react"
+  ],
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }

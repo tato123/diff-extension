@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import { selectors as userSelectors } from "redux/user";
 import {
   selectors as widgetSelectors,
-  actions as widgetActions,
-  operations as widgetOperations
+  actions as widgetActions
 } from "redux/widgets/state";
 
 const mapStateToProps = (state, props) => ({
@@ -15,7 +14,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  closeAll: () => dispatch(widgetOperations.closeAll()),
+  closeAll: () => dispatch(widgetActions.closeAll()),
   show: name => dispatch(widgetActions.show(name))
 });
 

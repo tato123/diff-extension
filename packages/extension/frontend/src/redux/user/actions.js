@@ -1,12 +1,12 @@
 import types from "./types";
-import { actions as remoteActions } from "redux/remote";
-import { actions as commonActions, types as commonTypes } from "@diff/common";
+import { actions as commonActions } from "@diff/common";
 
-const signupRequest = (email, password) => ({
+const signupRequest = (email, password, displayName) => ({
   type: types.SIGNUP_REQUEST,
   payload: {
     email,
-    password
+    password,
+    displayName
   }
 });
 
@@ -17,21 +17,13 @@ const signupSuccess = refreshToken => ({
   }
 });
 
-const signupFailed = (email, err) => ({
+const signupFailed = (email, error) => ({
   type: types.SIGNUP_FAILED,
   payload: {
-    err,
+    error,
     email
   }
 });
-
-const asyncSignup = (email, password, dispatch) =>
-  remoteActions.promisedAction({
-    submit: signupRequest(email, password),
-    success: types.SIGNUP_SUCCESS,
-    failed: types.SIGNUP_FAILED,
-    dispatch
-  });
 
 const validateUser = email => ({
   type: types.VALIDATE_USER_REQUEST,
@@ -55,35 +47,7 @@ const validateUserFailed = (email, err) => ({
   }
 });
 
-const asyncValidate = (email, dispatch) =>
-  remoteActions.promisedAction({
-    submit: validateUser(email),
-    success: types.VALIDATE_USER_SUCCESS,
-    failed: types.VALIDATE_USER_FAILED,
-    dispatch
-  });
-
-/**
- * Calls a backend to retrieve a fetch cache token
- *
- * @param {}
- * @returns {Promise}
- */
-const fetchCacheToken = () => dispatch => {
-  return remoteActions
-    .promisedAction({
-      submit: remoteActions.postMessage(commonActions.fetchCacheToken()),
-      success: commonTypes.FETCH_CACHE_TOKEN.SUCCESS,
-      failed: commonTypes.FETCH_CACHE_TOKEN.FAILED,
-      dispatch
-    })
-    .then(successAction => {
-      return successAction.payload.token;
-    })
-    .catch(errorAction => {
-      return Promise.reject(new Error("No Token available", errorAction));
-    });
-};
+const fetchCacheToken = () => commonActions.fetchCacheToken();
 
 const login = credentials => ({
   type: types.LOGIN_REQUEST,
@@ -93,9 +57,45 @@ const login = credentials => ({
 });
 
 const loginSuccess = token => ({
-  type: types.LOGIN.SUCCESS,
+  type: types.LOGIN_SUCCESS,
   payload: {
     token
+  }
+});
+
+const loginFailed = error => ({
+  type: types.LOGIN_FAILED,
+  payload: {
+    error
+  }
+});
+
+const sessionInit = user => ({
+  type: types.SESSION_INIT,
+  payload: {
+    user
+  }
+});
+
+const sessionInitFailed = (err, uid) => ({
+  type: types.SESSION_INIT_FAILED,
+  payload: {
+    uid,
+    err
+  }
+});
+
+const selectWorkspace = workspaceId => ({
+  type: types.SELECT_WORKSPACE,
+  payload: {
+    workspaceId
+  }
+});
+
+const showForm = form => ({
+  type: types.SHOW_FORM,
+  payload: {
+    form
   }
 });
 
@@ -103,13 +103,18 @@ export default {
   signupRequest,
   signupSuccess,
   signupFailed,
-  asyncSignup,
 
   validateUser,
   validateUserSuccess,
   validateUserFailed,
-  asyncValidate,
   fetchCacheToken,
   login,
-  loginSuccess
+  loginSuccess,
+  loginFailed,
+
+  sessionInit,
+  sessionInitFailed,
+
+  selectWorkspace,
+  showForm
 };

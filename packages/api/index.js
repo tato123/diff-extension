@@ -12,6 +12,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const compression = require("compression");
 
+var http = require("http");
+var https = require("https");
+
+http.globalAgent.maxSockets = Infinity;
+https.globalAgent.maxSockets = Infinity;
+
 // setup express
 const app = express();
 

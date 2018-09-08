@@ -62,7 +62,7 @@ const ErrorLabel = styled(Label)`
 
 const FormField = ({ label, hide, name, error, required, children, style }) => (
   <FormFieldContainer error={error} className="field" style={style} hide={hide}>
-    <Label as="subtitle2" for={name}>
+    <Label as="subtitle2" htmlFor={name}>
       {label} {required && <Required>*</Required>}
     </Label>
     {children}

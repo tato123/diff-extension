@@ -15,7 +15,7 @@ exports.std = {
     alias: {
       "@diff/common": path.resolve(__dirname, "../common")
     },
-    extensions: [".json", ".js"]
+    extensions: [".ts", ".tsx", ".js", ".json"]
   },
   plugins: [
     new Dotenv({

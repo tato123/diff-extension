@@ -39,7 +39,7 @@ module.exports = (env, argv) => [
     resolve: {
       ...std.resolve,
       modules: ["node_modules", path.resolve(__dirname, "../frontend/src")],
-      extensions: [".js", ".json"]
+      extensions: [".ts", ".tsx", ".js", ".json"]
     },
     optimization: {
       splitChunks: {
@@ -57,10 +57,29 @@ module.exports = (env, argv) => [
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(tsx?)|(js)$/,
           exclude: /node_modules/,
           use: {
-            loader: "babel-loader"
+            loader: "babel-loader",
+            options: {
+              presets: [
+                "@babel/preset-react",
+                "@babel/typescript",
+                [
+                  "@babel/preset-env",
+                  {
+                    targets: {
+                      browsers: ["last 2 Chrome versions"]
+                    },
+                    modules: false
+                  }
+                ]
+              ],
+              plugins: [
+                "@babel/plugin-proposal-class-properties",
+                "react-hot-loader/babel"
+              ]
+            }
           }
         },
         {

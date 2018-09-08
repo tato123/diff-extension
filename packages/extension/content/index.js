@@ -2,7 +2,7 @@ import "./message";
 import { runFrontend } from "./frontend";
 import { sendMessageToBackground, portMessages$ } from "./backgroundClient";
 import { filter } from "rxjs/operators";
-import { types, actions, logger } from "@diff/common";
+import { types, actions } from "@diff/common";
 import _ from "lodash";
 
 /**
@@ -46,17 +46,17 @@ const main = () => {
       } = action;
 
       if (isDomainMatch(preferences.autorunDomains, window.location.href)) {
-        logger.debug("Running frontend");
+        console.log("[content-script] Running frontend");
         runFrontend();
       } else {
-        console.log("not running");
+        console.log("[content-script] not running");
       }
     });
 
   portMessages$
     .pipe(filter(({ type }) => type === types.FETCH_USER_PREFERENCES.FAILED))
     .subscribe(val => {
-      console.log("cant run frontend");
+      console.log("[content-script] cant run frontend");
     });
 
   // check if we can run on this domain

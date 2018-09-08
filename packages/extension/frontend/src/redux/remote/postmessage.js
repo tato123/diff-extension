@@ -51,9 +51,10 @@ const onSendMessage = action => {
 const postMessageMiddleware = store => {
   onMessageObservable(store);
   return next => action => {
-    if (action.type === types.POST_MESSAGE) {
+    if (action && action.type === types.POST_MESSAGE) {
       onSendMessage(action.payload.action);
     }
+
     return next(action);
   };
 };

@@ -22,14 +22,24 @@ const createEventLogFailed = (docId, err) => ({
   }
 });
 
-const readSeenActivity = data => ({
-  type: types.READ_SEEN_ACTIVITY,
-  payload: data
+const addUserSeenActivity = data => ({
+  type: types.ADD_USER_SEEN_ACTIVITY,
+  payload: {
+    ...data
+  }
+});
+
+const addUserSeenActivityFailed = err => ({
+  type: types.ADD_USER_SEEN_ACTIVITY_FAILED,
+  payload: {
+    err
+  }
 });
 
 export default {
   createEventLogRequest,
   createEventLogSuccess,
   createEventLogFailed,
-  readSeenActivity
+  addUserSeenActivity,
+  addUserSeenActivityFailed
 };

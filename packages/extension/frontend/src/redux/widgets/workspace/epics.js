@@ -4,18 +4,8 @@ import { mergeMap, catchError, map } from "rxjs/operators";
 
 import types from "./types";
 import actions from "./actions";
-import api from "./api";
 
-// ----------------------------------------------------------------
-// Epics
-
-/**
- *
- * @param {*} action$
- * @param {*} state$
- * @param {*} param2
- */
-const addCollaboratorEpic = (action$, state$, { db }) =>
+const addCollaboratorEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.ADD_WORKSPACE_USER_REQUEST),
     mergeMap(action => {
@@ -44,13 +34,7 @@ const addCollaboratorEpic = (action$, state$, { db }) =>
     })
   );
 
-/**
- *
- * @param {*} action$
- * @param {*} state$
- * @param {*} param2
- */
-const createWorkspaceEpic = (action$, state$, { db }) =>
+const createWorkspaceEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.CREATE_WORKSPACE),
     mergeMap(action => {
