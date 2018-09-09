@@ -35,16 +35,16 @@ export default db => {
     });
   };
 
-  const uploadFile = file => (dispatch, getState) => {
-    const storageRef = db.app.storage().ref(`attachments/${file.name}`);
+  const uploadFile = async (file, uid) => {
+    const storageRef = db.app.storage().ref(`attachments/${uid}/${file.name}`);
     const task = storageRef.put(file);
 
     return new Promise((resolve, reject) => {
       task.on(
         "state_changed",
         function progress(snapshot) {
-          var percentage =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          // var percentage =
+          //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           // console.log(percentage);
         },
         function error(error) {
@@ -78,7 +78,9 @@ export default db => {
       throw new Error("selector cannot be undefined");
     }
 
-    const attachments = await Promise.all(uploadAttachment.map(uploadFile));
+    const attachments = await Promise.all(
+      uploadAttachment.map(file => uploadFile(file, uid))
+    );
 
     const record = {
       comment,

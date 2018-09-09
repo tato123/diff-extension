@@ -9,8 +9,6 @@ const fetchUserEpic = (action$: any, state$: any, { api }: { api: any }) =>
   action$.pipe(
     ofType(types.FETCH_USER_REQUEST),
     mergeMap((action: FetchUserAction) => {
-      /* eslint-disable */
-      debugger;
       const state = state$.value;
       const user = selectors.getUserSelector(action.payload.uid)(state);
 
