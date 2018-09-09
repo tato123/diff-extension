@@ -126,7 +126,7 @@ export default class Workspace extends React.Component {
           <Label as="body1">{user.displayName || user.email}</Label>
         </div>
         <div>
-          <Status />
+          <Status pending={user.invite} />
         </div>
       </UserRow>
     );
@@ -156,7 +156,9 @@ export default class Workspace extends React.Component {
             style={{ height: addUser ? "95px" : "256px" }}
           >
             {workspaceUsers.map(user => user && this.renderUser(user))}
-            {invitedUsers.map(user => user && this.renderUser(user))}
+            {invitedUsers.map(
+              email => email && this.renderUser({ email, invite: true })
+            )}
           </div>
 
           {addUser && this.renderForm()}
