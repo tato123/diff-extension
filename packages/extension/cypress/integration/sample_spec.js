@@ -1,5 +1,14 @@
-describe("My First Test", function() {
-  it("Does not do much!", function() {
-    expect(true).to.equal(true);
+/// <reference types="Cypress" />
+
+context("Actions", () => {
+  beforeEach(() => {
+    cy.visit("https://storage.googleapis.com/diff-tester/index.html");
+  });
+
+  it("can open extension", () => {
+    cy.wait(5000);
+    cy.window().then(win => {
+      win.postMessage("test", "*");
+    });
   });
 });

@@ -5,6 +5,9 @@ import { sendMessageToBackground } from "./backgroundClient";
 import { types, sources } from "@diff/common";
 
 const messages$ = fromEvent(window, "message").pipe(
+  tap(evt => {
+    console.log("GOT A MESSAGE", evt.data);
+  }),
   filter(evt => {
     if (!evt.data) {
       return false;

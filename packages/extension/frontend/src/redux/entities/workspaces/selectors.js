@@ -14,7 +14,7 @@ const currentWorkspaceNameSelector = () =>
     (workspace, loggedInUser) => {
       return _.isNil(loggedInUser.workspaceId)
         ? ""
-        : workspace.byId[loggedInUser.workspaceId].name;
+        : _.get(workspace.byId[loggedInUser.workspaceId], "name", "");
     }
   );
 
@@ -26,7 +26,9 @@ const currentWorkspaceUsersSelector = () =>
     (workspace, loggedInUser, users) => {
       return _.isNil(loggedInUser.workspaceId)
         ? []
-        : _.chain(_.keys(workspace.byId[loggedInUser.workspaceId].users))
+        : _.chain(
+            _.keys(_.get(workspace.byId[loggedInUser.workspaceId], "users", []))
+          )
             .map(user => users.byId[user])
             .value();
     }
