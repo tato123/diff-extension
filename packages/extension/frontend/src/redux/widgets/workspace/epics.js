@@ -1,6 +1,6 @@
 import { combineEpics, ofType } from "redux-observable";
 import { from, of } from "rxjs";
-import { mergeMap, catchError, map } from "rxjs/operators";
+import { mergeMap, map, catchError, flatMap } from "rxjs/operators";
 
 import types from "./types";
 import actions from "./actions";
@@ -8,8 +8,8 @@ import actions from "./actions";
 const addCollaboratorEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.ADD_WORKSPACE_USER_REQUEST),
-    mergeMap(action => {
-      return from(
+    mergeMap(action =>
+      from(
         api.workspace.addSingleCollaborator(
           action.payload.email,
           action.payload.workspaceId
@@ -21,17 +21,17 @@ const addCollaboratorEpic = (action$, state$, { api }) =>
             action.payload.workspaceId
           )
         ),
-        catchError(err =>
+        catchError(error =>
           of(
             actions.addWorkspaceUserFailed(
               action.payload.workspace,
               action.payload.workspaceId,
-              err
+              error
             )
           )
         )
-      );
-    })
+      )
+    )
   );
 
 const createWorkspaceEpic = (action$, state$, { api }) =>
@@ -39,7 +39,12 @@ const createWorkspaceEpic = (action$, state$, { api }) =>
     ofType(types.CREATE_WORKSPACE),
     mergeMap(action =>
       from(api.workspace.createWorkspace(action.payload.name)).pipe(
-        map(() => actions.createWorkspaceSuccess(action.payload.name)),
+        flatMap(({ workspaceId }) => [
+          ...action.payload.emails.map(email =>
+            actions.addWorkspaceUser(email, workspaceId)
+          ),
+          actions.createWorkspaceSuccess(action.payload.name)
+        ]),
         catchError(error =>
           of(
             actions.createWorkspaceFailed(

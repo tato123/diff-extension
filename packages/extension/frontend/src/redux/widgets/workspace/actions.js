@@ -16,19 +16,20 @@ const addWorkspaceUserSuccess = (email, workspaceId) => ({
   }
 });
 
-const addWorkspaceUserFailed = (email, workspaceId, err) => ({
+const addWorkspaceUserFailed = (email, workspaceId, error) => ({
   type: types.ADD_WORKSPACE_USER_FAILED,
   payload: {
     email,
     workspaceId,
-    err
+    error
   }
 });
 
-const createWorkspace = name => ({
+const createWorkspace = (name, emails = []) => ({
   type: types.CREATE_WORKSPACE,
   payload: {
-    name
+    name,
+    emails
   }
 });
 
@@ -39,11 +40,11 @@ const createWorkspaceSuccess = name => ({
   }
 });
 
-const createWorkspaceFailed = (name, err) => ({
+const createWorkspaceFailed = (name, error) => ({
   type: types.CREATE_WORKSPACE_FAILED,
   payload: {
     name,
-    err
+    error
   }
 });
 

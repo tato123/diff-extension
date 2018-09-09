@@ -8,6 +8,10 @@ export interface QueryResponse {
   id: string;
 }
 
+export interface CreateWorkspaceResponse {
+  workspaceId: string;
+}
+
 export default (db: firebase.firestore.Firestore): Object => {
   const workspaceRef = db.collection("workspace");
 
@@ -121,7 +125,9 @@ export default (db: firebase.firestore.Firestore): Object => {
     workspaceId: string
   ): Promise<Object> => addCollaborators([email], workspaceId);
 
-  const createWorkspace = async (name: string): Promise<Object> => {
+  const createWorkspace = async (
+    name: string
+  ): Promise<CreateWorkspaceResponse> => {
     if (_.isNil(name)) {
       throw new Error("Workspace name is required");
     }

@@ -4,6 +4,7 @@ import _ from "lodash";
 const launcherSelectorDomain = state => state.widgets.launcher;
 const elementSelectorDomain = state => state.entities.selectors;
 const activitySelectorDomain = state => state.entities.activity;
+const widgetStateDomain = state => state.widgets.state;
 
 const busySelector = () =>
   createSelector(launcherSelectorDomain, launcher => launcher.busy);
@@ -27,7 +28,15 @@ const unseenCountSelector = () =>
     }
   );
 
+const widgetVisibleSelector = widgetName =>
+  createSelector(
+    widgetStateDomain,
+    widgetState =>
+      _.findIndex(widgetState, widget => widget.name === widgetName) !== -1
+  );
+
 export default {
   busySelector,
-  unseenCountSelector
+  unseenCountSelector,
+  widgetVisibleSelector
 };

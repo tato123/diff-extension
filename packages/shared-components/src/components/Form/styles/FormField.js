@@ -58,6 +58,8 @@ const ErrorLabel = styled(Label)`
   margin: 4px 0px 0px 0px !important;
   font-size: 16px;
   padding-bottom: 0px;
+  min-height: 16px;
+  height: 16px;
 `;
 
 const FormField = ({ label, hide, name, error, required, children, style }) => (

@@ -13,7 +13,8 @@ const makeMapStateToProps = () => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  createWorkspace: name => dispatch(actions.createWorkspace(name))
+  createWorkspace: (name, emails) =>
+    dispatch(actions.createWorkspace(name, emails))
 });
 
 export default connect(

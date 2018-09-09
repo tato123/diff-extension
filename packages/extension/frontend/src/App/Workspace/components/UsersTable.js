@@ -6,8 +6,12 @@ const UsersTable = styled.div`
   flex: 1;
 
   .listing {
-    display: flex;
+    display: block;
     flex-direction: column;
+
+    overflow-y: auto;
+    overflow-x: none;
+
     > div.userRow {
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding: 8px 0;

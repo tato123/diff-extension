@@ -6,7 +6,8 @@ import { selectors } from "redux/widgets/launcher";
 import { actions as widgetActions } from "redux/widgets/state";
 
 const mapStateToProps = createStructuredSelector({
-  count: selectors.unseenCountSelector()
+  count: selectors.unseenCountSelector(),
+  workspaceVisible: selectors.widgetVisibleSelector("workspace")
 });
 
 const mapDispatchToProps = dispatch => ({

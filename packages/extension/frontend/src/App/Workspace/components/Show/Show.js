@@ -6,14 +6,27 @@ import {
   Form,
   Image,
   Placeholder,
-  Label
+  Label,
+  Anchor
 } from "@diff/shared-components";
 import UsersTable, { UserRow } from "../UsersTable";
 import Status from "../Status";
 import TightHeader from "../TightHeader";
+import { TitleRegion } from "../Layout";
+import Icon from "react-icons-kit";
+import { ic_close as iconClose } from "react-icons-kit/md/ic_close";
+import styled from "styled-components";
 
 import { Formik } from "formik";
-import { string, object } from "yup";
+import MultiEmail from "../MultEmail";
+
+const InviteUserRegion = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  button:first-child {
+    margin-right: 16px;
+  }
+`;
 
 export default class Workspace extends React.Component {
   static propTypes = {
@@ -34,54 +47,69 @@ export default class Workspace extends React.Component {
 
     workspaceId: PropTypes.string,
 
-    invitedUsers: PropTypes.array
+    invitedUsers: PropTypes.array,
+
+    onClose: PropTypes.func
+  };
+
+  static defaultProps = {
+    onClose: () => {}
   };
 
   state = {
     addUser: false
   };
 
-  onSubmitCollaborator = evt => {
-    evt.preventDefault();
-    this.props.addCollaborator(evt.target.email.value, this.props.workspaceId);
-    this.setState({ addUser: false });
-    return false;
+  initialValues = {
+    emails: []
   };
 
-  onSubmitCollaborator = evt => {
-    evt.preventDefault();
-    this.props.addCollaborator(evt.target.email.value, this.props.workspaceId);
-    this.setState({ addUser: false });
-    return false;
-  };
+  onSubmitCollaborator = values => {
+    values.emails.forEach(email => {
+      this.props.addCollaborator(email, this.props.workspaceId);
+    });
 
-  onCreateWorkspace = evt => {
-    evt.preventDefault();
-    this.props.createWorkspace(evt.target.workspace.value);
-    return false;
+    //
+    this.setState({ addUser: false });
   };
 
   renderForm = () => {
     return (
-      <Form onSubmit={this.onSubmitCollaborator} autoComplete="off">
-        <Form.Input
-          label=""
-          name="email"
-          type="text"
-          placeholder="email@domain.com"
-        />
-        <div style={{ display: "flex" }}>
-          <Button
-            onClick={() => this.setState({ addUser: false })}
-            type="button"
-          >
-            Cancel
-          </Button>
-          <Button primary={true} type="submit">
-            Add User
-          </Button>
-        </div>
-      </Form>
+      <Formik
+        initialValues={this.initialValues}
+        onSubmit={this.onSubmitCollaborator}
+        render={({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue
+        }) => (
+          <Form onSubmit={handleSubmit} autoComplete="off">
+            <Form.Field label="Collaborators" error={errors.emails}>
+              <MultiEmail
+                name="emails"
+                emails={values.emails}
+                onChange={setFieldValue}
+                onBlur={handleBlur}
+              />
+            </Form.Field>
+            <InviteUserRegion>
+              <Button
+                onClick={() => this.setState({ addUser: false })}
+                type="button"
+              >
+                Cancel
+              </Button>
+              <Button primary={true} type="submit">
+                Invite User
+              </Button>
+            </InviteUserRegion>
+          </Form>
+        )}
+      />
     );
   };
 
@@ -106,19 +134,31 @@ export default class Workspace extends React.Component {
 
   render() {
     const {
-      props: { workspaceUsers, invitedUsers },
+      props: { workspaceUsers, invitedUsers, onClose },
       state: { addUser }
     } = this;
 
     return (
       <React.Fragment>
-        <TightHeader as="h2">{this.props.workspaceName}</TightHeader>
+        <TitleRegion>
+          <TightHeader as="h2" uppercase>
+            {this.props.workspaceName}
+          </TightHeader>
+          <Anchor onClick={onClose}>
+            <Icon icon={iconClose} />
+          </Anchor>
+        </TitleRegion>
         <HR />
+
         <UsersTable>
-          <div className="listing">
+          <div
+            className="listing"
+            style={{ height: addUser ? "95px" : "256px" }}
+          >
             {workspaceUsers.map(user => user && this.renderUser(user))}
             {invitedUsers.map(user => user && this.renderUser(user))}
           </div>
+
           {addUser && this.renderForm()}
           {!addUser && (
             <Button onClick={() => this.setState({ addUser: true })}>

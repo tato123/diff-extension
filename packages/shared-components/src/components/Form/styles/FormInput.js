@@ -3,19 +3,22 @@ import PropTypes from "prop-types";
 
 import FormField from "./FormField";
 
-const FormInput = ({ children, hide, style, ...rest }) => (
+const FormInput = ({ children, hide, style, render, ...rest }) => (
   <FormField style={style} {...rest} hide={hide}>
-    <input {...rest} />
+    {render && render(rest)}
+    {!render && <input {...rest} />}
   </FormField>
 );
 
 FormInput.propTypes = {
   style: PropTypes.any,
-  children: PropTypes.any
+  children: PropTypes.any,
+  render: PropTypes.func
 };
 
 FormInput.defaultProps = {
   style: {},
+  render: null,
   children: null
 };
 

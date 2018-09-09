@@ -350,7 +350,9 @@ const createWorkspace = async (name, userId) => {
   console.log(`Updated ${upgradedEvents} for ${userId} and workspace ${name}`);
 
   // 3. send email that we have created a new workspace
-  return emailNotify.createWorkspace(user.email, name);
+  await emailNotify.createWorkspace(user.email, name);
+
+  return workspaceDocRef.id;
 };
 
 const getDomains = async refreshToken => {

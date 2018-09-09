@@ -8,6 +8,7 @@ import { ic_close as iconClose } from "react-icons-kit/md/ic_close";
 import TightHeader from "../TightHeader";
 import { Footer, FormRegion, TitleRegion } from "../Layout";
 import styled from "styled-components";
+import MultiEmail from "../MultEmail";
 
 // form handling
 import { Formik } from "formik";
@@ -35,7 +36,8 @@ export default class CreateWorkspace extends React.Component {
   };
 
   initialValues = {
-    workspace: ""
+    workspace: "",
+    emails: []
   };
 
   schema = object().shape({
@@ -45,7 +47,7 @@ export default class CreateWorkspace extends React.Component {
   });
 
   submitForm = values => {
-    this.props.createWorkspace(values.workspace);
+    this.props.createWorkspace(values.workspace, values.emails);
   };
 
   render() {
@@ -80,7 +82,8 @@ export default class CreateWorkspace extends React.Component {
             touched,
             handleChange,
             handleBlur,
-            handleSubmit
+            handleSubmit,
+            setFieldValue
           }) => (
             <Form onSubmit={handleSubmit} autoComplete="off">
               <FormRegion>
@@ -94,6 +97,14 @@ export default class CreateWorkspace extends React.Component {
                   error={errors.workspace}
                   value={values.workspace}
                 />
+                <Form.Field label="Collaborators" error={errors.emails}>
+                  <MultiEmail
+                    name="emails"
+                    emails={values.emails}
+                    onChange={setFieldValue}
+                    onBlur={handleBlur}
+                  />
+                </Form.Field>
               </FormRegion>
               <Footer>
                 <Button onClick={onClose}>Cancel</Button>

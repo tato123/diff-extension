@@ -110,7 +110,7 @@ exports.autoAcceptWorkspaceInvites = (to, workspaceName) => {
       <div><img src="https://getdiff.app/images/mark.png" class="main" style='background-color: #f9f9f9; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; font-size: 1rem; max-height: 50px; top: 0px; margin: 10px; padding: 10px 0;'></div>
       <div class="content" style="border-radius: 4px; box-shadow: 0 0 3px 0px rgba(0,0,0,0.2); background-color: #fff; box-sizing: border-box; margin: 0 20px 20px; padding: 20px;">
         <label class="title" style="color: #dd387d; font-weight: 500; font-size: 1.6rem;">Hello!</label>
-        <p>You were added to a new workspace <span class="workspace" style="color: #dd387d; font-weight: bold;">(${workspaceName})</span> on diff. </p>
+        <p>You were added to the workspace <span class="workspace" style="color: #dd387d; font-weight: bold;">(${workspaceName})</span> on diff. </p>
         <p>Check out all the great ways you can get started:</p>
         <div>
         <a class="primary" href="https://www.getdiff.app" style="background-color: #43cad9 !important; color: #fff; outline: none; text-align: center; display: block; border-radius: 8px; text-decoration: none; margin: 16px; padding: 20px;">Get Started</a>
@@ -156,7 +156,7 @@ exports.inviteNewUserToWorkspace = (to, workspaceName) => {
       <div><img src="https://getdiff.app/images/mark.png" class="main" style='background-color: #f9f9f9; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; font-size: 1rem; max-height: 50px; top: 0px; margin: 10px; padding: 10px 0;'></div>
       <div class="content" style="border-radius: 4px; box-shadow: 0 0 3px 0px rgba(0,0,0,0.2); background-color: #fff; box-sizing: border-box; margin: 0 20px 20px; padding: 20px;">
         <label class="title" style="color: #dd387d; font-weight: 500; font-size: 1.6rem;">Hello!</label>
-        <p>You were added to a new workspace <span class="workspace" style="color: #dd387d; font-weight: bold;">(${workspaceName})</span> on diff. </p>
+        <p>You were invited to the workspace <span class="workspace" style="color: #dd387d; font-weight: bold;">(${workspaceName})</span> on diff. </p>
         <p>Check out all the great ways you can get started:</p>
         <div>
         <a class="primary" href="https://www.getdiff.app" style="background-color: #43cad9 !important; color: #fff; outline: none; text-align: center; display: block; border-radius: 8px; text-decoration: none; margin: 16px; padding: 20px;">Get Started</a>
