@@ -15,7 +15,8 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
   closeAll: () => dispatch(widgetActions.closeAll()),
-  show: name => dispatch(widgetActions.show(name))
+  show: name => dispatch(widgetActions.show(name)),
+  hide: name => dispatch(widgetActions.hide(name))
 });
 
 export default connect(

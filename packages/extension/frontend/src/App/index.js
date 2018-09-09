@@ -83,7 +83,10 @@ export default class App extends React.Component {
             shouldRender={props => ImplAuthenticated(props) && props.shown}
           >
             {props => (
-              <Workspace context={props.values && props.values.context} />
+              <Workspace
+                context={props.values && props.values.context}
+                onClose={() => props.hide("workspace")}
+              />
             )}
           </Widget>
           <Widget name="launcher" shouldRender={ImplAuthenticated}>
