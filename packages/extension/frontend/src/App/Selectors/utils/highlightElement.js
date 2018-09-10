@@ -8,7 +8,7 @@ import {
   mergeMap,
   catchError,
   multicast,
-  tap
+  filter
 } from "rxjs/operators";
 
 import { lighten, opacify, darken } from "polished";
@@ -89,14 +89,14 @@ export const inspect = (tapFn = _.noop) => {
   clearStyles();
 
   const clicks = fromEvent(window, "click", { capture: true }).pipe(
-    mergeMap(evt => {
+    filter(evt => {
       evt.preventDefault();
       if (isSelectableElement(evt)) {
-        return of(evt);
+        return true;
       } else if (isNotSelectableElement(evt)) {
-        return of(null);
+        return false;
       } else if (!evt.target.hasAttribute(SELECTABLE_ATTR)) {
-        return of(evt);
+        return true;
       }
     })
   );
