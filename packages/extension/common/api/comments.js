@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import _ from "lodash";
 import "firebase/storage";
+import { getLocationURL } from "../url";
 
 export default db => {
   const eventsRef = db.collection("events");
@@ -8,14 +9,16 @@ export default db => {
 
   const comments$ = (uid, workspaceId) => {
     return Observable.create(observer => {
+      const subject = !_.isNil(workspaceId)
+        ? "meta.workspaceId"
+        : "meta.userId";
+      const value = !_.isNil(workspaceId) ? workspaceId : uid;
+      const location = getLocationURL();
+
       const unsubscribe = commentsRef
-        .where("url.hostname", "==", window.location.hostname)
-        .where("url.pathname", "==", window.location.pathname)
-        .where(
-          !_.isNil(workspaceId) ? "meta.workspaceId" : "meta.userId",
-          "==",
-          !_.isNil(workspaceId) ? workspaceId : uid
-        )
+        .where("url.hostname", "==", location.hostname)
+        .where("url.pathname", "==", location.pathname)
+        .where(subject, "==", value)
         .onSnapshot(
           querySnapshot => {
             if (!querySnapshot.empty) {
@@ -82,6 +85,8 @@ export default db => {
       uploadAttachment.map(file => uploadFile(file, uid))
     );
 
+    const location = getLocationURL();
+
     const record = {
       comment,
       selector,
@@ -91,7 +96,7 @@ export default db => {
         created: Date.now()
       },
       attachments,
-      url: JSON.parse(JSON.stringify(window.location)) // convert to serializable only data
+      url: location
     };
 
     if (workspaceId) {

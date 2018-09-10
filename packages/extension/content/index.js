@@ -65,7 +65,3 @@ const main = () => {
 
 // start our applicaiton
 main();
-
-window.addEventListener("message", event => {
-  console.log("extension received message", event.data);
-});
