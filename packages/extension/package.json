@@ -97,6 +97,7 @@
     "lodash": "^4.17.10",
     "polished": "^1.9.3",
     "popper.js": "^1.14.3",
+    "prismjs": "^1.15.0",
     "query-string": "^6.1.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

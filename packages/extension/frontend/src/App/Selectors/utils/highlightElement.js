@@ -11,32 +11,22 @@ import {
   filter
 } from "rxjs/operators";
 
-import { lighten, opacify, darken } from "polished";
-
 import { injectGlobal } from "styled-components";
+import Inspector from "./hoverinspect";
 
 const SELECTION_CLASS = "diff-selected";
 const HIGHLIGHT_CLASS = "diff-highlight";
 
 injectGlobal`
-  .diff-highlight {
-    outline: 1px dashed ${darken(0.9, "#1a1b3c")} !important;
-    background-color: ${opacify(0.7, lighten(0.7, "#1a1b3c"))} !important;
-  }
 
-  .diff-selected:after {
-    width: 100%;
-    height: 100%;
-    border: 2px dashed #000;
-    position: relative;
-    content: '';
-    display: block;
-    border-radius: 2em;
+  .diff-selected {
+    outline: 2px dashed #000 !important;
   }
 `;
 
 // common selector attribute
 const SELECTABLE_ATTR = "data-diff-selectable";
+const inspector = new Inspector();
 
 /**
  * The target has to specifically opt-in to turn off selectability,
@@ -80,13 +70,9 @@ const clearStyles = () => {
     node.classList.remove(SELECTION_CLASS);
   });
 };
-
-/**
- * @param {Function} interceptFn a tap
- * @returns {Observable}
- */
 export const inspect = (tapFn = _.noop) => {
   clearStyles();
+  inspector.activate();
 
   const clicks = fromEvent(window, "click", { capture: true }).pipe(
     filter(evt => {
@@ -140,6 +126,8 @@ export const inspect = (tapFn = _.noop) => {
 
   move$.subscribe(e => {
     clearStyles();
+
+    inspector.deactivate();
 
     if (e) {
       e.classList.add(SELECTION_CLASS);
