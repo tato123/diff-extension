@@ -1,6 +1,6 @@
 {
   "name": "@diff/extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "start:dev": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.extension.js",
     "frontend": "cross-env NODE_ENV=\"development\" webpack --progress --colors --mode development --watch --env dev --config configs/webpack.frontend.js",
     "start": "npm run start:dev",
-    "test": "npx jest --ci"
+    "test": "npx jest --ci",
+    "test:watch": "jest --watchAll --coverage"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
+    "cypress": "^3.1.0",
     "eslint": "4.x",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
@@ -78,7 +80,7 @@
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.0.0",
-    "@diff/shared-components": "^0.1.0",
+    "@diff/shared-components": "^0.1.1",
     "@medv/finder": "^1.0.3",
     "@rematch/core": "^1.0.0-beta.2",
     "@rematch/select": "^1.0.2",
@@ -95,6 +97,7 @@
     "lodash": "^4.17.10",
     "polished": "^1.9.3",
     "popper.js": "^1.14.3",
+    "prismjs": "^1.15.0",
     "query-string": "^6.1.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -102,6 +105,7 @@
     "react-dropdown": "^1.5.0",
     "react-icons-kit": "^1.1.5",
     "react-loadable": "^5.5.0",
+    "react-multi-email": "^0.3.6",
     "react-popper": "^1.0.0-beta.6",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",

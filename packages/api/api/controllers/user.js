@@ -75,9 +75,9 @@ exports.createWorkspace = async (req, res) => {
     if (!creatorUid) {
       return res.send(401, { message: "Cannot create workspace anonymously" });
     }
-    await userManager.createWorkspace(name, creatorUid);
+    const workspaceId = await userManager.createWorkspace(name, creatorUid);
     res.send(200, {
-      status: "workspace created"
+      workspaceId
     });
   } catch (err) {
     res.send(400, { message: "Workspace not created: " + err.message });

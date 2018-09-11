@@ -23,6 +23,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         invites: [...state.invites, action.payload.email]
       };
+    case types.CLEAR_WORKSPACES:
+      return initialState;
     default:
       return state;
   }

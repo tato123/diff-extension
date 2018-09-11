@@ -37,10 +37,15 @@ const getWorkspaceByIdFailed = (err, id) => ({
   }
 });
 
+const clearWorkspaces = () => ({
+  type: types.CLEAR_WORKSPACES
+});
+
 export default {
   getWorkspaceById,
   getWorkspaceByIdSuccess,
   getWorkspaceByIdFailed,
   addInviteUser,
-  addInviteUserFailed
+  addInviteUserFailed,
+  clearWorkspaces
 };

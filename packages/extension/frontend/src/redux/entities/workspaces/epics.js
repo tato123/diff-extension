@@ -1,8 +1,9 @@
 import { combineEpics, ofType } from "redux-observable";
 import { of } from "rxjs";
-import { catchError, switchMap, map } from "rxjs/operators";
+import { catchError, switchMap, map, flatMap } from "rxjs/operators";
 import types from "./types";
 import actions from "./actions";
+import { actions as userActions } from "redux/entities/users";
 import { types as userTypes } from "redux/user";
 
 const getInvitesEpic = (action$, state$, { api }) =>
@@ -25,10 +26,15 @@ const getWorkspaceByIdEpic = (action$, state$, { api }) =>
     ofType(types.GET_WORKSPACE_BY_ID),
     switchMap(action =>
       api.workspace.workspaceForId$(action.payload.id).pipe(
-        map(response => {
-          console.warn("[frontend] [workspace epic] unknown response type");
-          return actions.getWorkspaceByIdSuccess(response.data, response.id);
-        }),
+        flatMap(({ data: workspace, id: workspaceId }) =>
+          // go through the workspace users and fetch each user
+          [
+            ...Object.keys(workspace.users).map(userId => {
+              return userActions.fetchUser(userId);
+            }),
+            actions.getWorkspaceByIdSuccess(workspace, workspaceId)
+          ]
+        ),
         catchError(err =>
           of(
             actions.getWorkspaceByIdFailed(

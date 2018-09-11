@@ -43,7 +43,9 @@ export default class Launcher extends React.Component {
 
     showWidget: PropTypes.func.isRequired,
 
-    hideWidget: PropTypes.func.isRequired
+    hideWidget: PropTypes.func.isRequired,
+
+    workspaceVisible: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -52,8 +54,7 @@ export default class Launcher extends React.Component {
   };
 
   state = {
-    showClose: false,
-    showWorkspace: false
+    showClose: false
   };
 
   onMenuClick = () => {
@@ -63,18 +64,16 @@ export default class Launcher extends React.Component {
 
   onCloseClick = () => {
     this.props.onClick(false);
-    this.setState({ showClose: false, showWorkspace: false });
+    this.setState({ showClose: false });
   };
 
   onWorkspaceClick = () => {
     const WORKSPACE = "workspace";
 
-    if (this.state.showWorkspace) {
+    if (this.props.workspaceVisible) {
       this.props.hideWidget(WORKSPACE);
-      this.setState({ showWorkspace: false });
     } else {
       this.props.showWidget(WORKSPACE);
-      this.setState({ showWorkspace: true });
     }
   };
 
@@ -104,7 +103,8 @@ export default class Launcher extends React.Component {
 
   workspaceMenuOption = () => {
     const {
-      state: { showClose, showWorkspace }
+      props: { workspaceVisible },
+      state: { showClose }
     } = this;
 
     return (
@@ -114,11 +114,11 @@ export default class Launcher extends React.Component {
         from={{
           transform: "translate(75px)",
           position: "relative",
-          backgroundColor: showWorkspace ? "#43cad9" : "#1a1b3c"
+          backgroundColor: workspaceVisible ? "#43cad9" : "#1a1b3c"
         }}
         to={{
           transform: showClose ? "translate(0px)" : "translate(75px)",
-          backgroundColor: showWorkspace ? "#43cad9" : "#1a1b3c"
+          backgroundColor: workspaceVisible ? "#43cad9" : "#1a1b3c"
         }}
         onClick={this.onWorkspaceClick}
         render={WorkspaceButton}

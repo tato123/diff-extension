@@ -1,6 +1,6 @@
 import { combineEpics, ofType } from "redux-observable";
 import { of } from "rxjs";
-import { map, catchError } from "rxjs/operators";
+import { mergeMap, map, catchError } from "rxjs/operators";
 import actions, { FetchUserAction } from "./actions";
 import types from "./types";
 import selectors from "./selectors";
@@ -8,7 +8,7 @@ import selectors from "./selectors";
 const fetchUserEpic = (action$: any, state$: any, { api }: { api: any }) =>
   action$.pipe(
     ofType(types.FETCH_USER_REQUEST),
-    map((action: FetchUserAction) => {
+    mergeMap((action: FetchUserAction) => {
       const state = state$.value;
       const user = selectors.getUserSelector(action.payload.uid)(state);
 
@@ -17,8 +17,8 @@ const fetchUserEpic = (action$: any, state$: any, { api }: { api: any }) =>
         return of(actions.fetchUserFailed("duplicate"));
       }
 
-      return api.getUser(action.payload.uid).pipe(
-        map(x => actions.fetchUserSuccess(x)),
+      return api.user.getUser(action.payload.uid).pipe(
+        map(user => actions.fetchUserSuccess(user)),
         catchError(err => of(actions.fetchUserFailed(err)))
       );
     })

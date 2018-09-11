@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import _ from "lodash";
 import "firebase/storage";
+import { getLocationURL } from "../url";
 
 export default db => {
   const eventsRef = db.collection("events");
@@ -8,14 +9,16 @@ export default db => {
 
   const comments$ = (uid, workspaceId) => {
     return Observable.create(observer => {
+      const subject = !_.isNil(workspaceId)
+        ? "meta.workspaceId"
+        : "meta.userId";
+      const value = !_.isNil(workspaceId) ? workspaceId : uid;
+      const location = getLocationURL();
+
       const unsubscribe = commentsRef
-        .where("url.hostname", "==", window.location.hostname)
-        .where("url.pathname", "==", window.location.pathname)
-        .where(
-          !_.isNil(workspaceId) ? "meta.workspaceId" : "meta.userId",
-          "==",
-          !_.isNil(workspaceId) ? workspaceId : uid
-        )
+        .where("url.hostname", "==", location.hostname)
+        .where("url.pathname", "==", location.pathname)
+        .where(subject, "==", value)
         .onSnapshot(
           querySnapshot => {
             if (!querySnapshot.empty) {
@@ -35,16 +38,16 @@ export default db => {
     });
   };
 
-  const uploadFile = file => (dispatch, getState) => {
-    const storageRef = db.app.storage().ref(`attachments/${file.name}`);
+  const uploadFile = async (file, uid) => {
+    const storageRef = db.app.storage().ref(`attachments/${uid}/${file.name}`);
     const task = storageRef.put(file);
 
     return new Promise((resolve, reject) => {
       task.on(
         "state_changed",
         function progress(snapshot) {
-          var percentage =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          // var percentage =
+          //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           // console.log(percentage);
         },
         function error(error) {
@@ -78,7 +81,11 @@ export default db => {
       throw new Error("selector cannot be undefined");
     }
 
-    const attachments = await Promise.all(uploadAttachment.map(uploadFile));
+    const attachments = await Promise.all(
+      uploadAttachment.map(file => uploadFile(file, uid))
+    );
+
+    const location = getLocationURL();
 
     const record = {
       comment,
@@ -89,7 +96,16 @@ export default db => {
         created: Date.now()
       },
       attachments,
-      url: JSON.parse(JSON.stringify(window.location)) // convert to serializable only data
+      url: {
+        hash: location.hash,
+        hostname: location.hostname,
+        href: location.href,
+        origin: location.origin,
+        pathname: location.pathname,
+        port: location.port,
+        protocol: location.protocol,
+        search: location.search
+      }
     };
 
     if (workspaceId) {
