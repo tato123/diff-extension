@@ -12,5 +12,7 @@ module.exports = function() {
 
   // get the db
   const db = admin.firestore();
+  const settings = { /* your settings... */ timestampsInSnapshots: true };
+  db.settings(settings);
   return db;
 };

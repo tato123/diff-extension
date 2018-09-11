@@ -96,7 +96,16 @@ export default db => {
         created: Date.now()
       },
       attachments,
-      url: location
+      url: {
+        hash: location.hash,
+        hostname: location.hostname,
+        href: location.href,
+        origin: location.origin,
+        pathname: location.pathname,
+        port: location.port,
+        protocol: location.protocol,
+        search: location.search
+      }
     };
 
     if (workspaceId) {
