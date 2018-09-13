@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Diff | In context collaboration</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300i,700|Oswald:200,300,400,500,600,700|Roboto+Condensed:300,300i,400,400i,700,700i"
+        rel="stylesheet">
+    <link rel="stylesheet" href="base.css">
+
+
+</head>
+
+<body>
+
+    <div>
+        <h1>Sign up</h1>
+        <form id="signup">
+            <div>
+                <label>email</label>
+                <input name="email" type="text" />
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <nav>
+        <img id="nav-mark" src="images/mark.png">
+        <div id="hamburger"></div>
+        <ul>
+            <li class="nav-item active transition" data-rel="hero">Home</li>
+            <li class="nav-item transition" data-rel="classrooms">Features</li>
+            <li class="nav-item transition" data-rel="after-school">Overview</li>
+            <li class="nav-item transition" data-rel="contact-us">Pricing</li>
+        </ul>
+    </nav>
+    <div id="hero">
+        <div class="hero-content">
+
+            <h1>The best “in context” collaboration tool for ...</h1>
+            <h3>Designers, developers &amp; product managers</h3>
+            <button id="enroll" class="transition learn-more" data-rel="schedule-a-tour">Try it now</button>
+        </div>
+    </div>
+
+    <div id="classrooms" class="section">
+        <div>
+            <h3>Change management</h3>
+            <p>Verify and annotate changes IN your product. Diff will automatically notify you when something has
+                changed.</p>
+            <!-- <button class="small learn-more" data-rel="infant-sched">Schedule</button> -->
+        </div>
+        <div>
+            <h3>Collaboration</h3>
+            <p>Attach wireframes, mockups or assets to the actual component to be manipulated. Give feedback and track
+                communication
+                effortlessly. </p>
+            <!-- <button class="small learn-more" data-rel="toddler-sched">Schedule</button> -->
+        </div>
+        <div>
+            <h3>Presentation</h3>
+            <p>View and export animated GIFs of the changes in your product over time or comparing two days in time.
+            </p>
+            <!-- <button class="small learn-more" data-rel="preschool-sched">Schedule</button> -->
+        </div>
+    </div>
+    <div id="after-school" class="section">
+        <iframe width="820" height="545" frameborder="0" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+        </iframe>
+    </div>
+
+    <div id="contact-us">
+        <h1>Find the perfect plan for your needs</h1>
+        <div id="pricing">
+            <div class="tier">
+                <h3>FREE</h3>
+                <hr>
+                <span class="cost">$0</span>
+                <p>per month
+                    <br>1 user
+                    <br>1 URL</p>
+                <button id="buyfree">buy free</button>
+            </div>
+            <div class="tier">
+                <h3>TEAM</h3>
+                <hr>
+                <span class="cost">$25</span>
+                <p>per month
+                    <br>Up to 5 users
+                    <br>Up to 3 URLs</p>
+                <button id="buyteam">buy team</button>
+            </div>
+            <div class="tier">
+                <h3>ENTERPRISE</h3>
+                <hr>
+                <span class="cost">$50</span>
+                <p>per month
+                    <br>Ulimimted users
+                    <br>Unlimited URLs</p>
+                <button id="buyenterprise">buy enterprise</button>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <p class="center">
+            &copy;2018 getDiff, Inc.
+        </p>
+    </div>
+    <!-- These are the modal screens -->
+    <div id="rates" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="menu" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="discipline" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="leadership" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <!-- <div id="classrooms-more" class="modal">
+        <h1>Classrooms</h1>
+      </div> -->
+    <div id="infant-sched" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="toddler-sched" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="preschool-sched" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="winter-camp" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+    <div id="schedule-a-tour" class="modal">
+        <div class="close">
+            <p>X</p>
+        </div>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $('.modal').prepend('<div class="close"><p>X</p></div>');
+        if ($(window).width() > 980) {
+            $(function () {
+                $('.nav-item').click(function () {
+                    $('.nav-item').removeClass('active');
+                    $(this).addClass('active');
+                    var target = $(this).data('rel');
+                    $('html,body').animate({
+                        scrollTop: $('#' + target).offset().top
+                    }, 1000);
+                });
+            });
+        } else {
+            $(function () {
+                $('.nav-item').click(function () {
+                    $('.nav-item').removeClass('active');
+                    $('nav ul').removeClass('open');
+                    $(this).addClass('active');
+                    var target = $(this).data('rel');
+                    $('html,body').animate({
+                        scrollTop: $('#' + target).offset().top
+                    }, 1000);
+                });
+            });
+        }
+        $(window).on('scroll', function () {
+            scrollPosition = $(this).scrollTop();
+            classrooms = $('#classrooms').offset().top - 50;
+            aboutUs = $('#aboutus').offset().top - 50;
+            afterSchool = $('#after-school').offset().top - 50;
+            // forParents = $('#for-parents').offset().top - 50;
+            contact = $('#contact-us').offset().top - 50;
+            if (scrollPosition >= aboutUs && scrollPosition < classrooms) {
+                // If the function is only supposed to fire once
+                $('#enroll').css({ 'position': 'fixed', 'top': '7px', 'right': '30px' });
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="hero"]').addClass('active');
+            } else if (scrollPosition >= classrooms && scrollPosition < afterSchool) {
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="classrooms"]').addClass('active');
+                // } else if (scrollPosition >= afterSchool && scrollPosition < forParents){
+                //     $('.nav-item').removeClass('active');
+                //     $('.nav-item[data-rel="after-school"]').addClass('active');
+                // } else if (scrollPosition >= forParents && scrollPosition < contact){
+                //     $('.nav-item').removeClass('active');
+                //     $('.nav-item[data-rel="for-parents"]').addClass('active');
+            } else if (scrollPosition >= afterSchool && scrollPosition < contact) {
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="after-school"]').addClass('active');
+            } else if (scrollPosition >= contact) {
+                $('.nav-item').removeClass('active');
+                $('.nav-item[data-rel="contact-us"]').addClass('active');
+            } else {
+                $('#enroll').css('position', '');
+            }
+        });
+        function displayModal(a) {
+            var modal = $(a).data('rel');
+            $('#' + modal).fadeIn();
+            $('body').addClass('modal-open');
+        };
+        $('.learn-more').click(function () {
+            displayModal(this);
+        });
+        $('.inline-button').click(function () {
+            displayModal(this);
+        });
+        $('.close').click(function () {
+            $(this).parent('.modal').fadeOut();
+            $('body').removeClass('modal-open');
+        });
+        $('#hamburger').click(function () {
+            $('nav ul').toggleClass('open');
+            $('nav ul li').addClass('mobile-nav');
+        });
+        $('.nav-item.mobile-nav').click(function () {
+            $(this).parent().removeClass('open');
+            console.log('working');
+        })
+    </script>
+    <script src="main.js"></script>
+</body>
+
+</html>
