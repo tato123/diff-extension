@@ -32,7 +32,9 @@ const IndexPage = () => (
                   attach designs or screenshots, and share feedback.
                 </p>
               </div>
-              <button className="primary btn-info ">Install now</button>
+              <a href="/signup" className="primary button btn-info ">
+                Install now
+              </a>
             </div>
             <div className="col ">
               <img src={background} className="img-fluid info-img" />

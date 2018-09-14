@@ -1,13 +1,14 @@
 {
   "rules": [
     {
-      "pathname": "/(static|socket.io|signup|sockjs-node)",
+      "pathname": "/(static|signup|sockjs-node)",
       "dest": "http://localhost:3000"
     },
     {
-      "pathname": "/(static|socket.io|signup|sockjs-node)/**",
+      "pathname": "/(static|signup|sockjs-node)/**",
       "dest": "http://localhost:3000"
     },
-    { "pathname": "/", "dest": "http://localhost:8000" }
+    { "pathname": "/", "dest": "http://localhost:8000" },
+    { "pathname": "/socket.io", "dest": "http://localhost:8000" }
   ]
 }
