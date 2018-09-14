@@ -119,7 +119,7 @@ module.exports = (env, argv) => [
         ? [...std.plugins]
         : [
             ...std.plugins,
-            new BundleAnalyzerPlugin(),
+            new BundleAnalyzerPlugin({ openAnalyzer: false }),
             new webpack.HotModuleReplacementPlugin()
           ]
   }
