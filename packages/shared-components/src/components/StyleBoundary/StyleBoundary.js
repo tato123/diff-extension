@@ -4,6 +4,10 @@ import ShadowDom from "./styles/ShadowDOM";
 import styled, { StyleSheetManager, ThemeProvider } from "styled-components";
 import mainTheme, { get } from "../../theme";
 
+import blueprintCss from "./core/blueprint";
+import blueprintIconsCss from "./core/icons";
+import normalize from "./core/normalize";
+
 // import our local fonts
 import "./styles/BarlowFont";
 import "./styles/RobotoFont";
@@ -43,6 +47,10 @@ const styleContent = `
     background: rgba(255,255,255,0.5); 
     -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.5); 
   }
+
+  ${normalize}
+  ${blueprintCss}
+  ${blueprintIconsCss}
 `;
 
 export default class StyleBoundary extends React.PureComponent {
@@ -65,6 +73,7 @@ export default class StyleBoundary extends React.PureComponent {
     if (!div) {
       return;
     }
+
     this.setState({ div });
   };
 
@@ -83,7 +92,7 @@ export default class StyleBoundary extends React.PureComponent {
     return (
       <div>
         <style>{styleContent}</style>
-        <div ref={ref}>
+        <div ref={ref} id="jss-insertion-point">
           {div && (
             <StyleSheetManager target={div}>
               <ThemeProvider theme={mainTheme}>

@@ -31,8 +31,6 @@ export default {
   ],
   // indicate which modules should be treated as external
   external: [
-    "rebass",
-    "polished",
     "prop-types",
     "react",
     "react-dom",

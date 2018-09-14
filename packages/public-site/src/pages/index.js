@@ -1,10 +1,9 @@
 import React from 'react'
-import { Link } from 'gatsby'
 
 import Layout from '../components/layout'
 import background from '../components/images/background.png'
 import DetailSection from '../components/DetailSection'
-import Skeleton from '../components/Skeleton'
+import { Skeleton } from '@diff/shared-components'
 
 const PSkeleton = () => (
   <React.Fragment>

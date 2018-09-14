@@ -1,42 +1,37 @@
-import { Tabs as RebassTabs, Tab as RebassTab } from "rebass";
 import styled from "styled-components";
-import { get } from "theme";
+import { Tabs as BluePrintTabs } from "@blueprintjs/core";
 
-const Tabs = styled(RebassTabs)`
+const Tabs = styled(BluePrintTabs)`
   min-height: 30px;
   height: 30px;
   max-height: 30px;
-`;
-
-/* prettier-ignore */
-Tabs.Tab = styled(RebassTab)`
-  cursor: pointer;
-  font-size: ${get("text.button.fontSize")} !important;
-  font-weight: ${get("text.button.fontWeight")} !important;
-  letter-spacing: ${get("text.button.letterSpacing")} !important;
-  text-transform: uppercase;
-  color: ${({ theme, selected }) =>
-    selected ? theme.colors.white : "#aaa"} !important;
   position: relative;
-  transition: all 250ms ease-out !important;
 
   &::after {
-    content: '';
-    z-index: 1;
+    content: "";
     position: absolute;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: 1px;
     width: 100%;
-    
-    
-    left: 0px;
-    background: white;
-    ${({ selected }) => selected ? "height: 3px;" : "height: 0px;"}
-    ${({ selected }) => selected ? "bottom: -4px;" : "bottom: -8px;"}
+    bottom: 1px;
   }
 
-  
-  
-  &:hover {
-    color: gray !important;
+  .bp3-tab-indicator {
+    background-color: #fff;
+  }
+
+  .bp3-tab[aria-selected="true"] {
+    color: #fff;
+  }
+
+  .bp3-tab {
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+
+  .bp3-tab:focus {
+    outline: none;
   }
 `;
 
