@@ -3,11 +3,20 @@
   "devDependencies": {
     "lerna": "^3.2.1"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/react-scripts",
+      "**/react-scripts/**"
+    ]
+  },
   "scripts": {
     "start": "lerna run --parallel start:dev"
   },
-  "name": "diff"
+  "name": "diff",
+  "dependencies": {
+    "gatsby-cli": "^1.1.58"
+  }
 }
