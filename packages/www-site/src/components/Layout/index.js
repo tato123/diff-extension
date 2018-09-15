@@ -2,14 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
-import { withPrefix } from 'gatsby-link'
 
-import Header from './header'
+import Header from '../header'
 
-import './bootstrap.min.css'
-import './base.css'
+import '../bootstrap.min.css'
+import '../base.css'
 
-const Layout = ({ children }) => (
+const Layout = ({ children, client }) => (
   <StaticQuery
     query={graphql`
       query SiteTitleQuery {
@@ -30,7 +29,7 @@ const Layout = ({ children }) => (
           ]}
         >
           <meta charset="utf-8" />
-          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <title>Diff</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link href="favicon.png" rel="icon" type="image/x-icon" />
@@ -41,7 +40,7 @@ const Layout = ({ children }) => (
           />
           <html lang="en" />
         </Helmet>
-        <Header siteTitle={data.site.siteMetadata.title} />
+        <Header siteTitle={data.site.siteMetadata.title} client={client} />
 
         {children}
       </>
