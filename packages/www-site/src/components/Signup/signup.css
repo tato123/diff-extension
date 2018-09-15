@@ -17,6 +17,10 @@ h3 {
   font-size: 2rem;
 }
 
+.stage {
+  position: relative;
+}
+
 .background section {
   grid-area: main;
   margin: 64px 15%;
@@ -97,18 +101,53 @@ form label {
 }
 
 .fg {
-  z-index: 2;
+  left: 0px;
+  top: 0px;
+
+  width: 100%;
+  height: 100%;
+
   position: absolute;
-  right: 120px;
+  display: grid;
+  grid-template-areas: '. .';
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 400px;
+  padding: 0 64px;
+}
+
+.form {
   height: 500px;
   width: 400px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.1);
   padding: 40px;
+  margin-right: 64px;
 }
 
 .background {
   opacity: 0.2;
   z-index: 1;
+}
+
+.steps {
+  color: #818181;
+  justify-self: flex-end;
+  padding-right: 64px;
+  margin-top: 126px;
+}
+
+.steps li {
+  font-size: 1.2rem;
+  opacity: 0.6;
+}
+
+.steps ul li.active {
+  color: #4949b3;
+  font-weight: bold;
+}
+
+.steps ul li.active,
+.steps ul li.complete {
+  opacity: 1;
 }
