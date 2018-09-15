@@ -19,3 +19,4 @@ export * from "./components/HR";
 export * from "./components/Placeholder";
 export * from "./theme";
 export * from "./components/Skeleton";
+export * from "./components/ThemeProvider";

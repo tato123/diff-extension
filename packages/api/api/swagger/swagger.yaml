@@ -54,6 +54,10 @@ paths:
           type: string
           in: formData
           required: true
+        - name: displayName
+          type: string
+          in: formData
+          required: false
       responses:
         "201":
           description: Success

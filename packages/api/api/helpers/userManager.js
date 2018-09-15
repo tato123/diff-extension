@@ -65,7 +65,7 @@ const initializeUser = user => {
     .collection("users")
     .doc(user.uid)
     .set({
-      displayName: null,
+      displayName: user.displayName,
       photoUrl: null,
       uid: user.uid,
       email: user.email,
@@ -155,13 +155,14 @@ const autoAcceptWorkspaceInvites = async (email, uid) => {
   return uid;
 };
 
-const signupUser = (email, password) => {
+const signupUser = (email, password, displayName) => {
   const offlineScope = true;
   return admin
     .auth()
     .createUser({
       email,
-      password
+      password,
+      displayName
     })
     .then(credential => initializeUser(credential).then(() => credential.uid))
     .then(uid => autoAcceptWorkspaceInvites(email, uid))

@@ -1,68 +1,141 @@
 import React from 'react'
-import { redirectTo } from '@reach/router'
-import { handleLogin, isLoggedIn } from '../../utils/auth'
+import { Header, Form, Button } from '@diff/shared-components'
 
+import { Formik } from 'formik'
+import { string, object } from 'yup'
 import './signup.css'
 
 const ModalStep = ({ header, children }) => (
   <div className="form">
-    <h3>{header}</h3>
+    <Header as="h3">{header}</Header>
     {children}
   </div>
 )
 
-class Login extends React.Component {
+const signup = async (email, password, displayName) => {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      displayName,
+    }),
+  }
+
+  const response = await fetch(`${process.env.API_SERVER}/signup`, {
+    ...options,
+    method: 'POST',
+  })
+
+  if (!response.ok) {
+    return Promise.reject(response.statusText)
+  }
+
+  return response.json()
+}
+
+const isUser = async email => {
+  const response = await fetch(
+    `${process.env.API_SERVER}/validate?email=${email}`
+  )
+
+  if (!response.ok) {
+    return Promise.reject(response.statusText)
+  }
+
+  return response.text()
+}
+
+export default class Signup extends React.Component {
   state = {
     step: 0,
+    isSubmitting: false,
   }
 
   gotoStep = step => {
     this.setState({ step })
   }
 
-  handleSignup = evt => {
-    evt.preventDefault()
-    this.gotoStep(1)
-    return false
+  handleSignup = values => {
+    console.log('going to signup with ', values)
+    this.setState({ isSubmitting: true })
+
+    setTimeout(() => {
+      this.setState({ step: 1 })
+    }, 2000)
   }
+
+  validationScheme = object().shape({
+    email: string()
+      .email()
+      .required(),
+    password: string()
+      .min(6)
+      .required(),
+  })
 
   renderSignup = () => (
     <ModalStep header="Sign up for Diff">
-      <form className="app" onSubmit={this.handleSignup}>
-        <div className="form-group">
-          <label htmlFor="exampleInputEmail1">Email:</label>
-          <input
-            type="email"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            placeholder="email@domain.com"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="exampleInputEmail1">Username:</label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
-            aria-describedby="emailHelp"
-            placeholder="Create a username"
-          />
-        </div>
-        <div className="form-group space-lg">
-          <label htmlFor="exampleInputPassword1">Password:</label>
-          <input
-            type="password"
-            className="form-control"
-            id="exampleInputPassword1"
-            placeholder="Password"
-          />
-        </div>
+      <Formik
+        initialValues={{ email: '', password: '', displayName: '' }}
+        validationSchema={this.validationScheme}
+        onSubmit={this.handleSignup}
+        render={({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => (
+          <form className="app" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <Form.Input
+                label="Email:"
+                type="email"
+                name="email"
+                required
+                error={touched.email && errors.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
+              />
+            </div>
+            <div className="form-group">
+              <Form.Input
+                label="Username:"
+                type="text"
+                name="displayName"
+                required
+                error={touched.displayName && errors.displayName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.displayName}
+              />
+            </div>
+            <div className="form-group space-lg">
+              <Form.Input
+                label="Password:"
+                type="password"
+                name="password"
+                required
+                autoComplete="off"
+                error={touched.password && errors.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
+              />
+            </div>
 
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-      </form>
+            <Button primary loading={this.state.isSubmitting}>
+              Submit
+            </Button>
+          </form>
+        )}
+      />
     </ModalStep>
   )
 
@@ -92,9 +165,9 @@ class Login extends React.Component {
       state: { step },
     } = this
 
-    if (isLoggedIn()) {
-      redirectTo(`/app/profile`)
-    }
+    // if (isLoggedIn()) {
+    //   redirectTo(`/app/profile`)
+    // }
 
     return (
       <div className="stage">
@@ -142,5 +215,3 @@ class Login extends React.Component {
     )
   }
 }
-
-export default Login

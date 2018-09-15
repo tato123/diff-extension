@@ -5,8 +5,12 @@ import { StaticQuery, graphql } from 'gatsby'
 
 import Header from '../header'
 
+import { ThemeProvider, Themes } from '@diff/shared-components'
+
 import '../bootstrap.min.css'
 import '../base.css'
+
+console.log('Themes', Themes)
 
 const Layout = ({ children, client }) => (
   <StaticQuery
@@ -41,8 +45,7 @@ const Layout = ({ children, client }) => (
           <html lang="en" />
         </Helmet>
         <Header siteTitle={data.site.siteMetadata.title} client={client} />
-
-        {children}
+        <ThemeProvider theme={Themes.public}>{children}</ThemeProvider>
       </>
     )}
   />

@@ -62,7 +62,6 @@ h3 {
   text-transform: uppercase;
 }
 
-button,
 .button {
   padding: 15px 45px;
   border-radius: 100px;
@@ -76,17 +75,14 @@ button,
   cursor: pointer;
   text-decoration: none;
 }
-button:focus,
 .button:focus {
   outline: 0;
   text-decoration: none;
 }
-button:hover,
 .button:hover {
   background: linear-gradient(to bottom right, #171a3a, #171a3a);
   text-decoration: none;
 }
-button:active,
 .button:active {
   color: #00c9d9;
 }

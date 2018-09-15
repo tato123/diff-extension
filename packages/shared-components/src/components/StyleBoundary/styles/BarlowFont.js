@@ -1,6 +1,6 @@
 import { injectGlobal } from "styled-components";
 
-if (window.diff) {
+if (typeof window !== `undefined` && window.diff) {
   injectGlobal`
 /* latin-ext */
 @font-face {

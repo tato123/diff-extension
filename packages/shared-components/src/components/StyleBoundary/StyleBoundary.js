@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ShadowDom from "./styles/ShadowDOM";
 import styled, { StyleSheetManager, ThemeProvider } from "styled-components";
-import mainTheme, { get } from "../../theme";
+import mainTheme, { get } from "../../theme/base";
 
 import blueprintCss from "./core/blueprint";
 import blueprintIconsCss from "./core/icons";
