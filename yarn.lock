@@ -6534,7 +6534,7 @@ firebase-admin@^5.12.1:
     jsonwebtoken "8.1.0"
     node-forge "0.7.4"
 
-firebase@^5.0.4, firebase@^5.4.2:
+firebase@^5.0.4, firebase@^5.4.2, firebase@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-5.5.0.tgz#2ea18bb3f70f2b47fdb6fe380488e8c02a5c5d35"
   dependencies:

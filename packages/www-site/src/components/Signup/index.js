@@ -4,6 +4,21 @@ import { Header, Form, Button } from '@diff/shared-components'
 import { Formik } from 'formik'
 import { string, object } from 'yup'
 import './signup.css'
+import styled from 'styled-components'
+import { initializeFirestore } from '../../utils/firestore'
+
+const SignupButton = styled(Button)`
+  padding: 15px 45px;
+  border-radius: 100px;
+  border: 0px;
+  font-size: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 700 !important;
+  cursor: pointer;
+  text-decoration: none;
+  height: unset;
+`
 
 const ModalStep = ({ header, children }) => (
   <div className="form">
@@ -37,6 +52,13 @@ const signup = async (email, password, displayName) => {
   return response.json()
 }
 
+const login = async (accessToken, db) => {
+  await db.app.auth().setPersistence('session')
+
+  const results = db.app.auth().signInWithCustomToken(accessToken)
+  return results
+}
+
 const isUser = async email => {
   const response = await fetch(
     `${process.env.API_SERVER}/validate?email=${email}`
@@ -51,8 +73,9 @@ const isUser = async email => {
 
 export default class Signup extends React.Component {
   state = {
-    step: 0,
+    step: null,
     isSubmitting: false,
+    db: null,
   }
 
   gotoStep = step => {
@@ -60,12 +83,34 @@ export default class Signup extends React.Component {
   }
 
   handleSignup = values => {
-    console.log('going to signup with ', values)
     this.setState({ isSubmitting: true })
+    signup(values.email, values.password, values.displayName)
+      .then(response => login(response.access_token, this.state.db))
+      .then(token => {
+        this.setState({ step: 1 })
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  }
 
-    setTimeout(() => {
-      this.setState({ step: 1 })
-    }, 2000)
+  async componentDidMount() {
+    return new Promise(async (resolve, reject) => {
+      const db = await initializeFirestore()
+      db.app.auth().onAuthStateChanged(user => {
+        if (user) {
+          // User is signed in.
+          console.log('current user', user)
+          this.setState({ step: 1, db })
+        } else {
+          // No user is signed in.
+          console.log('no user')
+          this.setState({ step: 0, db })
+        }
+      })
+
+      this.setState({ db })
+    })
   }
 
   validationScheme = object().shape({
@@ -130,9 +175,13 @@ export default class Signup extends React.Component {
               />
             </div>
 
-            <Button primary loading={this.state.isSubmitting}>
+            <SignupButton
+              type="submit"
+              primary
+              loading={this.state.isSubmitting}
+            >
               Submit
-            </Button>
+            </SignupButton>
           </form>
         )}
       />
@@ -140,10 +189,12 @@ export default class Signup extends React.Component {
   )
 
   renderInstall = () => (
-    <ModalStep header="Install Extension">
-      <a href="#" onClick={() => this.gotoStep(2)}>
-        Install from the chrome store
-      </a>
+    <ModalStep header="Install Diff">
+      <p>
+        Next, add the extension to your browser. Click the button to install
+        Diff.
+      </p>
+      <Button primary>Install</Button>
     </ModalStep>
   )
 
@@ -160,9 +211,11 @@ export default class Signup extends React.Component {
     </ModalStep>
   )
 
+  renderWaiting = () => <ModalStep header="..." />
+
   render() {
     const {
-      state: { step },
+      state: { step, db },
     } = this
 
     // if (isLoggedIn()) {
@@ -206,10 +259,11 @@ export default class Signup extends React.Component {
               </li>
             </ul>
           </div>
-          {step === 0 && this.renderSignup()}
-          {step === 1 && this.renderInstall()}
-          {step === 2 && this.renderMakeComment()}
-          {step === 3 && this.renderMakeWorkspace()}
+          {db == null && this.renderWaiting()}
+          {step === 0 && db != null && this.renderSignup()}
+          {step === 1 && db != null && this.renderInstall()}
+          {step === 2 && db != null && this.renderMakeComment()}
+          {step === 3 && db != null && this.renderMakeWorkspace()}
         </div>
       </div>
     )

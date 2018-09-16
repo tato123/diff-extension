@@ -1,3 +1,16 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#___gatsby,
+.stage,
+[role='group'] {
+  height: calc(100% - 30px);
+}
+
 main {
   display: grid;
   grid-template-areas:
@@ -18,6 +31,11 @@ h3 {
 
 .stage {
   position: relative;
+  height: 100%;
+}
+.background {
+  height: 100%;
+  overflow: hidden;
 }
 
 .background section {
@@ -133,7 +151,11 @@ form label {
   color: #818181;
   justify-self: flex-end;
   padding-right: 64px;
-  margin-top: 126px;
+  top: 126px;
+  position: relative;
+  overflow: hidden;
+  height: 500px;
+  display: block;
 }
 
 .steps li {
