@@ -1,5 +1,5 @@
 import React from 'react'
-import mark from './images/mark.png'
+import mark from './Layout/images/mark.png'
 
 const Header = ({ client }) => (
   <nav className="navbar navbar-expand-lg navbar-light bg-white container-lg">

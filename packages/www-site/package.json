@@ -12,7 +12,8 @@
     "gatsby-plugin-react-helmet": "next",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-helmet": "^5.2.0"
+    "react-helmet": "^5.2.0",
+    "react-icons-kit": "^1.1.9"
   },
   "keywords": [
     "gatsby"

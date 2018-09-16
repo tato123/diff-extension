@@ -3,16 +3,14 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 
-import Header from '../header'
+import Header from '../Header'
 
 import { ThemeProvider, Themes } from '@diff/shared-components'
 
-import '../bootstrap.min.css'
-import '../base.css'
+import './bootstrap.min.css'
+import './base.css'
 
-console.log('Themes', Themes)
-
-const Layout = ({ children, client }) => (
+const Layout = ({ children, client, extensionUrl }) => (
   <StaticQuery
     query={graphql`
       query SiteTitleQuery {
@@ -37,10 +35,7 @@ const Layout = ({ children, client }) => (
           <title>Diff</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link href="favicon.png" rel="icon" type="image/x-icon" />
-          <link
-            rel="chrome-webstore-item"
-            href="https://chrome.google.com/webstore/detail/emabkoeopfpoeighgafbhlldiemjdlbk"
-          />
+          <link rel="chrome-webstore-item" href={extensionUrl} />
           <link
             href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
             rel="stylesheet"
@@ -56,6 +51,10 @@ const Layout = ({ children, client }) => (
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
+}
+
+Layout.defaultProps = {
+  extensionUrl: process.env.EXTENSION_URL,
 }
 
 export default Layout

@@ -128,18 +128,19 @@ form label {
   display: grid;
   grid-template-areas: '. .';
   grid-template-rows: 1fr;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 460px;
   padding: 0 64px;
 }
 
 .form {
-  height: 500px;
-  width: 400px;
+  width: 100%;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.1);
   padding: 40px;
   margin-right: 64px;
+  top: 115px;
+  position: relative;
 }
 
 .background {
@@ -151,9 +152,8 @@ form label {
   color: #818181;
   justify-self: flex-end;
   padding-right: 64px;
-  top: 126px;
+  top: 115px;
   position: relative;
-  overflow: hidden;
   height: 500px;
   display: block;
 }
@@ -166,6 +166,18 @@ form label {
 .steps ul li.active {
   color: #4949b3;
   font-weight: bold;
+}
+
+.steps ul li.completed {
+  color: #5ebf4b;
+  font-weight: bold;
+  opacity: 1;
+  left: -24px;
+  position: relative;
+}
+
+.completed .icon {
+  padding-right: 8px;
 }
 
 .steps ul li.active,

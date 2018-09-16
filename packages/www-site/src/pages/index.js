@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Layout from '../components/layout'
-import background from '../components/images/background.png'
+import background from '../components/Layout/images/background.png'
 import DetailSection from '../components/DetailSection'
 import { Skeleton } from '@diff/shared-components'
 

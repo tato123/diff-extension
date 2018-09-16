@@ -1,11 +1,16 @@
 import React from 'react'
-import { Header, Form, Button } from '@diff/shared-components'
+import PropTypes from 'prop-types'
 
+import { Header, Form, Button, Anchor } from '@diff/shared-components'
+import ExtensionBridge from '../ExtensionBridge'
 import { Formik } from 'formik'
 import { string, object } from 'yup'
 import './signup.css'
 import styled from 'styled-components'
 import { initializeFirestore } from '../../utils/firestore'
+
+import { Icon } from 'react-icons-kit'
+import { ic_check_circle as checkCircle } from 'react-icons-kit/md/ic_check_circle'
 
 const SignupButton = styled(Button)`
   padding: 15px 45px;
@@ -20,10 +25,31 @@ const SignupButton = styled(Button)`
   height: unset;
 `
 
+const SignupAnchor = styled(Anchor)`
+  padding: 15px 45px;
+  border-radius: 100px;
+  border: 0px;
+  font-size: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 700 !important;
+  cursor: pointer;
+  text-decoration: none;
+  height: unset;
+  background-color: #43cad9;
+  color: #fff;
+
+  &:hover {
+    text-decoration: none;
+  }
+`
+
 const ModalStep = ({ header, children }) => (
-  <div className="form">
-    <Header as="h3">{header}</Header>
-    {children}
+  <div>
+    <div className="form">
+      <Header as="h3">{header}</Header>
+      {children}
+    </div>
   </div>
 )
 
@@ -52,10 +78,18 @@ const signup = async (email, password, displayName) => {
   return response.json()
 }
 
-const login = async (accessToken, db) => {
+const login = async (accessToken, refreshToken, db) => {
   await db.app.auth().setPersistence('session')
 
   const results = db.app.auth().signInWithCustomToken(accessToken)
+
+  chrome.runtime.sendMessage(
+    process.env.EXTENSION_ID,
+    { type: 'STORE_TOKEN', payload: { refreshToken } },
+    response => {
+      console.log('Extension response', response)
+    }
+  )
   return results
 }
 
@@ -76,6 +110,7 @@ export default class Signup extends React.Component {
     step: null,
     isSubmitting: false,
     db: null,
+    installed: false,
   }
 
   gotoStep = step => {
@@ -85,7 +120,9 @@ export default class Signup extends React.Component {
   handleSignup = values => {
     this.setState({ isSubmitting: true })
     signup(values.email, values.password, values.displayName)
-      .then(response => login(response.access_token, this.state.db))
+      .then(response =>
+        login(response.access_token, response.refresh_token, this.state.db)
+      )
       .then(token => {
         this.setState({ step: 1 })
       })
@@ -188,30 +225,32 @@ export default class Signup extends React.Component {
     </ModalStep>
   )
 
-  install = () => {
-    chrome.webstore.install(
-      'https://chrome.google.com/webstore/detail/emabkoeopfpoeighgafbhlldiemjdlbk',
-      () => {
-        console.log('installed successfully')
+  renderInstall = () => {
+    if (this.state.installed) {
+      // executing setState can't occur in the same step
+      // where react is expecting rendered content, this is effectively
+      // an async component
+
+      setTimeout(() => {
         this.setState({ step: 2 })
-      },
-      (error, errorCode) => {
-        this.setState({ step: 2 })
-      }
+      })
+      return null
+    }
+    return (
+      <ModalStep header="Install Diff">
+        <p>
+          Next, add the extension to your browser. Click the button to install
+          Diff.
+        </p>
+        <SignupAnchor
+          target="_blank"
+          href="https://chrome.google.com/webstore/detail/diff/emabkoeopfpoeighgafbhlldiemjdlbk"
+        >
+          Install
+        </SignupAnchor>
+      </ModalStep>
     )
   }
-
-  renderInstall = () => (
-    <ModalStep header="Install Diff">
-      <p>
-        Next, add the extension to your browser. Click the button to install
-        Diff.
-      </p>
-      <Button primary onClick={this.install}>
-        Install
-      </Button>
-    </ModalStep>
-  )
 
   renderMakeComment = () => (
     <ModalStep header="Add your first comment">
@@ -228,14 +267,35 @@ export default class Signup extends React.Component {
 
   renderWaiting = () => <ModalStep header="..." />
 
+  classes = index => {
+    const classes = []
+    if (this.state.step === index) {
+      classes.push('active')
+    }
+    if (this.state.step > index) {
+      classes.push('completed')
+    }
+    return classes.join(' ')
+  }
+
+  isComplete = index => {
+    return this.state.step > index
+  }
+
+  extensionInstalled = message => {
+    console.log('received extension message', message)
+
+    this.setState({ installed: true })
+  }
+
+  onExtensionMessage = message => {
+    console.log('received extension message', message)
+  }
+
   render() {
     const {
       state: { step, db },
     } = this
-
-    // if (isLoggedIn()) {
-    //   redirectTo(`/app/profile`)
-    // }
 
     return (
       <div className="stage">
@@ -266,19 +326,45 @@ export default class Signup extends React.Component {
         <div className="fg">
           <div className="steps">
             <ul className="list-unstyled">
-              <li className={`${step === 0 && 'active'}`}>Sign up</li>
-              <li className={`${step === 1 && 'active'}`}>Install</li>
-              <li className={`${step === 2 && 'active'}`}>Make a comment</li>
-              <li className={`${step === 3 && 'active'}`}>
+              <li className={this.classes(0)}>
+                {this.isComplete(0) && (
+                  <Icon className="icon" icon={checkCircle} />
+                )}
+                Sign up
+              </li>
+              <li className={this.classes(1)}>
+                {this.isComplete(1) && (
+                  <Icon className="icon" icon={checkCircle} />
+                )}
+                Install
+              </li>
+              <li className={this.classes(2)}>
+                {this.isComplete(2) && (
+                  <Icon className="icon" icon={checkCircle} />
+                )}
+                Make a comment
+              </li>
+              <li className={this.classes(3)}>
+                {this.isComplete(3) && (
+                  <Icon className="icon" icon={checkCircle} />
+                )}
                 Create a workspace
               </li>
             </ul>
           </div>
-          {db == null && this.renderWaiting()}
-          {step === 0 && db != null && this.renderSignup()}
-          {step === 1 && db != null && this.renderInstall()}
-          {step === 2 && db != null && this.renderMakeComment()}
-          {step === 3 && db != null && this.renderMakeWorkspace()}
+          <ExtensionBridge
+            onInstalled={this.extensionInstalled}
+            onMessage={this.onExtensionMessage}
+            render={() => (
+              <React.Fragment>
+                {db == null && this.renderWaiting()}
+                {step === 0 && db != null && this.renderSignup()}
+                {step === 1 && db != null && this.renderInstall()}
+                {step === 2 && db != null && this.renderMakeComment()}
+                {step === 3 && db != null && this.renderMakeWorkspace()}
+              </React.Fragment>
+            )}
+          />
         </div>
       </div>
     )

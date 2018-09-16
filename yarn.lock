@@ -12946,6 +12946,13 @@ react-icons-kit@^1.1.5:
     camel-case "^3.0.0"
     prop-types "^15.5.8"
 
+react-icons-kit@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/react-icons-kit/-/react-icons-kit-1.1.9.tgz#9186d61a5f35311cf22e0899e60bae694ae41bee"
+  dependencies:
+    camel-case "^3.0.0"
+    prop-types "^15.5.8"
+
 react-icons@^2.2.7:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-2.2.7.tgz#d7860826b258557510dac10680abea5ca23cf650"
