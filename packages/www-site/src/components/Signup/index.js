@@ -188,13 +188,28 @@ export default class Signup extends React.Component {
     </ModalStep>
   )
 
+  install = () => {
+    chrome.webstore.install(
+      'https://chrome.google.com/webstore/detail/emabkoeopfpoeighgafbhlldiemjdlbk',
+      () => {
+        console.log('installed successfully')
+        this.setState({ step: 2 })
+      },
+      (error, errorCode) => {
+        this.setState({ step: 2 })
+      }
+    )
+  }
+
   renderInstall = () => (
     <ModalStep header="Install Diff">
       <p>
         Next, add the extension to your browser. Click the button to install
         Diff.
       </p>
-      <Button primary>Install</Button>
+      <Button primary onClick={this.install}>
+        Install
+      </Button>
     </ModalStep>
   )
 
