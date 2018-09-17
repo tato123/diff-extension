@@ -11,6 +11,8 @@ import { initializeFirestore } from '../../utils/firestore'
 
 import { Icon } from 'react-icons-kit'
 import { ic_check_circle as checkCircle } from 'react-icons-kit/md/ic_check_circle'
+import Template from './Template'
+import { signup, login } from './auth'
 
 const SignupButton = styled(Button)`
   padding: 15px 45px;
@@ -52,58 +54,6 @@ const ModalStep = ({ header, children }) => (
     </div>
   </div>
 )
-
-const signup = async (email, password, displayName) => {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email,
-      password,
-      displayName,
-    }),
-  }
-
-  const response = await fetch(`${process.env.API_SERVER}/signup`, {
-    ...options,
-    method: 'POST',
-  })
-
-  if (!response.ok) {
-    return Promise.reject(response.statusText)
-  }
-
-  return response.json()
-}
-
-const login = async (accessToken, refreshToken, db) => {
-  await db.app.auth().setPersistence('session')
-
-  const results = db.app.auth().signInWithCustomToken(accessToken)
-
-  chrome.runtime.sendMessage(
-    process.env.EXTENSION_ID,
-    { type: 'STORE_TOKEN', payload: { refreshToken } },
-    response => {
-      console.log('Extension response', response)
-    }
-  )
-  return results
-}
-
-const isUser = async email => {
-  const response = await fetch(
-    `${process.env.API_SERVER}/validate?email=${email}`
-  )
-
-  if (!response.ok) {
-    return Promise.reject(response.statusText)
-  }
-
-  return response.text()
-}
 
 export default class Signup extends React.Component {
   state = {
@@ -254,8 +204,12 @@ export default class Signup extends React.Component {
 
   renderMakeComment = () => (
     <ModalStep header="Add your first comment">
-      <p>Make a comment</p>
-      <a href="#" onClick={() => this.gotoStep(3)} />
+      <p>
+        The extension is installed and the launcher has been added to the the
+        page. While the launcher is open, you simply hover then click on any
+        element you would liket to add a comment.
+      </p>
+      <p>Give it a try by adding a comment to the purple '/Test button'</p>
     </ModalStep>
   )
 
@@ -299,69 +253,48 @@ export default class Signup extends React.Component {
 
     return (
       <div className="stage">
-        <div className="background">
-          <main>
-            <header>
-              <div className="skeleton" />
-            </header>
-            <section>
-              <div className="section">
-                <div className="h1 skeleton round" />
-                <div className="p skeleton round" />
-                <div className="p skeleton round" />
-                <div className="p skeleton round" />
-                <div className="p skeleton round" />
-                <div className="button skeleton round" />
-              </div>
-              <div className="section">
-                <div className="avatar skeleton round" />
-                <div className="box skeleton round" />
-              </div>
-            </section>
-            <footer>
-              <div className="skeleton" />
-            </footer>
-          </main>
-        </div>
+        <Template />
         <div className="fg">
-          <div className="steps">
-            <ul className="list-unstyled">
-              <li className={this.classes(0)}>
-                {this.isComplete(0) && (
-                  <Icon className="icon" icon={checkCircle} />
-                )}
-                Sign up
-              </li>
-              <li className={this.classes(1)}>
-                {this.isComplete(1) && (
-                  <Icon className="icon" icon={checkCircle} />
-                )}
-                Install
-              </li>
-              <li className={this.classes(2)}>
-                {this.isComplete(2) && (
-                  <Icon className="icon" icon={checkCircle} />
-                )}
-                Make a comment
-              </li>
-              <li className={this.classes(3)}>
-                {this.isComplete(3) && (
-                  <Icon className="icon" icon={checkCircle} />
-                )}
-                Create a workspace
-              </li>
-            </ul>
-          </div>
           <ExtensionBridge
             onInstalled={this.extensionInstalled}
             onMessage={this.onExtensionMessage}
             render={() => (
               <React.Fragment>
-                {db == null && this.renderWaiting()}
-                {step === 0 && db != null && this.renderSignup()}
-                {step === 1 && db != null && this.renderInstall()}
-                {step === 2 && db != null && this.renderMakeComment()}
-                {step === 3 && db != null && this.renderMakeWorkspace()}
+                <div className="steps">
+                  <ul className="list-unstyled">
+                    <li className={this.classes(0)}>
+                      {this.isComplete(0) && (
+                        <Icon className="icon" icon={checkCircle} />
+                      )}
+                      Sign up
+                    </li>
+                    <li className={this.classes(1)}>
+                      {this.isComplete(1) && (
+                        <Icon className="icon" icon={checkCircle} />
+                      )}
+                      Install
+                    </li>
+                    <li className={this.classes(2)}>
+                      {this.isComplete(2) && (
+                        <Icon className="icon" icon={checkCircle} />
+                      )}
+                      Make a comment
+                    </li>
+                    <li className={this.classes(3)}>
+                      {this.isComplete(3) && (
+                        <Icon className="icon" icon={checkCircle} />
+                      )}
+                      Create a workspace
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  {db == null && this.renderWaiting()}
+                  {step === 0 && db != null && this.renderSignup()}
+                  {step === 1 && db != null && this.renderInstall()}
+                  {step === 2 && db != null && this.renderMakeComment()}
+                  {step === 3 && db != null && this.renderMakeWorkspace()}
+                </div>
               </React.Fragment>
             )}
           />

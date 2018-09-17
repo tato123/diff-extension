@@ -33,65 +33,6 @@ h3 {
   position: relative;
   height: 100%;
 }
-.background {
-  height: 100%;
-  overflow: hidden;
-}
-
-.background section {
-  grid-area: main;
-  margin: 64px 15%;
-  display: grid;
-  grid-template-areas: '. .';
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-}
-
-.background .section {
-  display: flex;
-  flex-direction: column;
-}
-
-.background .skeleton {
-  background-color: #e6e6e6;
-  height: 100%;
-  width: 100%;
-}
-
-.background .h1 {
-  height: 42px;
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 50px;
-}
-
-.background .p {
-  height: 18px;
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 30px;
-}
-
-.background .button {
-  height: 60px;
-  width: 100%;
-  border-radius: 30px;
-  margin: 30px 0;
-}
-
-.background .avatar {
-  width: 187px;
-  height: 187px;
-  border-radius: 50%;
-  margin: 24px 0;
-  align-self: center;
-}
-
-.background .box {
-  height: 121px;
-  width: 121px;
-  align-self: flex-end;
-}
 
 form {
   color: #909090;
@@ -141,11 +82,6 @@ form label {
   margin-right: 64px;
   top: 115px;
   position: relative;
-}
-
-.background {
-  opacity: 0.2;
-  z-index: 1;
 }
 
 .steps {
