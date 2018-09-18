@@ -1,8 +1,15 @@
 import React from 'react'
 import mark from './Layout/images/mark.png'
+import styled from 'styled-components'
+
+const NavContainer = styled.nav`
+  height: 78px;
+  min-height: 78px;
+  max-height: 78px;
+`
 
 const Header = ({ client }) => (
-  <nav className="navbar navbar-expand-lg navbar-light bg-white container-lg">
+  <NavContainer className="navbar navbar-expand-lg navbar-light bg-white container-lg">
     <a className="navbar-brand" href="/">
       <img src={mark} className="d-inline-block align-top" alt="" />
     </a>
@@ -38,7 +45,7 @@ const Header = ({ client }) => (
         </ul>
       </div>
     )}
-  </nav>
+  </NavContainer>
 )
 
 export default Header

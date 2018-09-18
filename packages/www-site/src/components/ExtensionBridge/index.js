@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
 
 const EXTENSION_ID = process.env.EXTENSION_ID
 
@@ -13,6 +12,7 @@ export default class ExtensionListener extends React.Component {
     onInstalled: PropTypes.func,
     onMessage: PropTypes.func,
     render: PropTypes.func.isRequired,
+    refreshToken: PropTypes.string,
   }
 
   static defaultProps = {
@@ -33,24 +33,54 @@ export default class ExtensionListener extends React.Component {
     this.invokeCheck()
     this.timerId = setInterval(() => {
       this.invokeCheck()
-      clearInterval(this.timerId)
-    }, 1000)
+    }, 250)
+  }
+
+  callChrome = action => {
+    const {
+      props: { extensionId },
+    } = this
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage(extensionId, action, response => {
+        if (response) {
+          return resolve(response)
+        }
+        reject()
+      })
+    })
   }
 
   invokeCheck = () => {
     const {
-      props: { extensionId, onInstalled },
+      props: { onInstalled, refreshToken },
     } = this
 
-    // The ID of the extension we want to talk to.
-    const action = {
+    const validateInstalled = {
       type: 'VERIFY_INSTALLED',
     }
-    chrome.runtime.sendMessage(extensionId, action, response => {
-      if (response) {
-        onInstalled(response)
-      }
-    })
+
+    const storeUid = {
+      type: 'STORE_TOKEN',
+      payload: {
+        refreshToken,
+      },
+    }
+
+    // normally we let the browser handle injection of content
+    // script via manifest, in this case we don't want to wait for a
+    // refresh
+    const forceInject = {
+      type: 'FORCE_INJECT',
+    }
+
+    this.callChrome(validateInstalled)
+      .then(() => refreshToken && this.callChrome(storeUid))
+      .then(() => this.callChrome(forceInject))
+      .then(() => {
+        onInstalled()
+        clearInterval(this.timerId)
+      })
+      .catch(() => {})
   }
 
   componentWillUnmount() {

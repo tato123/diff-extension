@@ -31,7 +31,7 @@ const IndexPage = () => (
                   attach designs or screenshots, and share feedback.
                 </p>
               </div>
-              <a href="/app" className="primary button btn-info ">
+              <a href="/app/signup" className="primary button btn-info ">
                 Install now
               </a>
             </div>
