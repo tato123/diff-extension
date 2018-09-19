@@ -17,5 +17,14 @@ module.exports = {
         display: 'minimal-ui',
       },
     },
+
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: 'UA-124426207-2',
+        // Puts tracking script in the head instead of the body
+        head: false,
+      },
+    },
   ],
 }
