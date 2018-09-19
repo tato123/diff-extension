@@ -1,5 +1,5 @@
 import React from 'react'
-import mark from './Layout/images/mark.png'
+import mark from './images/mark.png'
 import styled from 'styled-components'
 
 const NavContainer = styled.nav`

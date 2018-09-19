@@ -1,3 +1,16 @@
+const addEnvData = () => {
+  const chromeUrl = chrome.runtime.getURL("");
+
+  const diffInfo = document.createElement("script");
+  diffInfo.setAttribute("type", "text/javascript");
+  diffInfo.innerHTML = `
+    window.diff = {
+      url: "${chromeUrl.substring(0, chromeUrl.lastIndexOf("/"))}"
+    }
+  `;
+  document.body.appendChild(diffInfo);
+};
+
 /**
  * @param {*} scriptName
  * @param {*} scriptId
@@ -9,17 +22,6 @@ export const addScriptToPage = async (scriptName, scriptId) => {
     if (elm) {
       return resolve();
     }
-
-    const chromeUrl = chrome.runtime.getURL("");
-
-    const diffInfo = document.createElement("script");
-    diffInfo.setAttribute("type", "text/javascript");
-    diffInfo.innerHTML = `
-      window.diff = {
-        url: "${chromeUrl.substring(0, chromeUrl.lastIndexOf("/"))}"
-      }
-    `;
-    document.body.appendChild(diffInfo);
 
     // Add our page bridge
     const script = document.createElement("script");
@@ -33,7 +35,7 @@ export const addScriptToPage = async (scriptName, scriptId) => {
 
 const SCRIPT_HOST = process.env.SCRIPT_HOST;
 
-export const runFrontend = () => {
-  addScriptToPage(`${SCRIPT_HOST}/vendor.bundle.js`, "df-vendor-bridge");
+export const runFrontend = async () => {
+  addEnvData();
   addScriptToPage(`${SCRIPT_HOST}/main.js`, "df-bridge");
 };

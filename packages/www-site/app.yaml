@@ -3,7 +3,7 @@ api_version: 1
 threadsafe: true
 
 handlers:
-  - url: /app
+  - url: /app/.*
     static_files: public/app/index.html
     upload: public/app/index.html
     secure: always

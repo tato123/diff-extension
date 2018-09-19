@@ -8,7 +8,8 @@ import {
   mergeMap,
   catchError,
   multicast,
-  filter
+  filter,
+  tap
 } from "rxjs/operators";
 
 import { injectGlobal } from "styled-components";
@@ -121,18 +122,21 @@ export const inspect = (tapFn = _.noop) => {
       }
       return of(null);
     }),
-    multicast(() => new Subject())
+    tap(e => {
+      clearStyles();
+
+      inspector.deactivate();
+
+      if (e) {
+        e.classList.add(SELECTION_CLASS);
+      }
+    })
   );
 
-  move$.subscribe(e => {
+  move$.forceStop = () => {
     clearStyles();
-
     inspector.deactivate();
-
-    if (e) {
-      e.classList.add(SELECTION_CLASS);
-    }
-  });
+  };
 
   return move$;
 };

@@ -20,30 +20,49 @@ export const sendMessageToBackground = action =>
     actions.composeRemoteAction(action, sources.CONTENT_SCRIPT_SOURCE_NAME)
   );
 
-// filter only the messages from our backend
+/**
+ * Messages from our backend
+ */
 export const portMessages$ = Observable.create(observer => {
-  port.onMessage.addListener(msg => observer.next(msg));
-}).pipe(filter(({ source }) => source === sources.BACKGROUND_SCRIPT_PORT_NAME));
+  port.onMessage.addListener(msg => {
+    if (msg && msg.source === sources.BACKGROUND_SCRIPT_PORT_NAME) {
+      observer.next(msg);
+    }
+  });
+});
+
+/**
+ * Messages from backend to frontend
+ */
+const forwardToFrontend$ = portMessages$.pipe(
+  filter(evt => evt && evt.dest === sources.MESSAGES_FRONTEND_SOURCE)
+);
+
+forwardToFrontend$.subscribe(
+  evt => {
+    console.log(
+      "[content-script] forwarding message from port to frontend",
+      evt
+    );
+    window.postMessage(evt, "*");
+  },
+  error => {
+    console.error(
+      "[content-script] error proccessing message from backend to frontend",
+      error
+    );
+  },
+  () => {
+    console.log("[content-script] disconnecting port from backend to frontend");
+  }
+);
 
 portMessages$
   .pipe(
-    tap(evt => {
-      if (evt && evt.dest === sources.MESSAGES_FRONTEND_SOURCE) {
-        window.postMessage(evt, "*");
-      }
-    })
+    tap(evt => console.log("[content-script] received message", evt)),
+    filter(evt => evt && evt.type === types.RUN_REQUEST.REQUEST)
   )
   .subscribe(evt => {
-    console.log("[content-script] received and processed", evt);
+    console.log("running frontend");
+    runFrontend();
   });
-
-// ----------------------------------------------------------------------
-// Action Handlers
-// ----------------------------------------------------------------------
-
-const actionHandler$ = ACTION_TYPE =>
-  portMessages$.pipe(filter(({ type }) => type === ACTION_TYPE));
-
-actionHandler$(types.RUN_REQUEST.REQUEST).subscribe(msg => {
-  runFrontend();
-});

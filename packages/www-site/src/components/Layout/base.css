@@ -118,7 +118,7 @@ hr {
 }
 
 .bg-mark-img {
-  background-image: url('./images/background.png');
+  background-image: url('../images/background.png');
 }
 
 .header {
@@ -147,7 +147,7 @@ hr {
 }
 
 .bg-image {
-  background-image: url('./images/background.png');
+  background-image: url('../images/background.png');
 }
 .header .text {
   position: relative;

@@ -7,3 +7,5 @@ export const Themes = {
   base,
   public: publicTheme
 };
+
+export default Themes;

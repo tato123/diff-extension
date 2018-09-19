@@ -41,19 +41,6 @@ module.exports = (env, argv) => [
       modules: ["node_modules", path.resolve(__dirname, "../frontend/src")],
       extensions: [".ts", ".tsx", ".js", ".json"]
     },
-    optimization: {
-      splitChunks: {
-        chunks: "all",
-        name: false,
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendor",
-            ...groupsOptions
-          }
-        }
-      }
-    },
     module: {
       rules: [
         {

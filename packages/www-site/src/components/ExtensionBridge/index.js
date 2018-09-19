@@ -29,7 +29,10 @@ export default class ExtensionListener extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('message', this.onMessage)
+    if (typeof window !== `undefined`) {
+      window.addEventListener('message', this.onMessage)
+    }
+
     this.invokeCheck()
     this.timerId = setInterval(() => {
       this.invokeCheck()
@@ -85,7 +88,9 @@ export default class ExtensionListener extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.timerId)
-    window.removeEventListener('message', this.onMessage)
+    if (typeof window !== `undefined`) {
+      window.removeEventListener('message', this.onMessage)
+    }
   }
 
   onMessage = evt => {

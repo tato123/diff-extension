@@ -10,6 +10,8 @@ const TextAreaImpl = styled.textarea`
   background: ${({ theme }) => theme.colors.white} !important;
   color: ${({ theme }) => theme.colors.black1} !important;
   font-size: 16px !important;
+  display: block;
+  width: 100%;
 
   &:focus,
   &:active {
