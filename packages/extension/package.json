@@ -38,7 +38,6 @@
     "chrome-webstore-upload-cli": "^1.1.1",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.1",
-    "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
     "cypress": "^3.1.0",
     "eslint": "4.x",
@@ -95,6 +94,7 @@
     "formik": "^1.0.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
+    "normalize-url": "^3.3.0",
     "polished": "^1.9.3",
     "popper.js": "^1.14.3",
     "prismjs": "^1.15.0",
@@ -111,7 +111,6 @@
     "react-router": "^4.3.1",
     "react-shadow": "^16.3.0",
     "react-spring": "^5.4.4",
-    "rebass": "^2.0.0",
     "redux": "^4.0.0",
     "redux-actions": "^2.3.2",
     "redux-devtools-extension": "^2.13.5",
@@ -119,7 +118,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "rxjs": "^6.2.1",
-    "styled-components": "3.4.5",
+    "styled-components": "3.4.9",
     "yup": "^0.26.2",
     "zip-folder": "^1.0.0"
   }

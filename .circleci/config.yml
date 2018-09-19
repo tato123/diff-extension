@@ -37,6 +37,12 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
+
+      - run:
+          name: Build Shared Components
+          command: |
+            yarn install
+            npx lerna run --scope @diff/shared-components build
       - run:
           name: Build frontend
           command: |

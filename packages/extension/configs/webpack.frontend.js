@@ -41,19 +41,6 @@ module.exports = (env, argv) => [
       modules: ["node_modules", path.resolve(__dirname, "../frontend/src")],
       extensions: [".ts", ".tsx", ".js", ".json"]
     },
-    optimization: {
-      splitChunks: {
-        chunks: "all",
-        name: false,
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendor",
-            ...groupsOptions
-          }
-        }
-      }
-    },
     module: {
       rules: [
         {
@@ -119,7 +106,7 @@ module.exports = (env, argv) => [
         ? [...std.plugins]
         : [
             ...std.plugins,
-            new BundleAnalyzerPlugin(),
+            new BundleAnalyzerPlugin({ openAnalyzer: false }),
             new webpack.HotModuleReplacementPlugin()
           ]
   }

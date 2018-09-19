@@ -1,4 +1,4 @@
-import { addSitePreference } from "./storage";
+import { addSitePreference, storeUserToken } from "./storage";
 
 import { postMessageToTab } from "./postmessage";
 
@@ -42,3 +42,44 @@ chrome.browserAction.onClicked.addListener(tab => {
   postMessageToTab(tab.id, actions.runRequest());
   return true;
 });
+
+chrome.runtime.onMessageExternal.addListener(
+  (request, sender, sendResponse) => {
+    switch (request.type) {
+      case "FORCE_INJECT":
+        chrome.tabs.executeScript(sender.tab.id, {
+          file: "contentScript.js"
+        });
+        sendResponse({ type: "FORCE_INJECT_SUCCESS" });
+        break;
+      case "VERIFY_INSTALLED":
+        sendResponse({
+          type: "VERIFY_INSTALLED_SUCCESS",
+          payload: { verion: null }
+        });
+        break;
+      case "STORE_TOKEN":
+        const {
+          payload: { refreshToken }
+        } = request;
+        console.log("Received store token request", refreshToken);
+        storeUserToken(refreshToken)
+          .then(() => {
+            console.log("Completed successfully");
+            sendResponse({
+              type: "STORE_TOKEN_SUCCESS"
+            });
+          })
+          .catch(error => {
+            console.log("Errored", error);
+            sendResponse({
+              type: "STORE_TOKEN_FAILED"
+            });
+          });
+
+        break;
+      default:
+    }
+    return true;
+  }
+);

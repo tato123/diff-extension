@@ -1,13 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Form,
-  Logo,
-  Select,
-  Tabs,
-  Grid,
-  Anchor
-} from "@diff/shared-components";
+import { Form, Logo, Select, Tabs, Tab, Anchor } from "@diff/shared-components";
 
 import styled from "styled-components";
 import Popper from "components/Popper";
@@ -81,7 +74,7 @@ export default class DiffViewer extends React.Component {
   };
 
   state = {
-    selectedTab: 0
+    selectedTab: "thread"
   };
 
   componentDidMount() {
@@ -93,30 +86,17 @@ export default class DiffViewer extends React.Component {
     }, 2000);
   }
 
-  onTabClick = val => () => {
-    this.setState({ selectedTab: val });
-  };
-
-  renderTabs = tabList =>
-    tabList.map(({ title }, idx) => {
-      return (
-        <Tabs.Tab
-          key={idx}
-          onClick={this.onTabClick(idx)}
-          selected={this.state.selectedTab === idx}
-        >
-          {title}
-        </Tabs.Tab>
-      );
-    });
-
   close = () => {
     this.props.close(this.props.cssSelector);
   };
 
+  handleChange = (val, old, clazz) => {
+    console.log(val);
+    this.setState({ selectedTab: val });
+  };
+
   render() {
     const {
-      renderTabs,
       props: { cssSelector },
       state: { selectedTab }
     } = this;
@@ -160,16 +140,19 @@ export default class DiffViewer extends React.Component {
                   </Form.Field>
                 </SelectRegion>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  <Tabs>
-                    {renderTabs([
-                      { title: "Thread" },
-                      { title: "Diff" },
-                      { title: "Assets" }
-                    ])}
+                  <Tabs
+                    selectedTabId={selectedTab}
+                    onChange={this.handleChange}
+                  >
+                    <Tab
+                      id="thread"
+                      title="Thread"
+                      panel={<Thread cssSelector={cssSelector} />}
+                    />
+                    <Tab id="diff" title="Diff" panel={<Diff />} />
+                    <Tab id="assets" title="Assets" panel={<Assets />} />
+                    <Tabs.Expander />
                   </Tabs>
-                  {selectedTab === 0 && <Thread cssSelector={cssSelector} />}
-                  {selectedTab === 1 && <Diff />}
-                  {selectedTab === 2 && <Assets />}
                 </div>
               </MainWindow>
             </Draggable>

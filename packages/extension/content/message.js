@@ -30,6 +30,16 @@ const frontend$ = messages$.pipe(
   )
 );
 
+const page$ = messages$.pipe(
+  filter(evt => evt.data.source === "@client/INSPECTED_VIEW"),
+  tap(evt =>
+    console.log(
+      "[content-script] postMessage, from inspected view, type: MessageEvent",
+      evt.data
+    )
+  )
+);
+
 const backend$ = messages$.pipe(
   filter(evt => evt.data.source === sources.MESSAGES_BACKGROUND_SOURCE),
   tap(evt =>
@@ -64,3 +74,4 @@ export const frontendHandlers = merge(cacheRequest$).subscribe(
 );
 
 messages$.subscribe();
+page$.subscribe();

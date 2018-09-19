@@ -3,9 +3,9 @@ api_version: 1
 threadsafe: true
 
 handlers:
-  - url: /(.+)
-    static_files: public/\1
-    upload: public/(.*)
+  - url: /app/.*
+    static_files: public/app/index.html
+    upload: public/app/index.html
     secure: always
     http_headers:
       Cache-Control: max-age=300
@@ -13,6 +13,13 @@ handlers:
   - url: /
     static_files: public/index.html
     upload: public/index.html
+    secure: always
+    http_headers:
+      Cache-Control: max-age=300
+
+  - url: /(.+)
+    static_files: public/\1
+    upload: public/(.*)
     secure: always
     http_headers:
       Cache-Control: max-age=300

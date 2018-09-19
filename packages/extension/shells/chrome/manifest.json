@@ -3,7 +3,7 @@
   "name": "Diff",
   "description": "Track changes, comment, and collaborate on web applications as a team.",
   "minimum_chrome_version": "49",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "permissions": [
     "activeTab",
     "tabs",
@@ -38,5 +38,8 @@
       "js": ["contentScript.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "externally_connectable": {
+    "matches": ["http://localhost:8000/app/", "*://getdiff.app/*"]
+  }
 }

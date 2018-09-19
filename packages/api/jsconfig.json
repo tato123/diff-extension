@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "module": "commonjs"
   },
-  "include": ["controllers/**/*", "config/*"],
+  "include": ["api/**/*", "config/*"],
   "exclude": ["node_modules"]
 }

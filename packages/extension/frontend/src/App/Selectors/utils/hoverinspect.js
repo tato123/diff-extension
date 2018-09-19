@@ -155,34 +155,34 @@ export default class Inspector {
     c.fillRect(x, y, width, height);
 
     // rulers (horizontal - =)
-    x = -10;
-    y = Math.floor(box.top) + 0.5;
-    width = this.width + 10;
-    height = box.height - 1;
+    // x = -10;
+    // y = Math.floor(box.top) + 0.5;
+    // width = this.width + 10;
+    // height = box.height - 1;
 
-    c.beginPath();
-    c.setLineDash([10, 3]);
-    c.fillStyle = "rgba(0,0,0,0.02)";
-    c.strokeStyle = "rgba(13, 139, 201, 0.45)";
-    c.lineWidth = 1;
-    c.rect(x, y, width, height);
-    c.stroke();
-    c.fill();
+    // c.beginPath();
+    // c.setLineDash([10, 3]);
+    // c.fillStyle = "rgba(0,0,0,0.02)";
+    // c.strokeStyle = "rgba(13, 139, 201, 0.45)";
+    // c.lineWidth = 1;
+    // c.rect(x, y, width, height);
+    // c.stroke();
+    // c.fill();
 
-    // rulers (vertical - ||)
-    x = box.left;
-    y = -10;
-    width = box.width;
-    height = this.height + 10;
+    // // rulers (vertical - ||)
+    // x = box.left;
+    // y = -10;
+    // width = box.width;
+    // height = this.height + 10;
 
-    c.beginPath();
-    c.setLineDash([10, 3]);
-    c.fillStyle = "rgba(0,0,0,0.02)";
-    c.strokeStyle = "rgba(13, 139, 201, 0.45)";
-    c.lineWidth = 1;
-    c.rect(x, y, width, height);
-    c.stroke();
-    c.fill();
+    // c.beginPath();
+    // c.setLineDash([10, 3]);
+    // c.fillStyle = "rgba(0,0,0,0.02)";
+    // c.strokeStyle = "rgba(13, 139, 201, 0.45)";
+    // c.lineWidth = 1;
+    // c.rect(x, y, width, height);
+    // c.stroke();
+    // c.fill();
   }
 
   handleResize() {

@@ -114,6 +114,8 @@ export default class Selectors extends React.Component {
     document.querySelectorAll(".diff-selected").forEach(node => {
       node.classList.remove("diff-selected");
     });
+
+    this.cancelInspection();
   }
 
   /**
@@ -159,9 +161,11 @@ export default class Selectors extends React.Component {
    * @returns {Promise<string>}
    */
   getSelector() {
-    const inspect$ = this.props.domInspect(this.highlightListener);
+    const inspect$ = (this.inspect$ = this.props.domInspect(
+      this.highlightListener
+    ));
 
-    const subscriber = inspect$.subscribe(
+    const subscriber = (this.subscriber = inspect$.subscribe(
       element => {
         if (element) {
           const selector = this.getSelectorForElement(element, true);
@@ -169,15 +173,15 @@ export default class Selectors extends React.Component {
         }
 
         subscriber.unsubscribe();
+        this.inspect$ = null;
+        this.subscriber = null;
 
         this.props.cancelInspect();
       },
       e => {
         console.error("Error selecting", e);
       }
-    );
-
-    inspect$.connect();
+    ));
   }
 
   highlightListener = evt => {
@@ -187,7 +191,19 @@ export default class Selectors extends React.Component {
     }
   };
 
+  cancelInspection() {
+    this.props.cancelInspect();
+    if (this.inspect$) {
+      this.inspect$.forceStop();
+    }
+
+    if (this.subscriber) {
+      this.subscriber.unsubscribe();
+    }
+  }
+
   elementHighlightClicked = selector => {
+    this.cancelInspection();
     const element = document.querySelector(selector) || document.body;
     element.classList.add("diff-selected");
     this.props.showSelectorDetails(selector);

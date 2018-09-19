@@ -17,14 +17,14 @@ exports.authenticate = (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, displayName } = req.body;
   if (!email || !password) {
     return res.send(400, {
       err: "Email / password required to create an account"
     });
   }
   try {
-    const token = await userManager.signupUser(email, password);
+    const token = await userManager.signupUser(email, password, displayName);
     res.send(200, token);
   } catch (err) {
     res.send(400, { err: err.message });

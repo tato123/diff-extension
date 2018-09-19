@@ -10,7 +10,7 @@ body {
   padding: 0;
   background-color: #fff;
   color: #4d4d4d;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .space-8 {
@@ -62,7 +62,7 @@ h3 {
   text-transform: uppercase;
 }
 
-button {
+.button {
   padding: 15px 45px;
   border-radius: 100px;
   background: linear-gradient(to bottom right, #4648b0, #6848b0);
@@ -70,20 +70,24 @@ button {
   font-size: 1em;
   color: #fff;
   text-transform: uppercase;
-  font-family: "Roboto Condensed", sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
 }
-button:focus {
+.button:focus {
   outline: 0;
+  text-decoration: none;
 }
-button:hover {
+.button:hover {
   background: linear-gradient(to bottom right, #171a3a, #171a3a);
+  text-decoration: none;
 }
-button:active {
+.button:active {
   color: #00c9d9;
 }
-button.small {
+button.small,
+.button.small {
   padding: 10px 20px;
   font-size: 0.8em;
 }
@@ -107,11 +111,14 @@ hr {
 
 .navbar-brand img {
   max-height: 32px;
+  height: 32px;
+  min-height: 32px;
   margin: 10px;
+  width: 132px;
 }
 
 .bg-mark-img {
-  background-image: url("./images/background.png");
+  background-image: url('../images/background.png');
 }
 
 .header {
@@ -140,7 +147,7 @@ hr {
 }
 
 .bg-image {
-  background-image: url("./images/background.png");
+  background-image: url('../images/background.png');
 }
 .header .text {
   position: relative;
