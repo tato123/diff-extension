@@ -4,6 +4,3 @@ dispatch:
 
   - url: "www.getdiff.app/*"
     service: default
-
-  - url: "*/app/*"
-    service: default

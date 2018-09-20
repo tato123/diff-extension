@@ -1,5 +1,5 @@
 const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+require("dotenv").config({ path: path.resolve(__dirname, "./.env") });
 
 const SwaggerExpress = require("swagger-express-mw");
 const firebase = require("firebase");
@@ -29,6 +29,9 @@ const config = {
 
 // ----------------------------------------------------
 // configure parsing and cors rules
+app.enable("trust proxy");
+
+app.use(bodyParser.raw());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

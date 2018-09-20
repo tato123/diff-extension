@@ -3,8 +3,6 @@ require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 const admin = require("firebase-admin");
 const serviceAccount = require("../../key.json");
-const urlParser = require("url");
-const _ = require("lodash");
 
 // ----------------------------------------------------
 // configure firebase
