@@ -393,7 +393,7 @@ const getDomains = async refreshToken => {
     })
     .map(doc => {
       const data = doc.data();
-      return data.url.href;
+      return data.url.hostname;
     })
     .uniq()
     .value();

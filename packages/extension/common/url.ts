@@ -1,3 +1,7 @@
+import normalizeUrl from "normalize-url";
+
 export const getLocationURL = () => {
-  return new URL(window.location.href);
+  const url = normalizeUrl(window.location.href);
+
+  return new URL(url);
 };
