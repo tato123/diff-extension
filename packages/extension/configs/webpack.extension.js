@@ -54,7 +54,7 @@ module.exports = (env, argv) => [
     },
     entry: {
       background: path.resolve(__dirname, "../background/index.js"),
-      contentScript: path.resolve(__dirname, "../content/index.js")
+      contentScript: path.resolve(__dirname, "../content/index.ts")
     },
     output: {
       filename: "[name].js",

@@ -1,62 +1,44 @@
-import {
-  get,
-  set,
-  storeUserToken,
-  getUserToken,
-  getSitePreference
-} from "./storage";
+import { storeUserToken, getUserToken, getSitePreference } from "./storage";
 import { getUserDomains } from "./user";
 import _ from "lodash";
 import { types, actions } from "@diff/common";
-const PREFERENCES = "_DIFF_PREFERENCES";
+import normalizeUrl from "normalize-url";
 
 /**
  *
  * @param {Number} tabId
  * @param {Object} postMessageToTab
  */
-const handleFetchUserPreferences = async (tabId, postMessageToTab) => {
+const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   try {
-    // get the user preferences
-    const preferences = await get(PREFERENCES, {});
-    const sites = await getUserDomains();
+    // if we dont have a token, domains arent available
+    const value = await getUserToken();
+    if (_.isNil(value) || !value.token) {
+      return postMessageToTab(tabId, actions.fetchUserPreferencesFailed());
+    }
 
+    const remoteSites = await getUserDomains();
     // get the local sites theyve opened diff for
     const localSites = await getSitePreference();
 
-    preferences.autorunDomains = _.union(sites.domains, localSites);
+    const sites = _.uniq(
+      _.union(remoteSites.domains, localSites).map(
+        url => new URL(normalizeUrl(url)).hostname
+      )
+    );
 
-    const value = await getUserToken();
-    if (_.isNil(value) || !value.token) {
-      preferences.autorunDomains = [];
+    if (_.indexOf(sites, action.payload.hostname) !== -1) {
+      // combine and send back
+      return postMessageToTab(tabId, actions.fetchUserPreferencesSuccess());
     }
 
-    // combine and send back
-    postMessageToTab(tabId, actions.fetchUserPreferencesSuccess(preferences));
+    return postMessageToTab(tabId, actions.fetchCacheTokenFailed());
   } catch (err) {
     postMessageToTab(tabId, actions.fetchUserPreferencesFailed(err.message));
   }
 };
 
 const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
-  // const previousToken = await getUserToken();
-  // const nextToken = action.payload.token;
-
-  // if (
-  //   previousToken &&
-  //   previousToken.token &&
-  //   previousToken.token === nextToken
-  // ) {
-  //   postMessageToTab(tabId, actions.cacheTokenSuccess());
-  //   return;
-  // } else if (
-  //   previousToken &&
-  //   previousToken.token &&
-  //   previousToken.token !== nextToken
-  // ) {
-  //   invalidateToken();
-  // }
-
   storeUserToken(action.payload.token)
     .then(() => postMessageToTab(tabId, actions.cacheTokenSuccess()))
     .catch(() =>

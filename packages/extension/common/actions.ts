@@ -1,8 +1,6 @@
 import types from "./types";
 import { AnyAction } from "redux";
 
-import * as diffTypes from "./index.d";
-
 export interface RemoteAction {
   source: string;
   dest: string;
@@ -18,7 +16,7 @@ const composeRemoteAction = (
   action: AnyAction,
   source: string,
   dest: string
-): diffTypes.RemoteAction => ({
+): AnyAction => ({
   source,
   dest,
   ...action
@@ -36,8 +34,22 @@ const runRequest = () => ({
 // User actions
 // -------------------------------------------------------
 
-const fetchUserPreferences = (): AnyAction => ({
-  type: types.FETCH_USER_PREFERENCES.REQUEST
+interface FetchUserRequestAction extends AnyAction {
+  payload: {
+    hostname: string;
+    pathname: string;
+  };
+}
+
+const fetchUserPreferences = (
+  hostname: string,
+  pathname: string
+): FetchUserRequestAction => ({
+  type: types.FETCH_USER_PREFERENCES.REQUEST,
+  payload: {
+    hostname,
+    pathname
+  }
 });
 
 const fetchUserPreferencesSuccess = (preferences: Object): AnyAction => ({
