@@ -39,7 +39,10 @@ function createTask(project, location, queue, options) {
   const task = {
     appEngineHttpRequest: {
       httpMethod: "POST",
-      relativeUrl: "/log_payload"
+      relativeUri: "/notifications/event/add/Smzjr1oIxJLcMmSiKlVt",
+      appEngineRouting: {
+        service: "api"
+      }
     }
   };
 
@@ -66,7 +69,8 @@ function createTask(project, location, queue, options) {
     .createTask(request)
     .then(response => {
       const task = response[0].name;
-      console.log(`Created task ${task}`);
+      console.log(`Created task`);
+      console.log(JSON.stringify(response, null, 4));
     })
     .catch(err => {
       console.error(`Error in createTask: ${err.message || err}`);

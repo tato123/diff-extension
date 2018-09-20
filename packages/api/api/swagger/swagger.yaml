@@ -170,6 +170,22 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /notifications/event/add/{eventId}:
+    x-swagger-router-controller: tasks
+    post:
+      description: Notifications sent out to affected parties when a comment is added
+      operationId: addEvent
+      parameters:
+        - name: eventId
+          in: path
+          description: EventId
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Notifications succesfully received
+        "404":
+          description: Event does not exist
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
