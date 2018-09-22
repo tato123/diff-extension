@@ -1,0 +1,8 @@
+{
+  "name": "@diff/firestore-client",
+  "version": "0.1.1",
+  "main": "src/index.js",
+  "author": "Jonathan Fontanez <jfontanez@getdiff.app>",
+  "license": "ISC",
+  "private": true
+}
