@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import _ from "lodash";
-/* eslint-disable */
+
 const cssSelectorDomain = state => state.entities.selectors;
 
 const cssSelectorIdsSelector = () =>
@@ -15,8 +15,12 @@ const isSelectorEmpty = id =>
     selector => _.keys(_.omit(selector, ["transient"])).length === 0
   );
 
+const allCSSSelectors = () =>
+  createSelector(cssSelectorDomain, selector => selector.allIds);
+
 export default {
   cssSelectorIdsSelector,
   selectorForCssSelectorId,
-  isSelectorEmpty
+  isSelectorEmpty,
+  allCSSSelectors
 };
