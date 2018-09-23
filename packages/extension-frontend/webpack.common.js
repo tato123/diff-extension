@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [
     new Dotenv({
-      path: path.resolve(__dirname, `./.env.${ENV}`)
+      path: path.resolve(__dirname, `../../.env.${ENV}`)
     })
   ],
   target: "web",

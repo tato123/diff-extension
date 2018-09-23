@@ -1,7 +1,7 @@
 import React, { Component, PureComponent, Children } from "react";
 import PropTypes from "prop-types";
 import { render, findDOMNode, unmountComponentAtNode } from "react-dom";
-import omit from "lodash.omit";
+import { omit } from "lodash-es";
 
 /**
  * @constant defaultContextTypes

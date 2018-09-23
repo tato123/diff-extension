@@ -1,5 +1,5 @@
 {
-  "name": "@diff/www-site",
+  "name": "@diff/gae-www-site",
   "description": "Gatsby default starter",
   "version": "1.0.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
@@ -17,7 +17,8 @@
     "react-dom": "^16.4.2",
     "react-helmet": "^5.2.0",
     "react-icons-kit": "^1.1.10",
-    "styled-components": "3.4.9"
+    "styled-components": "3.4.9",
+    "@diff/shared-components": "^0.1.0"
   },
   "keywords": [
     "gatsby"

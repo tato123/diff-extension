@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import _ from "lodash";
+import _ from "lodash-es";
 import "firebase/storage";
 import { getLocationURL } from "../url";
 

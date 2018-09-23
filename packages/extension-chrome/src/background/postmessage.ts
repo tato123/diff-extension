@@ -1,4 +1,4 @@
-import { sources, actions } from "../common";
+import { sources, actions } from "@diff/common";
 import { portForId } from "./ports";
 
 /**

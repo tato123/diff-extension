@@ -1,5 +1,5 @@
 {
-  "name": "@diff/api",
+  "name": "@diff/gae-api",
   "version": "0.1.1",
   "description": "",
   "main": "index.js",

@@ -1,11 +1,11 @@
 {
-  "name": "@diff/extension",
+  "name": "@diff/extension-chrome",
   "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production --config webpack.extension.js",
-    "start": "webpack --mode development --config webpack.extension.js",
+    "build": "webpack --mode production --config webpack.config.js",
+    "start:dev": "webpack --mode development --watch --config webpack.config.js",
     "test": "echo \"no test yet\""
   },
   "repository": {
@@ -75,46 +75,15 @@
     "yargs": "^10.0.3"
   },
   "dependencies": {
-    "@diff/shared-components": "^0.1.1",
-    "@medv/finder": "^1.0.3",
-    "@rematch/core": "^1.0.0-beta.2",
-    "@rematch/select": "^1.0.2",
+    "@diff/common": "^0.1.0",
     "@types/chrome": "^0.0.72",
     "@types/lodash": "^4.14.116",
-    "color": "^3.0.0",
     "date-fns": "^1.29.0",
     "firebase": "^5.4.2",
-    "formik": "^1.0.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
     "normalize-url": "^3.3.0",
-    "polished": "^1.9.3",
-    "popper.js": "^1.14.3",
-    "prismjs": "^1.15.0",
     "query-string": "^6.1.0",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-draggable": "^3.0.5",
-    "react-dropdown": "^1.5.0",
-    "react-icons-kit": "^1.1.5",
-    "react-loadable": "^5.5.0",
-    "react-multi-email": "^0.3.6",
-    "react-popper": "^1.0.0-beta.6",
-    "react-redux": "^5.0.7",
-    "react-router": "^4.3.1",
-    "react-shadow": "^16.3.0",
-    "react-spring": "^5.4.4",
-    "redux": "^4.0.0",
-    "redux-actions": "^2.3.2",
-    "redux-devtools-extension": "^2.13.5",
-    "redux-observable": "^1.0.0",
-    "reselect": "^3.0.1",
-    "rxjs": "^6.2.1",
-    "styled-components": "3.4.9",
-    "yup": "^0.26.2",
-    "zip-folder": "^1.0.0"
-  },
-  "resolutions": {
-    "babel-core": "7.0.0-bridge.0"
+    "rxjs": "^6.2.1"
   }
 }

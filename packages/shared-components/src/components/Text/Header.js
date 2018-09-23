@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { get, remToSP } from "theme";
-import lodashGet from "lodash.get";
+import { get as lodashGet } from "lodash-es";
 
 const roundToMultiple = (val, multiple) =>
   Math.max(4, Math.round(val / multiple) * multiple);

@@ -17,10 +17,5 @@
 
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "background/**/*",
-    "common/**/*",
-    "content/**/*",
-    "frontend/src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

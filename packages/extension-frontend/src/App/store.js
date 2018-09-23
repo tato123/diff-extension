@@ -1,7 +1,7 @@
 import { applyMiddleware, createStore, combineReducers } from "redux";
 import { createEpicMiddleware, combineEpics } from "redux-observable";
 
-import initApi from "@diff/common/api";
+import { initApi } from "@diff/common";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
 import { postmessageMiddleware } from "redux/remote";

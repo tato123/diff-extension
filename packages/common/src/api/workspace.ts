@@ -1,6 +1,6 @@
 import { Observable, Observer } from "rxjs";
-import * as firebase from "firebase";
-import _ from "lodash";
+import firebase from "firebase";
+import _ from "lodash-es";
 
 export interface QueryResponse {
   data: Object | firebase.firestore.DocumentData | undefined;

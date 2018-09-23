@@ -1,5 +1,4 @@
-import normalizeUrl from "normalize-url";
-
+const normalizeUrl = require("normalize-url");
 export const getLocationURL = () => {
   const url = normalizeUrl(window.location.href);
 

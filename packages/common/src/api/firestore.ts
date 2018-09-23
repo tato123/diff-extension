@@ -1,4 +1,4 @@
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/firestore";
 
 /**
@@ -16,7 +16,7 @@ export const initializeFirestore = (): firebase.firestore.Firestore => {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.FIREBASE_SENDER_ID
   };
-
+  console.log(firebase);
   firebase.initializeApp(config);
 
   const firestore = firebase.firestore();

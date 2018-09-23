@@ -80,13 +80,5 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   const port = process.env.PORT || 8080;
   app.listen(port);
 
-  const frontend = require("./api/controllers/frontend");
-  if (process.env.NODE_ENV === "production") {
-    app.get("/js/:version/:file", frontend.library);
-  } else {
-    app.use(frontend.library);
-    app.use(frontend.hotLoader);
-  }
-
   console.log(`Application running at: ${port}`);
 });

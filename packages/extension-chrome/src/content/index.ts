@@ -2,7 +2,7 @@ import "./message";
 import { runFrontend } from "./frontend";
 import { sendMessageToBackground, portMessages$ } from "./backgroundClient";
 import { filter } from "rxjs/operators";
-import { types, actions, getLocationURL } from "../common";
+import { types, actions, getLocationURL } from "@diff/common";
 import _ from "lodash";
 
 interface FetchAction {

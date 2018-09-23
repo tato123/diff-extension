@@ -1,4 +1,4 @@
-import * as firebase from "firebase";
+import firebase from "firebase";
 import { Observable, Observer, from } from "rxjs";
 
 export interface QueryResponse {
