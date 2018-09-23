@@ -648,3 +648,4 @@ var index = (() => {
 });
 
 export { actions, types, sources, index as initApi, getLocationURL };
+//# sourceMappingURL=common.es.js.map

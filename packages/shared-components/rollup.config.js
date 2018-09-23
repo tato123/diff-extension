@@ -3,7 +3,6 @@ import babel from "rollup-plugin-babel";
 import filesize from "rollup-plugin-filesize";
 import includePaths from "rollup-plugin-includepaths";
 import autoExternal from "rollup-plugin-auto-external";
-import visualizer from "rollup-plugin-visualizer";
 
 const includePathOptions = {
   include: {},
@@ -17,8 +16,7 @@ export default {
   output: [
     {
       file: "dist/bundle.es.js",
-      format: "es",
-      sourcemap: process.env.BUILD === "development"
+      format: "esm"
     }
   ],
   plugins: [
@@ -28,8 +26,7 @@ export default {
     }),
     commonjs(),
     filesize(),
-    autoExternal(),
-    visualizer()
+    autoExternal()
   ],
   external: [
     "react",
@@ -41,6 +38,8 @@ export default {
     "react-icons-kit/fa/angleDown",
     "lodash-es",
     "date-fns/format",
-    "color"
+    "color",
+    "@blueprintjs/core/lib/esm/components/tabs/tabs",
+    "@blueprintjs/core/lib/esm/components/tabs/tab"
   ]
 };

@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.js --environment INCLUDE_DEPS,BUILD:production",
     "publish": "yarn build",
-    "start:dev": "rollup -c rollup.config.js -w --environment INCLUDE_DEPS,BUILD:development"
+    "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
   },
   "peerDependencies": {
     "firebase": "^5.5.1",

@@ -8,3 +8,5 @@ build/*.js
 
 dist
 dist/**/*.js
+
+stats.html

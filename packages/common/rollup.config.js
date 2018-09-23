@@ -18,9 +18,8 @@ export default {
   input: "src/index.js",
   output: [
     {
-      format: "es",
-      file: "dist/common.es.js",
-      sourceMap: "inline"
+      format: "esm",
+      file: "dist/common.es.js"
     }
   ],
 
