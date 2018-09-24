@@ -4,7 +4,7 @@
   "short_name": "Diff",
   "description": "Track changes, comment, and collaborate on web applications as a team.",
   "minimum_chrome_version": "49",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "permissions": [
     "activeTab",
     "tabs",
@@ -40,6 +40,10 @@
       "run_at": "document_end"
     }
   ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
   "externally_connectable": {
     "matches": ["http://localhost:8000/app/", "*://getdiff.app/*"]
   }

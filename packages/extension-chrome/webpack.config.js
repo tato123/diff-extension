@@ -1,38 +1,39 @@
-const path = require("path");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const WriteAssetsWebpackPlugin = require("write-assets-webpack-plugin");
-const Dotenv = require("dotenv-webpack");
+const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
-const ENV = (exports.ENV = process.env.NODE_ENV || "development");
+const ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
   entry: {
-    background: path.resolve(__dirname, "src/background/index.js"),
-    contentScript: path.resolve(__dirname, "src/content/index.ts")
+    background: path.resolve(__dirname, 'src/background/index.js'),
+    contentScript: path.resolve(__dirname, 'src/content/index.ts'),
+    options: path.resolve(__dirname, 'src/options/index.js')
   },
   output: {
-    filename: "[name].js",
-    path: path.resolve(__dirname, "./dist/chrome"),
-    publicPath: "http://localhost:9000/js/"
+    filename: '[name].js',
+    path: path.resolve(__dirname, './dist/chrome'),
+    publicPath: 'http://localhost:9000/js/'
   },
   // Our home directory
-  context: path.resolve(__dirname, "./src"),
+  context: path.resolve(__dirname, './src'),
 
   resolve: {
-    modules: ["node_modules", path.resolve(__dirname, "./src")],
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    modules: ['node_modules', path.resolve(__dirname, './src')],
+    extensions: ['.ts', '.tsx', '.js', '.json']
   },
   plugins: [
-    new CleanWebpackPlugin(["dist"]),
+    new CleanWebpackPlugin(['dist']),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, "src/shells/chrome"),
-        to: path.resolve(__dirname, "dist/chrome"),
-        toType: "dir"
+        from: path.resolve(__dirname, 'src/shells/chrome'),
+        to: path.resolve(__dirname, 'dist/chrome'),
+        toType: 'dir'
       }
     ]),
-    new WriteAssetsWebpackPlugin({ force: true, extension: ["js", "json"] }),
+    new WriteAssetsWebpackPlugin({ force: true, extension: ['js', 'json'] }),
     new Dotenv({
       path: path.resolve(__dirname, `../../.env.${ENV}`)
     })
@@ -43,7 +44,7 @@ module.exports = {
         test: /\.(tsx?)|(jsx?)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: 'babel-loader'
         }
       }
     ]
