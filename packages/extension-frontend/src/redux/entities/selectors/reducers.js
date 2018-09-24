@@ -1,5 +1,5 @@
-import _ from "lodash";
-import types from "./types";
+import _ from 'lodash-es';
+import types from './types';
 
 const initialState = {
   byId: {},
@@ -18,7 +18,7 @@ const addExistingSelector = (state, { type, payload }) => {
 
   // remove transient flag if this was previously created in the UI
   // and this is our first actual record for it (should be persisted now)
-  if (_.has(state.byId[payload.id], "transient")) {
+  if (_.has(state.byId[payload.id], 'transient')) {
     delete state.byId[payload.id].transient;
   }
 

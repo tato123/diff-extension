@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { StyleBoundary } from "@diff/shared-components";
-import _ from "lodash";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { StyleBoundary } from '@diff/shared-components';
+import _ from 'lodash-es';
 
 export default class Widget extends React.Component {
   static propTypes = {
@@ -36,7 +36,7 @@ export default class Widget extends React.Component {
       props: { shouldRender }
     } = this;
 
-    const childProps = _.omit(this.props, ["children"]);
+    const childProps = _.omit(this.props, ['children']);
     if (shouldRender(childProps)) {
       return (
         <StyleBoundary>

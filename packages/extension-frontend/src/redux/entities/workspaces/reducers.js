@@ -1,5 +1,5 @@
-import types from "./types";
-import _ from "lodash";
+import types from './types';
+import _ from 'lodash-es';
 
 const initialState = {
   byId: {},

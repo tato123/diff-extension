@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import _ from "lodash";
+import { createSelector } from 'reselect';
+import _ from 'lodash-es';
 
 const workspaceDomain = state => state.entities.workspaces;
 
@@ -13,8 +13,8 @@ const currentWorkspaceNameSelector = () =>
     loggedInUserDomain,
     (workspace, loggedInUser) => {
       return _.isNil(loggedInUser.workspaceId)
-        ? ""
-        : _.get(workspace.byId[loggedInUser.workspaceId], "name", "");
+        ? ''
+        : _.get(workspace.byId[loggedInUser.workspaceId], 'name', '');
     }
   );
 
@@ -27,7 +27,7 @@ const currentWorkspaceUsersSelector = () =>
       return _.isNil(loggedInUser.workspaceId)
         ? []
         : _.chain(
-            _.keys(_.get(workspace.byId[loggedInUser.workspaceId], "users", []))
+            _.keys(_.get(workspace.byId[loggedInUser.workspaceId], 'users', []))
           )
             .map(user => users.byId[user])
             .value();

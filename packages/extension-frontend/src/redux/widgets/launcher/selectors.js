@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import _ from "lodash";
+import { createSelector } from 'reselect';
+import _ from 'lodash-es';
 
 const launcherSelectorDomain = state => state.widgets.launcher;
 const elementSelectorDomain = state => state.entities.selectors;

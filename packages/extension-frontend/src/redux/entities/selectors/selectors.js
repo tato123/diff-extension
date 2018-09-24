@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import _ from "lodash";
+import { createSelector } from 'reselect';
+import _ from 'lodash-es';
 
 const cssSelectorDomain = state => state.entities.selectors;
 
@@ -12,7 +12,7 @@ const selectorForCssSelectorId = id =>
 const isSelectorEmpty = id =>
   createSelector(
     selectorForCssSelectorId(id),
-    selector => _.keys(_.omit(selector, ["transient"])).length === 0
+    selector => _.keys(_.omit(selector, ['transient'])).length === 0
   );
 
 const allCSSSelectors = () =>

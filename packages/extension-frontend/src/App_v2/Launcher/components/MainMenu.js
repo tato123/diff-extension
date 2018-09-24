@@ -56,12 +56,11 @@ export default class MainMenu extends React.Component {
     /**
      * Pass this through to parent element
      */
-    onClick: PropTypes.func,
+    onClick: PropTypes.func.isRequired,
     /**
      * Enable or disable visibilty of the count
      */
-    showCount: PropTypes.bool,
-    styles: PropTypes.object
+    showCount: PropTypes.bool
   };
 
   static defaultProps = {
@@ -71,11 +70,11 @@ export default class MainMenu extends React.Component {
 
   render() {
     const {
-      props: { count, showCount, onClick, styles }
+      props: { count, showCount, onClick }
     } = this;
 
     return (
-      <LauncherContainer onClick={onClick} style={styles}>
+      <LauncherContainer onClick={onClick} size={60}>
         <div>
           <React.Fragment>
             <ImgContainer>
@@ -83,7 +82,10 @@ export default class MainMenu extends React.Component {
             </ImgContainer>
             {showCount && (
               <BubbleContainer>
-                <Bubble value={count} />
+                <Bubble
+                  value={count}
+                  style={{ height: "24px", width: "24px", fontSize: "13px" }}
+                />
               </BubbleContainer>
             )}
           </React.Fragment>

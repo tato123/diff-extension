@@ -41,6 +41,19 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
+      },
+      {
+        test: /\.html$/,
+        use: ['html-loader']
+      },
+      { test: /\.jpg$/, use: ['file-loader'] },
+      { test: /\.png$/, use: ['url-loader?mimetype=image/png'] },
+      {
+        test: /\.svg$/,
+        use: {
+          loader: 'text-loader',
+          options: {}
+        }
       }
     ]
   },

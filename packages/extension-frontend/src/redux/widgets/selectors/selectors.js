@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import _ from "lodash";
+import { createSelector } from 'reselect';
+import _ from 'lodash-es';
 
 // select data from this widget
 const selectorWidgetDomain = state => state.widgets.selectors;
@@ -57,7 +57,7 @@ const unseenCountSelector = cssSelector =>
 
 const displayedSelector = () =>
   createSelector(widgetStateDomain, widgetState => {
-    const widget = _.find(widgetState, { name: "diff" });
+    const widget = _.find(widgetState, { name: 'diff' });
     return _.isNil(widget) ? null : widget.context.selector;
   });
 
