@@ -1,11 +1,11 @@
-import UserView from "./Widget";
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+import { selectors as userSelectors } from 'redux/user';
+import UserView from './Widget';
 
-import { selectors as userSelectors } from "redux/user";
 import {
   selectors as widgetSelectors,
   actions as widgetActions
-} from "redux/widgets/state";
+} from 'redux/widgets/state';
 
 const mapStateToProps = (state, props) => ({
   shown: widgetSelectors.shownSelector(props.name)(state),

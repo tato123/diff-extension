@@ -1,42 +1,52 @@
-const path = require("path");
-const npmPackage = require("./package.json");
+const path = require('path');
+const webpack = require('webpack');
 
-const webpack = require("webpack");
-const merge = require("webpack-merge");
-const common = require("./webpack.common");
+const Dotenv = require('dotenv-webpack');
+const npmPackage = require('./package.json');
 
-const Jarvis = require("webpack-jarvis");
+const ENV = process.env.NODE_ENV || 'development';
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
-const WEB_OUTPUT_PATH = `frontend/${npmPackage.version}`;
+const WEB_OUTPUT_PATH = `dist/${npmPackage.version}`;
 
-module.exports = merge(common, {
+module.exports = {
+  mode: ENV,
+
   entry: {
-    main: path.resolve(__dirname, "./src/index.js")
+    main: path.resolve(__dirname, './src/index.js')
   },
-  devtool: "source-map",
+  devtool: ENV === 'development' ? 'source-map' : 'none',
+
   output: {
-    path: path.join(common.output.path, WEB_OUTPUT_PATH),
-    publicPath: "/js/latest/"
+    filename: '[name].js',
+    chunkFilename: '[name].bundle.js',
+    path: path.join(__dirname, WEB_OUTPUT_PATH),
+    publicPath: '/js/latest/'
   },
 
   // Our home directory
-  context: path.resolve(__dirname, "./src"),
+  context: path.resolve(__dirname, './src'),
 
   resolve: {
-    modules: ["node_modules", path.resolve(__dirname, "./src")],
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    modules: ['node_modules', path.resolve(__dirname, './src')],
+    extensions: ['.ts', '.tsx', '.js', '.json']
   },
 
   module: {
     rules: [
       {
-        test: /\.(tsx?)|(js)$/,
+        test: /\.(tsx?)|(jsx?)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: 'babel-loader'
         }
       }
     ]
+  },
+
+  optimization: {
+    sideEffects: false
   },
 
   devServer: {
@@ -48,9 +58,10 @@ module.exports = merge(common, {
   },
 
   plugins: [
+    new Dotenv({
+      path: path.resolve(__dirname, `../../.env.${ENV}`)
+    }),
     new webpack.HotModuleReplacementPlugin(),
-    new Jarvis({
-      port: 1337 // optional: set a port
-    })
+    new BundleAnalyzerPlugin()
   ]
-});
+};

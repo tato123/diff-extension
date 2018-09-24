@@ -1,8 +1,6 @@
-import React from "react";
-import { Header, Button } from "@diff/shared-components";
-import styled from "styled-components";
-
-import assets from "./assets.png";
+import React from 'react';
+import { Header, Button } from '@diff/shared-components';
+import styled from 'styled-components';
 
 const Outlined = styled.div`
   border: 2px dashed rgba(255, 255, 255, 0.5);
@@ -22,27 +20,27 @@ const Container = styled.div`
   margin-bottom: 16px;
 `;
 
-export default class Diffs extends React.PureComponent {
-  render() {
-    return (
-      <div>
-        <CustomHeader as="h2" uppercase>
-          Comming soon
-        </CustomHeader>
-        <Outlined>
-          <img src={assets} />
-        </Outlined>
+const Diffs = () => (
+  <div>
+    <CustomHeader as="h2" uppercase>
+      Comming soon
+    </CustomHeader>
+    <Outlined>
+      <img
+        src="https://storage.googleapis.com/diff-assets/assets.PNG"
+        alt="Assets description"
+      />
+    </Outlined>
 
-        <Container>
-          <small>
-            Tell us what you think about this feature and how you might improve
-            it?
-          </small>
-        </Container>
-        <Container>
-          <Button>GIVE US FEEDBACK</Button>
-        </Container>
-      </div>
-    );
-  }
-}
+    <Container>
+      <small>
+        Tell us what you think about this feature and how you might improve it?
+      </small>
+    </Container>
+    <Container>
+      <Button>GIVE US FEEDBACK</Button>
+    </Container>
+  </div>
+);
+
+export default Diffs;

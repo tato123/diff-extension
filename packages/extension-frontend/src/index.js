@@ -1,13 +1,13 @@
-import App from "./App/index";
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App/index';
 
 const ROOT_ID = `df-rt-${Math.floor(Math.random() * 100000)}`;
 
 const bootstrap = () => {
-  const rootElement = document.createElement("div");
+  const rootElement = document.createElement('div');
   rootElement.id = ROOT_ID;
-  rootElement.style.position = "absolute";
+  rootElement.style.position = 'absolute';
   rootElement.style.top = 0;
   rootElement.style.left = 0;
   rootElement.style.width = 0;
@@ -27,8 +27,8 @@ bootstrap().then(id => {
 });
 
 if (module.hot) {
-  module.hot.accept("./App/index.js", () => {
-    const NextRootContainer = require("./App/index.js").default;
+  module.hot.accept('./App/index.js', () => {
+    const NextRootContainer = require('./App/index.js').default;
     render(NextRootContainer);
   });
 }

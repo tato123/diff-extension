@@ -1,6 +1,3 @@
-# node_modules ignored by default
-
-**/build/**
-**/vendor/**
-**/node_modules/**
-flow/*
+node_modules
+node_modules/**/*
+dist

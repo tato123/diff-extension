@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { fromEvent, merge } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { fromEvent, merge } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 export default class VisibleElement extends React.Component {
   static propTypes = {
@@ -14,8 +14,8 @@ export default class VisibleElement extends React.Component {
   };
 
   componentDidMount() {
-    const scroll = fromEvent(window, "scroll");
-    const resize = fromEvent(window, "resize");
+    const scroll = fromEvent(window, 'scroll');
+    const resize = fromEvent(window, 'resize');
 
     const listener$ = merge(scroll, resize).pipe(debounceTime(1));
 

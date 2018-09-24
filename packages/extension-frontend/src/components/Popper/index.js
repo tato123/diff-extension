@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Popper from "popper.js";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Popper from 'popper.js';
 
 /**
  * Wraps the popper library. This library uses a renderProps approach
@@ -12,8 +12,7 @@ export default class PopperHandler extends React.Component {
     /**
      * The HTMLElement that we want to select
      */
-    element: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
-      .isRequired,
+    element: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     /**
      * Render function that will be called
      * as part of our render props
@@ -27,52 +26,13 @@ export default class PopperHandler extends React.Component {
 
   static defaultProps = {
     options: {
-      placement: "left-start"
+      placement: 'left-start'
     }
   };
 
   state = {
     popper: null
   };
-
-  ref = popperElement => {
-    const {
-      props: { element, options }
-    } = this;
-
-    if (!popperElement) {
-      // console.error("No popper element defined");
-      return;
-    }
-
-    const targetedElement =
-      typeof element === "string" ? document.querySelector(element) : element;
-
-    // element is still available on the page
-    if (targetedElement != null) {
-      const popper = new Popper(
-        targetedElement || document.body,
-        popperElement,
-        options
-      );
-      console.warn(
-        "Popper element set to document.body without avoiding overlaps"
-      );
-      this.setState({
-        popper
-      });
-    } else {
-      console.error(
-        `The CSS Selector [${JSON.stringify(
-          element
-        )}] is not valid for this page.`
-      );
-    }
-  };
-
-  componentDidCatch(err) {
-    console.error("error occured", err);
-  }
 
   componentWillUnmount() {
     const { popper } = this.state;
@@ -82,8 +42,7 @@ export default class PopperHandler extends React.Component {
   }
 
   getPopperTargetElementStyles(element) {
-    const targetedElement =
-      typeof element === "string" ? document.querySelector(element) : element;
+    const targetedElement = typeof element === 'string' ? document.querySelector(element) : element;
 
     // component may have been unmounted
     // unexpectedly
@@ -95,17 +54,41 @@ export default class PopperHandler extends React.Component {
     }
 
     // Calculate the targets
-    const width = window
-      .getComputedStyle(targetedElement, null)
-      .width.split("px")[0];
-    const height = window
-      .getComputedStyle(targetedElement, null)
-      .height.split("px")[0];
+    const width = window.getComputedStyle(targetedElement, null).width.split('px')[0];
+    const height = window.getComputedStyle(targetedElement, null).height.split('px')[0];
     return {
       elementWidth: parseInt(Math.abs(width)),
       elementHeight: parseInt(Math.abs(height))
     };
   }
+
+  componentDidCatch(err) {
+    console.error('error occured', err);
+  }
+
+  ref = popperElement => {
+    const {
+      props: { element, options }
+    } = this;
+
+    if (!popperElement) {
+      // console.error("No popper element defined");
+      return;
+    }
+
+    const targetedElement = typeof element === 'string' ? document.querySelector(element) : element;
+
+    // element is still available on the page
+    if (targetedElement != null) {
+      const popper = new Popper(targetedElement || document.body, popperElement, options);
+      console.warn('Popper element set to document.body without avoiding overlaps');
+      this.setState({
+        popper
+      });
+    } else {
+      console.error(`The CSS Selector [${JSON.stringify(element)}] is not valid for this page.`);
+    }
+  };
 
   render() {
     const {

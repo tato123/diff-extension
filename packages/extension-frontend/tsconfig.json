@@ -2,6 +2,7 @@
   "compilerOptions": {
     // Target latest version of ECMAScript.
     "target": "esnext",
+    "module": "esnext",
     // Search under node_modules for non-relative imports.
     "moduleResolution": "node",
     // Process & infer types from .js files.
@@ -14,9 +15,12 @@
     "isolatedModules": true,
     // Import non-ES modules as default imports.
     "esModuleInterop": true,
-
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "../extension-common"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+  ]
 }
