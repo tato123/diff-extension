@@ -1,9 +1,8 @@
 import commonjs from "rollup-plugin-commonjs";
-import resolve from "rollup-plugin-node-resolve";
 import babel from "rollup-plugin-babel";
-import image from "rollup-plugin-img";
 import filesize from "rollup-plugin-filesize";
 import includePaths from "rollup-plugin-includepaths";
+import autoExternal from "rollup-plugin-auto-external";
 
 const includePathOptions = {
   include: {},
@@ -14,28 +13,33 @@ const includePathOptions = {
 
 export default {
   input: "src/index.js",
-  output: [{ file: "dist/bundle.es.js", format: "es", sourcemap: true }],
+  output: [
+    {
+      file: "dist/bundle.es.js",
+      format: "esm"
+    }
+  ],
   plugins: [
-    resolve({
-      module: true
-    }),
+    includePaths(includePathOptions),
     babel({
       exclude: "node_modules/**"
     }),
-    image({
-      limit: 10000
-    }),
     commonjs(),
     filesize(),
-    includePaths(includePathOptions)
+    autoExternal()
   ],
-  // indicate which modules should be treated as external
   external: [
-    "prop-types",
     "react",
     "react-dom",
+    "prop-types",
     "react-icons-kit",
     "react-spring",
-    "styled-components"
+    "styled-components",
+    "react-icons-kit/fa/angleDown",
+    "lodash-es",
+    "date-fns/format",
+    "color",
+    "@blueprintjs/core/lib/esm/components/tabs/tabs",
+    "@blueprintjs/core/lib/esm/components/tabs/tab"
   ]
 };

@@ -2,15 +2,15 @@
   "name": "@diff/shared-components",
   "version": "0.1.1",
   "description": "A common library for building out react-components",
-  "main": "dist/bundle.js",
   "module": "dist/bundle.es.js",
+  "sideEffects": false,
   "scripts": {
     "test": "echo \"Error: no test specified\"",
     "styles": "styleguidist server",
     "build:styles": "styleguidist build",
-    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build": "rollup -c rollup.config.js --environment INCLUDE_DEPS,BUILD:production",
     "publish": "yarn build",
-    "start:dev": "cross-env NODE_ENV=development rollup -c rollup.config.js -w"
+    "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
   },
   "author": "Jonathan Fontanez",
   "license": "ISC",
@@ -23,12 +23,14 @@
     "@babel/preset-react": "^7.0.0",
     "react-styleguidist": "^7.0.20",
     "rollup": "^0.65.0",
+    "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-babel": " 4.0.0-beta.8",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-filesize": "^4.0.1",
     "rollup-plugin-img": "^1.1.0",
     "rollup-plugin-includepaths": "^0.2.3",
     "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-visualizer": "^0.9.0",
     "text-loader": "^0.0.1",
     "url-loader": "^1.0.1"
   },
@@ -43,7 +45,6 @@
   "dependencies": {
     "@blueprintjs/core": "^3.6.1",
     "date-fns": "^1.29.0",
-    "lodash.get": "^4.4.2",
-    "lodash.omit": "^4.5.0"
+    "lodash-es": "^4.17.11"
   }
 }

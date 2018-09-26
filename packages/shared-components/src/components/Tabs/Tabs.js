@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Tabs as BluePrintTabs } from "@blueprintjs/core";
+import { Tabs as BluePrintTabs } from "@blueprintjs/core/lib/esm/components/tabs/tabs";
 
 const Tabs = styled(BluePrintTabs)`
   min-height: 30px;

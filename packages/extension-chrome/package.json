@@ -1,0 +1,47 @@
+{
+  "name": "@diff/extension-chrome",
+  "version": "0.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production --config webpack.config.js",
+    "start:dev": "webpack --mode development --watch --config webpack.config.js",
+    "test": "echo \"no test yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tato123/diff.git"
+  },
+  "author": "Jonathan Fontanez <jfontanez@getdiff.app>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tato123/diff/issues"
+  },
+  "homepage": "https://github.com/tato123/diff#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@types/chrome": "^0.0.72",
+    "@types/lodash": "^4.14.116",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
+    "dotenv-webpack": "^1.5.7",
+    "prettier": "^1.12.1",
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.1",
+    "write-assets-webpack-plugin": "^1.0.4"
+  },
+  "dependencies": {
+    "@diff/common": "^0.1.0",
+    "firebase": "^5.4.2",
+    "normalize-url": "^3.3.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "rxjs": "^6.2.1",
+    "lodash-es": "^4.17.11"
+  }
+}

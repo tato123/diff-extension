@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import img from "../assets/logo.png";
 
 const Image = styled.img`
   ${({ size }) => {
@@ -13,6 +12,8 @@ const Image = styled.img`
   }};
 `;
 
-const Logo = ({ ...rest }) => <Image src={img} {...rest} />;
+const Logo = ({ ...rest }) => (
+  <Image src="https://storage.googleapis.com/diff-assets/logo.png" {...rest} />
+);
 
 export default Logo;

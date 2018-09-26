@@ -1,0 +1,35 @@
+{
+  "name": "@diff/common",
+  "version": "0.1.1",
+  "module": "dist/common.es.js",
+  "sideEffects": false,
+  "author": "Jonathan Fontanez <jfontanez@getdiff.app>",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "build": "rollup -c rollup.config.js --environment INCLUDE_DEPS,BUILD:production",
+    "publish": "yarn build",
+    "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
+  },
+  "peerDependencies": {
+    "firebase": "^5.5.1",
+    "rxjs": "^6.3.2"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.11",
+    "normalize-url": "^3.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-filesize": "^4.0.1",
+    "rollup-plugin-includepaths": "^0.2.3",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "typescript": "^3.0.3"
+  }
+}

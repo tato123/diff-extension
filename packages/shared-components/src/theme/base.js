@@ -1,5 +1,5 @@
 import color from "color";
-import lodashGet from "lodash.get";
+import { get as lodashGet } from "lodash-es";
 
 export const get = val => props => {
   return lodashGet(props.theme, val);

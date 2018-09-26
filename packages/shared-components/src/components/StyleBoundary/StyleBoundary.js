@@ -14,9 +14,17 @@ import "./styles/RobotoFont";
 
 /* prettier-ignore */
 const View = styled.div`
-  font-family: ${get('text.fontFamily')};
-  color: ${get('colors.textColor')};
-  font-size: 1rem;
+  --df-font-family: 'Barlow Semi Condensed', sans-serif;
+  --df-text-color-primary: #fff;
+  --df-font-size: 16px;
+  
+  --color-purple: #4648b0;
+  --color-purple-1: #6848b0;
+  --gradient-purple: linear-gradient(to bottom right, var(--color-purple), var(--color-purple-1) );
+
+  font-family: var(--df-font-family);
+  color: var(--df-text-color-primary);
+  font-size: var(--df-font-size);
   box-sizing: border-box;
 
   *, *:before, *:after {
@@ -47,6 +55,8 @@ const styleContent = `
     background: rgba(255,255,255,0.5); 
     -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.5); 
   }
+
+  
 
   ${normalize}
   ${blueprintCss}
