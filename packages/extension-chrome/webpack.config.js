@@ -7,6 +7,8 @@ const Dotenv = require('dotenv-webpack');
 const ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
+  mode: ENV,
+  devtool: ENV === 'development' ? 'source-map' : false,
   entry: {
     background: path.resolve(__dirname, 'src/background/index.js'),
     contentScript: path.resolve(__dirname, 'src/content/index.ts'),
@@ -17,8 +19,6 @@ module.exports = {
     path: path.resolve(__dirname, './dist/chrome'),
     publicPath: 'http://localhost:9000/js/'
   },
-  // Our home directory
-  context: path.resolve(__dirname, './src'),
 
   resolve: {
     modules: ['node_modules', path.resolve(__dirname, './src')],

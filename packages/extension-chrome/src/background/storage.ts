@@ -1,6 +1,6 @@
-import _ from "lodash";
+import _ from 'lodash-es';
 
-export const USER_TOKEN_KEY = "token";
+export const USER_TOKEN_KEY = 'token';
 
 export interface TokenResponse {
   token: {
@@ -34,7 +34,7 @@ export const set = (key: string, value: any): Promise<void> => {
 };
 
 export const addSitePreference = async (value: string) => {
-  const key = "USER_CLICKED_PREFERENCE";
+  const key = 'USER_CLICKED_PREFERENCE';
   const sites: any = await get(key, []);
   const innerArray = Array.isArray(sites) ? sites : sites[key];
 
@@ -47,7 +47,7 @@ export const addSitePreference = async (value: string) => {
 };
 
 export const getSitePreference = async (): Promise<Array<string>> => {
-  const key = "USER_CLICKED_PREFERENCE";
+  const key = 'USER_CLICKED_PREFERENCE';
   const sites: any = await get(key, []);
   const innerArray = Array.isArray(sites) ? sites : sites[key];
 

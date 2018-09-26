@@ -1,5 +1,5 @@
-import types from "./types";
-import { AnyAction } from "redux";
+import types from './types';
+import { AnyAction } from 'redux';
 
 export interface RemoteAction {
   source: string;

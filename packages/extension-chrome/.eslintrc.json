@@ -6,6 +6,7 @@
     "ecmaFeatures": {
       "jsx": true,
       "modules": true,
+      "sourceType": "module",
       "experimentalObjectRestSpread": true
     }
   },
@@ -15,7 +16,8 @@
     "es6": true,
     "browser": true,
     "node": true,
-    "jest": true
+    "jest": true,
+    "webextensions": true
   },
   "rules": {
     "react/jsx-filename-extension": [

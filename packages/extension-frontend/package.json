@@ -8,7 +8,7 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "start:dev": "webpack-dev-server --mode production --watch --config webpack.frontend.js",
+    "start:dev": "webpack-dev-server --mode development --watch --config webpack.frontend.js",
     "build": "webpack --mode production --config webpack.frontend.js",
     "test": "echo \"no test yet\""
   },

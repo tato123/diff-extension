@@ -1,9 +1,9 @@
-import "./message";
-import { runFrontend } from "./frontend";
-import { sendMessageToBackground, portMessages$ } from "./backgroundClient";
-import { filter } from "rxjs/operators";
-import { types, actions, getLocationURL } from "@diff/common";
-import _ from "lodash";
+import './message';
+import { runFrontend } from './frontend';
+import { sendMessageToBackground, portMessages$ } from './backgroundClient';
+import { filter } from 'rxjs/operators';
+import { types, actions, browser } from '@diff/common';
+import _ from 'lodash';
 
 interface FetchAction {
   type: string;
@@ -27,14 +27,14 @@ const main = () => {
       const { type } = action;
 
       if (type === types.FETCH_USER_PREFERENCES.SUCCESS) {
-        console.log("[content-script] Running frontend");
+        console.log('[content-script] Running frontend');
         runFrontend();
       } else {
-        console.log("[content-script] not running");
+        console.log('[content-script] not running');
       }
     });
 
-  const location = getLocationURL();
+  const location = browser.url.location();
   // check if we can run on this domain
   sendMessageToBackground(
     actions.fetchUserPreferences(location.hostname, location.pathname)

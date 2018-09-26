@@ -6,7 +6,7 @@ export const getDomains = async (token: any): Promise<DomainResponse> => {
   const response = await fetch(
     `${process.env.API_SERVER}/tokens/${token}/domains`,
     {
-      method: "get"
+      method: 'get'
     }
   );
 

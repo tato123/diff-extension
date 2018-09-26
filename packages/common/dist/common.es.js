@@ -227,23 +227,55 @@ var userFactory = (db => {
   };
 });
 
-const normalizeUrl = require("normalize-url");
+const setFlag = async (flag, value) => {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      [flag]: value
+    }, () => {
+      resolve();
+    });
+  });
+};
 
-const getLocationURL = () => {
+const getFlag = async flag => {
+  return new Promise(resolve => {
+    chrome.storage.local.get([flag], result => {
+      resolve(result[flag]);
+    });
+  });
+};
+
+var storage = {
+  getFlag,
+  setFlag
+};
+
+const normalizeUrl = require('normalize-url');
+
+const location = () => {
   const url = normalizeUrl(window.location.href);
   return new URL(url);
 };
 
+var url = {
+  location
+};
+
+var browser = {
+  storage,
+  url
+};
+
 var commentsFactory = (db => {
-  const eventsRef = db.collection("events");
-  const commentsRef = eventsRef.where("type", "==", "comment");
+  const eventsRef = db.collection('events');
+  const commentsRef = eventsRef.where('type', '==', 'comment');
 
   const comments$ = (uid, workspaceId) => {
     return Observable.create(observer => {
-      const subject = !_.isNil(workspaceId) ? "meta.workspaceId" : "meta.userId";
+      const subject = !_.isNil(workspaceId) ? 'meta.workspaceId' : 'meta.userId';
       const value = !_.isNil(workspaceId) ? workspaceId : uid;
-      const location = getLocationURL();
-      const unsubscribe = commentsRef.where("url.hostname", "==", location.hostname).where("url.pathname", "==", location.pathname).where(subject, "==", value).onSnapshot(querySnapshot => {
+      const location = browser.url.location();
+      const unsubscribe = commentsRef.where('url.hostname', '==', location.hostname).where('url.pathname', '==', location.pathname).where(subject, '==', value).onSnapshot(querySnapshot => {
         if (!querySnapshot.empty) {
           querySnapshot.docChanges().forEach(({
             doc,
@@ -259,7 +291,7 @@ var commentsFactory = (db => {
         }
       }, err => observer.err(err));
       return () => {
-        console.log("Unsubuscribing from comments");
+        console.log('Unsubuscribing from comments');
         unsubscribe();
       };
     });
@@ -269,7 +301,7 @@ var commentsFactory = (db => {
     const storageRef = db.app.storage().ref(`attachments/${uid}/${file.name}`);
     const task = storageRef.put(file);
     return new Promise((resolve, reject) => {
-      task.on("state_changed", function progress(snapshot) {// var percentage =
+      task.on('state_changed', function progress(snapshot) {// var percentage =
         //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         // console.log(percentage);
       }, function error(error) {
@@ -287,23 +319,23 @@ var commentsFactory = (db => {
 
   const addNewComment = async (comment, selector, uploadAttachment, uid, workspaceId) => {
     if (_.isNil(uid)) {
-      throw new Error("UID cannot be undefined");
+      throw new Error('UID cannot be undefined');
     }
 
     if (_.isNil(comment)) {
-      throw new Error("comment cannot be undefined");
+      throw new Error('comment cannot be undefined');
     }
 
     if (_.isNil(selector)) {
-      throw new Error("selector cannot be undefined");
+      throw new Error('selector cannot be undefined');
     }
 
     const attachments = await Promise.all(uploadAttachment.map(file => uploadFile(file, uid)));
-    const location = getLocationURL();
+    const location = browser.url.location();
     const record = {
       comment,
       selector,
-      type: "comment",
+      type: 'comment',
       meta: {
         userId: uid,
         created: Date.now()
@@ -643,9 +675,20 @@ var index = (() => {
     activity: activityFactory(db$),
     invites: inviteFactory(db$)
   };
-  window.obs = obs;
   return obs;
 });
 
-export { actions, types, sources, index as initApi, getLocationURL };
+const getDomains = async token => {
+  const response = await fetch(`${process.env.API_SERVER}/tokens/${token}/domains`, {
+    method: 'get'
+  });
+
+  if (!response.ok) {
+    return Promise.reject(response.statusText);
+  }
+
+  return response.json();
+};
+
+export { actions, types, sources, index as initApi, browser, getDomains };
 //# sourceMappingURL=common.es.js.map

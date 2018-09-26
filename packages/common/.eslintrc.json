@@ -1,8 +1,9 @@
 {
   "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "typescript": true,
     "sourceType": "module",
+    "allowImportExportEverywhere": true,
     "ecmaFeatures": {
       "jsx": true,
       "modules": true,
@@ -23,6 +24,7 @@
       {
         "extensions": [".js", ".jsx"]
       }
-    ]
+    ],
+    "import/no-unresolved": 0
   }
 }

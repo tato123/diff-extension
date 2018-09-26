@@ -12,12 +12,11 @@ const WEB_OUTPUT_PATH = `dist/${npmPackage.version}`;
 
 module.exports = {
   mode: ENV,
+  devtool: ENV === 'development' ? 'source-map' : false,
 
   entry: {
     main: path.resolve(__dirname, './src/index.js')
   },
-  devtool: ENV === 'development' ? 'source-map' : 'none',
-
   output: {
     filename: '[name].js',
     chunkFilename: '[name].bundle.js',

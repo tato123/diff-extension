@@ -1,9 +1,9 @@
-import { addSitePreference, storeUserToken } from "./storage";
+import { addSitePreference, storeUserToken } from './storage';
 
-import { postMessageToTab } from "./postmessage";
+import { postMessageToTab } from './postmessage';
 
-import { registerPort, removeListener, messageListener } from "./ports";
-import { sources, actions } from "@diff/common";
+import { registerPort, removeListener, messageListener } from './ports';
+import { sources, actions, getFlag } from '@diff/common';
 
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === sources.CONTENT_SCRIPT_PORT_NAME) {
@@ -20,9 +20,9 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
-    id: "diff-inspect",
-    title: "Inspect with diff",
-    contexts: ["all"]
+    id: 'diff-inspect',
+    title: 'Inspect with diff',
+    contexts: ['all']
   });
 });
 
@@ -45,34 +45,34 @@ chrome.browserAction.onClicked.addListener(tab => {
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
     switch (request.type) {
-      case "FORCE_INJECT":
+      case 'FORCE_INJECT':
         chrome.tabs.executeScript(sender.tab.id, {
-          file: "contentScript.js"
+          file: 'contentScript.js'
         });
-        sendResponse({ type: "FORCE_INJECT_SUCCESS" });
+        sendResponse({ type: 'FORCE_INJECT_SUCCESS' });
         break;
-      case "VERIFY_INSTALLED":
+      case 'VERIFY_INSTALLED':
         sendResponse({
-          type: "VERIFY_INSTALLED_SUCCESS",
+          type: 'VERIFY_INSTALLED_SUCCESS',
           payload: { verion: null }
         });
         break;
-      case "STORE_TOKEN":
+      case 'STORE_TOKEN':
         const {
           payload: { refreshToken }
         } = request;
-        console.log("Received store token request", refreshToken);
+        console.log('Received store token request', refreshToken);
         storeUserToken(refreshToken)
           .then(() => {
-            console.log("Completed successfully");
+            console.log('Completed successfully');
             sendResponse({
-              type: "STORE_TOKEN_SUCCESS"
+              type: 'STORE_TOKEN_SUCCESS'
             });
           })
           .catch(error => {
-            console.log("Errored", error);
+            console.log('Errored', error);
             sendResponse({
-              type: "STORE_TOKEN_FAILED"
+              type: 'STORE_TOKEN_FAILED'
             });
           });
 

@@ -1,5 +1,5 @@
-import { sources, actions } from "@diff/common";
-import { portForId } from "./ports";
+import { sources, actions } from '@diff/common';
+import { portForId } from './ports';
 
 /**
  * Allows us to message a particular Tab
@@ -23,7 +23,7 @@ export const postMessageToTabWithDestination = (
 ): Function => (tabId: string, message: Object): void => {
   const port = portForId(tabId);
   if (!port) {
-    console.error("Unable to post message");
+    console.error('Unable to post message');
     return;
   }
   port.postMessage(
