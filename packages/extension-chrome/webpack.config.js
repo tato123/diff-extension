@@ -12,11 +12,12 @@ module.exports = {
   entry: {
     background: path.resolve(__dirname, 'src/background/index.js'),
     contentScript: path.resolve(__dirname, 'src/content/index.ts'),
-    options: path.resolve(__dirname, 'src/options/index.js')
+    options: path.resolve(__dirname, 'src/options/index.js'),
+    popup: path.resolve(__dirname, 'src/popup/index.js')
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, './dist/chrome'),
+    path: path.resolve(__dirname, './dist/chrome/js'),
     publicPath: 'http://localhost:9000/js/'
   },
 

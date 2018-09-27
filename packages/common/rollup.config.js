@@ -22,16 +22,12 @@ export default {
 
   plugins: [
     babel({
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
+      extensions: ['.js', '.ts']
     }),
+    commonjs(),
     includePaths(includePathOptions),
-    filesize(),
-    resolve({
-      jsnext: true,
-      main: true,
-      browser: true
-    }),
-    commonjs()
+    filesize()
   ],
   external: [
     'rxjs',
