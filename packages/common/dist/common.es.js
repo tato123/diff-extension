@@ -690,4 +690,3 @@ const getDomains = async token => {
 };
 
 export { actions, types, sources, index as initApi, browser, getDomains };
-//# sourceMappingURL=common.es.js.map

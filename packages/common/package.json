@@ -7,7 +7,7 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "build": "rollup -c rollup.config.js --environment INCLUDE_DEPS,BUILD:production",
+    "build": "rollup -c rollup.config.js --environment BUILD:production",
     "publish": "yarn build",
     "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
   },

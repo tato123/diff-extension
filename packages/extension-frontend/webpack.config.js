@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 const npmPackage = require('./package.json');
 
-const ENV = process.env.NODE_ENV || 'development';
+const ENV = process.env.WEBPACK_MODE || 'development';
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 

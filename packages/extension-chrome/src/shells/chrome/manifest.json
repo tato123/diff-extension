@@ -4,7 +4,7 @@
   "short_name": "Diff",
   "description": "Track changes, comment, and collaborate on web applications as a team.",
   "minimum_chrome_version": "66",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "permissions": [
     "activeTab",
     "tabs",

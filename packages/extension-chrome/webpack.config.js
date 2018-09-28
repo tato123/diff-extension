@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
-const ENV = process.env.NODE_ENV || 'development';
+const ENV = process.env.WEBPACK_MODE || 'development';
 
 module.exports = {
   mode: ENV,
