@@ -1,8 +1,8 @@
-import { Observable } from "rxjs";
-import { runFrontend } from "./frontend";
-import { filter, tap } from "rxjs/operators";
+import { Observable } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 
-import { types, sources, actions } from "@diff/common";
+import { types, sources, actions } from '@diff/common';
+import { runFrontend } from './frontend';
 
 /**
  * Our unique name that connects us to our background script
@@ -18,6 +18,16 @@ const port = chrome.runtime.connect({ name: sources.CONTENT_SCRIPT_PORT_NAME });
 export const sendMessageToBackground = action =>
   port.postMessage(
     actions.composeRemoteAction(action, sources.CONTENT_SCRIPT_SOURCE_NAME)
+  );
+
+export const sendMessageToFrontend = action =>
+  window.postMessage(
+    actions.composeRemoteAction(
+      action,
+      sources.CONTENT_SCRIPT_SOURCE_NAME,
+      sources.MESSAGES_FRONTEND_SOURCE
+    ),
+    '*'
   );
 
 /**
@@ -41,28 +51,57 @@ const forwardToFrontend$ = portMessages$.pipe(
 forwardToFrontend$.subscribe(
   evt => {
     console.log(
-      "[content-script] forwarding message from port to frontend",
+      '[content-script] forwarding message from port to frontend',
       evt
     );
-    window.postMessage(evt, "*");
+    window.postMessage(evt, '*');
   },
   error => {
     console.error(
-      "[content-script] error proccessing message from backend to frontend",
+      '[content-script] error proccessing message from backend to frontend',
       error
     );
   },
   () => {
-    console.log("[content-script] disconnecting port from backend to frontend");
+    console.log('[content-script] disconnecting port from backend to frontend');
   }
 );
 
+/**
+ * Handle a right click event
+ */
 portMessages$
   .pipe(
-    tap(evt => console.log("[content-script] received message", evt)),
+    tap(evt => console.log('[content-script] received message', evt)),
     filter(evt => evt && evt.type === types.RUN_REQUEST.REQUEST)
   )
   .subscribe(evt => {
-    console.log("running frontend");
+    console.log('running frontend');
     runFrontend();
+  });
+
+/**
+ * Handle automatically running
+ */
+portMessages$
+  .pipe(
+    filter(
+      ({ type }) =>
+        type === types.FETCH_USER_PREFERENCES.SUCCESS ||
+        type === types.FETCH_USER_PREFERENCES.FAILED
+    )
+  )
+  .subscribe(action => {
+    const { type, payload } = action;
+    if (type === types.FETCH_USER_PREFERENCES.SUCCESS) {
+      console.log('[content-script] Running frontend');
+      runFrontend().then(() => {
+        sendMessageToFrontend({
+          type: types.FEATURE_FLAGS_UPDATE,
+          payload
+        });
+      });
+    } else {
+      console.log('[content-script] not running');
+    }
   });

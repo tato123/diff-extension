@@ -1,8 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import FeatureFlag from 'components/FeatureFlags';
 import App from './App/index';
+import Appv2 from './App_v2/index';
+import configureStore from './store';
 
 const ROOT_ID = `df-rt-${Math.floor(Math.random() * 100000)}`;
+
+// Create our new store
+const store = configureStore();
 
 const bootstrap = () => {
   const rootElement = document.createElement('div');
@@ -19,7 +26,17 @@ const bootstrap = () => {
 };
 
 const render = App => {
-  ReactDOM.render(<App />, document.getElementById(ROOT_ID));
+  ReactDOM.render(
+    <Provider store={store}>
+      <FeatureFlag
+        name="version2"
+        enabled={() => <Appv2 />}
+        disabled={() => <App />}
+        value="true"
+      />
+    </Provider>,
+    document.getElementById(ROOT_ID)
+  );
 };
 
 bootstrap().then(id => {
@@ -29,6 +46,11 @@ bootstrap().then(id => {
 if (module.hot) {
   module.hot.accept('./App/index.js', () => {
     const NextRootContainer = require('./App/index.js').default;
+    render(NextRootContainer);
+  });
+
+  module.hot.accept('./App_v2/index.js', () => {
+    const NextRootContainer = require('./App_v2/index.js').default;
     render(NextRootContainer);
   });
 }

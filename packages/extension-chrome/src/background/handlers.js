@@ -1,8 +1,8 @@
-import { storeUserToken, getUserToken, getSitePreference } from './storage';
-import { getUserDomains } from './user';
-import _ from 'lodash';
-import { types, actions } from '@diff/common';
+import { types, actions, browser } from '@diff/common';
 import normalizeUrl from 'normalize-url';
+import _ from 'lodash-es';
+import { getUserDomains } from './user';
+import { storeUserToken, getUserToken, getSitePreference } from './storage';
 
 /**
  *
@@ -27,9 +27,14 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
       )
     );
 
+    const featureFlags = (await browser.storage.getFlag('featureFlags')) || {};
+
     if (_.indexOf(sites, action.payload.hostname) !== -1) {
       // combine and send back
-      return postMessageToTab(tabId, actions.fetchUserPreferencesSuccess());
+      return postMessageToTab(
+        tabId,
+        actions.fetchUserPreferencesSuccess({ featureFlags })
+      );
     }
 
     return postMessageToTab(tabId, actions.fetchCacheTokenFailed());
@@ -46,11 +51,7 @@ const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
     );
 };
 
-const handleFetchCacheTokenRequest = async (
-  tabId,
-  postMessageToTab,
-  action
-) => {
+const handleFetchCacheTokenRequest = async (tabId, postMessageToTab) => {
   try {
     const value = await getUserToken();
     if (!_.isNil(value)) {

@@ -36,12 +36,14 @@
     "write-assets-webpack-plugin": "^1.0.4"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.1.0",
     "@diff/common": "^0.1.0",
     "auth0-chrome": "^0.1.2",
     "firebase": "^5.4.2",
     "jwt-decode": "^2.2.0",
     "lodash-es": "^4.17.11",
     "normalize-url": "^3.3.0",
+    "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "rxjs": "^6.2.1"

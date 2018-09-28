@@ -1,5 +1,5 @@
-import types from './types';
 import { AnyAction } from 'redux';
+import types from './types';
 
 export interface RemoteAction {
   source: string;
@@ -55,9 +55,7 @@ const fetchUserPreferences = (
 const fetchUserPreferencesSuccess = (preferences: Object): AnyAction => ({
   type: types.FETCH_USER_PREFERENCES.SUCCESS,
   payload: {
-    preferences: {
-      ...preferences
-    }
+    ...preferences
   }
 });
 
@@ -105,7 +103,7 @@ const fetchCacheTokenFailed = (error: string): AnyAction => ({
   }
 });
 
-const fetchCacheTokenSuccess = (token: diffTypes.Token): AnyAction => ({
+const fetchCacheTokenSuccess = (token: {}): AnyAction => ({
   type: types.FETCH_CACHE_TOKEN.SUCCESS,
   payload: {
     token

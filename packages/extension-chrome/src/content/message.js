@@ -1,10 +1,10 @@
-import { fromEvent, merge } from "rxjs";
-import { filter, map, tap } from "rxjs/operators";
+import { fromEvent, merge } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 
-import { sendMessageToBackground } from "./backgroundClient";
-import { types, sources } from "@diff/common";
+import { types, sources } from '@diff/common';
+import { sendMessageToBackground } from './backgroundClient';
 
-const messages$ = fromEvent(window, "message").pipe(
+const messages$ = fromEvent(window, 'message').pipe(
   filter(evt => {
     if (!evt.data) {
       return false;
@@ -24,17 +24,17 @@ const frontend$ = messages$.pipe(
   filter(evt => evt.data.source === sources.MESSAGES_FRONTEND_SOURCE),
   tap(evt =>
     console.log(
-      "[content-script] postMessage, from frontend, type: MessageEvent",
+      '[content-script] postMessage, from frontend, type: MessageEvent',
       evt.data
     )
   )
 );
 
 const page$ = messages$.pipe(
-  filter(evt => evt.data.source === "@client/INSPECTED_VIEW"),
+  filter(evt => evt.data.source === '@client/INSPECTED_VIEW'),
   tap(evt =>
     console.log(
-      "[content-script] postMessage, from inspected view, type: MessageEvent",
+      '[content-script] postMessage, from inspected view, type: MessageEvent',
       evt.data
     )
   )
@@ -44,7 +44,7 @@ const backend$ = messages$.pipe(
   filter(evt => evt.data.source === sources.MESSAGES_BACKGROUND_SOURCE),
   tap(evt =>
     console.log(
-      "[content-script] postMessage, from backend, type: MessageEvent",
+      '[content-script] postMessage, from backend, type: MessageEvent',
       evt.data
     )
   )

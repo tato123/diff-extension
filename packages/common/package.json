@@ -16,6 +16,7 @@
     "rxjs": "^6.3.2"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.1.0",
     "lodash-es": "^4.17.11",
     "normalize-url": "^3.3.0"
   },

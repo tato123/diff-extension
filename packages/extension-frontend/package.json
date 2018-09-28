@@ -8,8 +8,8 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "start:dev": "webpack-dev-server --mode development --watch --config webpack.frontend.js",
-    "build": "webpack --mode production --config webpack.frontend.js",
+    "start:dev": "webpack-dev-server --mode development --watch --config webpack.config.js",
+    "build": "webpack --mode production --config webpack.config.js",
     "test": "echo \"no test yet\""
   },
   "devDependencies": {
@@ -26,6 +26,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.1",
     "dotenv-webpack": "^1.5.5",
+    "eslint-import-resolver-webpack": "^0.10.1",
     "file-loader": "^2.0.0",
     "html-loader": "^0.5.5",
     "text-loader": "^0.0.1",
@@ -40,6 +41,7 @@
     "yargs": "^10.0.3"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.1.0",
     "@diff/common": "^0.1.0",
     "@diff/shared-components": "^0.1.0",
     "@medv/finder": "^1.0.3",

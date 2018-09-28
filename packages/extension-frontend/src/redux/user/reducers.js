@@ -1,16 +1,17 @@
-import jwtDecode from "jwt-decode";
-import { types as commonTypes } from "@diff/common";
-import types from "./types";
+import jwtDecode from 'jwt-decode';
+import { types as commonTypes } from '@diff/common';
+import types from './types';
 
 const initialState = {
   uid: null,
   workspaceId: null,
   access_token: null,
   refresh_token: null,
+  featureFlags: null,
   meta: {
     isFetchingToken: false,
     requiresLogin: false,
-    form: "precheck",
+    form: 'precheck',
     error: null
   }
 };
@@ -152,6 +153,13 @@ const reducer = (state = initialState, action) => {
     case types.SIGNUP_SUCCESS:
     case types.SIGNUP_FAILED:
       return handleSignup(state, action);
+    case commonTypes.FEATURE_FLAGS_UPDATE:
+      return {
+        ...state,
+        featureFlags: {
+          ...action.payload.featureFlags
+        }
+      };
     case types.SELECT_WORKSPACE:
       return {
         ...state,

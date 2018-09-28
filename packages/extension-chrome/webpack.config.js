@@ -11,7 +11,7 @@ module.exports = {
   devtool: ENV === 'development' ? 'source-map' : false,
   entry: {
     background: path.resolve(__dirname, 'src/background/index.js'),
-    contentScript: path.resolve(__dirname, 'src/content/index.ts'),
+    contentScript: path.resolve(__dirname, 'src/content/index.js'),
     options: path.resolve(__dirname, 'src/options/index.js'),
     popup: path.resolve(__dirname, 'src/popup/index.js')
   },
