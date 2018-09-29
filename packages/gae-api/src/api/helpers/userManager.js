@@ -391,7 +391,7 @@ const getDomains = async refreshToken => {
   return sites;
 };
 
-module.exports = {
+export default {
   retrieveClaimsForUid,
   createAndStoreRefreshToken,
   createTokenForUid,

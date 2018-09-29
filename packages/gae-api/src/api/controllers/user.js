@@ -1,14 +1,15 @@
-const _ = require('lodash');
-const userManager = require('../helpers/userManager');
+import _ from 'lodash';
+import userManager from '../helpers/userManager';
 
-exports.authenticate = (req, res) => {
+export const authenticate = (req, res) => {
   // check the headers
   if (
     req.headers.authorization &&
     req.headers.authorization.toLowerCase().startsWith('basic')
   ) {
     return userManager.basicAuthentication(req, res);
-  } if (
+  }
+  if (
     !req.headers.authorization &&
     req.body.indexOf('grant_type=refresh_token') !== -1
   ) {
@@ -16,7 +17,7 @@ exports.authenticate = (req, res) => {
   }
 };
 
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
   const { email, password, displayName } = req.body;
   if (!email || !password) {
     return res.send(400, {
@@ -31,7 +32,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.verifyUser = async (req, res) => {
+export const verifyUser = async (req, res) => {
   const { email } = req.query;
   if (_.isNil(email)) {
     return res.send(404, '');
@@ -48,7 +49,7 @@ exports.verifyUser = async (req, res) => {
   }
 };
 
-exports.inviteUsersToWorkspace = async (req, res) => {
+export const inviteUsersToWorkspace = async (req, res) => {
   const { emails, workspaceId } = req.body;
   const { authorization } = req.headers;
 
@@ -66,7 +67,7 @@ exports.inviteUsersToWorkspace = async (req, res) => {
   }
 };
 
-exports.createWorkspace = async (req, res) => {
+export const createWorkspace = async (req, res) => {
   const { name } = req.body;
   const { authorization } = req.headers;
 
@@ -80,11 +81,11 @@ exports.createWorkspace = async (req, res) => {
       workspaceId
     });
   } catch (err) {
-    res.send(400, { message: `Workspace not created: ${  err.message}` });
+    res.send(400, { message: `Workspace not created: ${err.message}` });
   }
 };
 
-exports.getDomains = async (req, res) => {
+export const getDomains = async (req, res) => {
   const refreshToken = req.swagger.params.token.value;
   if (!refreshToken) {
     res.json({
