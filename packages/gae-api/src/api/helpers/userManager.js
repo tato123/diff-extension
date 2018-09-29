@@ -1,19 +1,11 @@
-const crypto = require("crypto");
-const querystring = require("querystring");
-const admin = require("firebase-admin");
-const db = admin.firestore();
-const firebase = require("firebase");
-const emailNotify = require("./email");
-const _ = require("lodash");
-const workspaceHelper = require("./workspace");
+import crypto from 'crypto';
+import querystring from 'querystring';
+import _ from 'lodash';
+import * as emailNotify from './email';
+import workspaceHelper from './workspace';
+import { admin, db } from '../firestore';
+import logging from '../../logging';
 
-/**
- * Placeholder for adding additional claims
- * needed for this particular user. These should be
- * static claims that we want to ensure that a user
- * needs to refetch
- * @param {*} uid
- */
 const retrieveClaimsForUid = async uid => {
   const claims = {};
 
@@ -21,9 +13,9 @@ const retrieveClaimsForUid = async uid => {
 };
 
 const createAndStoreRefreshToken = async uid => {
-  const token = `${crypto.randomBytes(15).toString("hex")}`;
+  const token = `${crypto.randomBytes(15).toString('hex')}`;
   await db
-    .collection("refreshToken")
+    .collection('refreshToken')
     .doc(uid)
     .set({
       uid,
@@ -60,9 +52,9 @@ const restoreTokenForUid = async (uid, refresh_token) => {
  * @param {String} user
  * @returns {Promise}
  */
-const initializeUser = user => {
-  return db
-    .collection("users")
+const initializeUser = user =>
+  db
+    .collection('users')
     .doc(user.uid)
     .set({
       displayName: user.displayName,
@@ -71,24 +63,23 @@ const initializeUser = user => {
       email: user.email,
       verified: false
     });
-};
 
 const basicAuthentication = (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-  console.log("Basic Token", token);
-  const buf = Buffer.from(token, "base64");
-  const [username, password] = buf.toString().split(":");
+  const token = req.headers.authorization.split(' ')[1];
+  logging.info('Basic Token', token);
+  const buf = Buffer.from(token, 'base64');
+  const [username, password] = buf.toString().split(':');
   const offlineScope = true;
-  console.log("Attempting to perform basic authentication", username);
-  firebase
+  logging.info('Attempting to perform basic authentication', username);
+  admin
     .auth()
     .signInWithEmailAndPassword(username, password)
     .then(credential => {
-      console.log("User signed in", username);
+      logging.info('User signed in', username);
       const { user } = credential;
       return createTokenForUid(user.uid, offlineScope);
     })
-    .then(function(customToken) {
+    .then(customToken => {
       res.send(200, customToken);
     })
     .catch(error => {
@@ -102,8 +93,8 @@ const tokenAuthentication = async (req, res) => {
     const token = querystring.parse(req.body).refresh_token;
 
     const snapshot = await db
-      .collection("refreshToken")
-      .where("token", "==", token)
+      .collection('refreshToken')
+      .where('token', '==', token)
       .limit(1)
       .get();
 
@@ -111,9 +102,8 @@ const tokenAuthentication = async (req, res) => {
       const { uid } = snapshot.docs[0].data();
       const customToken = await restoreTokenForUid(uid, token);
       return res.send(200, customToken);
-    } else {
-      return res.send(401, { err: "Invalid refresh token" });
     }
+    return res.send(401, { err: 'Invalid refresh token' });
   } catch (error) {
     return res.send(401, { err: error.message });
   }
@@ -121,9 +111,9 @@ const tokenAuthentication = async (req, res) => {
 
 const autoAcceptWorkspaceInvites = async (email, uid) => {
   const querySnapshot = await db
-    .collection("invites")
-    .where("email", "==", email)
-    .where("status", "==", "pending")
+    .collection('invites')
+    .where('email', '==', email)
+    .where('status', '==', 'pending')
     .get();
 
   // we have pending invites
@@ -135,7 +125,7 @@ const autoAcceptWorkspaceInvites = async (email, uid) => {
 
       // 2. get our workspace
       const workspaceDoc = await db
-        .collection("workspace")
+        .collection('workspace')
         .doc(workspaceId)
         .get();
       const workspace = workspaceDoc.data();
@@ -145,7 +135,7 @@ const autoAcceptWorkspaceInvites = async (email, uid) => {
       workspaceDoc.ref.update(workspace);
 
       // 4. Change our invite status
-      invite.status = "accept.review";
+      invite.status = 'accept.review';
       inviteDoc.ref.update(invite);
 
       // 5. send an email
@@ -171,8 +161,8 @@ const signupUser = (email, password, displayName) => {
 
 const isUser = async email => {
   const querySnapshot = await db
-    .collection("users")
-    .where("email", "==", email)
+    .collection('users')
+    .where('email', '==', email)
     .limit(1)
     .get();
 
@@ -182,9 +172,9 @@ const isUser = async email => {
 const bearerToUid = async authorizationBearer => {
   if (
     !_.isNil(authorizationBearer) &&
-    authorizationBearer.toLowerCase().startsWith("bearer")
+    authorizationBearer.toLowerCase().startsWith('bearer')
   ) {
-    const idToken = authorizationBearer.split(" ")[1];
+    const idToken = authorizationBearer.split(' ')[1];
     return admin
       .auth()
       .verifyIdToken(idToken)
@@ -196,12 +186,12 @@ const bearerToUid = async authorizationBearer => {
 
 const inviteUsers = async (emails, workspaceId, creatorUid) => {
   const workspaceDoc = await db
-    .collection("workspace")
+    .collection('workspace')
     .doc(workspaceId)
     .get();
 
   if (!workspaceDoc.exists) {
-    throw new Error("workspace does not exist");
+    throw new Error('workspace does not exist');
   }
 
   const workspaceRecord = workspaceDoc.data();
@@ -210,13 +200,13 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
     emails.map(async email => {
       // check if we already have an invite for this user and workspace id
       const inviteEmailToWorkspaceRef = await db
-        .collection("invites")
-        .where("email", "==", email)
-        .where("workspaceId", "==", workspaceId)
+        .collection('invites')
+        .where('email', '==', email)
+        .where('workspaceId', '==', workspaceId)
         .get();
 
       if (!inviteEmailToWorkspaceRef.empty) {
-        console.log(
+        logging.info(
           `[Already invited to workspace] ${creatorUid} - Attempted to invite user [${email}] to ${workspaceId}`
         );
         return;
@@ -224,23 +214,23 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
 
       // check if we have a user for this email
       const userQuerySnapshot = await db
-        .collection("users")
-        .where("email", "==", email)
+        .collection('users')
+        .where('email', '==', email)
         .limit(1)
         .get();
       const userExists = !userQuerySnapshot.empty;
 
       // create a new invite for this user
       const invite = {
-        email: email,
+        email,
         workspaceId,
         created: admin.firestore.FieldValue.serverTimestamp(),
-        status: userExists ? "accept.review" : "pending",
+        status: userExists ? 'accept.review' : 'pending',
         invitedBy: creatorUid
       };
 
       await db
-        .collection("invites")
+        .collection('invites')
         .doc()
         .set(invite);
 
@@ -251,14 +241,14 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
           // if we no longer have an invite record, at minimum check the workspace to
           // see if the user is part of it
           if (_.has(workspaceRecord.users, user.uid)) {
-            console.log(
+            logging.info(
               `[Already in workspace] ${creatorUid} - Attempted to invite user [${email}] to ${workspaceId}`
             );
             return;
           }
 
           workspaceRecord.users[user.uid] = {
-            role: "collaborator",
+            role: 'collaborator',
             created: admin.firestore.FieldValue.serverTimestamp()
           };
           await workspaceDoc.ref.update(workspaceRecord);
@@ -273,7 +263,7 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
           await updateUserWorkspace(userDoc.id, workspaceDoc.id);
 
           // add to workspace if its an existing user and notify them that they've been added
-          console.log(
+          logging.info(
             `[Existing user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
           );
 
@@ -284,7 +274,7 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
         });
       } else {
         // this is a brand new user, send the appropriate email
-        console.log(
+        logging.info(
           `[New user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
         );
 
@@ -299,11 +289,11 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
 
 const updateUserWorkspace = async (uid, workspaceId) => {
   if (_.isNil(uid) || _.isNil(workspaceId)) {
-    throw new Error("uid or workspaceid cannot be null");
+    throw new Error('uid or workspaceid cannot be null');
   }
 
   const doc = await db
-    .collection("users")
+    .collection('users')
     .doc(uid)
     .get();
   const userRecord = doc.data();
@@ -317,7 +307,7 @@ const updateUserWorkspace = async (uid, workspaceId) => {
 
 const createWorkspace = async (name, userId) => {
   const userDoc = await db
-    .collection("users")
+    .collection('users')
     .doc(userId)
     .get();
 
@@ -326,13 +316,13 @@ const createWorkspace = async (name, userId) => {
   }
   const user = userDoc.data();
 
-  console.log(`Creating a new workspace ${name}`);
+  logging.info(`Creating a new workspace ${name}`);
   // 1. create the workspace
-  const workspaceDocRef = db.collection("workspace").doc();
+  const workspaceDocRef = db.collection('workspace').doc();
   const workspace = {
     users: {
       [userId]: {
-        role: "creator",
+        role: 'creator',
         created: admin.firestore.FieldValue.serverTimestamp()
       }
     },
@@ -348,7 +338,7 @@ const createWorkspace = async (name, userId) => {
     workspaceDocRef.id,
     userId
   );
-  console.log(`Updated ${upgradedEvents} for ${userId} and workspace ${name}`);
+  logging.info(`Updated ${upgradedEvents} for ${userId} and workspace ${name}`);
 
   // 3. send email that we have created a new workspace
   await emailNotify.createWorkspace(user.email, name);
@@ -358,30 +348,30 @@ const createWorkspace = async (name, userId) => {
 
 const getDomains = async refreshToken => {
   const snapshot = await db
-    .collection("refreshToken")
-    .where("token", "==", refreshToken)
+    .collection('refreshToken')
+    .where('token', '==', refreshToken)
     .get();
 
   const { uid } = snapshot.docs[0].data();
 
   const workspaceSnapshot = await db
-    .collection("workspace")
-    .where(`users.${uid}.role`, ">", "")
+    .collection('workspace')
+    .where(`users.${uid}.role`, '>', '')
     .get();
 
-  const ids = [{ type: "uid", val: uid }];
+  const ids = [{ type: 'uid', val: uid }];
   workspaceSnapshot.forEach(doc =>
-    ids.push({ type: "workspace", val: doc.id })
+    ids.push({ type: 'workspace', val: doc.id })
   );
 
-  const eventsRef = db.collection("events");
+  const eventsRef = db.collection('events');
   const sitesQueries = await Promise.all(
     _.chain(ids)
-      .map(({ type, val }) => {
-        return eventsRef
-          .where(type === "uid" ? `meta.userId` : "meta.workspaceId", "==", val)
-          .get();
-      })
+      .map(({ type, val }) =>
+        eventsRef
+          .where(type === 'uid' ? `meta.userId` : 'meta.workspaceId', '==', val)
+          .get()
+      )
       .value()
   );
 

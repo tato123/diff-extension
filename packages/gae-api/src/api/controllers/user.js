@@ -1,16 +1,16 @@
-const _ = require("lodash");
-const userManager = require("../helpers/userManager");
+const _ = require('lodash');
+const userManager = require('../helpers/userManager');
 
 exports.authenticate = (req, res) => {
   // check the headers
   if (
     req.headers.authorization &&
-    req.headers.authorization.toLowerCase().startsWith("basic")
+    req.headers.authorization.toLowerCase().startsWith('basic')
   ) {
     return userManager.basicAuthentication(req, res);
-  } else if (
+  } if (
     !req.headers.authorization &&
-    req.body.indexOf("grant_type=refresh_token") !== -1
+    req.body.indexOf('grant_type=refresh_token') !== -1
   ) {
     return userManager.tokenAuthentication(req, res);
   }
@@ -20,7 +20,7 @@ exports.signup = async (req, res) => {
   const { email, password, displayName } = req.body;
   if (!email || !password) {
     return res.send(400, {
-      err: "Email / password required to create an account"
+      err: 'Email / password required to create an account'
     });
   }
   try {
@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
 exports.verifyUser = async (req, res) => {
   const { email } = req.query;
   if (_.isNil(email)) {
-    return res.send(404, "");
+    return res.send(404, '');
   }
 
   try {
@@ -55,14 +55,14 @@ exports.inviteUsersToWorkspace = async (req, res) => {
   try {
     const creatorUid = await userManager.bearerToUid(authorization);
     if (!creatorUid) {
-      return res.send(401, { message: "Cannot invite user anonymously" });
+      return res.send(401, { message: 'Cannot invite user anonymously' });
     }
     await userManager.inviteUsers(emails, workspaceId, creatorUid);
     res.send(200, {
-      status: "invited"
+      status: 'invited'
     });
   } catch (err) {
-    res.send(400, { message: "not invited" });
+    res.send(400, { message: 'not invited' });
   }
 };
 
@@ -73,14 +73,14 @@ exports.createWorkspace = async (req, res) => {
   try {
     const creatorUid = await userManager.bearerToUid(authorization);
     if (!creatorUid) {
-      return res.send(401, { message: "Cannot create workspace anonymously" });
+      return res.send(401, { message: 'Cannot create workspace anonymously' });
     }
     const workspaceId = await userManager.createWorkspace(name, creatorUid);
     res.send(200, {
       workspaceId
     });
   } catch (err) {
-    res.send(400, { message: "Workspace not created: " + err.message });
+    res.send(400, { message: `Workspace not created: ${  err.message}` });
   }
 };
 

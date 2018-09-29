@@ -1,15 +1,16 @@
-const Mailgun = require("mailgun-js");
+import Mailgun from 'mailgun-js';
+import logging from '../../logging';
 
 // Mailgun configuration
-const apiKey = "3bfbefa8dbdac9dd7833bf079e7e16ac-a5d1a068-8506b9b8";
-const domain = "mail.getdiff.app";
-const from = "Diff <diff-noreply@getdiff.app>";
+const apiKey = process.env.MAILGUN_API_KEY;
+const domain = process.env.MAILGUN_DOMAIN;
+const from = 'Diff <diff-noreply@getdiff.app>';
 
-const logoUrl = "https://storage.googleapis.com/diff-email-resources/mark.png";
+const logoUrl = process.env.DIFF_LOGO;
 
 const sendEmail = (to, subject, template) => {
   // We pass the api_key and domain to the wrapper, or it won't be able to identify + send emails
-  const mailgun = new Mailgun({ apiKey: apiKey, domain: domain });
+  const mailgun = new Mailgun({ apiKey, domain });
 
   const data = {
     from,
@@ -23,24 +24,24 @@ const sendEmail = (to, subject, template) => {
     mailgun.messages().send(data, (err, body) => {
       // If there is an error, render the error page
       if (err) {
-        console.log("got an error: ", err);
-        reject(new Error("got an error: ", err));
+        logging.error('got an error: ', err);
+        reject(new Error('got an error: ', err));
       }
       // Else we can greet    and leave
       else {
         // Here "submitted.jade" is the view file for this landing page
         // We pass the variable "email" from the url parameter in an object rendered by Jade
-        console.log(body);
+        logging.debug(body);
         resolve(body);
       }
     });
   });
 };
 
-exports.newComment = (to, event) => {
-  return sendEmail(
+export const newComment = (to, event) =>
+  sendEmail(
     to,
-    "📑 A new comment was added",
+    '📑 A new comment was added',
     `
     <html style="background-color: #f9f9f9; height: 100%; width: 100%; margin: 0px; padding: 0px;">
     <head>
@@ -82,12 +83,11 @@ exports.newComment = (to, event) => {
     
   `
   );
-};
 
-exports.pendingComments = (to, comments) => {
-  return sendEmail(
+export const pendingComments = (to, comments) =>
+  sendEmail(
     to,
-    "New comments digest",
+    'New comments digest',
     `
     <html style="background-color: #f9f9f9; height: 100%; width: 100%; margin: 0px; padding: 0px;">
     <head>
@@ -119,7 +119,7 @@ exports.pendingComments = (to, comments) => {
             comment =>
               `<div style="margin-bottom: 16px; border: 1px solid #ccc;padding: 20px;color: #000;">${comment.comment.trim()}</div>`
           )
-          .join("")}        
+          .join('')}        
       </div>
       <div class="footer" style="font-size: 12px;color: #000;" align="center">
           © 2018 getDiff, Inc. Built in NC.
@@ -132,12 +132,11 @@ exports.pendingComments = (to, comments) => {
     
   `
   );
-};
 
-exports.createWorkspace = (to, name) => {
-  return sendEmail(
+export const createWorkspace = (to, name) =>
+  sendEmail(
     to,
-    "Welcome to Diff workspaces",
+    'Welcome to Diff workspaces',
     `
     <html style="background-color: #f9f9f9; height: 100%; width: 100%; margin: 0px; padding: 0px;">
     <head>
@@ -180,12 +179,11 @@ exports.createWorkspace = (to, name) => {
     
   `
   );
-};
 
-exports.autoAcceptWorkspaceInvites = (to, workspaceName) => {
-  return sendEmail(
+export const autoAcceptWorkspaceInvites = (to, workspaceName) =>
+  sendEmail(
     to,
-    "Welcome to Diff workspaces",
+    'Welcome to Diff workspaces',
     `
     <html style="background-color: #f9f9f9; height: 100%; width: 100%; margin: 0px; padding: 0px;">
     <head>
@@ -227,12 +225,11 @@ exports.autoAcceptWorkspaceInvites = (to, workspaceName) => {
     </html>
     `
   );
-};
 
-exports.inviteNewUserToWorkspace = (to, workspaceName) => {
-  return sendEmail(
+export const inviteNewUserToWorkspace = (to, workspaceName) =>
+  sendEmail(
     to,
-    "Welcome to Diff workspaces",
+    'Welcome to Diff workspaces',
     `
     <html style="background-color: #f9f9f9; height: 100%; width: 100%; margin: 0px; padding: 0px;">
     <head>
@@ -274,4 +271,3 @@ exports.inviteNewUserToWorkspace = (to, workspaceName) => {
     </html>
     `
   );
-};

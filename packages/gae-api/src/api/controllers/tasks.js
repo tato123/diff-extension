@@ -1,15 +1,16 @@
-const admin = require("firebase-admin");
-const emails = require("../helpers/email");
+import admin from 'firebase-admin';
+import * as emails from '../helpers/email';
+import logging from '../../logging';
 
 exports.addEvent = async (req, res) => {
   const db = admin.firestore();
-  const eventsRef = db.collection("events");
-  const workspaceRef = db.collection("workspace");
-  const activityRef = db.collection("activity");
-  const usersRef = db.collection("users");
+  const eventsRef = db.collection('events');
+  const workspaceRef = db.collection('workspace');
+  const activityRef = db.collection('activity');
+  const usersRef = db.collection('users');
 
   const eventId = req.swagger.params.eventId.value;
-  console.log("Received event id", eventId);
+  logging.info('Received event id', eventId);
   if (!eventId) {
     return res.send(404);
   }
@@ -17,7 +18,7 @@ exports.addEvent = async (req, res) => {
   // get the event type
   const eventDoc = await eventsRef.doc(eventId).get();
   const event = eventDoc.data();
-  console.log("Checking event", event);
+  logging.info('Checking event', event);
 
   // check if there is a workspace id
   if (!event.meta.workspaceId) {
@@ -36,7 +37,7 @@ exports.addEvent = async (req, res) => {
     userIds.map(async userId => {
       const user = await activityRef
         .doc(userId)
-        .collection("seen")
+        .collection('seen')
         .doc(eventDoc.id)
         .get();
 
@@ -58,10 +59,10 @@ exports.addEvent = async (req, res) => {
   // 5. Send these folks an email
   await Promise.all(
     emailList.map(async email => {
-      console.log(
-        "Sending notification to email",
+      logging.info(
+        'Sending notification to email',
         email,
-        "for eventId",
+        'for eventId',
         eventDoc.id
       );
       return emails.newComment(email, event);

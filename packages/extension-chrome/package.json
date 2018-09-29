@@ -22,6 +22,8 @@
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
@@ -33,10 +35,10 @@
     "prettier": "^1.12.1",
     "typescript": "^3.0.3",
     "webpack": "^4.19.1",
+    "webpack-encoding-plugin": "^0.2.1",
     "write-assets-webpack-plugin": "^1.0.4"
   },
   "dependencies": {
-    "@babel/preset-typescript": "^7.1.0",
     "@diff/common": "^0.1.0",
     "auth0-chrome": "^0.1.2",
     "firebase": "^5.4.2",

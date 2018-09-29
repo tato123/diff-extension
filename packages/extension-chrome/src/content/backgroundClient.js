@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
-import { types, sources, actions } from '@diff/common';
+import { types, sources, actions } from '@diff/common/dist/actions';
 import { runFrontend } from './frontend';
 
 /**

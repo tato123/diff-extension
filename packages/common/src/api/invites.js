@@ -1,13 +1,13 @@
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 
 export default db => {
-  const invitesRef = db.collection("invites");
+  const invitesRef = db.collection('invites');
 
   const invitesForWorkspace$ = workspaceId => {
     return Observable.create(observer => {
       const unsubscribe = invitesRef
-        .where("workspaceId", "==", workspaceId)
-        .where("status", "==", "pending")
+        .where('workspaceId', '==', workspaceId)
+        .where('status', '==', 'pending')
         .onSnapshot(
           querySnapshot => {
             querySnapshot.docChanges().forEach(({ doc, type }) => {
@@ -24,7 +24,7 @@ export default db => {
 
   const inviteForEmail$ = email => {
     return Observable.create(observer => {
-      const unsubscribe = invitesRef.where(`email`, "==", email).onSnapshot(
+      const unsubscribe = invitesRef.where(`email`, '==', email).onSnapshot(
         querySnapshot => {
           querySnapshot.docChanges().forEach(({ doc, type }) => {
             const data = doc.data();

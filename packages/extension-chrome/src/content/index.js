@@ -1,5 +1,6 @@
 import './message';
-import { actions, browser } from '@diff/common';
+import { actions } from '@diff/common/dist/actions';
+import browser from '@diff/common/dist/browser';
 import { sendMessageToBackground } from './backgroundClient';
 
 /**

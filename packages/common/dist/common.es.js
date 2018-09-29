@@ -147,11 +147,11 @@ var actions = {
   fetchCacheTokenSuccess
 };
 
-const CONTENT_SCRIPT_PORT_NAME = "@diff/portname/contentScript";
-const CONTENT_SCRIPT_SOURCE_NAME = "@diff/content";
-const BACKGROUND_SCRIPT_PORT_NAME = "@diff/background";
-const MESSAGES_FRONTEND_SOURCE = "@diff/frontend";
-const MESSAGES_BACKGROUND_SOURCE = "@diff/background";
+const CONTENT_SCRIPT_PORT_NAME = '@diff/portname/contentScript';
+const CONTENT_SCRIPT_SOURCE_NAME = '@diff/content';
+const BACKGROUND_SCRIPT_PORT_NAME = '@diff/background';
+const MESSAGES_FRONTEND_SOURCE = '@diff/frontend';
+const MESSAGES_BACKGROUND_SOURCE = '@diff/background';
 var sources = {
   CONTENT_SCRIPT_PORT_NAME,
   CONTENT_SCRIPT_SOURCE_NAME,
@@ -186,12 +186,12 @@ const initializeFirestore = () => {
 };
 
 var userFactory = (db => {
-  const userRef = db.collection("users");
+  const userRef = db.collection('users');
 
   const user$ = uid => {
     return Observable.create(observer => {
       if (uid == null || uid === undefined) {
-        observer.error("uid cannot be null");
+        observer.error('uid cannot be null');
         observer.complete();
         return;
       }
@@ -206,9 +206,9 @@ var userFactory = (db => {
 
   const getUser = uid => {
     return Observable.create(observer => {
-      db.collection("users").doc(uid).get().then(doc => {
+      db.collection('users').doc(uid).get().then(doc => {
         if (!doc.exists) {
-          observer.error("no user");
+          observer.error('no user');
         } else {
           observer.next(doc.data());
         }
@@ -617,11 +617,11 @@ var activityFactory = (db => {
 });
 
 var inviteFactory = (db => {
-  const invitesRef = db.collection("invites");
+  const invitesRef = db.collection('invites');
 
   const invitesForWorkspace$ = workspaceId => {
     return Observable.create(observer => {
-      const unsubscribe = invitesRef.where("workspaceId", "==", workspaceId).where("status", "==", "pending").onSnapshot(querySnapshot => {
+      const unsubscribe = invitesRef.where('workspaceId', '==', workspaceId).where('status', '==', 'pending').onSnapshot(querySnapshot => {
         querySnapshot.docChanges().forEach(({
           doc,
           type
@@ -640,7 +640,7 @@ var inviteFactory = (db => {
 
   const inviteForEmail$ = email => {
     return Observable.create(observer => {
-      const unsubscribe = invitesRef.where(`email`, "==", email).onSnapshot(querySnapshot => {
+      const unsubscribe = invitesRef.where(`email`, '==', email).onSnapshot(querySnapshot => {
         querySnapshot.docChanges().forEach(({
           doc,
           type

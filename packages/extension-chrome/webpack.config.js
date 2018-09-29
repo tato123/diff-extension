@@ -3,12 +3,11 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const EncodingPlugin = require('webpack-encoding-plugin');
 
-const ENV = process.env.WEBPACK_MODE || 'development';
-
-module.exports = {
-  mode: ENV,
-  devtool: ENV === 'development' ? 'source-map' : false,
+module.exports = (env, argv) => ({
+  mode: argv.mode,
+  devtool: argv.mode === 'development' ? 'source-map' : 'none',
   entry: {
     background: path.resolve(__dirname, 'src/background/index.js'),
     contentScript: path.resolve(__dirname, 'src/content/index.js'),
@@ -26,6 +25,9 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json']
   },
   plugins: [
+    new EncodingPlugin({
+      encoding: 'utf-8'
+    }),
     new CleanWebpackPlugin(['dist']),
     new CopyWebpackPlugin([
       {
@@ -36,7 +38,7 @@ module.exports = {
     ]),
     new WriteAssetsWebpackPlugin({ force: true, extension: ['js', 'json'] }),
     new Dotenv({
-      path: path.resolve(__dirname, `../../.env.${ENV}`)
+      path: path.resolve(__dirname, `../../.env.${argv.mode}`)
     })
   ],
   module: {
@@ -50,4 +52,4 @@ module.exports = {
       }
     ]
   }
-};
+});

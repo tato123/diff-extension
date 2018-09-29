@@ -1,5 +1,3 @@
-import { sendMessageToFrontend } from './backgroundClient';
-
 /**
  * Adds data that we want to associate with our
  * extension

@@ -11,15 +11,7 @@ const includePathOptions = {
   extensions: ['.js', '.json', '.ts', '.tsx', '.html']
 };
 
-export default {
-  input: 'src/index.js',
-  output: [
-    {
-      format: 'esm',
-      file: 'dist/common.es.js'
-    }
-  ],
-
+const common = {
   plugins: [
     babel({
       exclude: 'node_modules/**',
@@ -39,3 +31,36 @@ export default {
     'lodash-es'
   ]
 };
+
+export default [
+  {
+    input: 'src/_all.js',
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/common.es.js'
+      }
+    ],
+    ...common
+  },
+  {
+    input: 'src/_actionsCreators.js',
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/actions.js'
+      }
+    ],
+    ...common
+  },
+  {
+    input: 'src/browser/index.js',
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/browser.js'
+      }
+    ],
+    ...common
+  }
+];

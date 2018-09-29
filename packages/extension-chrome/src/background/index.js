@@ -19,20 +19,20 @@ chrome.runtime.onConnect.addListener(port => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  // chrome.contextMenus.create({
-  //   id: 'diff-inspect',
-  //   title: 'Inspect with diff',
-  //   contexts: ['all']
-  // });
+  chrome.contextMenus.create({
+    id: 'diff-inspect',
+    title: 'Inspect with diff',
+    contexts: ['all']
+  });
 });
 
-// chrome.contextMenus.onClicked.addListener((info, tab) => {
-//   // only remember the site if we have a token
-//   addSitePreference(tab.url);
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  // only remember the site if we have a token
+  addSitePreference(tab.url);
 
-//   postMessageToTab(tab.id, actions.runRequest());
-//   return true;
-// });
+  postMessageToTab(tab.id, actions.runRequest());
+  return true;
+});
 
 chrome.browserAction.onClicked.addListener(tab => {
   // remember the user clicked this site

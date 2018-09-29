@@ -1,14 +1,14 @@
-import "firebase/auth";
+import 'firebase/auth';
 
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 
 export default db => {
-  const userRef = db.collection("users");
+  const userRef = db.collection('users');
 
   const user$ = uid => {
     return Observable.create(observer => {
       if (uid == null || uid === undefined) {
-        observer.error("uid cannot be null");
+        observer.error('uid cannot be null');
         observer.complete();
         return;
       }
@@ -24,12 +24,12 @@ export default db => {
 
   const getUser = uid => {
     return Observable.create(observer => {
-      db.collection("users")
+      db.collection('users')
         .doc(uid)
         .get()
         .then(doc => {
           if (!doc.exists) {
-            observer.error("no user");
+            observer.error('no user');
           } else {
             observer.next(doc.data());
           }

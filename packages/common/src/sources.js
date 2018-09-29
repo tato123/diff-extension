@@ -1,8 +1,8 @@
-const CONTENT_SCRIPT_PORT_NAME = "@diff/portname/contentScript";
-const CONTENT_SCRIPT_SOURCE_NAME = "@diff/content";
-const BACKGROUND_SCRIPT_PORT_NAME = "@diff/background";
-const MESSAGES_FRONTEND_SOURCE = "@diff/frontend";
-const MESSAGES_BACKGROUND_SOURCE = "@diff/background";
+const CONTENT_SCRIPT_PORT_NAME = '@diff/portname/contentScript';
+const CONTENT_SCRIPT_SOURCE_NAME = '@diff/content';
+const BACKGROUND_SCRIPT_PORT_NAME = '@diff/background';
+const MESSAGES_FRONTEND_SOURCE = '@diff/frontend';
+const MESSAGES_BACKGROUND_SOURCE = '@diff/background';
 
 export default {
   CONTENT_SCRIPT_PORT_NAME,

@@ -4,15 +4,14 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 const npmPackage = require('./package.json');
 
-const ENV = process.env.WEBPACK_MODE || 'development';
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
 const WEB_OUTPUT_PATH = `dist/${npmPackage.version}`;
 
-module.exports = {
-  mode: ENV,
-  devtool: ENV === 'development' ? 'source-map' : false,
+module.exports = (env, argv) => ({
+  mode: argv.mode,
+  devtool: argv.mode === 'development' ? 'source-map' : 'none',
 
   entry: {
     main: path.resolve(__dirname, './src/index.js')
@@ -71,9 +70,11 @@ module.exports = {
 
   plugins: [
     new Dotenv({
-      path: path.resolve(__dirname, `../../.env.${ENV}`)
+      path: path.resolve(__dirname, `../../.env.${argv.mode}`)
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new BundleAnalyzerPlugin()
+
+    ...(argv.mode === 'development'
+      ? [new webpack.HotModuleReplacementPlugin(), new BundleAnalyzerPlugin()]
+      : [])
   ]
-};
+});

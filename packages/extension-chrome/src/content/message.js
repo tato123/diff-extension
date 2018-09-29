@@ -1,7 +1,7 @@
 import { fromEvent, merge } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
-import { types, sources } from '@diff/common';
+import { types, sources } from '@diff/common/dist/actions';
 import { sendMessageToBackground } from './backgroundClient';
 
 const messages$ = fromEvent(window, 'message').pipe(

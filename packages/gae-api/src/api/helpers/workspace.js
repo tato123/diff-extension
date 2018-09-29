@@ -1,21 +1,14 @@
-const admin = require("firebase-admin");
-const db = admin.firestore();
-const _ = require("lodash");
+import _ from 'lodash';
+import { db } from '../../firestore';
 
-/**
- *
- * @param {string} workspaceId
- * @param {string} userId
- * @returns {number} number of events updated
- */
-exports.updateEventsForWorkspaceId = async (workspaceId, userId) => {
+const updateEventsForWorkspaceId = async (workspaceId, userId) => {
   if (_.isNil(userId) && _.isNil(workspaceId)) {
-    return Promise.reject(new Error("Invalid user record"));
+    return Promise.reject(new Error('Invalid user record'));
   }
 
   // 1. check if this user exists
   const userDocRef = await db
-    .collection("users")
+    .collection('users')
     .doc(userId)
     .get();
 
@@ -25,7 +18,7 @@ exports.updateEventsForWorkspaceId = async (workspaceId, userId) => {
 
   // 2. Verify that user belongs to workspace
   const workspaceDocRef = await db
-    .collection("workspace")
+    .collection('workspace')
     .doc(workspaceId)
     .get();
 
@@ -43,8 +36,8 @@ exports.updateEventsForWorkspaceId = async (workspaceId, userId) => {
   // 3. upgrade all events for this user where there is
   // no workspaceid (saved against just userid account)
   const eventsQuerySnapshot = await db
-    .collection("events")
-    .where("meta.userId", "==", userId)
+    .collection('events')
+    .where('meta.userId', '==', userId)
     .get();
 
   let upgradedEvents = 0;
@@ -58,4 +51,8 @@ exports.updateEventsForWorkspaceId = async (workspaceId, userId) => {
   });
 
   return upgradedEvents;
+};
+
+export default {
+  updateEventsForWorkspaceId
 };
