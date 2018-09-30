@@ -1,24 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import jwtDecode from 'jwt-decode';
 import browser from '@diff/common/dist/browser';
 import auth0 from 'auth0-js';
 
 export default class Popup extends React.Component {
-  static propTypes = {
-    authDomain: PropTypes.string,
-    clientId: PropTypes.string,
-    api: PropTypes.object
-  };
-
-  static defaultProps = {
-    authDomain: '',
-    clientId: '',
-    api: null
-  };
-
   state = {
-    authResult: null
+    accessToken: null
   };
 
   async componentDidMount() {
@@ -28,14 +15,8 @@ export default class Popup extends React.Component {
     ]);
     if (token && this.isLoggedIn(token)) {
       this.getUserProfile(accessToken);
-      // exchange for a firebase token
-      this.exchangeForToken(token);
-      this.setState({ token, accessToken });
+      this.setState({ accessToken });
     }
-  }
-
-  get chromeExtensionId() {
-    return chrome.runtime.id;
   }
 
   getUserProfile = accessToken => {
@@ -59,19 +40,8 @@ export default class Popup extends React.Component {
     </div>
   );
 
-  activeTab = () =>
-    new Promise((resolve, reject) => {
-      chrome.tabs.query(
-        {
-          active: true,
-          currentWindow: true
-        },
-        tabs => (tabs.length > 0 ? resolve(tabs[0]) : reject())
-      );
-    });
-
   navigateTo = url =>
-    this.activeTab().then(
+    browser.tabs.query({ active: true, currentWindow: true }).then(
       activeTab =>
         new Promise((resolve, reject) => {
           chrome.tabs.update(
@@ -90,23 +60,19 @@ export default class Popup extends React.Component {
     const state = this.getState();
     const nonce = this.getNonce();
 
-    this.activeTab()
+    browser.tabs
+      .query({ active: true, currentWindow: true })
       .then(activeTab =>
-        chrome.storage.local.set(
-          {
-            loginReturnUrl: activeTab.url,
-            state,
-            nonce
-          },
-          Promise.resolve
-        )
+        browser.storage.local.set({
+          loginReturnUrl: activeTab.url,
+          state,
+          nonce
+        })
       )
       .then(() =>
         this.navigateTo(
           `http://localhost:8000/app/login?return_to=${encodeURIComponent(
-            `chrome-extension://${
-              this.chromeExtensionId
-            }/html/login-return.html`
+            `chrome-extension://${browser.runtime.id}/html/login-return.html`
           )}&state=${state}&nonce=${nonce}`
         )
       );
@@ -115,35 +81,11 @@ export default class Popup extends React.Component {
   logout = () => {
     // Remove the idToken from storage
     localStorage.clear();
-    this.setState({ authResult: null });
+    this.setState({ accessToken: null });
   };
 
   // The user is logged in if their token isn't expired
   isLoggedIn = token => jwtDecode(token).exp > Date.now() / 1000;
-
-  exchangeForToken = token => {
-    fetch(`${process.env.API_SERVER}/auth/firebase`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw new Error(response.statusText);
-      })
-      .then(({ firebaseToken }) =>
-        this.props.api.auth.tokenLogin(firebaseToken)
-      )
-      .then(response => {
-        console.log('firebase response', response);
-      })
-      .catch(error => {
-        console.error(error.message);
-      });
-  };
 
   renderNotLoggedIn = () => (
     <div>

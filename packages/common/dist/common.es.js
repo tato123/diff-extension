@@ -247,9 +247,26 @@ var url = {
   location
 };
 
+const query = async options => new Promise((resolve, reject) => {
+  chrome.tabs.query(options, tabs => tabs.length > 0 ? resolve(tabs[0]) : reject());
+});
+
+var tabs = {
+  query
+};
+
+var runtime = {
+  get id() {
+    return chrome.runtime.id;
+  }
+
+};
+
 var browser = {
   storage,
-  url
+  url,
+  tabs,
+  runtime
 };
 
 var commentsFactory = (db => {

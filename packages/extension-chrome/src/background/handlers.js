@@ -2,7 +2,7 @@ import { types, actions, browser } from '@diff/common';
 import normalizeUrl from 'normalize-url';
 import _ from 'lodash-es';
 import { getUserDomains } from './user';
-import { storeUserToken, getUserToken, getSitePreference } from './storage';
+import { getUserToken, getSitePreference } from './storage';
 
 /**
  *
@@ -42,15 +42,8 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
     return postMessageToTab(tabId, actions.fetchCacheTokenFailed());
   } catch (err) {
     postMessageToTab(tabId, actions.fetchUserPreferencesFailed(err.message));
+    return err;
   }
-};
-
-const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
-  storeUserToken(action.payload.token)
-    .then(() => postMessageToTab(tabId, actions.cacheTokenSuccess()))
-    .catch(() =>
-      postMessageToTab(tabId, actions.cacheTokenFailed('Not able to save'))
-    );
 };
 
 const handleFetchCacheTokenRequest = async (tabId, postMessageToTab) => {
@@ -68,11 +61,11 @@ const handleFetchCacheTokenRequest = async (tabId, postMessageToTab) => {
     );
   } catch (err) {
     postMessageToTab(tabId, actions.fetchCacheTokenFailed(err));
+    return err;
   }
 };
 
 export default {
   [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [types.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
   [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
 };

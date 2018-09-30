@@ -33,6 +33,22 @@ async function getActiveTab(options) {
   });
 }
 
+async function exchangeAndStoreFirebaseToken(token) {
+  return fetch(`${process.env.API_SERVER}/auth/firebase`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      throw new Error(response.statusText);
+    })
+    .then(({ firebaseToken }) => browser.storage.local.set({ firebaseToken }));
+}
+
 async function onLogin() {
   try {
     const { state, nonce, loginReturnUrl } = await browser.storage.local.get([
@@ -42,7 +58,12 @@ async function onLogin() {
     ]);
 
     const authResult = await parseHash(state, nonce);
+
+    // set our entire auth result
     await browser.storage.local.set(authResult);
+    // do the same for a firebase token
+    await exchangeAndStoreFirebaseToken(authResult.idToken);
+
     const activeTabs = await getActiveTab({
       active: true,
       currentWindow: true

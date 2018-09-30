@@ -18,7 +18,7 @@ export default class Login extends React.PureComponent {
     this.webAuth.authorize({
       connection: 'google-oauth2',
       redirectUri: urlParams.get('return_to'),
-      scope: 'openid offline_access profile',
+      scope: 'openid profile offline_access',
       responseType: 'token id_token',
       state: urlParams.get('state'),
       nonce: urlParams.get('nonce'),
