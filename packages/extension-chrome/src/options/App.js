@@ -22,7 +22,7 @@ export default class App extends React.Component {
       props: { featureFlagKey }
     } = this;
 
-    browser.storage.getFlag(featureFlagKey).then((val = {}) => {
+    browser.storage.local.get([featureFlagKey]).then((val = {}) => {
       this.setState({ featureFlags: val });
     });
   }
@@ -37,7 +37,7 @@ export default class App extends React.Component {
       [key]: event.target.value
     };
 
-    browser.storage.setFlag(featureFlagKey, newValue);
+    browser.storage.local.set({ [featureFlagKey]: newValue });
     this.setState({ featureFlags: newValue });
   };
 

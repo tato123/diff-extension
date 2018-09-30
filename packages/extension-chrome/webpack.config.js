@@ -12,7 +12,8 @@ module.exports = (env, argv) => ({
     background: path.resolve(__dirname, 'src/background/index.js'),
     contentScript: path.resolve(__dirname, 'src/content/index.js'),
     options: path.resolve(__dirname, 'src/options/index.js'),
-    popup: path.resolve(__dirname, 'src/popup/index.js')
+    popup: path.resolve(__dirname, 'src/popup/index.js'),
+    loginReturn: path.resolve(__dirname, 'src/loginReturn/index.js')
   },
   output: {
     filename: '[name].js',

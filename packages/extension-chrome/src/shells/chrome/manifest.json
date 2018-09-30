@@ -25,7 +25,7 @@
     "https://api.getdiff.app/*"
   ],
   "background": {
-    "scripts": ["js/env.js", "js/auth0chrome.js", "js/background.js"],
+    "scripts": ["js/background.js"],
     "persistent": false
   },
   "browser_action": {
@@ -50,6 +50,6 @@
     "open_in_tab": false
   },
   "externally_connectable": {
-    "matches": ["http://localhost:8000/app/", "*://getdiff.app/*"]
+    "matches": ["http://localhost:8000/*", "*://getdiff.app/*"]
   }
 }

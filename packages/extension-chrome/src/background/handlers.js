@@ -27,7 +27,9 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
       )
     );
 
-    const featureFlags = (await browser.storage.getFlag('featureFlags')) || {};
+    const { featureFlags = {} } = await browser.storage.local.get([
+      'featureFlags'
+    ]);
 
     if (_.indexOf(sites, action.payload.hostname) !== -1) {
       // combine and send back

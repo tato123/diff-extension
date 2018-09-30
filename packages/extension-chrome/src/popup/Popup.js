@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import jwtDecode from 'jwt-decode';
+import browser from '@diff/common/dist/browser';
+import auth0 from 'auth0-js';
 
 export default class Popup extends React.Component {
   static propTypes = {
@@ -19,28 +21,36 @@ export default class Popup extends React.Component {
     authResult: null
   };
 
-  componentDidMount() {
-    const authResult = JSON.parse(localStorage.authResult || '{}');
-    const token = authResult.id_token;
+  async componentDidMount() {
+    const { accessToken, idToken: token } = await browser.storage.local.get([
+      'accessToken',
+      'idToken'
+    ]);
     if (token && this.isLoggedIn(token)) {
-      this.getUserProfile(authResult);
+      this.getUserProfile(accessToken);
       // exchange for a firebase token
       this.exchangeForToken(token);
-      this.setState({ authResult });
+      this.setState({ token, accessToken });
     }
   }
 
-  getUserProfile = token => {
-    fetch(`https://diff.auth0.com/userinfo`, {
-      headers: {
-        Authorization: `Bearer ${token.access_token}`
+  get chromeExtensionId() {
+    return chrome.runtime.id;
+  }
+
+  getUserProfile = accessToken => {
+    const webAuth = new auth0.WebAuth({
+      domain: process.env.AUTH0_DOMAIN,
+      clientID: process.env.AUTH0_CLIENT_ID
+    });
+
+    webAuth.client.userInfo(accessToken, (err, user) => {
+      if (err) {
+        console.error('Unable to get user profile', err);
+        return;
       }
-    })
-      .then(resp => resp.json())
-      .then(profile => {
-        console.log('got profile', profile);
-      })
-      .catch(this.logout);
+      console.log('user profile', user);
+    });
   };
 
   renderLoggedIn = () => (
@@ -49,10 +59,57 @@ export default class Popup extends React.Component {
     </div>
   );
 
-  handleLogin = () => {
-    chrome.runtime.sendMessage({
-      type: 'authenticate'
+  activeTab = () =>
+    new Promise((resolve, reject) => {
+      chrome.tabs.query(
+        {
+          active: true,
+          currentWindow: true
+        },
+        tabs => (tabs.length > 0 ? resolve(tabs[0]) : reject())
+      );
     });
+
+  navigateTo = url =>
+    this.activeTab().then(
+      activeTab =>
+        new Promise((resolve, reject) => {
+          chrome.tabs.update(
+            activeTab.id,
+            { url },
+            tab => (tab ? resolve(tab) : reject())
+          );
+        })
+    );
+
+  getState = () => `s-${Math.floor(Math.random() * 1000)}`;
+
+  getNonce = () => `n-${Math.floor(Math.random() * 10000)}`;
+
+  handleLogin = () => {
+    const state = this.getState();
+    const nonce = this.getNonce();
+
+    this.activeTab()
+      .then(activeTab =>
+        chrome.storage.local.set(
+          {
+            loginReturnUrl: activeTab.url,
+            state,
+            nonce
+          },
+          Promise.resolve
+        )
+      )
+      .then(() =>
+        this.navigateTo(
+          `http://localhost:8000/app/login?return_to=${encodeURIComponent(
+            `chrome-extension://${
+              this.chromeExtensionId
+            }/html/login-return.html`
+          )}&state=${state}&nonce=${nonce}`
+        )
+      );
   };
 
   logout = () => {
@@ -99,15 +156,15 @@ export default class Popup extends React.Component {
 
   render() {
     const {
-      state: { authResult },
+      state: { accessToken },
       renderLoggedIn,
       renderNotLoggedIn
     } = this;
 
     return (
       <div>
-        {authResult && renderLoggedIn()}
-        {!authResult && renderNotLoggedIn()}
+        {accessToken && renderLoggedIn()}
+        {!accessToken && renderNotLoggedIn()}
       </div>
     );
   }

@@ -222,27 +222,18 @@ var userFactory = (db => {
   };
 });
 
-const setFlag = async (flag, value) => {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      [flag]: value
-    }, () => {
-      resolve();
-    });
-  });
-};
-
-const getFlag = async flag => {
-  return new Promise(resolve => {
-    chrome.storage.local.get([flag], result => {
-      resolve(result[flag]);
-    });
-  });
-};
+const createForStorageType = type => ({
+  get: async keys => new Promise(resolve => {
+    chrome.storage[type].get(keys, resolve);
+  }),
+  set: async items => new Promise(resolve => {
+    chrome.storage[type].set(items, resolve);
+  })
+});
 
 var storage = {
-  getFlag,
-  setFlag
+  local: createForStorageType('local'),
+  sync: createForStorageType('sync')
 };
 
 const normalizeUrl = require('normalize-url');

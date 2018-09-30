@@ -1,20 +1,19 @@
-const setFlag = async (flag: string, value: string): Promise<any> => {
-  return new Promise(resolve => {
-    chrome.storage.local.set({ [flag]: value }, () => {
-      resolve();
-    });
-  });
-};
+type StorageTypes = 'local' | 'sync';
 
-const getFlag = async (flag: string): Promise<any> => {
-  return new Promise(resolve => {
-    chrome.storage.local.get([flag], result => {
-      resolve(result[flag]);
-    });
-  });
-};
+const createForStorageType = (type: StorageTypes): {} => ({
+  get: async (
+    keys: string | Object | string[] | null
+  ): Promise<{ [key: string]: any }> =>
+    new Promise(resolve => {
+      chrome.storage[type].get(keys, resolve);
+    }),
+  set: async (items: object): Promise<any> =>
+    new Promise(resolve => {
+      chrome.storage[type].set(items, resolve);
+    })
+});
 
 export default {
-  getFlag,
-  setFlag
+  local: createForStorageType('local'),
+  sync: createForStorageType('sync')
 };
