@@ -5,6 +5,6 @@
  * @param {*} req
  * @param {*} res
  */
-exports.health = (req, res) => {
+export const health = (req, res) => {
   res.send(200, 'running');
 };

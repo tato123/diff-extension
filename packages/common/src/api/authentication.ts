@@ -1,4 +1,4 @@
-import "firebase/auth";
+import 'firebase/auth';
 
 export interface AuthenticationResponse {
   refresh_token: string;
@@ -23,11 +23,11 @@ export default (db: any) => {
 
     const response = await fetch(`${process.env.API_SERVER}/authenticate`, {
       ...options,
-      method: "POST"
+      method: 'POST'
     });
 
     if (!response.ok) {
-      return Promise.reject("The username or password is incorrect");
+      return Promise.reject('The username or password is incorrect');
     }
 
     return response.json();
@@ -39,9 +39,9 @@ export default (db: any) => {
     displayName: string
   ): Promise<any> => {
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email,
@@ -52,7 +52,7 @@ export default (db: any) => {
 
     const response = await fetch(`${process.env.API_SERVER}/signup`, {
       ...options,
-      method: "POST"
+      method: 'POST'
     });
 
     if (!response.ok) {
@@ -89,10 +89,14 @@ export default (db: any) => {
     return token;
   };
 
+  const tokenLogin = (token: string): Promise<any> =>
+    db.app.auth().signInWithCustomToken(token);
+
   return {
     login,
     authenticate,
     signup,
-    isUser
+    isUser,
+    tokenLogin
   };
 };

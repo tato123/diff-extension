@@ -1,17 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import jwt_decode from 'jwt-decode';
-import Auth0Chrome from 'auth0-chrome';
+import jwtDecode from 'jwt-decode';
 
 export default class Popup extends React.Component {
   static propTypes = {
     authDomain: PropTypes.string,
-    clientId: PropTypes.string
+    clientId: PropTypes.string,
+    api: PropTypes.object
   };
 
   static defaultProps = {
     authDomain: '',
-    clientId: ''
+    clientId: '',
+    api: null
   };
 
   state = {
@@ -22,30 +23,17 @@ export default class Popup extends React.Component {
     const authResult = JSON.parse(localStorage.authResult || '{}');
     const token = authResult.id_token;
     if (token && this.isLoggedIn(token)) {
+      this.getUserProfile(authResult);
+      // exchange for a firebase token
+      this.exchangeForToken(token);
       this.setState({ authResult });
     }
   }
 
-  isLoggedIn(token) {
-    // The user is logged in if their token isn't expired
-    return jwt_decode(token).exp > Date.now() / 1000;
-  }
-
-  logout() {
-    // Remove the idToken from storage
-    localStorage.clear();
-    this.setState({ authResult: null });
-  }
-
-  getUserProfile = () => {
-    const {
-      props: { authDomain },
-      state: { authResult }
-    } = this;
-
-    fetch(`https://${authDomain}/userinfo`, {
+  getUserProfile = token => {
+    fetch(`https://diff.auth0.com/userinfo`, {
       headers: {
-        Authorization: `Bearer ${authResult.access_token}`
+        Authorization: `Bearer ${token.access_token}`
       }
     })
       .then(resp => resp.json())
@@ -65,6 +53,39 @@ export default class Popup extends React.Component {
     chrome.runtime.sendMessage({
       type: 'authenticate'
     });
+  };
+
+  logout = () => {
+    // Remove the idToken from storage
+    localStorage.clear();
+    this.setState({ authResult: null });
+  };
+
+  // The user is logged in if their token isn't expired
+  isLoggedIn = token => jwtDecode(token).exp > Date.now() / 1000;
+
+  exchangeForToken = token => {
+    fetch(`${process.env.API_SERVER}/auth/firebase`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw new Error(response.statusText);
+      })
+      .then(({ firebaseToken }) =>
+        this.props.api.auth.tokenLogin(firebaseToken)
+      )
+      .then(response => {
+        console.log('firebase response', response);
+      })
+      .catch(error => {
+        console.error(error.message);
+      });
   };
 
   renderNotLoggedIn = () => (

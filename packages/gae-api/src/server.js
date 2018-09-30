@@ -1,41 +1,18 @@
-// [START debug]
-// Activate Google Cloud Trace and Debug when in production
-if (process.env.NODE_ENV === 'production') {
-  /* eslint-disable global-require */
-  require('@google-cloud/trace-agent').start();
-  require('@google-cloud/debug-agent').start();
+import compression from 'compression';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import express from 'express';
+import logging from './logging';
+import routes from './api/v1';
+
+if (process.env.ENV_ACTIVE !== 'yes') {
+  throw new Error('Environment config not loaded');
 }
-// [END debug]
-
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, './.env') });
-
-const SwaggerExpress = require('swagger-express-mw');
-
-// import express dependencies
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const compression = require('compression');
-
-const http = require('http');
-const https = require('https');
-const logging = require('./logging');
-
-http.globalAgent.maxSockets = Infinity;
-https.globalAgent.maxSockets = Infinity;
 
 // setup express
 const app = express();
+const port = process.env.PORT || 8080;
 
-module.exports = app; // for testing
-
-const config = {
-  appRoot: __dirname // required config
-};
-
-// ----------------------------------------------------
-// configure parsing and cors rules
 app.disable('etag');
 app.set('trust proxy', true);
 app.use(bodyParser.raw());
@@ -55,22 +32,25 @@ app.use(
 
 app.use(compression());
 
-app.use(logging.requestLogger);
+app.use('/', routes);
 
-// ----------------------------------------------------
-// create swagger
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.send(500);
+});
+
+// Activate Google Cloud Trace and Debug when in production
+if (process.env.NODE_ENV === 'production') {
+  /* eslint-disable global-require */
+  require('@google-cloud/trace-agent').start();
+  require('@google-cloud/debug-agent').start();
+  app.use(logging.requestLogger);
+}
+
 if (module === require.main) {
-  SwaggerExpress.create(config, (err, swaggerExpress) => {
-    if (err) {
-      throw err;
-    }
-
-    // install middleware
-    swaggerExpress.register(app);
-
-    const port = process.env.PORT || 8080;
-    app.listen(port);
-
-    logging.debug(`Application running at: ${port}`);
+  app.listen(port, () => {
+    logging.info(`App listening on port ${port}!`);
   });
 }

@@ -188,37 +188,33 @@ const initializeFirestore = () => {
 var userFactory = (db => {
   const userRef = db.collection('users');
 
-  const user$ = uid => {
-    return Observable.create(observer => {
-      if (uid == null || uid === undefined) {
-        observer.error('uid cannot be null');
-        observer.complete();
-        return;
+  const user$ = uid => Observable.create(observer => {
+    if (uid == null || uid === undefined) {
+      observer.error('uid cannot be null');
+      observer.complete();
+      return;
+    }
+
+    const unsubscribe = userRef.doc(uid).onSnapshot(doc => {
+      const data = doc.data();
+      observer.next(data);
+    });
+    return unsubscribe;
+  });
+
+  const getUser = uid => Observable.create(observer => {
+    db.collection('users').doc(uid).get().then(doc => {
+      if (!doc.exists) {
+        observer.error('no user');
+      } else {
+        observer.next(doc.data());
       }
-
-      const unsubscribe = userRef.doc(uid).onSnapshot(doc => {
-        const data = doc.data();
-        observer.next(data);
-      });
-      return unsubscribe;
+    }).catch(err => {
+      observer.error(err.message);
+    }).finally(() => {
+      observer.complete();
     });
-  };
-
-  const getUser = uid => {
-    return Observable.create(observer => {
-      db.collection('users').doc(uid).get().then(doc => {
-        if (!doc.exists) {
-          observer.error('no user');
-        } else {
-          observer.next(doc.data());
-        }
-      }).catch(err => {
-        observer.error(err.message);
-      }).finally(() => {
-        observer.complete();
-      });
-    });
-  };
+  });
 
   return {
     user$,
@@ -514,11 +510,11 @@ var authenticationFactory = (db => {
       }
     };
     const response = await fetch(`${process.env.API_SERVER}/authenticate`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
-      return Promise.reject("The username or password is incorrect");
+      return Promise.reject('The username or password is incorrect');
     }
 
     return response.json();
@@ -526,9 +522,9 @@ var authenticationFactory = (db => {
 
   const signup = async (email, password, displayName) => {
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email,
@@ -537,7 +533,7 @@ var authenticationFactory = (db => {
       })
     };
     const response = await fetch(`${process.env.API_SERVER}/signup`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
@@ -564,11 +560,14 @@ var authenticationFactory = (db => {
     return token;
   };
 
+  const tokenLogin = token => db.app.auth().signInWithCustomToken(token);
+
   return {
     login,
     authenticate,
     signup,
-    isUser
+    isUser,
+    tokenLogin
   };
 });
 
@@ -690,3 +689,4 @@ const getDomains = async token => {
 };
 
 export { actions, types, sources, index as initApi, browser, getDomains };
+//# sourceMappingURL=common.es.js.map

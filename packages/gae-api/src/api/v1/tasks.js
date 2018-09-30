@@ -1,15 +1,14 @@
-import admin from 'firebase-admin';
 import * as emails from '../helpers/email';
 import logging from '../../logging';
+import { db } from '../../firestore';
 
 exports.addEvent = async (req, res) => {
-  const db = admin.firestore();
   const eventsRef = db.collection('events');
   const workspaceRef = db.collection('workspace');
   const activityRef = db.collection('activity');
   const usersRef = db.collection('users');
 
-  const eventId = req.swagger.params.eventId.value;
+  const eventId = req.params.eventId.value;
   logging.info('Received event id', eventId);
   if (!eventId) {
     return res.send(404);

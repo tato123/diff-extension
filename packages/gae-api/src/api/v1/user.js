@@ -86,9 +86,9 @@ export const createWorkspace = async (req, res) => {
 };
 
 export const getDomains = async (req, res) => {
-  const refreshToken = req.swagger.params.token.value;
+  const refreshToken = req.params.token.value;
   if (!refreshToken) {
-    res.json({
+    return res.json({
       domains: []
     });
   }

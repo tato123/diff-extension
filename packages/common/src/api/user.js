@@ -5,8 +5,7 @@ import { Observable } from 'rxjs';
 export default db => {
   const userRef = db.collection('users');
 
-  const user$ = uid => {
-    return Observable.create(observer => {
+  const user$ = uid => Observable.create(observer => {
       if (uid == null || uid === undefined) {
         observer.error('uid cannot be null');
         observer.complete();
@@ -20,10 +19,8 @@ export default db => {
 
       return unsubscribe;
     });
-  };
 
-  const getUser = uid => {
-    return Observable.create(observer => {
+  const getUser = uid => Observable.create(observer => {
       db.collection('users')
         .doc(uid)
         .get()
@@ -41,7 +38,6 @@ export default db => {
           observer.complete();
         });
     });
-  };
 
   return {
     user$,

@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import _ from 'lodash';
 import * as emailNotify from './email';
 import workspaceHelper from './workspace';
-import { admin, db } from '../firestore';
+import { admin, db } from '../../firestore';
 import logging from '../../logging';
 
 const retrieveClaimsForUid = async uid => {

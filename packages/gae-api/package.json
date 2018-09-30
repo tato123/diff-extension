@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node dist/server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/server.js",
+    "start": "cross-env NODE_ENV=production node -r config/dotenv.js dist/server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node -r config/dotenv.js src/server.js",
     "build": "babel src --out-dir dist",
     "test": "echo \"no test yet\""
   },
@@ -27,6 +27,7 @@
     "express-request-proxy": "^2.1.0",
     "express-winston": "^3.0.0",
     "fast-crc32c": "^1.0.4",
+    "fastify": "^1.12.1",
     "firebase": "^5.0.4",
     "firebase-admin": "^5.12.1",
     "googleapis": "^32.0.0",
