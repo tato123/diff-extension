@@ -10,6 +10,20 @@ handlers:
     http_headers:
       Cache-Control: max-age=300
 
+  - url: /landing(.+)
+    static_files: public/landing/index.html
+    upload: public/landing/index.html
+    secure: always
+    http_headers:
+      Cache-Control: max-age=300
+
+  - url: /landing
+    static_files: public/landing/index.html
+    upload: public/landing/index.html
+    secure: always
+    http_headers:
+      Cache-Control: max-age=300
+
   - url: /
     static_files: public/index.html
     upload: public/index.html
