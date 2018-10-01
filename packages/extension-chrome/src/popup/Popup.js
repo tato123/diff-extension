@@ -9,13 +9,16 @@ export default class Popup extends React.Component {
   };
 
   async componentDidMount() {
-    const { accessToken, idToken: token } = await browser.storage.local.get([
-      'accessToken',
-      'idToken'
-    ]);
+    const {
+      accessToken,
+      idToken: token
+    } = await browser.storage.html5.local.get(['accessToken', 'idToken']);
     if (token && this.isLoggedIn(token)) {
       this.getUserProfile(accessToken);
       this.setState({ accessToken });
+      chrome.browserAction.setIcon({ path: '../images/icon_128.png' });
+    } else {
+      chrome.browserAction.setIcon({ path: '../images/inactive_icon_128.png' });
     }
   }
 
