@@ -40,28 +40,25 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
     }
 
     return postMessageToTab(tabId, actions.fetchCacheTokenFailed());
-  } catch (err) {
-    postMessageToTab(tabId, actions.fetchUserPreferencesFailed(err.message));
-    return err;
+  } catch (error) {
+    postMessageToTab(tabId, actions.fetchUserPreferencesFailed(error.message));
+    return error;
   }
 };
 
 const handleFetchCacheTokenRequest = async (tabId, postMessageToTab) => {
   try {
-    const value = await getUserToken();
-    if (!_.isNil(value)) {
-      return postMessageToTab(
-        tabId,
-        actions.fetchCacheTokenSuccess(value.token)
-      );
+    const token = await getUserToken();
+    if (!_.isNil(token)) {
+      return postMessageToTab(tabId, actions.fetchCacheTokenSuccess(token));
     }
     return postMessageToTab(
       tabId,
       actions.fetchCacheTokenFailed('No Token Set')
     );
-  } catch (err) {
-    postMessageToTab(tabId, actions.fetchCacheTokenFailed(err));
-    return err;
+  } catch (error) {
+    postMessageToTab(tabId, actions.fetchCacheTokenFailed(error));
+    return error;
   }
 };
 

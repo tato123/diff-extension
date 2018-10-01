@@ -9,8 +9,10 @@ export interface TokenResponse {
   };
 }
 
-export const getUserToken = (): Promise<TokenResponse> => {
-  const { firebaseToken } = browser.storage.local.get(['firebaseToken']);
+export const getUserToken = async (): Promise<TokenResponse> => {
+  const { firebaseToken } = await browser.storage.html5.local.get([
+    'firebaseToken'
+  ]);
   return Promise.resolve(firebaseToken);
 };
 
@@ -20,7 +22,7 @@ export const addSitePreference = async (value: string) => {
     return browser.storage.local.set({ sites: [value] });
   }
 
-  return browser.Storage.local.set({ sites: _.union(sites, [value]) });
+  return browser.storage.local.set({ sites: _.union(sites, [value]) });
 };
 
 export const getSitePreference = async (): Promise<Array<string>> => {

@@ -46,7 +46,9 @@ async function exchangeAndStoreFirebaseToken(token) {
 
       throw new Error(response.statusText);
     })
-    .then(({ firebaseToken }) => browser.storage.local.set({ firebaseToken }));
+    .then(({ firebaseToken }) =>
+      browser.storage.html5.local.set({ firebaseToken })
+    );
 }
 
 async function onLogin() {
@@ -60,7 +62,7 @@ async function onLogin() {
     const authResult = await parseHash(state, nonce);
 
     // set our entire auth result
-    await browser.storage.local.set(authResult);
+    await browser.storage.html5.local.set(authResult);
     // do the same for a firebase token
     await exchangeAndStoreFirebaseToken(authResult.idToken);
 

@@ -16,5 +16,8 @@ const main = () => {
   );
 };
 
+browser.storage.local.get('firebaseToken').then(token => {
+  console.log('my token is', token);
+});
 // start our applicaiton
 main();

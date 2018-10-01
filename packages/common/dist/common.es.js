@@ -231,9 +231,23 @@ const createForStorageType = type => ({
   })
 });
 
+const html5Storage = {
+  local: {
+    get: async keys => keys.reduce((acc, key) => _objectSpread({}, acc, {
+      [key]: JSON.parse(localStorage.getItem('firebaseToken'))
+    }), {}),
+    set: async items => {
+      Object.keys(items).forEach(key => {
+        localStorage[key] = JSON.stringify(items[key]);
+      });
+      return null;
+    }
+  }
+};
 var storage = {
   local: createForStorageType('local'),
-  sync: createForStorageType('sync')
+  sync: createForStorageType('sync'),
+  html5: html5Storage
 };
 
 const normalizeUrl = require('normalize-url');

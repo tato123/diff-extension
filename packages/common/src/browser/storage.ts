@@ -13,7 +13,27 @@ const createForStorageType = (type: StorageTypes): {} => ({
     })
 });
 
+const html5Storage = {
+  local: {
+    get: async (keys: any) =>
+      keys.reduce(
+        (acc: {}, key: string) => ({
+          ...acc,
+          [key]: JSON.parse(localStorage.getItem('firebaseToken'))
+        }),
+        {}
+      ),
+    set: async (items: {}) => {
+      Object.keys(items).forEach((key: string) => {
+        localStorage[key] = JSON.stringify(items[key]);
+      });
+      return null;
+    }
+  }
+};
+
 export default {
   local: createForStorageType('local'),
-  sync: createForStorageType('sync')
+  sync: createForStorageType('sync'),
+  html5: html5Storage
 };
