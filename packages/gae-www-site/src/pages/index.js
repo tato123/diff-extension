@@ -1,9 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-import Layout from '../components/layout'
-import background from '../components/images/background.png'
-import DetailSection from '../components/DetailSection'
-import { Skeleton } from '@diff/shared-components'
+import { Skeleton } from '@diff/shared-components';
+import Layout from '../components/Layout';
+import { Anchor } from '../components/site-components';
+
+import background from '../components/images/background.png';
+import DetailSection from '../components/DetailSection';
 
 const PSkeleton = () => (
   <React.Fragment>
@@ -12,7 +14,7 @@ const PSkeleton = () => (
     <Skeleton className="col-md-4" />
     <Skeleton className="col-md-6" />
   </React.Fragment>
-)
+);
 
 const IndexPage = () => (
   <Layout>
@@ -31,9 +33,9 @@ const IndexPage = () => (
                   attach designs or screenshots, and share feedback.
                 </p>
               </div>
-              <a href="/app/signup" className="primary button btn-info ">
+              <Anchor href="/app/signup" className="primary button btn-info ">
                 Install now
-              </a>
+              </Anchor>
             </div>
             <div className="col ">
               <img src={background} className="img-fluid info-img" />
@@ -154,6 +156,6 @@ const IndexPage = () => (
       </footer>
     </div>
   </Layout>
-)
+);
 
-export default IndexPage
+export default IndexPage;

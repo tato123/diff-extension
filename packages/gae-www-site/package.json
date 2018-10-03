@@ -5,21 +5,26 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "@diff/shared-components": "^0.1.0",
+    "@reach/router": "^1.2.1",
     "auth0-js": "^9.8.0",
     "babel-plugin-styled-components": "^1.7.1",
     "dotenv": "^6.0.0",
     "firebase": "^5.5.0",
+    "formik": "^1.3.0",
     "gatsby": "next",
     "gatsby-plugin-google-analytics": "^2.0.6",
     "gatsby-plugin-manifest": "next",
     "gatsby-plugin-offline": "next",
     "gatsby-plugin-react-helmet": "next",
     "gatsby-plugin-styled-components": "^3.0.0",
+    "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-helmet": "^5.2.0",
     "react-icons-kit": "^1.1.10",
-    "styled-components": "3.4.9"
+    "react-responsive-modal": "^3.4.0",
+    "styled-components": "3.4.9",
+    "yup": "^0.26.6"
   },
   "keywords": [
     "gatsby"

@@ -1,5 +1,7 @@
 import _ from 'lodash';
+import Mailgun from 'mailgun-js';
 import userManager from '../helpers/userManager';
+import logging from '../../logging';
 
 export const authenticate = (req, res) => {
   // check the headers
@@ -103,4 +105,35 @@ export const getDomains = async (req, res) => {
       message: err.message
     });
   }
+};
+
+export const emailListSignup = (req, res) => {
+  const { list } = req.query;
+  const { firstname, lastname, email } = req.body;
+
+  const apiKey = process.env.MAILGUN_API_KEY;
+  const domain = process.env.MAILGUN_DOMAIN;
+
+  const mailgun = new Mailgun({ apiKey, domain });
+  const maillist = mailgun.lists('early-access@mail.getdiff.app');
+
+  const subscriber = {
+    subscribed: true,
+    address: email,
+    name: `${firstname} ${lastname}`,
+    vars: {}
+  };
+
+  maillist
+    .members()
+    .create(subscriber)
+    .then(data => {
+      logging.debug(data);
+
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      logging.error(err.message);
+      res.send(400, err.message);
+    });
 };

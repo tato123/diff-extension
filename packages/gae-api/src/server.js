@@ -1,9 +1,10 @@
 import compression from 'compression';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import express from 'express';
 import logging from './logging';
 import routes from './api/v1';
+
+const cors = require('cors');
 
 if (process.env.ENV_ACTIVE !== 'yes') {
   throw new Error('Environment config not loaded');
@@ -15,6 +16,13 @@ const port = process.env.PORT || 8080;
 
 app.disable('etag');
 app.set('trust proxy', true);
+
+app.use(
+  cors({
+    origin: true
+  })
+);
+
 app.use(bodyParser.raw());
 
 // parse application/x-www-form-urlencoded
@@ -24,12 +32,6 @@ app.use(bodyParser.json());
 // parse plain text
 app.use(bodyParser.text());
 // configure cors
-app.use(
-  cors({
-    origin: true
-  })
-);
-
 app.use(compression());
 
 app.use('/', routes);
@@ -38,6 +40,7 @@ app.use((err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
   }
+  logging.error(err);
   res.send(500);
 });
 

@@ -19,4 +19,6 @@ router.post('/workspace', userController.createWorkspace);
 router.get('/tokens/:token/domains', userController.getDomains);
 router.post('/notifications/event/add/:eventId', tasksController.addEvent);
 
+router.post('/user/email/signup', userController.emailListSignup);
+
 export default router;

@@ -1,14 +1,20 @@
-import React from 'react'
-import mark from './images/mark.png'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
+import mark from './images/mark.png';
 
 const NavContainer = styled.nav`
   height: 78px;
   min-height: 78px;
   max-height: 78px;
-`
+`;
 
-const Header = ({ client }) => (
+const FlexEnd = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex: 1 auto;
+`;
+
+const Header = ({ client, rightMenuItem }) => (
   <NavContainer className="navbar navbar-expand-lg navbar-light bg-white container-lg">
     <a className="navbar-brand" href="/">
       <img src={mark} className="d-inline-block align-top" alt="" />
@@ -29,7 +35,9 @@ const Header = ({ client }) => (
         <ul className="navbar-nav">
           <li className="nav-item active">
             <a className="nav-link" href="#">
-              Comment <span className="sr-only">(current)</span>
+              Comment 
+              {' '}
+              <span className="sr-only">(current)</span>
             </a>
           </li>
           <li className="nav-item">
@@ -45,7 +53,8 @@ const Header = ({ client }) => (
         </ul>
       </div>
     )}
+    {rightMenuItem != null && <FlexEnd>{rightMenuItem()}</FlexEnd>}
   </NavContainer>
-)
+);
 
-export default Header
+export default Header;

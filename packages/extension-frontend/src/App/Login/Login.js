@@ -1,16 +1,16 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Keyframes, animated, config } from "react-spring";
-import styled from "styled-components";
-import Modal from "./components/Modal";
-import { Form, Button, Header, HR, Logo, Label } from "@diff/shared-components";
-import { Formik } from "formik";
-import { string, object } from "yup";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Keyframes, animated, config } from 'react-spring';
+import styled from 'styled-components';
+import { Form, Button, Header, HR, Logo, Label } from '@diff/shared-components';
+import { Formik } from 'formik';
+import { string, object } from 'yup';
+import Modal from './components/Modal';
 
 const FORM_TYPES = {
-  LOGIN: "login",
-  PRECHECK: "precheck",
-  SIGNUP: "signup"
+  LOGIN: 'login',
+  PRECHECK: 'precheck',
+  SIGNUP: 'signup'
 };
 
 // prettier-ignore
@@ -113,7 +113,7 @@ export default class Login extends React.Component {
   static defaultProps = {
     refreshToken: null,
     isFetchingToken: false,
-    error: ""
+    error: ''
   };
 
   state = {
@@ -161,29 +161,29 @@ export default class Login extends React.Component {
         return [
           {
             key: 0,
-            type: "password",
-            label: "Password",
-            name: "password",
+            type: 'password',
+            label: 'Password',
+            name: 'password',
             required: true,
-            autoComplete: "off"
+            autoComplete: 'off'
           }
         ];
       case FORM_TYPES.SIGNUP:
         return [
           {
             key: 0,
-            type: "password",
-            label: "Password",
-            name: "password",
+            type: 'password',
+            label: 'Password',
+            name: 'password',
             required: true,
-            autoComplete: "off"
+            autoComplete: 'off'
           },
           {
             key: 1,
-            type: "text",
-            label: "Username",
-            name: "username",
-            autoComplete: "off"
+            type: 'text',
+            label: 'Username',
+            name: 'username',
+            autoComplete: 'off'
           }
         ];
       case FORM_TYPES.PRECHECK:
@@ -242,10 +242,10 @@ export default class Login extends React.Component {
         <Modal>
           <ModalContainer state={form}>
             {({ height }) => (
-              <animated.div style={{ height: height }}>
+              <animated.div style={{ height }}>
                 <Modal.Content id="login-modal">
                   <Formik
-                    initialValues={{ email: "", password: "", username: "" }}
+                    initialValues={{ email: '', password: '', username: '' }}
                     validationSchema={this.getValidationSchema()}
                     onSubmit={this.submitForm}
                     render={({
@@ -264,11 +264,11 @@ export default class Login extends React.Component {
                           <div>
                             <Header as="h3">
                               {form === FORM_TYPES.PRECHECK &&
-                                "Enter your email"}
+                                'Enter your email'}
                               {form === FORM_TYPES.LOGIN &&
-                                "Sign in your email"}
+                                'Sign in your email'}
                               {form === FORM_TYPES.SIGNUP &&
-                                "Sign up your email"}
+                                'Sign up your email'}
                             </Header>
 
                             <HR />
@@ -329,8 +329,8 @@ export default class Login extends React.Component {
                               }
                             >
                               {form !== FORM_TYPES.SIGNUP
-                                ? "Create Account"
-                                : "Login"}
+                                ? 'Create Account'
+                                : 'Login'}
                             </Button.Flat>
                             <Button
                               type="submit"
@@ -340,9 +340,9 @@ export default class Login extends React.Component {
                               }
                               loading={isSubmitting}
                             >
-                              {form === FORM_TYPES.PRECHECK && "Next"}
-                              {form === FORM_TYPES.SIGNUP && "Create Account"}
-                              {form === FORM_TYPES.LOGIN && "Login"}
+                              {form === FORM_TYPES.PRECHECK && 'Next'}
+                              {form === FORM_TYPES.SIGNUP && 'Create Account'}
+                              {form === FORM_TYPES.LOGIN && 'Login'}
                             </Button>
                           </div>
                         </Container>
