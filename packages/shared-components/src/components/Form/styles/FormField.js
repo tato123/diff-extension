@@ -1,12 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { get } from "theme";
-import { Label } from "components/Text";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { Label } from 'components/Text';
 
 // prettier-ignore
 const FormFieldContainer = styled.div`
-  margin: 0 0 ${get("size.grid.grid-2")};
   clear: both;
   will-change: transform, opacity;
   
@@ -29,7 +27,6 @@ const FormFieldContainer = styled.div`
     background: #fff;
     border: 1px solid rgba(34, 36, 38, 0.15);
     color: rgba(0, 0, 0, 0.87);
-    border-radius: ${get("size.borderRadius")};
     -webkit-box-shadow: 0 0 0 0 transparent inset;
     box-shadow: 0 0 0 0 transparent inset;
     -webkit-transition: color 0.1s ease, border-color 0.1s ease;
@@ -65,7 +62,9 @@ const ErrorLabel = styled(Label)`
 const FormField = ({ label, hide, name, error, required, children, style }) => (
   <FormFieldContainer error={error} className="field" style={style} hide={hide}>
     <Label as="subtitle2" htmlFor={name}>
-      {label} {required && <Required>*</Required>}
+      {label} 
+      {' '}
+      {required && <Required>*</Required>}
     </Label>
     {children}
     <ErrorLabel as="subtitle2">{error}</ErrorLabel>

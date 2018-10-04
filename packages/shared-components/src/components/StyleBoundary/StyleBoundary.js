@@ -1,31 +1,35 @@
-import React from "react";
-import PropTypes from "prop-types";
-import ShadowDom from "./styles/ShadowDOM";
-import styled, { StyleSheetManager, ThemeProvider } from "styled-components";
-import mainTheme, { get } from "../../theme/base";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled, { StyleSheetManager } from 'styled-components';
+import ShadowDom from './styles/ShadowDOM';
 
-import blueprintCss from "./core/blueprint";
-import blueprintIconsCss from "./core/icons";
-import normalize from "./core/normalize";
-
-// import our local fonts
-import "./styles/BarlowFont";
-import "./styles/RobotoFont";
+import blueprintCss from './core/blueprint';
+import blueprintIconsCss from './core/icons';
+import normalize from './core/normalize';
 
 /* prettier-ignore */
 const View = styled.div`
-  --df-font-family: 'Barlow Semi Condensed', sans-serif;
+
+  @import url('https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,800,900');
+  
+  --df-font-family: 'Heebo', sans-serif;
   --df-text-color-primary: #fff;
   --df-font-size: 16px;
   
   --color-purple: #4648b0;
   --color-purple-1: #6848b0;
+  --color-blue-1: #1f1d3f;
+  --color-blue-2: #241c49;
+
   --gradient-purple: linear-gradient(to bottom right, var(--color-purple), var(--color-purple-1) );
+  --gradient-header: linear-gradient(to right, var(--color-blue-1), var(--color-blue-2) );
+  
 
   font-family: var(--df-font-family);
-  color: var(--df-text-color-primary);
+  color: var(--color-blue-1);
   font-size: var(--df-font-size);
   box-sizing: border-box;
+  line-height: 1.5;
 
   *, *:before, *:after {
     box-sizing: inherit;
@@ -90,7 +94,7 @@ export default class StyleBoundary extends React.PureComponent {
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({ hasError: true });
-    console.error("[Widget] error occured while displaying", error, info);
+    console.error('[Widget] error occured while displaying', error, info);
   }
 
   innerContent = () => {
@@ -105,9 +109,7 @@ export default class StyleBoundary extends React.PureComponent {
         <div ref={ref} id="jss-insertion-point">
           {div && (
             <StyleSheetManager target={div}>
-              <ThemeProvider theme={mainTheme}>
-                <View>{this.props.children}</View>
-              </ThemeProvider>
+              <View>{this.props.children}</View>
             </StyleSheetManager>
           )}
         </div>

@@ -1,7 +1,7 @@
-import React, { Component, PureComponent, Children } from "react";
-import PropTypes from "prop-types";
-import { render, findDOMNode, unmountComponentAtNode } from "react-dom";
-import { omit } from "lodash-es";
+import React, { Component, PureComponent, Children } from 'react';
+import PropTypes from 'prop-types';
+import { render, findDOMNode, unmountComponentAtNode } from 'react-dom';
+import { omit } from 'lodash-es';
 
 /**
  * @constant defaultContextTypes
@@ -20,7 +20,7 @@ const defaultContextTypes = {
  * @return {void}
  */
 const throwError = message => {
-  console.error("React Shadow", message);
+  console.error('React Shadow', message);
 };
 
 /**
@@ -34,12 +34,12 @@ export const withContext = contextTypes => {
    * @param {Object} context
    * @return {ContextProvider}
    */
-  const createContextProvider = context => {
+  const createContextProvider = context => 
     /**
      * @class ContextProvider
      * @extends {Component}
      */
-    return class ContextProvider extends PureComponent {
+     class ContextProvider extends PureComponent {
       /**
        * @constant propTypes
        * @type {Object}
@@ -81,8 +81,8 @@ export const withContext = contextTypes => {
         }
         return this.props.children;
       }
-    };
-  };
+    }
+  ;
 
   /**
    * @class ShadowDOM
@@ -103,7 +103,7 @@ export const withContext = contextTypes => {
       children: PropTypes.node.isRequired,
       include: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
       nodeName: PropTypes.string,
-      boundaryMode: PropTypes.oneOf(["open", "closed"]),
+      boundaryMode: PropTypes.oneOf(['open', 'closed']),
       delegatesFocus: PropTypes.bool,
       innerRef: PropTypes.func,
       selectable: PropTypes.bool
@@ -115,8 +115,8 @@ export const withContext = contextTypes => {
      */
     static defaultProps = {
       include: [],
-      nodeName: "span",
-      boundaryMode: "open",
+      nodeName: 'span',
+      boundaryMode: 'open',
       delegatesFocus: false,
       innerRef: () => {},
       selectable: false
@@ -211,12 +211,12 @@ export const withContext = contextTypes => {
     innerContent = () => {
       // Props from the passed component, minus `children` as that's handled by `componentDidMount`.
       const child = Children.only(this.props.children);
-      const childProps = omit(child.props, ["children"]);
+      const childProps = omit(child.props, ['children']);
       const className = this.state.resolving
-        ? "x-diff-widget-resolving"
-        : "x-diff-widget-resolved";
+        ? 'x-diff-widget-resolving'
+        : 'x-diff-widget-resolved';
       const classNames = `${
-        childProps.className ? childProps.className : ""
+        childProps.className ? childProps.className : ''
       } ${className}`.trim();
       const props = {
         ...childProps,

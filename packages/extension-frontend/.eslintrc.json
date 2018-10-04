@@ -24,8 +24,5 @@
         "extensions": [".js", ".jsx"]
       }
     ]
-  },
-  "settings": {
-    "import/resolver": "webpack"
   }
 }

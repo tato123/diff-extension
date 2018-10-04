@@ -4,17 +4,15 @@ import { createEpicMiddleware, combineEpics } from 'redux-observable';
 import { initApi } from '@diff/common';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
-import { postmessageMiddleware } from 'redux/remote';
+import { postmessageMiddleware } from './middleware/remote';
 
-import user, { epics as userEpics } from 'redux/user';
-import widgets, { epics as widgetEpics } from 'redux/widgets';
-import entities, { epics as entitiesEpic } from 'redux/entities';
+import entities, { epics as entitiesEpic } from './entities';
 
 export default function configureStore(preloadedState) {
   const api = initApi();
 
   // Setup redux-observable
-  const rootEpic = combineEpics(entitiesEpic, widgetEpics, userEpics);
+  const rootEpic = combineEpics(entitiesEpic);
   const epicMiddleware = createEpicMiddleware({
     dependencies: { api }
   });
@@ -28,8 +26,6 @@ export default function configureStore(preloadedState) {
 
   // Setup our reducers
   const rootReducer = combineReducers({
-    user,
-    widgets,
     entities
   });
 

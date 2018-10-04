@@ -1,7 +1,6 @@
-import styled from "styled-components";
-import { types as HeaderTypes } from "components/Text/Header";
-import { types as LabelTypes } from "components/Text/Label";
-import { get } from "theme";
+import styled from 'styled-components';
+import { types as HeaderTypes } from 'components/Text/Header';
+import { types as LabelTypes } from 'components/Text/Label';
 
 const List = styled.div`
   display: flex;
@@ -51,14 +50,13 @@ List.Header = styled(HeaderTypes.h6)`
   font-size: 16px !important;
   font-weight: 500 !important;
   letter-spacing: 1.2px !important;
-  ${props => props.new && "color: #dc377a !important;"};
+  ${props => props.new && 'color: #dc377a !important;'};
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 List.SubHeader = styled(LabelTypes.overline)`
   margin: -2px 0 0 0 !important;
   text-transform: none;
-  color: ${get("colors.white1")};
   max-width: inherit;
   width: inherit;
   min-width: inherit;

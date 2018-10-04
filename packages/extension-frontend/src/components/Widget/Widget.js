@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleBoundary } from '@diff/shared-components';
 import _ from 'lodash-es';
 
-export default class Widget extends React.Component {
+export default class Widget extends React.PureComponent {
   static propTypes = {
     /**
      * Allow widgets to either be a render function
@@ -11,38 +11,24 @@ export default class Widget extends React.Component {
      */
     children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
 
-    /**
-     * Based on the name, is this element shown
-     */
-    shown: PropTypes.bool,
-    token: PropTypes.string,
-
-    name: PropTypes.string,
-    context: PropTypes.object,
-    show: PropTypes.func.isRequired,
-    closeAll: PropTypes.func.isRequired,
-    shouldRender: PropTypes.func
+    open: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
   };
 
   static defaultProps = {
-    shown: false,
-    token: null,
-    name: null,
-    shouldRender: () => true
+    open: true
   };
 
   render() {
     const {
-      props: { shouldRender }
+      props: { open, children }
     } = this;
 
     const childProps = _.omit(this.props, ['children']);
-    if (shouldRender(childProps)) {
+    const openVal = _.isFunction(open) ? open(childProps) : open;
+    if (openVal) {
       return (
         <StyleBoundary>
-          {_.isFunction(this.props.children)
-            ? this.props.children(childProps)
-            : this.props.children}
+          {_.isFunction(children) ? children(childProps) : children}
         </StyleBoundary>
       );
     }

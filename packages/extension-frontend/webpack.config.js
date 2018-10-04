@@ -10,7 +10,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 const WEB_OUTPUT_PATH = `dist/${npmPackage.version}`;
 
 module.exports = (env, argv) => ({
-  mode: argv.mode,
   devtool: argv.mode === 'development' ? 'source-map' : 'none',
 
   entry: {
