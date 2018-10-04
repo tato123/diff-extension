@@ -4,6 +4,9 @@ import { Header } from '@diff/shared-components';
 import { Button } from '../../components/site-components';
 import Layout from '../../components/Layout';
 import ModalForm from './Modal';
+import Annotate from './Annotate';
+import Diffs from './Diffs';
+import Design from './Design';
 
 const Container = styled.div`
   color: #130c3b;
@@ -47,21 +50,6 @@ const PlaceholderImg = styled.div`
 
 const Feature = styled.div``;
 
-const HeaderGridArea = styled(GridArea)`
-  display: flex;
-  justify-content: center;
-  position: relative;
-
-  img {
-    height: 50px;
-    width: auto;
-  }
-  button {
-    position: absolute;
-    right: 0px;
-  }
-`;
-
 const FeatureGridArea = styled(GridArea)`
   grid-area: features;
   display: grid;
@@ -78,8 +66,19 @@ const CTAGridArea = styled(GridArea)`
 
 export default class Landing extends React.Component {
   state = {
-    open: false
+    open: false,
+    feature: null
   };
+
+  componentDidMount() {
+    if (typeof window !== 'undefined') {
+      const urlParams = new window.URLSearchParams(window.location.search);
+      const feature = urlParams.has('feature')
+        ? urlParams.get('feature')
+        : 'annotate';
+      this.setState({ feature });
+    }
+  }
 
   onOpenModal = () => {
     this.setState({ open: true });
@@ -91,7 +90,7 @@ export default class Landing extends React.Component {
 
   render() {
     const {
-      state: { open }
+      state: { open, feature }
     } = this;
 
     return (
@@ -112,10 +111,9 @@ export default class Landing extends React.Component {
               flexDirection: 'column'
             }}
           >
-            <Header as="h1">Annotate anything in your web application</Header>
-            <p style={{ textAlign: 'center' }}>
-              Keep designers and developers in sync realtime
-            </p>
+            {feature === 'diffs' && <Diffs />}
+            {feature === 'design' && <Design />}
+            {feature === 'annotate' && <Annotate />}
           </GridArea>
           <GridArea name="hero" style={{ marginBottom: '120px' }}>
             <PlaceholderImg />

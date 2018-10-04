@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Default Starter',
+    title: 'Gatsby Default Starter'
   },
   plugins: [
     'gatsby-plugin-styled-components',
@@ -14,8 +14,8 @@ module.exports = {
         start_url: '/',
         background_color: '#663399',
         theme_color: '#663399',
-        display: 'minimal-ui',
-      },
+        display: 'minimal-ui'
+      }
     },
 
     {
@@ -23,9 +23,8 @@ module.exports = {
       options: {
         trackingId: 'UA-124426207-2',
         // Puts tracking script in the head instead of the body
-        head: false,
-      },
-    },
-    'gatsby-plugin-offline',
-  ],
-}
+        head: false
+      }
+    }
+  ]
+};
