@@ -33,6 +33,19 @@ const OverrideButton = styled(Button)`
     padding: 10px 20px;
     font-size: 0.8em;
   }
+
+  ${props =>
+    props.size === 'xl' &&
+    `
+    padding: 20px 48px;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    letter-spacing: 1.1px;
+  `};
+
+  @media (max-width: 575.98px) {
+    padding: 10px 15px;
+  }
 `;
 
 export default OverrideButton;

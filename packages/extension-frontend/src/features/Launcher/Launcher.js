@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Widget from 'components/Widget';
-import { navigate } from '@reach/router';
 import MainMenu from './MainMenu';
 
 const LauncherContainer = styled.div`
@@ -29,9 +27,7 @@ export default class Launcher extends React.PureComponent {
 
   static defaultProps = {
     count: 0,
-    onClick: () => {
-      navigate('/inspect');
-    }
+    onClick: () => {}
   };
 
   render() {

@@ -6,21 +6,37 @@ import { Header, Form } from '@diff/shared-components';
 import { Formik } from 'formik';
 import { string, object } from 'yup';
 import { Button } from '../../components/site-components';
+import mark from '../../components/images/mark.png';
 
 const Container = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  /* This aligns items to the end line on main-axis */
-  justify-content: flex-start;
-  width: 500px;
-  padding: 24px;
+  h3 {
+    font-size: 32px;
+    color: #130c3b;
+  }
+  @media (max-width: 575.98px) {
+    h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+  }
+`;
 
-  > div:first-child {
-    width: 25%;
+const Logo = styled.img`
+  margin-bottom: 32px;
+  @media (max-width: 575.98px) {
+    margin-bottom: 16px;
   }
-  > div:last-child {
-    width: 75%;
+  max-height: 32px;
+  height: 32px;
+  min-height: 32px;
+`;
+
+const Spacing = styled.span`
+  @media (max-width: 575.98px) {
+    margin-bottom: 32px;
   }
+
+  margin-bottom: 64px;
 `;
 
 export default class ModalForm extends React.PureComponent {
@@ -91,63 +107,72 @@ export default class ModalForm extends React.PureComponent {
     } = this;
     return (
       <Modal open={open} onClose={onCloseModal} center>
-        <Container>
-          <div>
-            <Header as="h1">Diff</Header>
-          </div>
-          <div>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={schema}
-              onSubmit={submitForm}
-              render={({
-                values,
-                errors,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting
-              }) => (
-                <Form onSubmit={handleSubmit} autoComplete="off">
-                  {errors.global}
-                  <Form.Input
-                    type="text"
-                    name="firstname"
-                    label="First Name"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.firstname}
-                    value={values.firstname}
-                  />
-                  <Form.Input
-                    type="text"
-                    name="lastname"
-                    label="Last Name"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.lastname}
-                    value={values.lastname}
-                  />
-                  <Form.Input
-                    type="email"
-                    name="email"
-                    label="Email"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.email}
-                    value={values.email}
-                  />
-                  <Button
-                    type="submit"
-                    primary
-                    disabled={isSubmitting}
-                    loading={isSubmitting}
-                  >
-                    Yes, I want early access
-                  </Button>
-                </Form>
-              )}
-            />
+        <Container className="container-fluid">
+          <div className="row">
+            <div className="col-12 col-md-5 col-lg-5">
+              <Logo
+                src={mark}
+                className="d-inline-block align-top img-fluid"
+                alt="diff logo"
+              />
+              <Header as="h3">Get early access to Diff</Header>
+            </div>
+            <div className="col-12 col-md-7 col-lg-7">
+              <Formik
+                initialValues={initialValues}
+                validationSchema={schema}
+                onSubmit={submitForm}
+                render={({
+                  values,
+                  errors,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting
+                }) => (
+                  <Form onSubmit={handleSubmit} autoComplete="off">
+                    {errors.global}
+                    <Spacing>
+                      <Form.Input
+                        type="text"
+                        name="firstname"
+                        label="First Name"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={errors.firstname}
+                        value={values.firstname}
+                      />
+                      <Form.Input
+                        type="text"
+                        name="lastname"
+                        label="Last Name"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={errors.lastname}
+                        value={values.lastname}
+                      />
+                      <Form.Input
+                        type="email"
+                        name="email"
+                        label="Email"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={errors.email}
+                        value={values.email}
+                      />
+                    </Spacing>
+                    <Button
+                      type="submit"
+                      primary
+                      disabled={isSubmitting}
+                      loading={isSubmitting}
+                    >
+                      Yes, I want early access
+                    </Button>
+                  </Form>
+                )}
+              />
+            </div>
           </div>
         </Container>
       </Modal>

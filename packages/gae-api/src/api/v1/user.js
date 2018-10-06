@@ -2,6 +2,7 @@ import _ from 'lodash';
 import Mailgun from 'mailgun-js';
 import userManager from '../helpers/userManager';
 import logging from '../../logging';
+import mailer from '../../email';
 
 export const authenticate = (req, res) => {
   // check the headers
@@ -123,15 +124,14 @@ export const emailListSignup = (req, res) => {
     name: `${firstname} ${lastname}`,
     vars: {}
   };
-
   maillist
     .members()
     .create(subscriber)
     .then(data => {
       logging.debug(data);
-
-      res.sendStatus(201);
+      return mailer.signupEmail({ to: email, name: firstname });
     })
+    .then(() => res.sendStatus(201))
     .catch(err => {
       logging.error(err.message);
       res.send(400, err.message);

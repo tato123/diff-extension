@@ -1,0 +1,233 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Diff
+# during dev, should point to your local machine
+host: localhost:8080
+# basePath prefixes all resource paths
+basePath: /
+#
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /ah/health:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: health
+    get:
+      description: Subscribes a user to the email mailing list
+      # used as the method name of the controller
+      operationId: health
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /signup:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: user
+    post:
+      description: Subscribes a user to the email mailing list
+      # used as the method name of the controller
+      operationId: signup
+      consumes:
+        - "application/x-www-form-urlencoded"
+        - "application/json"
+      parameters:
+        - name: email
+          type: string
+          in: formData
+          required: true
+        - name: password
+          type: string
+          in: formData
+          required: true
+        - name: displayName
+          type: string
+          in: formData
+          required: false
+      responses:
+        "201":
+          description: Success
+          schema:
+            type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /authenticate:
+    x-swagger-router-controller: user
+    post:
+      description: Submits a comment
+      # used as the method name of the controller
+      operationId: authenticate
+      consumes:
+        - "application/octet-stream"
+        - "text/plain"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UserToken"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /validate:
+    x-swagger-router-controller: user
+    get:
+      description: Verifies an email
+      # used as the method name of the controller
+      operationId: verifyUser
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            type: string
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            type: string
+  /invite:
+    x-swagger-router-controller: user
+    post:
+      description: Verifies an email
+      operationId: inviteUsersToWorkspace
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          description: User emails
+          required: true
+          name: emails
+          schema:
+            $ref: "#/definitions/WorkspaceInvite"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Response"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /workspace:
+    x-swagger-router-controller: user
+    post:
+      description: Creates a new workspace
+      operationId: createWorkspace
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          description: Workspace name
+          required: true
+          name: "name"
+          schema:
+            $ref: "#/definitions/WorkspaceRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Response"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /tokens/{token}/domains:
+    x-swagger-router-controller: user
+    get:
+      description: Fetches the domains available for a given user based on refresh token
+      operationId: getDomains
+      parameters:
+        - name: token
+          in: path
+          description: Refresh Token
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/DomainResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /notifications/event/add/{eventId}:
+    x-swagger-router-controller: tasks
+    post:
+      description: Notifications sent out to affected parties when a comment is added
+      operationId: addEvent
+      parameters:
+        - name: eventId
+          in: path
+          description: EventId
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Notifications succesfully received
+        "404":
+          description: Event does not exist
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  WorkspaceRequest:
+    required:
+      - name
+    properties:
+      name:
+        type: string
+  DomainResponse:
+    properties:
+      domains:
+        type: array
+        items:
+          type: string
+  Response:
+    properties:
+      status:
+        type: string
+  WorkspaceInvite:
+    required:
+      - emails
+      - workspaceId
+    properties:
+      emails:
+        type: array
+        items:
+          type: string
+      workspaceId:
+        type: string
+  UserToken:
+    required:
+      - access_token
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string

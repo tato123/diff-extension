@@ -20,5 +20,6 @@ export default {
   LOGIN: asyncAction('login'),
   CACHE_TOKEN: asyncAction('cacheToken'),
   FETCH_CACHE_TOKEN: asyncAction('fetchCacheToken'),
-  FEATURE_FLAGS_UPDATE: 'featureFlagUpdate'
+  FEATURE_FLAGS_UPDATE: 'featureFlagUpdate',
+  GET_FIREBASE_TOKEN: asyncAction('firebaseToken')
 };

@@ -46,14 +46,9 @@ app.use((err, req, res, next) => {
 
 // Activate Google Cloud Trace and Debug when in production
 if (process.env.NODE_ENV === 'production') {
-  /* eslint-disable global-require */
-  require('@google-cloud/trace-agent').start();
-  require('@google-cloud/debug-agent').start();
   app.use(logging.requestLogger);
 }
 
-if (module === require.main) {
-  app.listen(port, () => {
-    logging.info(`App listening on port ${port}!`);
-  });
-}
+app.listen(port, () => {
+  logging.info(`App listening on port ${port}!`);
+});

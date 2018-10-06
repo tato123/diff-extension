@@ -1,3 +1,7 @@
+import { types } from '@diff/common/dist/actions';
+import { filter, map } from 'rxjs/operators';
+import { frontend$, sendMessageToBackground } from './message';
+
 /**
  * Adds data that we want to associate with our
  * extension
@@ -46,3 +50,17 @@ export const runFrontend = async () => {
   addEnvData();
   return addScriptToPage(`${SCRIPT_HOST}/main.js`, 'df-bridge');
 };
+
+// ----------------------------------------------------------------------
+// Obervables that we want to listen for from the frontend
+// ----------------------------------------------------------------------
+
+/**
+ * Forward requests for the firebase token
+ */
+frontend$
+  .pipe(
+    filter(evt => evt.data.type === types.GET_FIREBASE_TOKEN.REQUEST),
+    map(evt => evt.data)
+  )
+  .subscribe(sendMessageToBackground);

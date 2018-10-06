@@ -46,23 +46,35 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   }
 };
 
-const handleFetchCacheTokenRequest = async (tabId, postMessageToTab) => {
+const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    const token = await getUserToken();
-    if (!_.isNil(token)) {
-      return postMessageToTab(tabId, actions.fetchCacheTokenSuccess(token));
+    const { firebaseToken } = await browser.storage.html5.local.get([
+      'firebaseToken'
+    ]);
+    if (!_.isNil(firebaseToken)) {
+      return postMessageToTab(tabId, {
+        type: types.GET_FIREBASE_TOKEN.SUCCESS,
+        payload: {
+          firebaseToken
+        }
+      });
     }
-    return postMessageToTab(
-      tabId,
-      actions.fetchCacheTokenFailed('No Token Set')
-    );
+    return postMessageToTab(tabId, {
+      type: types.GET_FIREBASE_TOKEN.FAILED,
+      payload: {
+        error: 'No token'
+      }
+    });
   } catch (error) {
-    postMessageToTab(tabId, actions.fetchCacheTokenFailed(error));
+    postMessageToTab(tabId, {
+      type: types.GET_FIREBASE_TOKEN.FAILED,
+      payload: { error }
+    });
     return error;
   }
 };
 
 export default {
   [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
+  [types.GET_FIREBASE_TOKEN.REQUEST]: handleGetFirebaseToken
 };

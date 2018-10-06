@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import AppRoot from './features';
+
+import configureStore from './store';
+
+// Create our new store
+const store = configureStore();
 
 const ROOT_ID = `df-rt-${Math.floor(Math.random() * 100000)}`;
 
@@ -19,7 +25,12 @@ const bootstrap = () => {
 };
 
 const render = App => {
-  ReactDOM.render(<App />, document.getElementById(ROOT_ID));
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById(ROOT_ID)
+  );
 };
 
 bootstrap().then(() => {

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import styled, { StyleSheetManager } from 'styled-components';
 import ShadowDom from './styles/ShadowDOM';
 
-import blueprintCss from './core/blueprint';
-import blueprintIconsCss from './core/icons';
 import normalize from './core/normalize';
 
 /* prettier-ignore */
@@ -63,8 +61,7 @@ const styleContent = `
   
 
   ${normalize}
-  ${blueprintCss}
-  ${blueprintIconsCss}
+
 `;
 
 export default class StyleBoundary extends React.PureComponent {
