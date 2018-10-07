@@ -19,7 +19,7 @@ const html5Storage = {
       keys.reduce(
         (acc: {}, key: string) => ({
           ...acc,
-          [key]: JSON.parse(localStorage.getItem('firebaseToken'))
+          [key]: JSON.parse(localStorage.getItem(key))
         }),
         {}
       ),

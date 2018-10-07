@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import AppRoot from './features';
 
 import configureStore from './store';
@@ -26,9 +25,8 @@ const bootstrap = () => {
 
 const render = App => {
   ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
+    <App store={store} />,
+
     document.getElementById(ROOT_ID)
   );
 };

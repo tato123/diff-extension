@@ -1,19 +1,21 @@
 import React from 'react';
 
 import { StyleBoundary } from '@diff/shared-components';
-import Launcher from '../Launcher';
-import ControlPanel from '../Window';
+import { MemoryRouter } from 'react-router';
+import { Provider } from 'react-redux';
 import UserSessionProvider from '../UserSessionProvider';
+import Routes from './Routes';
 
-export default class App extends React.PureComponent {
-  render() {
-    return (
+const App = ({ store }) => (
+  <Provider store={store}>
+    <MemoryRouter>
       <UserSessionProvider>
         <StyleBoundary>
-          <Launcher />
-          <ControlPanel />
+          <Routes />
         </StyleBoundary>
       </UserSessionProvider>
-    );
-  }
-}
+    </MemoryRouter>
+  </Provider>
+);
+
+export default App;

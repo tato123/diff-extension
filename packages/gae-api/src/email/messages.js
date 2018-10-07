@@ -9,7 +9,7 @@ const signupEmail = ({ from = defaultFrom, to, name }) => {
     subject: 'Beta Signup',
     template: 'earlySignup',
     context: {
-      name
+      title: `You're signed up for the early beta, ${name}`
     }
   };
   return transporter.sendMail(mail);

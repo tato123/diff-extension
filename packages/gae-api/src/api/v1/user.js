@@ -108,7 +108,7 @@ export const getDomains = async (req, res) => {
   }
 };
 
-export const emailListSignup = (req, res) => {
+export const emailListSignup = async (req, res) => {
   const { list } = req.query;
   const { firstname, lastname, email } = req.body;
 
@@ -124,6 +124,7 @@ export const emailListSignup = (req, res) => {
     name: `${firstname} ${lastname}`,
     vars: {}
   };
+
   maillist
     .members()
     .create(subscriber)

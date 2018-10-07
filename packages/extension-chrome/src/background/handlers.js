@@ -46,11 +46,29 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   }
 };
 
+async function exchangeAndStoreFirebaseToken(token) {
+  return fetch(`${process.env.API_SERVER}/auth/firebase`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      throw new Error(response.statusText);
+    })
+    .then(({ firebaseToken }) => firebaseToken);
+}
+
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    const { firebaseToken } = await browser.storage.html5.local.get([
-      'firebaseToken'
-    ]);
+    const { idToken } = await browser.storage.html5.local.get(['idToken']);
+
+    // do the same for a firebase token
+    const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);
+
     if (!_.isNil(firebaseToken)) {
       return postMessageToTab(tabId, {
         type: types.GET_FIREBASE_TOKEN.SUCCESS,
@@ -68,7 +86,7 @@ const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   } catch (error) {
     postMessageToTab(tabId, {
       type: types.GET_FIREBASE_TOKEN.FAILED,
-      payload: { error }
+      payload: { error: error.message }
     });
     return error;
   }

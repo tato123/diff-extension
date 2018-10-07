@@ -235,7 +235,7 @@ const createForStorageType = type => ({
 const html5Storage = {
   local: {
     get: async keys => keys.reduce((acc, key) => _objectSpread({}, acc, {
-      [key]: JSON.parse(localStorage.getItem('firebaseToken'))
+      [key]: JSON.parse(localStorage.getItem(key))
     }), {}),
     set: async items => {
       Object.keys(items).forEach(key => {
