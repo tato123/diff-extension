@@ -9,8 +9,8 @@ const LauncherContainer = styled(MenuBubble)`
   will-change: transform, opacity;
 
   img {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
   }
 
   .logo {

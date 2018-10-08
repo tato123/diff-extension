@@ -9,16 +9,16 @@ import Launcher from '../Launcher';
 
 const App = ({ store }) => (
   <Provider store={store}>
-    <MemoryRouter>
-      <UserSessionProvider>
-        <StyleBoundary>
+    <UserSessionProvider>
+      <StyleBoundary>
+        <MemoryRouter>
           <Switch>
             <Route exact path="/inspect" render={() => <div />} />
-            <Route component={Launcher} />
+            <Route path="/" component={Launcher} />
           </Switch>
-        </StyleBoundary>
-      </UserSessionProvider>
-    </MemoryRouter>
+        </MemoryRouter>
+      </StyleBoundary>
+    </UserSessionProvider>
   </Provider>
 );
 

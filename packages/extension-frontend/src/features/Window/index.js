@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Logo, Header, Label } from '@diff/shared-components';
+import { Route, Switch } from 'react-router';
+import { Link, withRouter } from 'react-router-dom';
 
 const Container = styled.div`
   z-index: 2147483000 !important;
@@ -37,7 +39,9 @@ const NavHeader = styled.div`
   align-items: center;
 `;
 
-const ControlPanel = ({ open }) => (
+const TestRoute = () => <h1>hello</h1>;
+
+const ControlPanel = ({ open, history }) => (
   <React.Fragment>
     {open && (
       <Container>
@@ -51,11 +55,27 @@ const ControlPanel = ({ open }) => (
             padding: '20px'
           }}
         >
-          <Header as="h1">Welcome</Header>
-          <Label>
-            Diff is the best tool ever. To get started, target an element on the
-            page.
-          </Label>
+          <Link to="/">Default</Link>
+          <Link to="/page1">Page 1</Link>
+          <Link to="/page2">Page 2</Link>
+          <Switch>
+            <Route path="/page1" render={() => <h1>route 3</h1>} />
+            <Route path="/page2" component={TestRoute} />
+            <Route
+              render={() => (
+                <React.Fragment>
+                  <Header as="h1">Welcome</Header>
+                  <Label>
+                    Diff is the best tool ever. To get started, target an
+                    element on the page.
+                  </Label>
+                </React.Fragment>
+              )}
+            />
+          </Switch>
+          <button type="button" onClick={() => history.goBack()}>
+            Pop
+          </button>
         </div>
       </Container>
     )}
@@ -70,4 +90,4 @@ ControlPanel.defaultProps = {
   open: false
 };
 
-export default ControlPanel;
+export default withRouter(ControlPanel);

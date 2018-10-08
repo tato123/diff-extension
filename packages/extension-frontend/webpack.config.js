@@ -19,7 +19,7 @@ module.exports = (env, argv) => ({
     filename: '[name].js',
     chunkFilename: '[name].bundle.js',
     path: path.join(__dirname, WEB_OUTPUT_PATH),
-    publicPath: '/js/latest/'
+    publicPath: 'https://localhost:9000/js/latest/'
   },
 
   // Our home directory
@@ -64,7 +64,14 @@ module.exports = (env, argv) => ({
     compress: true,
     hot: true,
     https: true,
-    disableHostCheck: true
+    disableHostCheck: true,
+    historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization'
+    }
   },
 
   plugins: [
