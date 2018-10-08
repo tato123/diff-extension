@@ -18,10 +18,11 @@ const View = styled.div`
   --color-purple-1: #6848b0;
   --color-blue-1: #1f1d3f;
   --color-blue-2: #241c49;
+  --color-white-1: rgba(0, 0, 0, 0.3);
 
   --gradient-purple: linear-gradient(to bottom right, var(--color-purple), var(--color-purple-1) );
   --gradient-header: linear-gradient(to right, var(--color-blue-1), var(--color-blue-2) );
-  
+  --border-color: var(--color-white-1);
 
   font-family: var(--df-font-family);
   color: var(--color-blue-1);

@@ -81,3 +81,31 @@ export const refresh = (req, res) => {
     res.send(200, body);
   });
 };
+
+export const codeGrantAuthorize = (req, res) => {
+  const {
+    query: { code, redirectUri }
+  } = req;
+
+  const options = {
+    method: 'POST',
+    url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+    headers: { 'content-type': 'application/json' },
+    body: {
+      grant_type: 'authorization_code',
+      client_id: process.env.AUTH0_CLIENTID,
+      client_secret: process.env.AUTH0_CLIENT_SECRET,
+      code,
+      redirect_uri: redirectUri
+    },
+    json: true
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      return res.send(403, error);
+    }
+
+    return res.send(200, body);
+  });
+};

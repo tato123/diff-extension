@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.get('/auth/firebase', authController.login);
 router.get('/auth/refresh', authController.refresh);
+router.get('/auth/codegrant', authController.codeGrantAuthorize);
 
 router.get('/ah/health', healthController.health);
 router.post('/signup', userController.signup);

@@ -14,15 +14,14 @@ export default class Login extends React.PureComponent {
   onLoginWithGoogle = () => {
     const urlParams = new URLSearchParams(window.location.search);
     localStorage['auth0-authorize'] = urlParams.get('state');
-
     this.webAuth.authorize({
       connection: 'google-oauth2',
       redirectUri: urlParams.get('return_to'),
       scope: 'openid profile offline_access',
-      responseType: 'token id_token',
+      responseType: 'code',
       state: urlParams.get('state'),
       nonce: urlParams.get('nonce'),
-      audience: 'https://diff.auth0.com/api/v2/'
+      audience: 'https://api.getdiff.app/v1'
     });
   };
 

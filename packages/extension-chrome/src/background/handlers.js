@@ -64,7 +64,9 @@ async function exchangeAndStoreFirebaseToken(token) {
 
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    const { idToken } = await browser.storage.html5.local.get(['idToken']);
+    const { id_token: idToken } = await browser.storage.html5.local.get([
+      'id_token'
+    ]);
 
     // do the same for a firebase token
     const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);
