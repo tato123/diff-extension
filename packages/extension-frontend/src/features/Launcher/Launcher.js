@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MainMenu from './MainMenu';
+import ControlPanel from '../Window';
 
 const LauncherContainer = styled.div`
   position: fixed;
@@ -21,22 +22,31 @@ export default class Launcher extends React.PureComponent {
     /**
      * Diff Count
      */
-    count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onClick: PropTypes.func
+    count: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   static defaultProps = {
-    count: 0,
-    onClick: () => {}
+    count: 0
+  };
+
+  state = {
+    open: false
+  };
+
+  toggle = () => {
+    this.setState(state => ({ open: !state.open }));
   };
 
   render() {
     const {
-      props: { count, onClick }
+      props: { count },
+      state: { open },
+      toggle
     } = this;
     return (
       <LauncherContainer>
-        <MainMenu count={count} showCount onClick={onClick} />
+        <MainMenu count={count} showCount onClick={toggle} />
+        <ControlPanel open={open} />
       </LauncherContainer>
     );
   }
