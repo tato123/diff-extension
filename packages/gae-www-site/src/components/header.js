@@ -21,8 +21,6 @@ const NavContainer = styled.nav`
 `;
 
 const FlexEnd = styled.div`
-  position: absolute;
-  right: 15px;
   display: flex;
   justify-content: flex-end;
   flex: 1 auto;
@@ -30,7 +28,7 @@ const FlexEnd = styled.div`
 
 const Header = ({ client, rightMenuItem }) => (
   <NavContainer className=" navbar navbar-expand-lg navbar-light bg-white container-lg">
-    <div className="container-fluid">
+    <div className="container">
       <a className="navbar-brand" href="/">
         <img src={mark} className="d-inline-block align-top" alt="" />
       </a>

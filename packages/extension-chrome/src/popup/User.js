@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import auth0 from 'auth0-js';
 import { Image, Logo, Button, HR, Label } from '@diff/shared-components';
 import styled from 'styled-components';
 
@@ -23,7 +22,8 @@ const Avatar = styled(Image)`
 export default class User extends React.Component {
   static propTypes = {
     accessToken: PropTypes.string.isRequired,
-    onLogout: PropTypes.func.isRequired
+    onLogout: PropTypes.func.isRequired,
+    webAuth: PropTypes.object.isRequired
   };
 
   state = {
@@ -36,13 +36,8 @@ export default class User extends React.Component {
 
   getUserProfile = () => {
     const {
-      props: { accessToken }
+      props: { accessToken, webAuth }
     } = this;
-
-    const webAuth = new auth0.WebAuth({
-      domain: process.env.AUTH0_DOMAIN,
-      clientID: process.env.AUTH0_CLIENT_ID
-    });
 
     webAuth.client.userInfo(accessToken, (err, user) => {
       if (err) {

@@ -109,7 +109,7 @@ export const getDomains = async (req, res) => {
 };
 
 export const emailListSignup = async (req, res) => {
-  const { list } = req.query;
+  const { list, feature } = req.query;
   const { firstname, lastname, email } = req.body;
 
   const apiKey = process.env.MAILGUN_API_KEY;
@@ -122,7 +122,10 @@ export const emailListSignup = async (req, res) => {
     subscribed: true,
     address: email,
     name: `${firstname} ${lastname}`,
-    vars: {}
+    vars: {
+      feature,
+      list
+    }
   };
 
   maillist

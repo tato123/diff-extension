@@ -43,13 +43,15 @@ export default class ModalForm extends React.PureComponent {
   static propTypes = {
     open: PropTypes.bool,
     onCloseModal: PropTypes.func,
-    onComplete: PropTypes.func
+    onComplete: PropTypes.func,
+    feature: PropTypes.string
   };
 
   static defaultProps = {
     open: false,
     onCloseModal: () => {},
-    onComplete: () => {}
+    onComplete: () => {},
+    feature: ''
   };
 
   initialValues = {
@@ -66,22 +68,35 @@ export default class ModalForm extends React.PureComponent {
 
   submitForm = (values, { setSubmitting, setErrors }) => {
     const {
-      props: { onComplete }
+      props: { onComplete, feature }
     } = this;
+    if (typeof window !== 'undefined') {
+      try {
+        window.ga &&
+          window.ga('send', 'event', 'Email Signup', 'early access', feature);
+      } catch (error) {
+        // do nothing
+      }
+    }
 
     setSubmitting(true);
-    fetch(`${process.env.API_SERVER}/user/email/signup?list=earlyAccess`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        email: 'jfontanez@getdiff.app',
-        firstname: 'Jonathan',
-        lastname: 'Fontanez'
-      })
-    })
+    fetch(
+      `${
+        process.env.API_SERVER
+      }/user/email/signup?list=earlyAccess&feature=${feature}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          email: values.email,
+          firstname: values.firstname,
+          lastname: values.lastname
+        })
+      }
+    )
       .then(async response => {
         if (response.ok) {
           onComplete();

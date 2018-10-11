@@ -1,9 +1,9 @@
 import React from 'react';
 import jwtDecode from 'jwt-decode';
-import browser from '@diff/common/dist/browser';
 import { StyleBoundary } from '@diff/shared-components';
 
 import styled from 'styled-components';
+import { checkAndRenewSession, authProvider } from '../authentication';
 import Login from './Login';
 import User from './User';
 
@@ -19,19 +19,18 @@ export default class Popup extends React.Component {
   };
 
   async componentDidMount() {
-    const {
-      access_token: accessToken,
-      id_token: token
-    } = await browser.storage.html5.local.get(['access_token', 'id_token']);
-    if (token && this.isLoggedIn(token)) {
+    this.webAuth = authProvider();
+
+    try {
+      const { access_token: accessToken } = await checkAndRenewSession();
       this.setState({ accessToken });
-      chrome.browserAction.setIcon({ path: '../images/icon_128.png' });
-    } else {
-      chrome.browserAction.setIcon({ path: '../images/inactive_icon_128.png' });
+    } catch (error) {
+      console.error('No Session available');
     }
   }
 
   logout = () => {
+    this.webAuth.logout({});
     // Remove the idToken from storage
     localStorage.clear();
     this.setState({ accessToken: null });
@@ -43,14 +42,19 @@ export default class Popup extends React.Component {
 
   render() {
     const {
-      state: { accessToken }
+      state: { accessToken },
+      webAuth
     } = this;
 
     return (
       <StyleBoundary>
         <Container>
           {accessToken && (
-            <User accessToken={accessToken} onLogout={this.logout} />
+            <User
+              accessToken={accessToken}
+              onLogout={this.logout}
+              webAuth={webAuth}
+            />
           )}
           {!accessToken && <Login />}
         </Container>

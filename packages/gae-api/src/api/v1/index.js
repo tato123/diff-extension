@@ -2,6 +2,7 @@ import * as authController from './auth';
 import * as healthController from './health';
 import * as tasksController from './tasks';
 import * as userController from './user';
+import * as hooksController from './hooks';
 
 const express = require('express');
 
@@ -10,6 +11,7 @@ const router = express.Router();
 router.get('/auth/firebase', authController.login);
 router.get('/auth/refresh', authController.refresh);
 router.get('/auth/codegrant', authController.codeGrantAuthorize);
+router.get('/auth/renew', authController.renewSession);
 
 router.get('/ah/health', healthController.health);
 router.post('/signup', userController.signup);

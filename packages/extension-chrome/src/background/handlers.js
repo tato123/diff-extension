@@ -3,6 +3,7 @@ import normalizeUrl from 'normalize-url';
 import _ from 'lodash-es';
 import { getUserDomains } from './user';
 import { getUserToken, getSitePreference } from './storage';
+import { checkAndRenewSession } from '../authentication';
 
 /**
  *
@@ -64,9 +65,8 @@ async function exchangeAndStoreFirebaseToken(token) {
 
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    const { id_token: idToken } = await browser.storage.html5.local.get([
-      'id_token'
-    ]);
+    debugger;
+    const { id_token: idToken } = await checkAndRenewSession();
 
     // do the same for a firebase token
     const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);
@@ -79,10 +79,11 @@ const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
         }
       });
     }
+
     return postMessageToTab(tabId, {
       type: types.GET_FIREBASE_TOKEN.FAILED,
       payload: {
-        error: 'No token'
+        error: 'Unable to get a new firebase token'
       }
     });
   } catch (error) {

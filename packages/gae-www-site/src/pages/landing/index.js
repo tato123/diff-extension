@@ -9,6 +9,10 @@ import CommentFeature from './features/Comment';
 import AttachFeature from './features/Attach';
 import TrackFeature from './features/Track';
 
+import DiffHeader from './diff.gif';
+import DiffLogo from './Diff.svg';
+import DiffDarkLogo from './Diff2.svg';
+
 const Container = styled.div`
   color: #130c3b;
   padding-top: 32px;
@@ -93,11 +97,22 @@ const HeaderGridArea = styled(GridArea)`
   max-width: 800px;
   display: flex;
   flex-direction: column;
+  z-index: 2;
+  position: relative;
 
   @media (max-width: 575.98px) {
     margin: 0 auto;
     margin-bottom: 32px;
   }
+`;
+
+const FloatingLogo = styled.img`
+  position: absolute;
+  right: ${props => (props.secondary ? '-500px' : '-450px')};
+  max-height: 800px;
+  min-height: 800px;
+  height: 800px;
+  top: ${props => (props.secondary ? '300px' : '200px')};
 `;
 
 export default class Landing extends React.Component {
@@ -163,13 +178,32 @@ export default class Landing extends React.Component {
         )}
       >
         <Container className="container">
+          <FloatingLogo src={DiffLogo} alt="svg" />
+          <FloatingLogo secondary src={DiffDarkLogo} alt="svg" />
           <HeaderGridArea>
             {feature === 'diffs' && renderDiffText()}
             {feature === 'design' && renderDesignOpsText()}
             {feature === 'annotate' && renderAnnotateText()}
           </HeaderGridArea>
-          <GridArea name="hero" style={{ marginBottom: '120px' }}>
-            <PlaceholderImg />
+          <GridArea
+            name="hero"
+            style={{
+              marginBottom: '120px',
+              position: 'relative',
+              display: 'flex'
+            }}
+          >
+            <img
+              style={{
+                margin: '0 auto',
+                zIndex: 2,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+              src={DiffHeader}
+              alt="Diff giff"
+            />
           </GridArea>
           <FeatureGridArea>
             <Feature>
@@ -195,6 +229,7 @@ export default class Landing extends React.Component {
         </Container>
         <ModalForm
           open={open}
+          feature={feature}
           onCloseModal={this.onCloseModal}
           onComplete={this.onCloseModal}
         />

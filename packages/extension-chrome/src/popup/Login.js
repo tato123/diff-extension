@@ -48,7 +48,7 @@ export default class Login extends React.Component {
       )
       .then(() =>
         this.navigateTo(
-          `http://localhost:8000/app/login?return_to=${encodeURIComponent(
+          `${process.env.WEB_HOME}/app/login?return_to=${encodeURIComponent(
             `chrome-extension://${browser.runtime.id}/html/login-return.html`
           )}&state=${state}&nonce=${nonce}`
         )

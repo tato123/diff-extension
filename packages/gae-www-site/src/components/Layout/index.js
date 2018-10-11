@@ -8,6 +8,8 @@ import Header from '../Header';
 import './bootstrap.min.css';
 import './base.css';
 
+import Favicon from './favicon.png';
+
 export default class Layout extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
@@ -51,12 +53,16 @@ export default class Layout extends React.PureComponent {
             >
               <meta charset="utf-8" />
               <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-              <title>Diff</title>
+              <meta
+                name="google-site-verification"
+                content="DzPw6I7ZrHul0u7TDgjgwRqwZh4HdEagNQbiySiBBXo"
+              />
+
               <meta
                 name="viewport"
                 content="width=device-width, initial-scale=1"
               />
-              <link href="favicon.png" rel="icon" type="image/x-icon" />
+              <link href={Favicon} rel="icon" type="image/x-icon" />
               <link rel="chrome-webstore-item" href={extensionUrl} />
               <link
                 href="https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,900"

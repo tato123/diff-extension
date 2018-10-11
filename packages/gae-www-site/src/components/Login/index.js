@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Form, HR, Anchor, Label } from '@diff/shared-components';
+import browser from '@diff/common/dist/browser';
 import auth0 from 'auth0-js';
 
 export default class Login extends React.PureComponent {
@@ -13,16 +14,13 @@ export default class Login extends React.PureComponent {
 
   onLoginWithGoogle = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    localStorage['auth0-authorize'] = urlParams.get('state');
-    this.webAuth.authorize({
-      connection: 'google-oauth2',
-      redirectUri: urlParams.get('return_to'),
-      scope: 'openid profile offline_access',
-      responseType: 'code',
-      state: urlParams.get('state'),
-      nonce: urlParams.get('nonce'),
-      audience: 'https://api.getdiff.app/v1'
-    });
+
+    const state = urlParams.get('state');
+    const nonce = urlParams.get('nonce');
+    const redirectUri = urlParams.get('return_to');
+
+    // will redirect page if necessary
+    browser.auth.authorize(this.webAuth, state, nonce, redirectUri);
   };
 
   onLoginWithMagicLink = evt => {

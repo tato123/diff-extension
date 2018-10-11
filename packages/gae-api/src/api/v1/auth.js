@@ -109,3 +109,34 @@ export const codeGrantAuthorize = (req, res) => {
     return res.send(200, body);
   });
 };
+
+export const renewSession = async (req, res) => {
+  const {
+    query: { refreshToken }
+  } = req;
+
+  if (!refreshToken) {
+    res.send(401, 'A refresh token is required');
+  }
+
+  const options = {
+    method: 'POST',
+    url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+    headers: { 'content-type': 'application/json' },
+    body: {
+      grant_type: 'refresh_token',
+      client_id: process.env.AUTH0_CLIENTID,
+      client_secret: process.env.AUTH0_CLIENT_SECRET,
+      refresh_token: refreshToken
+    },
+    json: true
+  };
+
+  request(options, (error, response, body) => {
+    if (error) {
+      return res.send(403, error);
+    }
+
+    return res.send(200, body);
+  });
+};

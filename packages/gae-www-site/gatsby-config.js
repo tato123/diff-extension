@@ -1,10 +1,13 @@
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Default Starter'
+    title: 'Diff',
+    siteUrl: 'https://www.getdiff.app'
   },
   plugins: [
     'gatsby-plugin-styled-components',
     'gatsby-plugin-react-helmet',
+    'gatsby-plugin-sitemap',
+    'gatsby-plugin-robots-txt',
 
     {
       resolve: `gatsby-plugin-manifest`,
@@ -23,7 +26,9 @@ module.exports = {
       options: {
         trackingId: 'UA-124426207-2',
         // Puts tracking script in the head instead of the body
-        head: false
+        head: false,
+        // required for gdpr compliance without banner
+        anonymize: true
       }
     }
   ]
