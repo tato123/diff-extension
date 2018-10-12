@@ -6,7 +6,8 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 import { postmessageMiddleware } from './middleware/remote';
 
-import entities, { epics as entitiesEpic } from './entities';
+import { epics as entitiesEpic } from './entities';
+import rootReducer from './rootReducer';
 
 export default function configureStore(preloadedState) {
   const api = initApi();
@@ -22,11 +23,6 @@ export default function configureStore(preloadedState) {
 
   const composedEnhancers = composeWithDevTools({
     maxAge: 10000000
-  });
-
-  // Setup our reducers
-  const rootReducer = combineReducers({
-    entities
   });
 
   // Finally - Create our store

@@ -3,8 +3,7 @@ import types from './types';
 
 const initialState = {
   byId: {},
-  allIds: [],
-  inspectMode: false
+  allIds: []
 };
 
 const addExistingSelector = (state, { type, payload }) => {
@@ -49,7 +48,6 @@ const deleteSelector = (state, { type, payload }) => ({
   allIds: _.without(state.allIds, payload.selectorId)
 });
 
-/*eslint-disable */
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case types.ADD_SELECTOR:

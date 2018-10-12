@@ -7,7 +7,8 @@ export default db => {
   const eventsRef = db.collection('events');
   const commentsRef = eventsRef.where('type', '==', 'comment');
 
-  const comments$ = (uid, workspaceId) => Observable.create(observer => {
+  const comments$ = (uid, workspaceId) =>
+    Observable.create(observer => {
       const subject = !_.isNil(workspaceId)
         ? 'meta.workspaceId'
         : 'meta.userId';
@@ -43,12 +44,12 @@ export default db => {
     return new Promise((resolve, reject) => {
       task.on(
         'state_changed',
-        (snapshot) => {
+        snapshot => {
           // var percentage =
           //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           // console.log(percentage);
         },
-        (error) => {
+        error => {
           reject(error);
         },
         () => {

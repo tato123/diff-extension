@@ -17,10 +17,12 @@ const fetchEventLogEpic = (action$, state$, { api }) =>
             if (type === 'added' || type === 'modified') {
               return actions.addUserSeenActivity(_.values(data)[0]);
             }
-          }),
-          catchError(err => of(actions.addUserSeenActivityFailed(err)))
+
+            throw new Error('Deleted type unsupported by the fetch event log');
+          })
         )
-    )
+    ),
+    catchError(error => of(actions.addUserSeenActivityFailed(error.message)))
   );
 
 export default combineEpics(fetchEventLogEpic);

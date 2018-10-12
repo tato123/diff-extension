@@ -2,21 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { StyleBoundary } from '@diff/shared-components';
-import { MemoryRouter, Switch, Route } from 'react-router';
+import { MemoryRouter, Route } from 'react-router';
 import { Provider } from 'react-redux';
-import Launcher from '../Launcher';
+import Launcher from '../launcher';
 import UserSession from '../../components/UserSession';
 
 const App = ({ store }) => (
   <Provider store={store}>
     <UserSession>
       <StyleBoundary>
-        <MemoryRouter>
-          <Switch>
-            <Route exact path="/inspect" render={() => <div />} />
-            <Route path="/" component={Launcher} />
-          </Switch>
-        </MemoryRouter>
+        <div>
+          <MemoryRouter>
+            <Route component={Launcher} />
+          </MemoryRouter>
+        </div>
       </StyleBoundary>
     </UserSession>
   </Provider>

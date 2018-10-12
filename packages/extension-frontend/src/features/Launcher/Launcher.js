@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import MainMenu from './MainMenu';
 import ControlPanel from './ControlPanel';
+
+import selectors from './selectors';
 
 const LauncherContainer = styled.div`
   position: fixed;
@@ -12,6 +15,10 @@ const LauncherContainer = styled.div`
   right: 32px;
   display: flex;
   align-items: center;
+
+  transition: opacity 150ms ease-out;
+
+  opacity: ${props => (props.show ? 1 : 0)};
 
   > div {
     margin-right: 16px;
@@ -23,7 +30,9 @@ class Launcher extends React.PureComponent {
     /**
      * Diff Count
      */
-    count: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+    isInspecting: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -40,12 +49,13 @@ class Launcher extends React.PureComponent {
 
   render() {
     const {
-      props: { count },
+      props: { count, isInspecting },
       state: { open },
       toggle
     } = this;
+
     return (
-      <LauncherContainer>
+      <LauncherContainer show={!isInspecting}>
         <MainMenu count={count} showCount onClick={toggle} />
         <ControlPanel open={open} />
       </LauncherContainer>
@@ -53,8 +63,9 @@ class Launcher extends React.PureComponent {
   }
 }
 
-const mapStateToProps = () => ({
-  count: 0
+const mapStateToProps = createStructuredSelector({
+  count: selectors.countSelector,
+  isInspecting: selectors.isInspectingSelector
 });
 
 export default connect(mapStateToProps)(Launcher);

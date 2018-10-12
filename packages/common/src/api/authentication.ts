@@ -1,5 +1,5 @@
 import 'firebase/auth';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 export interface AuthenticationResponse {
   refresh_token: string;
@@ -78,10 +78,15 @@ export default (db: any) => {
   const tokenLogin = (token: string): Observable<any> =>
     from(db.app.auth().signInWithCustomToken(token));
 
+  const currentUser = () => {
+    return db.app.auth().currentUser;
+  };
+
   return {
     authenticate,
     signup,
     isUser,
-    tokenLogin
+    tokenLogin,
+    currentUser
   };
 };

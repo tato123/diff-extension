@@ -20,6 +20,18 @@ const bootstrap = () => {
   // give us layers at the end of the safe spectrum
   rootElement.style.zIndex = Number.MAX_SAFE_INTEGER - 100;
   document.body.appendChild(rootElement);
+
+  const inspectRoot = document.createElement('div');
+  inspectRoot.id = 'df-root-inspect';
+  inspectRoot.style.position = 'absolute';
+  inspectRoot.style.top = 0;
+  inspectRoot.style.left = 0;
+  inspectRoot.style.width = 0;
+  inspectRoot.style.height = 0;
+  // give us layers at the end of the safe spectrum
+  inspectRoot.style.zIndex = Number.MAX_SAFE_INTEGER - 100;
+  document.body.appendChild(inspectRoot);
+
   return Promise.resolve(ROOT_ID);
 };
 

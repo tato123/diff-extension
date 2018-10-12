@@ -5,11 +5,19 @@ const addComment = payload => ({
   payload
 });
 
-const clearComments = payload => ({
+const clearComments = () => ({
   type: types.CLEAR_COMMENTS
+});
+
+const fetchCommentsFailed = error => ({
+  type: types.FETCH_COMMENTS_ERROR,
+  payload: {
+    error
+  }
 });
 
 export default {
   addComment,
-  clearComments
+  clearComments,
+  fetchCommentsFailed
 };

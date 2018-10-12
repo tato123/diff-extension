@@ -4,7 +4,7 @@ import { combineEpics } from 'redux-observable';
 // entity types
 import comments, { epics as commentEpics } from './comments';
 import diffs, { epics as diffEpics } from './diffs';
-import selectors from './selectors';
+import annotations from './annotations';
 import users, { epics as userEpics } from './users';
 import activity, { epics as activityEpic } from './activity';
 import workspaces, { epics as workspaceEpics } from './workspaces';
@@ -13,7 +13,7 @@ import session, { epics as sessionEpics } from './session';
 export default combineReducers({
   comments,
   diffs,
-  selectors,
+  annotations,
   users,
   activity,
   workspaces,

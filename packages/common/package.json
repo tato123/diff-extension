@@ -9,15 +9,15 @@
   "scripts": {
     "build": "rollup -c rollup.config.js --environment BUILD:production",
     "publish": "yarn build",
-    "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
+    "start:dev": "rollup -c rollup.config.js -m -w --environment BUILD:development"
   },
   "peerDependencies": {
     "firebase": "^5.5.1",
-    "rxjs": "^6.3.2"
+    "rxjs": "^6.3.2",
+    "jwt-decode": "^2.2.0",
+    "lodash-es": "^4.17.11"
   },
   "dependencies": {
-    "jwt-decode": "^2.2.0",
-    "lodash-es": "^4.17.11",
     "normalize-url": "^3.3.0"
   },
   "devDependencies": {

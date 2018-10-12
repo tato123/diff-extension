@@ -1,9 +1,8 @@
+import jwtDecode from 'jwt-decode';
 import types from './types';
 
 const initialState = {
-  workspaceId: null,
-  id_token: null,
-  featureFlags: null
+  workspaceId: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,7 +19,7 @@ const reducer = (state = initialState, action) => {
     case types.GET_FIREBASE_TOKEN_SUCCESS:
       return {
         ...state,
-        id_token: action.payload.firebaseToken
+        ...jwtDecode(action.payload.firebaseToken)
       };
     default:
       return state;

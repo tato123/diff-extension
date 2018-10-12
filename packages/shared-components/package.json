@@ -43,8 +43,6 @@
     "styled-components": "3.4.9"
   },
   "dependencies": {
-    "@babel/preset-typescript": "^7.1.0",
-    "@blueprintjs/core": "^3.6.1",
     "date-fns": "^1.29.0",
     "lodash-es": "^4.17.11"
   }

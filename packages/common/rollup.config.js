@@ -5,9 +5,7 @@ import includePaths from 'rollup-plugin-includepaths';
 import resolve from 'rollup-plugin-node-resolve';
 
 const includePathOptions = {
-  include: {},
   paths: ['src'],
-  external: [],
   extensions: ['.js', '.json', '.ts', '.tsx', '.html']
 };
 
@@ -28,7 +26,8 @@ const common = {
     'firebase/firestore',
     'firebase/auth',
     'firebase/storage',
-    'lodash-es'
+    'lodash-es',
+    'jwt-decode'
   ]
 };
 

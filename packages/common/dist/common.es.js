@@ -342,43 +342,41 @@ var commentsFactory = (db => {
   const eventsRef = db.collection('events');
   const commentsRef = eventsRef.where('type', '==', 'comment');
 
-  const comments$ = (uid, workspaceId) => {
-    return Observable.create(observer => {
-      const subject = !_.isNil(workspaceId) ? 'meta.workspaceId' : 'meta.userId';
-      const value = !_.isNil(workspaceId) ? workspaceId : uid;
-      const location = browser.url.location();
-      const unsubscribe = commentsRef.where('url.hostname', '==', location.hostname).where('url.pathname', '==', location.pathname).where(subject, '==', value).onSnapshot(querySnapshot => {
-        if (!querySnapshot.empty) {
-          querySnapshot.docChanges().forEach(({
-            doc,
-            type
-          }) => {
-            const data = doc.data();
-            observer.next({
-              data,
-              type,
-              id: doc.id
-            });
+  const comments$ = (uid, workspaceId) => Observable.create(observer => {
+    const subject = !_.isNil(workspaceId) ? 'meta.workspaceId' : 'meta.userId';
+    const value = !_.isNil(workspaceId) ? workspaceId : uid;
+    const location = browser.url.location();
+    const unsubscribe = commentsRef.where('url.hostname', '==', location.hostname).where('url.pathname', '==', location.pathname).where(subject, '==', value).onSnapshot(querySnapshot => {
+      if (!querySnapshot.empty) {
+        querySnapshot.docChanges().forEach(({
+          doc,
+          type
+        }) => {
+          const data = doc.data();
+          observer.next({
+            data,
+            type,
+            id: doc.id
           });
-        }
-      }, err => observer.err(err));
-      return () => {
-        console.log('Unsubuscribing from comments');
-        unsubscribe();
-      };
-    });
-  };
+        });
+      }
+    }, err => observer.err(err));
+    return () => {
+      console.log('Unsubuscribing from comments');
+      unsubscribe();
+    };
+  });
 
   const uploadFile = async (file, uid) => {
     const storageRef = db.app.storage().ref(`attachments/${uid}/${file.name}`);
     const task = storageRef.put(file);
     return new Promise((resolve, reject) => {
-      task.on('state_changed', function progress(snapshot) {// var percentage =
+      task.on('state_changed', snapshot => {// var percentage =
         //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         // console.log(percentage);
-      }, function error(error) {
+      }, error => {
         reject(error);
-      }, function complete() {
+      }, () => {
         task.snapshot.ref.getDownloadURL().then(downloadURL => {
           resolve({
             url: downloadURL,
@@ -630,21 +628,18 @@ var authenticationFactory = (db => {
     return response.text();
   };
 
-  const login = async (username, password, refreshToken) => {
-    const token = await authenticate(username, password, refreshToken); // login to firebase
+  const tokenLogin = token => from(db.app.auth().signInWithCustomToken(token));
 
-    const results = await db.app.auth().signInWithCustomToken(token.access_token);
-    return token;
+  const currentUser = () => {
+    return db.app.auth().currentUser;
   };
 
-  const tokenLogin = token => db.app.auth().signInWithCustomToken(token);
-
   return {
-    login,
     authenticate,
     signup,
     isUser,
-    tokenLogin
+    tokenLogin,
+    currentUser
   };
 });
 
