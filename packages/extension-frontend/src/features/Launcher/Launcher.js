@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import MainMenu from './MainMenu';
-import ControlPanel from '../Window';
+import ControlPanel from './ControlPanel';
 
 const LauncherContainer = styled.div`
   position: fixed;
@@ -17,7 +18,7 @@ const LauncherContainer = styled.div`
   }
 `;
 
-export default class Launcher extends React.PureComponent {
+class Launcher extends React.PureComponent {
   static propTypes = {
     /**
      * Diff Count
@@ -51,3 +52,9 @@ export default class Launcher extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = () => ({
+  count: 0
+});
+
+export default connect(mapStateToProps)(Launcher);

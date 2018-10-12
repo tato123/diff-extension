@@ -1,4 +1,5 @@
 import 'firebase/auth';
+import { from } from 'rxjs';
 
 export interface AuthenticationResponse {
   refresh_token: string;
@@ -74,26 +75,10 @@ export default (db: any) => {
     return response.text();
   };
 
-  const login = async (
-    username: string,
-    password: string,
-    refreshToken: string
-  ): Promise<any> => {
-    const token = await authenticate(username, password, refreshToken);
-    // login to firebase
-
-    const results = await db.app
-      .auth()
-      .signInWithCustomToken(token.access_token);
-
-    return token;
-  };
-
-  const tokenLogin = (token: string): Promise<any> =>
-    db.app.auth().signInWithCustomToken(token);
+  const tokenLogin = (token: string): Observable<any> =>
+    from(db.app.auth().signInWithCustomToken(token));
 
   return {
-    login,
     authenticate,
     signup,
     isUser,

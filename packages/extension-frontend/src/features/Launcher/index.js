@@ -1,1 +1,1 @@
-export { default } from './Launcher.container';
+export { default } from './Launcher';

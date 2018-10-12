@@ -1,21 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { actions } from '../../entities/session';
 
-export default class UserSession extends React.PureComponent {
+class UserSession extends React.PureComponent {
   static propTypes = {
-    getFirebaseToken: PropTypes.func,
+    dispatch: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired
-  };
-
-  static defaultProps = {
-    getFirebaseToken: () => {}
   };
 
   componentDidMount() {
     const {
-      props: { getFirebaseToken }
+      props: { dispatch }
     } = this;
-    getFirebaseToken();
+
+    dispatch(actions.getFirebaseToken());
   }
 
   render() {
@@ -26,3 +25,5 @@ export default class UserSession extends React.PureComponent {
     return <div>{children}</div>;
   }
 }
+
+export default connect(null)(UserSession);

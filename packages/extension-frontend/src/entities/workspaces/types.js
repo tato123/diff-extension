@@ -5,7 +5,7 @@ const GET_WORKSPACE_BY_ID_FAILED =
   '@diff/entities/workspaces/getWorkspaceFailed';
 const ADD_INVITE_USER = '@diff/entities/workspaces/addInviteUser';
 const ADD_INVITE_USER_FAILED = '@diff/entities/workspaces/addInviteUserFailed';
-const CLEAR_WORKSPACES = '@diff/entities/workspaces/addInviteUserFailed';
+const CLEAR_WORKSPACES = '@diff/entities/workspaces/clearWorkspace';
 
 export default {
   GET_WORKSPACE_BY_ID,

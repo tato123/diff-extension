@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { StyleBoundary } from '@diff/shared-components';
 import { MemoryRouter, Switch, Route } from 'react-router';
 import { Provider } from 'react-redux';
-import UserSessionProvider from '../UserSessionProvider';
 import Launcher from '../Launcher';
+import UserSession from '../../components/UserSession';
 
 const App = ({ store }) => (
   <Provider store={store}>
-    <UserSessionProvider>
+    <UserSession>
       <StyleBoundary>
         <MemoryRouter>
           <Switch>
@@ -18,7 +18,7 @@ const App = ({ store }) => (
           </Switch>
         </MemoryRouter>
       </StyleBoundary>
-    </UserSessionProvider>
+    </UserSession>
   </Provider>
 );
 

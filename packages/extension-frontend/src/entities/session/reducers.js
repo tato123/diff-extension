@@ -1,43 +1,26 @@
-import jwtDecode from 'jwt-decode';
-import { types as commonTypes } from '@diff/common';
 import types from './types';
 
 const initialState = {
-  uid: null,
   workspaceId: null,
-  access_token: null,
-  refresh_token: null,
-  featureFlags: null,
-  meta: {
-    isFetchingToken: false,
-    requiresLogin: false,
-    form: 'precheck',
-    error: null
-  }
+  id_token: null,
+  featureFlags: null
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case commonTypes.FEATURE_FLAGS_UPDATE:
-      return {
-        ...state,
-        featureFlags: {
-          ...action.payload.featureFlags
-        }
-      };
     case types.SELECT_WORKSPACE:
       return {
         ...state,
         workspaceId: action.payload.workspaceId
       };
-    case types.SHOW_FORM:
+    case types.GET_FIREBASE_TOKEN:
+      return {
+        ...state
+      };
+    case types.GET_FIREBASE_TOKEN_SUCCESS:
       return {
         ...state,
-        meta: {
-          ...state.meta,
-          submitting: false,
-          form: action.payload.form
-        }
+        id_token: action.payload.firebaseToken
       };
     default:
       return state;
