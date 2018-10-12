@@ -1,14 +1,15 @@
 import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 
-import { admin } from '../../firestore';
+import { admin, db } from '../../firestore';
 import logging from '../../logging';
+import * as userCollection from '../../firestore/users';
 
 const request = require('request');
 
 const config = {
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
-  AUTH0_API_AUDIENCE: process.env.AUTH0_CLIENTID
+  AUTH0_API_AUDIENCE: process.env.AUTH0_API_AUDIENCE
 };
 
 // Auth0 athentication middleware
@@ -23,6 +24,20 @@ const jwtCheck = jwt({
   issuer: `https://${config.AUTH0_DOMAIN}/`,
   algorithm: 'RS256'
 });
+
+const firstTimeCheck = async (req, res, next) => {
+  logging.info('------------[first-time check] ----------');
+  const userDoc = await db.collection('users').doc(req.user.sub);
+  if (userDoc.exists) {
+    console.log('user exists');
+  } else {
+    console.log('user does not exists');
+    await userCollection.registerUser(req.user);
+  }
+  console.log(req.user);
+  logging.info('-----------------------------------------');
+  res.status(200).send(req._user);
+};
 
 // GET object containing Firebase custom token
 export const login = [
@@ -82,33 +97,38 @@ export const refresh = (req, res) => {
   });
 };
 
-export const codeGrantAuthorize = (req, res) => {
-  const {
-    query: { code, redirectUri }
-  } = req;
+export const codeGrantAuthorize = [
+  (req, res, next) => {
+    const {
+      query: { code, redirectUri }
+    } = req;
 
-  const options = {
-    method: 'POST',
-    url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
-    headers: { 'content-type': 'application/json' },
-    body: {
-      grant_type: 'authorization_code',
-      client_id: process.env.AUTH0_CLIENTID,
-      client_secret: process.env.AUTH0_CLIENT_SECRET,
-      code,
-      redirect_uri: redirectUri
-    },
-    json: true
-  };
+    const options = {
+      method: 'POST',
+      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      headers: { 'content-type': 'application/json' },
+      body: {
+        grant_type: 'authorization_code',
+        client_id: process.env.AUTH0_CLIENTID,
+        client_secret: process.env.AUTH0_CLIENT_SECRET,
+        code,
+        redirect_uri: redirectUri
+      },
+      json: true
+    };
 
-  request(options, (error, response, body) => {
-    if (error) {
-      return res.send(403, error);
-    }
-
-    return res.send(200, body);
-  });
-};
+    request(options, (error, response, body) => {
+      if (error) {
+        next(error);
+      }
+      req.headers.authorization = `Bearer ${body.access_token}`;
+      req._user = body;
+      next();
+    });
+  },
+  jwtCheck,
+  firstTimeCheck
+];
 
 export const renewSession = async (req, res) => {
   const {

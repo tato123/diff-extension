@@ -2,7 +2,6 @@ import * as authController from './auth';
 import * as healthController from './health';
 import * as tasksController from './tasks';
 import * as userController from './user';
-import * as hooksController from './hooks';
 
 const express = require('express');
 

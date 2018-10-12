@@ -1,4 +1,4 @@
-import * as emails from '../helpers/email';
+import * as emails from '../../email/email';
 import logging from '../../logging';
 import { db } from '../../firestore';
 

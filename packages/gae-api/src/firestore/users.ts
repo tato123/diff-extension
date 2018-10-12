@@ -1,115 +1,31 @@
-import crypto from 'crypto';
-import querystring from 'querystring';
 import _ from 'lodash';
-import * as emailNotify from './email';
+import * as emailNotify from '../email/email';
 import workspaceHelper from './workspace';
-import { admin, db } from '../../firestore';
-import logging from '../../logging';
+import { admin, db } from './index';
+import logging from '../logging';
 
-const retrieveClaimsForUid = async uid => {
-  const claims = {};
+export interface User {
+  given_name: string;
+  family_name: string;
+  nickname: string;
+  name: string;
+  picture: string;
+  locale: string;
+  updated_at: string;
+  iss: string;
+  sub: string;
+}
 
-  return claims;
-};
-
-const createAndStoreRefreshToken = async uid => {
-  const token = `${crypto.randomBytes(15).toString('hex')}`;
-  await db
-    .collection('refreshToken')
-    .doc(uid)
-    .set({
-      uid,
-      token,
-      created: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-  return token;
-};
-
-const createTokenForUid = async (uid, offlineScope = false) => {
-  const claims = await retrieveClaimsForUid(uid);
-  const access_token = await admin.auth().createCustomToken(uid, claims);
-
-  const customToken = {
-    access_token
-  };
-
-  if (offlineScope) {
-    const refresh_token = await createAndStoreRefreshToken(uid);
-    Object.assign(customToken, { refresh_token });
-  }
-
-  return customToken;
-};
-
-const restoreTokenForUid = async (uid, refresh_token) => {
-  const customToken = await createTokenForUid(uid);
-  return Object.assign({}, customToken, { refresh_token });
-};
+export interface UserToken {
+  id_token: String;
+  access_token: String;
+}
 
 /**
- * Creates a basic user record`
- * @param {String} user
- * @returns {Promise}
+ * For a given email and user id, will automatically accept
+ * all of the associated invites
  */
-const initializeUser = user =>
-  db
-    .collection('users')
-    .doc(user.uid)
-    .set({
-      displayName: user.displayName,
-      photoUrl: null,
-      uid: user.uid,
-      email: user.email,
-      verified: false
-    });
-
-const basicAuthentication = (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-  logging.info('Basic Token', token);
-  const buf = Buffer.from(token, 'base64');
-  const [username, password] = buf.toString().split(':');
-  const offlineScope = true;
-  logging.info('Attempting to perform basic authentication', username);
-  admin
-    .auth()
-    .signInWithEmailAndPassword(username, password)
-    .then(credential => {
-      logging.info('User signed in', username);
-      const { user } = credential;
-      return createTokenForUid(user.uid, offlineScope);
-    })
-    .then(customToken => {
-      res.send(200, customToken);
-    })
-    .catch(error => {
-      res.send(401, { err: error.message });
-    });
-};
-
-const tokenAuthentication = async (req, res) => {
-  try {
-    // As an admin, the app has access to read and write all data, regardless of Security Rules
-    const token = querystring.parse(req.body).refresh_token;
-
-    const snapshot = await db
-      .collection('refreshToken')
-      .where('token', '==', token)
-      .limit(1)
-      .get();
-
-    if (snapshot.docs.length > 0) {
-      const { uid } = snapshot.docs[0].data();
-      const customToken = await restoreTokenForUid(uid, token);
-      return res.send(200, customToken);
-    }
-    return res.send(401, { err: 'Invalid refresh token' });
-  } catch (error) {
-    return res.send(401, { err: error.message });
-  }
-};
-
-const autoAcceptWorkspaceInvites = async (email, uid) => {
+export const acceptInvite = async (user: User) => {
   const querySnapshot = await db
     .collection('invites')
     .where('email', '==', email)
@@ -145,46 +61,34 @@ const autoAcceptWorkspaceInvites = async (email, uid) => {
   return uid;
 };
 
-const signupUser = (email, password, displayName) => {
-  const offlineScope = true;
-  return admin
-    .auth()
-    .createUser({
-      email,
-      password,
-      displayName
-    })
-    .then(credential => initializeUser(credential).then(() => credential.uid))
-    .then(uid => autoAcceptWorkspaceInvites(email, uid))
-    .then(uid => createTokenForUid(uid, offlineScope));
-};
-
-const isUser = async email => {
-  const querySnapshot = await db
-    .collection('users')
-    .where('email', '==', email)
-    .limit(1)
-    .get();
-
-  return !querySnapshot.empty;
-};
-
-const bearerToUid = async authorizationBearer => {
-  if (
-    !_.isNil(authorizationBearer) &&
-    authorizationBearer.toLowerCase().startsWith('bearer')
-  ) {
-    const idToken = authorizationBearer.split(' ')[1];
-    return admin
-      .auth()
-      .verifyIdToken(idToken)
-      .then(decodedToken => decodedToken.uid);
+/**
+ * Handles registering a new user
+ *
+ * @param {User} user - a new user object
+ * @returns {Promise<boolean | void>}
+ */
+export const registerUser = async (user: User): Promise<boolean | void> => {
+  try {
+    logging.info(`Registering a new user${  user.sub}`);
+    await db
+      .collection('users')
+      .doc(user.sub)
+      .set(user);
+    return true;
+  } catch (error) {
+    logging.error(error);
+    return false;
   }
-
-  return null;
 };
 
-const inviteUsers = async (emails, workspaceId, creatorUid) => {
+/**
+ *
+ */
+export const inviteUsers = async (
+  emails: Array<String>,
+  workspaceId: String,
+  creatorUid: String
+): Promise<Array<String>> => {
   const workspaceDoc = await db
     .collection('workspace')
     .doc(workspaceId)
@@ -260,7 +164,7 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
           );
 
           // 2. add the workspace to the user account
-          await updateUserWorkspace(userDoc.id, workspaceDoc.id);
+          await UserModel.updateUserWorkspace(userDoc.id, workspaceDoc.id);
 
           // add to workspace if its an existing user and notify them that they've been added
           logging.info(
@@ -287,7 +191,7 @@ const inviteUsers = async (emails, workspaceId, creatorUid) => {
   );
 };
 
-const updateUserWorkspace = async (uid, workspaceId) => {
+export const updateUserWorkspace = async (uid: string, workspaceId: string) => {
   if (_.isNil(uid) || _.isNil(workspaceId)) {
     throw new Error('uid or workspaceid cannot be null');
   }
@@ -305,14 +209,17 @@ const updateUserWorkspace = async (uid, workspaceId) => {
   return doc.ref.update(userRecord);
 };
 
-const createWorkspace = async (name, userId) => {
+export const createWorkspace = async (
+  name: string,
+  uid: string
+): Promise<string> => {
   const userDoc = await db
     .collection('users')
-    .doc(userId)
+    .doc(uid)
     .get();
 
   if (!userDoc.exists) {
-    return Promise.reject(new Error(`User ${userId} does not exist`));
+    return Promise.reject(new Error(`User ${uid} does not exist`));
   }
   const user = userDoc.data();
 
@@ -321,7 +228,7 @@ const createWorkspace = async (name, userId) => {
   const workspaceDocRef = db.collection('workspace').doc();
   const workspace = {
     users: {
-      [userId]: {
+      [uid]: {
         role: 'creator',
         created: admin.firestore.FieldValue.serverTimestamp()
       }
@@ -331,14 +238,14 @@ const createWorkspace = async (name, userId) => {
   await workspaceDocRef.set(workspace);
 
   // 2. add the workspace to the user account
-  await updateUserWorkspace(userId, workspaceDocRef.id);
+  await UserModel.updateUserWorkspace(uid, workspaceDocRef.id);
 
   // 2. Upgrade the user
   const upgradedEvents = await workspaceHelper.updateEventsForWorkspaceId(
     workspaceDocRef.id,
-    userId
+    uid
   );
-  logging.info(`Updated ${upgradedEvents} for ${userId} and workspace ${name}`);
+  logging.info(`Updated ${upgradedEvents} for ${uid} and workspace ${name}`);
 
   // 3. send email that we have created a new workspace
   await emailNotify.createWorkspace(user.email, name);
@@ -346,7 +253,9 @@ const createWorkspace = async (name, userId) => {
   return workspaceDocRef.id;
 };
 
-const getDomains = async refreshToken => {
+export const getDomains = async (
+  refreshToken: string
+): Promise<Array<string>> => {
   const snapshot = await db
     .collection('refreshToken')
     .where('token', '==', refreshToken)
@@ -389,20 +298,4 @@ const getDomains = async refreshToken => {
     .value();
 
   return sites;
-};
-
-export default {
-  retrieveClaimsForUid,
-  createAndStoreRefreshToken,
-  createTokenForUid,
-  restoreTokenForUid,
-  basicAuthentication,
-  tokenAuthentication,
-  initializeUser,
-  signupUser,
-  isUser,
-  bearerToUid,
-  inviteUsers,
-  createWorkspace,
-  getDomains
 };

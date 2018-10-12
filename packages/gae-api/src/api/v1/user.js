@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Mailgun from 'mailgun-js';
-import userManager from '../helpers/userManager';
+import userManager from '../../firestore/users';
 import logging from '../../logging';
 import mailer from '../../email';
 
@@ -53,6 +53,10 @@ export const verifyUser = async (req, res) => {
 };
 
 export const inviteUsersToWorkspace = async (req, res) => {
+  if (!req.user) {
+    res.send(401, 'User not specified');
+  }
+
   const { emails, workspaceId } = req.body;
   const { authorization } = req.headers;
 

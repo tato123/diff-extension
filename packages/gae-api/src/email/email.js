@@ -1,5 +1,5 @@
 import Mailgun from 'mailgun-js';
-import logging from '../../logging';
+import logging from '../logging';
 
 // Mailgun configuration
 const apiKey = process.env.MAILGUN_API_KEY;

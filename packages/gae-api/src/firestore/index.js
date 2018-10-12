@@ -1,4 +1,4 @@
-import firebaseAdmin from 'firebase-admin';
+import * as firebaseAdmin from 'firebase-admin';
 
 export const admin = firebaseAdmin;
 
@@ -10,6 +10,7 @@ firebaseAdmin.initializeApp({
   databaseURL: process.env.FIREBASE_DATABASE_URL
 });
 
-export const db = admin.firestore();
+const dbInstance = admin.firestore();
 const settings = { timestampsInSnapshots: true };
-db.settings(settings);
+dbInstance.settings(settings);
+export { dbInstance as db };

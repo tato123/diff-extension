@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { db } from '../../firestore';
+import { db } from ".";
 
 const updateEventsForWorkspaceId = async (workspaceId, userId) => {
   if (_.isNil(userId) && _.isNil(workspaceId)) {

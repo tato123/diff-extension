@@ -1222,21 +1222,21 @@
     teeny-request "^3.6.0"
     util.promisify "^1.0.0"
 
-"@google-cloud/firestore@^0.15.4":
-  version "0.15.4"
-  resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-0.15.4.tgz#5a23cc7d0c516d0e019e0a8554749b518a0f6723"
-  integrity sha512-/13TRfZK0oD4DXNuFkfKvITrHTuk0ZOOvbwBg58EunJPoraxJ2ZgboQSSUnI4CdeHZSmmr42z/1BFMEm4Su00Q==
+"@google-cloud/firestore@^0.16.0":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-0.16.1.tgz#aedba92d428cc78f8a6e3eb6ab59e3c8d906f814"
+  integrity sha512-xHb4OdRb0OP0x/8w58WJERtCi9Pr+CsloiUlVAq6fFjSyEcmxgL0V+swE8A/2rI5NGQGwtrN57xwDcis5UM/cQ==
   dependencies:
-    "@google-cloud/common" "^0.20.3"
+    "@google-cloud/projectify" "^0.3.0"
     bun "^0.0.12"
     deep-equal "^1.0.1"
     extend "^3.0.1"
     functional-red-black-tree "^1.0.1"
-    google-gax "^0.17.1"
+    google-gax "^0.18.0"
     google-proto-files "^0.16.1"
     is "^3.2.1"
     lodash.merge "^4.6.1"
-    pkg-up "^2.0.0"
+    protobufjs "^6.8.6"
     through2 "^2.0.3"
 
 "@google-cloud/logging-winston@^0.10.1":
@@ -2217,9 +2217,9 @@
   integrity sha512-bAcW/1aM8/s5iFKhRpu/YJiQf/b1ZwnMRqqsWRCmAqEDQF2zY8Ez3Iu9AcZKFKc3vCJc8KJVpJ6Pn54sJ1BvXQ==
 
 "@types/node@^8.0.53":
-  version "8.10.30"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.30.tgz#2c82cbed5f79d72280c131d2acffa88fbd8dd353"
-  integrity sha512-Le8HGMI5gjFSBqcCuKP/wfHC19oURzkU2D+ERIescUoJd+CmNEMYBib9LQ4zj1HHEZOJQWhw2ZTnbD8weASh/Q==
+  version "8.10.36"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.36.tgz#eac05d576fbcd0b4ea3c912dc58c20475c08d9e4"
+  integrity sha512-SL6KhfM7PTqiFmbCW3eVNwVBZ+88Mrzbuvn9olPsfv43mbiWaFY+nRcz/TGGku0/lc2FepdMbImdMY1JrQ+zbw==
 
 "@types/node@^9.4.6":
   version "9.6.32"
@@ -7798,21 +7798,22 @@ findup@^0.1.5:
     colors "~0.6.0-1"
     commander "~2.1.0"
 
-firebase-admin@^5.12.1:
-  version "5.13.1"
-  resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-5.13.1.tgz#79cfa2ce20c90061ae09176e33b7767c1eb02f96"
-  integrity sha1-ec+iziDJAGGuCRduM7d2fB6wL5Y=
+firebase-admin@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-6.0.0.tgz#6a4be9e38b523ad7b4397b9b35853e4412e135ae"
+  integrity sha512-ai7ensTAZx9iF6z/lMn7JzFJYSl6+uXYm53GGhWlph+npnQli10FF9YB97OjcVUghapDEWzmb6J0VMtB965nsw==
   dependencies:
     "@firebase/app" "^0.3.1"
     "@firebase/database" "^0.3.1"
-    "@google-cloud/firestore" "^0.15.4"
-    "@google-cloud/storage" "^1.6.0"
-    "@types/google-cloud__storage" "^1.1.7"
     "@types/node" "^8.0.53"
     jsonwebtoken "8.1.0"
     node-forge "0.7.4"
+  optionalDependencies:
+    "@google-cloud/firestore" "^0.16.0"
+    "@google-cloud/storage" "^1.6.0"
+    "@types/google-cloud__storage" "^1.1.7"
 
-firebase@^5.0.4, firebase@^5.4.2, firebase@^5.5.0:
+firebase@^5.4.2, firebase@^5.5.0:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-5.5.1.tgz#63077869ebf7948b81a932134f9d3af18908783c"
   integrity sha512-2n8/7+qCcXpEC/4fNB2qWgX0yQx7U2EUoyh6YxgctSyd5gyqtpbjcTMqrCnjMHA514eduVZmjoI+C8GeKXZEUw==
@@ -8734,11 +8735,12 @@ google-auto-auth@^0.10.0:
     google-auth-library "^1.3.1"
     request "^2.79.0"
 
-google-gax@^0.17.1:
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-0.17.1.tgz#825ead4ab68f1cb3a702ed0a6c64d7ac9b882747"
-  integrity sha512-fAKvFx++SRr6bGWamWuVOkJzJnQqMgpJkhaB2oEwfFJ91rbFgEmIPRmZZ/MeIVVFUOuHUVyZ8nwjm5peyTZJ6g==
+google-gax@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-0.18.0.tgz#07ede5c3d8a41be627c168454c3e7ff60f648bfe"
+  integrity sha512-cF2s3aTw1cWDHsjaYfIizJZT0KJF0FSM3laiCX4O/K0ZcdmeE9PitG2bxRH+dY+Sz094//m+JoH1hBtSyOf67A==
   dependencies:
+    "@grpc/proto-loader" "^0.3.0"
     duplexify "^3.6.0"
     extend "^3.0.1"
     globby "^8.0.1"
@@ -8747,7 +8749,7 @@ google-gax@^0.17.1:
     grpc "^1.12.2"
     is-stream-ended "^0.1.4"
     lodash "^4.17.10"
-    protobufjs "^6.8.6"
+    protobufjs "^6.8.8"
     retry-request "^4.0.0"
     through2 "^2.0.3"
 
@@ -13009,13 +13011,6 @@ pkg-dir@^3.0.0:
   integrity sha512-/E57AYkoeQ25qkxMj5PBOVgF8Kiu/h7cYS30Z5+R7WaiCCBfLq58ZI/dSeaEKb9WVJV5n/03QwrN3IeWIFllvw==
   dependencies:
     find-up "^3.0.0"
-
-pkg-up@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-2.0.0.tgz#c819ac728059a461cab1c3889a2be3c49a004d7f"
-  integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
-  dependencies:
-    find-up "^2.1.0"
 
 pluralize@^7.0.0:
   version "7.0.0"
