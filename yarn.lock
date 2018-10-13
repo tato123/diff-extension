@@ -14272,6 +14272,11 @@ react-dropdown@^1.5.0:
   dependencies:
     classnames "^2.2.3"
 
+react-dynamic-font@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-dynamic-font/-/react-dynamic-font-2.0.1.tgz#db4762c4f754ed1e1dde8a9d0c51707398b521eb"
+  integrity sha512-2tk22X7e8ig3d0fZSouPBjv4VeaEdeYuwVwp5LvmA7Q2zIBM6eK/lol3W5/L3j5FtQlUL2e3NYgrspPkb9jhdg==
+
 react-error-overlay@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-3.0.0.tgz#c2bc8f4d91f1375b3dad6d75265d51cd5eeaf655"

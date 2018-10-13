@@ -54,7 +54,7 @@ ListView.Row = styled.div`
 
   &.no-hover {
     background: transparent;
-    cursor: none;
+    cursor: initial;
   }
 `;
 

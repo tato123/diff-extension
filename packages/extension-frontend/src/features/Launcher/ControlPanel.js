@@ -4,6 +4,11 @@ import styled from 'styled-components';
 import { Logo } from '@diff/shared-components';
 import { Route, Switch, Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
+
+import { Icon } from 'react-icons-kit';
+
+import { ic_people_outline as peopleOutline } from 'react-icons-kit/md/ic_people_outline';
+import { ic_settings as settings } from 'react-icons-kit/md/ic_settings';
 import Annotations, { Header as AnnotationHeader } from '../annotations';
 
 const Container = styled.div`
@@ -27,17 +32,32 @@ const Container = styled.div`
 
 const NavHeader = styled.div`
   height: calc(22px + 16px * 2);
-  padding: 32px;
   position: relative;
   background: var(--gradient-header);
 
   background-blend-mode: overlay;
   color: #fff;
-  -webkit-transition: height 0.16s ease-out;
   transition: height 0.16s ease-out;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 16px;
+
+  .iconGroup {
+    div:first-child {
+      margin-right: var(--df-space-3);
+    }
+    cursor: pointer;
+
+    div {
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    div:hover {
+      background: var(--df-hover-color);
+    }
+  }
 `;
 
 const ContentBody = styled.div`
@@ -51,9 +71,13 @@ const ControlPanel = ({ open }) => (
       <Container>
         <NavHeader>
           <Switch>
-            <Route path="/annotations" component={AnnotationHeader} />
+            <Route path="/annotations/:id" component={AnnotationHeader} />
             <Logo.Text />
           </Switch>
+          <div className="iconGroup">
+            <Icon icon={peopleOutline} />
+            <Icon icon={settings} />
+          </div>
         </NavHeader>
         <ContentBody id="df-controlpanel-contentbody">
           <Switch>

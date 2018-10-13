@@ -12,7 +12,14 @@ const View = styled.div`
   
   --df-font-family: 'Heebo', sans-serif;
   --df-text-color-primary: #fff;
+  
+  
   --df-font-size: 16px;
+  --df-font-xs: 10px;
+  --df-font-sm: 14px;
+  --df-font-md: 16px;
+  --df-font-lg: 18px;
+  --df-font-xl: 22px;
   
   --color-purple: #4648b0;
   --color-purple-1: #6848b0;
@@ -23,6 +30,19 @@ const View = styled.div`
   --gradient-purple: linear-gradient(to bottom right, var(--color-purple), var(--color-purple-1) );
   --gradient-header: linear-gradient(to right, var(--color-blue-1), var(--color-blue-2) );
   --border-color: var(--color-white-1);
+
+
+  --df-space-0: 0px;
+  --df-space-1: 4px;
+  --df-space-2: 8px;
+  --df-space-3: 12px;
+  --df-space-4: 16px;
+  --df-space-5: 20px;
+  --df-space-6: 24px;
+  --df-space-7: 28px;
+  --df-space-8: 32px;
+
+  --df-hover-color: rgb(67,202,217,0.1);
 
   font-family: var(--df-font-family);
   color: var(--color-blue-1);
