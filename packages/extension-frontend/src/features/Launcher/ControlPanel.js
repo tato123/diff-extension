@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Logo } from '@diff/shared-components';
 import { Route, Switch, Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
@@ -10,6 +9,7 @@ import { Icon } from 'react-icons-kit';
 import { ic_people_outline as peopleOutline } from 'react-icons-kit/md/ic_people_outline';
 import { ic_settings as settings } from 'react-icons-kit/md/ic_settings';
 import Annotations, { Header as AnnotationHeader } from '../annotations';
+import Link from './Link';
 
 const Container = styled.div`
   z-index: 2147483000 !important;
@@ -47,11 +47,11 @@ const NavHeader = styled.div`
     div:first-child {
       margin-right: var(--df-space-3);
     }
-    cursor: pointer;
-
     div {
       padding: 4px;
       border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
     }
 
     div:hover {
@@ -71,17 +71,24 @@ const ControlPanel = ({ open }) => (
       <Container>
         <NavHeader>
           <Switch>
-            <Route path="/annotations/:id" component={AnnotationHeader} />
-            <Logo.Text />
+            <Route path="/annotations*" component={AnnotationHeader} />
           </Switch>
           <div className="iconGroup">
-            <Icon icon={peopleOutline} />
-            <Icon icon={settings} />
+            <Link to="/workspace">
+              <Icon icon={peopleOutline} />
+            </Link>
+            <Link to="http://localhost:8000/account">
+              <Icon icon={settings} />
+            </Link>
           </div>
         </NavHeader>
         <ContentBody id="df-controlpanel-contentbody">
           <Switch>
-            <Route path="/annotations" component={Annotations} />
+            <Route path="/annotations*" component={Annotations} />
+            <Route
+              path="/workspace"
+              render={() => <div>hello workspace</div>}
+            />
             <Redirect to="/annotations" />
           </Switch>
         </ContentBody>
@@ -91,7 +98,10 @@ const ControlPanel = ({ open }) => (
 );
 
 ControlPanel.propTypes = {
-  open: PropTypes.bool
+  open: PropTypes.bool,
+  history: PropTypes.shape({
+    push: PropTypes.func
+  }).isRequired
 };
 
 ControlPanel.defaultProps = {

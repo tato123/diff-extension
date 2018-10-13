@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Icon } from 'react-icons-kit';
 import { ic_keyboard_arrow_left as leftArrow } from 'react-icons-kit/md/ic_keyboard_arrow_left';
 import styled from 'styled-components';
-import { withRouter } from 'react-router';
 import DynamicFont from 'react-dynamic-font';
+import { Route, Switch } from 'react-router';
+import { Logo } from '@diff/shared-components';
 
 const HeaderDiv = styled.div`
   display: flex;
@@ -42,23 +43,28 @@ class Header extends React.PureComponent {
   };
 
   render() {
-    const {
-      props: { match }
-    } = this;
-
     return (
-      <HeaderDiv>
-        <Icon
-          icon={leftArrow}
-          onClick={this.goBack}
-          style={{ cursor: 'pointer' }}
+      <Switch>
+        <Route exact path="/annotations" render={() => <Logo.Text />} />
+
+        <Route
+          path="/annotations/:id"
+          render={({ match }) => (
+            <HeaderDiv>
+              <Icon
+                icon={leftArrow}
+                onClick={this.goBack}
+                style={{ cursor: 'pointer' }}
+              />
+              <TextContainer>
+                <DynamicFont content={match.params.id} />
+              </TextContainer>
+            </HeaderDiv>
+          )}
         />
-        <TextContainer>
-          <DynamicFont content={match.params.id} />
-        </TextContainer>
-      </HeaderDiv>
+      </Switch>
     );
   }
 }
 
-export default withRouter(Header);
+export default Header;
