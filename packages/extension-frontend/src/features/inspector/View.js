@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { StyleBoundary, Button } from '@diff/shared-components';
 import { connect } from 'react-redux';
 import actions from './actions';
+import SelectElement from './components/highlight';
 
 const InspectContainer = styled.div`
   position: fixed;
@@ -26,11 +27,29 @@ const InspectorContent = styled.div`
   padding: 20px;
 `;
 
-class Inspector extends React.Component {
+class InnerInspector extends React.Component {
   static propTypes = {
+    /**
+     * Whether our inspector should be shown
+     */
     show: PropTypes.bool,
 
+    /**
+     * When the inspector receives a value,
+     * we will call our value function with a value
+     */
+    onValue: PropTypes.func.isRequired,
+
+    /**
+     * Balancing ability to quickly prototype
+     * over correctness.
+     */
     dispatch: PropTypes.func.isRequired,
+
+    /**
+     * When the user performs a cancellation event
+     * we will report this back
+     */
     onCancel: PropTypes.func
   };
 
@@ -68,10 +87,21 @@ class Inspector extends React.Component {
     this.setState({ showHelp: false });
   };
 
+  onSelectElement = element => {
+    /* eslint-disable react/destructuring-assignment */
+    this.props.onValue({ element });
+  };
+
+  onCancelSelect = reason => {
+    this.props.onCancel(reason);
+  };
+
   render() {
     const {
       props: { show },
-      state: { showHelp }
+      state: { showHelp },
+      onSelectElement,
+      onCancelSelect
     } = this;
 
     return ReactDOM.createPortal(
@@ -92,6 +122,13 @@ class Inspector extends React.Component {
                 </InspectorContent>
               </InspectContainer>
             )}
+          {show &&
+            !showHelp && (
+              <SelectElement
+                onSelect={onSelectElement}
+                onCancel={onCancelSelect}
+              />
+            )}
         </div>
       </StyleBoundary>,
 
@@ -102,22 +139,47 @@ class Inspector extends React.Component {
 
 /**
  * Outside components should not directly invoke inspectors
- * actions, instead this exposes a render props method with
- * an underlying dispatcher that handles what a component would
- * normally need to do without exposing the underlying details
- *
+ * actions. Otherwise code-splitting and lazy loading doesn't work.
+ * Instead we create a render prop component to abstract it and when this
+ * component is needed everything is loaded in.
  */
-Inspector.Toggle = connect()(({ dispatch, children }) => (
+const Inspector = ({
+  dispatch,
+  show,
+  setActive,
+  onCancel,
+  onValue,
+  children
+}) => (
   <React.Fragment>
-    {children(() => dispatch(actions.setActive(true)))}
+    {children(() => setActive(true), () => setActive(false))}
+    <InnerInspector
+      dispatch={dispatch}
+      show={show}
+      onCancel={onCancel}
+      onValue={onValue}
+    />
   </React.Fragment>
-));
+);
 
 const mapStateToProps = state => ({
   show: state.inspector.active
 });
 
+const mapDispatchToProps = (dispatch, props) => ({
+  setActive: value => dispatch(actions.setActive(value)),
+  dispatch,
+  onCancel: (...args) => {
+    dispatch(actions.setActive(false));
+    props.onCancel && props.onCancel(...args);
+  },
+  onValue: (...args) => {
+    dispatch(actions.setActive(false));
+    props.onValue && props.onValue(...args);
+  }
+});
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Inspector);

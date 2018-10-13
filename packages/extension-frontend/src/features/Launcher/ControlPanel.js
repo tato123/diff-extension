@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Logo } from '@diff/shared-components';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
-import Annotations from '../annotations';
+import Annotations, { Header as AnnotationHeader } from '../annotations';
 
 const Container = styled.div`
   z-index: 2147483000 !important;
@@ -40,24 +40,27 @@ const NavHeader = styled.div`
   align-items: center;
 `;
 
+const ContentBody = styled.div`
+  max-height: 512px;
+  min-height: 200px;
+`;
+
 const ControlPanel = ({ open }) => (
   <React.Fragment>
     {open && (
       <Container>
         <NavHeader>
-          <Logo.Text />
-        </NavHeader>
-        <div
-          style={{
-            height: '512px',
-            textAlign: 'center',
-            padding: '20px'
-          }}
-        >
           <Switch>
-            <Route component={Annotations} />
+            <Route path="/annotations" component={AnnotationHeader} />
+            <Logo.Text />
           </Switch>
-        </div>
+        </NavHeader>
+        <ContentBody id="df-controlpanel-contentbody">
+          <Switch>
+            <Route path="/annotations" component={Annotations} />
+            <Redirect to="/annotations" />
+          </Switch>
+        </ContentBody>
       </Container>
     )}
   </React.Fragment>

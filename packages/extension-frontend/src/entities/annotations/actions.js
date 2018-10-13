@@ -5,7 +5,7 @@ const addSelector = payload => ({
   payload
 });
 
-const addNewSelector = cssSelector => ({
+const createTransientSelector = cssSelector => ({
   type: types.ADD_NEW_SELECTOR,
   payload: {
     id: cssSelector
@@ -21,6 +21,6 @@ const deleteSelector = selectorId => ({
 
 export default {
   addSelector,
-  addNewSelector,
+  createTransientSelector,
   deleteSelector
 };

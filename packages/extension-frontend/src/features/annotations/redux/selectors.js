@@ -3,11 +3,11 @@ import _ from 'lodash-es';
 
 const annotationsDomain = state => state.entities.annotations;
 
-const allAnnotationValuesSelector = createSelector(
+const allAnnotationIdsSelector = createSelector(
   annotationsDomain,
-  annotations => _.values(annotations.byId, [])
+  annotations => annotations.allIds || []
 );
 
 export default {
-  allAnnotationValuesSelector
+  allAnnotationIdsSelector
 };

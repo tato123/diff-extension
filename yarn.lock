@@ -950,30 +950,6 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/core@^3.6.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.6.1.tgz#d168423b1c38964e50c2cc8aef4cba8076bfe01a"
-  integrity sha512-4RpJ1mNklCgi841D3cYbTWGJ7oVEISSmTXCD4FEWonzPtacWRWGsV7IgzynBtU6oZWUPC7j45SRtYuxacVs2mA==
-  dependencies:
-    "@blueprintjs/icons" "^3.0.0"
-    "@types/dom4" "^2.0.0"
-    classnames "^2.2"
-    dom4 "^2.0.1"
-    normalize.css "^8.0.0"
-    popper.js "^1.14.1"
-    react-popper "^1.0.0"
-    react-transition-group "^2.2.1"
-    resize-observer-polyfill "^1.5.0"
-    tslib "^1.9.0"
-
-"@blueprintjs/icons@^3.0.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.1.0.tgz#7bf137bd30eb74a4d35d4e03e736898ef9ab6025"
-  integrity sha512-6pelVmSOaYoRraaBSQXU7H9Ub12r5o4pm74ddvb2aMDJRLM6iTZYBfHR5ofOqGjgfmPiUicW+lg0GW1NQyaq3g==
-  dependencies:
-    classnames "^2.2"
-    tslib "^1.9.0"
-
 "@firebase/app-types@0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@firebase/app-types/-/app-types-0.3.2.tgz#a92dc544290e2893bd8c02a81e684dae3d8e7c85"
@@ -2074,11 +2050,6 @@
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.29.tgz#a1e514adfbd92f03a224ba54d693111dbf1f3754"
   integrity sha1-oeUUrfvZLwOiJLpU1pMRHb8fN1Q=
-
-"@types/dom4@^2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/dom4/-/dom4-2.0.1.tgz#506d5781b9bcab81bd9a878b198aec7dee2a6033"
-  integrity sha512-kSkVAvWmMZiCYtvqjqQEwOmvKwcH+V4uiv3qPQ8pAh1Xl39xggGEo8gHUqV4waYGHezdFw0rKBR8Jt0CrQSDZA==
 
 "@types/duplexify@^3.5.0":
   version "3.5.0"
@@ -4850,7 +4821,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:
+classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -6389,11 +6360,6 @@ dom-walk@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/dom-walk/-/dom-walk-0.1.1.tgz#672226dc74c8f799ad35307df936aba11acd6018"
   integrity sha1-ZyIm3HTI95mtNTB9+TaroRrNYBg=
-
-dom4@^2.0.1:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/dom4/-/dom4-2.1.3.tgz#f71808fe1f141e4da4ebc43ad5ddb3dd521f2767"
-  integrity sha512-begvh4z5GV0kyxx+YgJZ7sIo/jsELx/v7MQxoLZpOvT5yFo18X8dfgtUmKAwdGuyMeugncylarLHlO4gIK6YNw==
 
 domain-browser@^1.1.1:
   version "1.2.0"
@@ -12107,11 +12073,6 @@ normalize-url@^3.0.0, normalize-url@^3.3.0:
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
-normalize.css@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/normalize.css/-/normalize.css-8.0.0.tgz#14ac5e461612538a4ce9be90a7da23f86e718493"
-  integrity sha512-iXcbM3NWr0XkNyfiSBsoPezi+0V92P9nj84yVV1/UZxRUrGczgX/X91KMAGM0omWLY2+2Q1gKD/XRn4gQRDB2A==
-
 npm-bundled@^1.0.1:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.5.tgz#3c1732b7ba936b3a10325aef616467c0ccbcc979"
@@ -14409,7 +14370,7 @@ react-multi-email@^0.3.6:
   resolved "https://registry.yarnpkg.com/react-multi-email/-/react-multi-email-0.3.8.tgz#a12b3cd9c3494e9e990abfd1724dfd84ece3de9f"
   integrity sha512-ULhBbITQfyvntuF3blh0TiEhT7yDsHI4Wwi+vr2jiJcdqdVRgeFH7Bs2I8Q8u/krHmlj23FwQVMVECQg1dCAfg==
 
-react-popper@^1.0.0, react-popper@^1.0.0-beta.6:
+react-popper@^1.0.0-beta.6:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-1.0.2.tgz#0e72f338b7f15ab9f9ec884e36ae0dad78a3e301"
   integrity sha512-vjZ94ki8sfCAg45MMi4uqnUUWdzbnYkb95sR2+HgiMaAPzQcy4DfDKYtYUOhhE+sdtkufWcUHLv09DmH2Js57w==
@@ -14561,16 +14522,6 @@ react-styleguidist@^7.0.20:
     unist-util-visit "^1.3.1"
     webpack-dev-server "^2.11.2"
     webpack-merge "^4.1.3"
-
-react-transition-group@^2.2.1:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.4.0.tgz#1d9391fabfd82e016f26fabd1eec329dbd922b5a"
-  integrity sha512-Xv5d55NkJUxUzLCImGSanK8Cl/30sgpOEMGc5m86t8+kZwrPxPCPcFqyx83kkr+5Lz5gs6djuvE5By+gce+VjA==
-  dependencies:
-    dom-helpers "^3.3.1"
-    loose-envify "^1.3.1"
-    prop-types "^15.6.2"
-    react-lifecycles-compat "^3.0.4"
 
 react-transition-group@^2.4.0:
   version "2.5.0"
@@ -15181,11 +15132,6 @@ reselect@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
   integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
-
-resize-observer-polyfill@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
-  integrity sha512-M2AelyJDVR/oLnToJLtuDJRBBWUGUvvGigj1411hXhAdyFWqMaqHp7TixW3FpiLuVaikIcR1QL+zqoJoZlOgpg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
