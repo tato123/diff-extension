@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { StyleSheetManager } from 'styled-components';
 import ShadowDom from './styles/ShadowDOM';
 
-import normalize from './core/normalize';
+import normalize from './normalize';
 
 /* prettier-ignore */
 const View = styled.div`
@@ -12,7 +12,8 @@ const View = styled.div`
   
   --df-font-family: 'Heebo', sans-serif;
   --df-text-color-primary: #fff;
-  
+  --df-text-color: rgba(35,28,71,1);
+  --df-text-color-light: rgba(35,28,71,0.5);
   
   --df-font-size: 16px;
   --df-font-xs: 10px;
@@ -43,6 +44,9 @@ const View = styled.div`
   --df-space-8: 32px;
 
   --df-hover-color: rgb(67,202,217,0.1);
+  --df-border-color: rgba(112, 112, 112, 0.1);
+  --df-border: 1px solid var(--df-border-color);
+  --df-scroll-color: var(--df-border-color);
 
   font-family: var(--df-font-family);
   color: var(--color-blue-1);
@@ -75,11 +79,9 @@ const styleContent = `
     opacity:0.1;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    background: rgba(255,255,255,0.5); 
-    -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.5); 
+    background: var(--df-scroll-color); 
+    -webkit-box-shadow: inset 0 0 6px var(--df-scroll-color); 
   }
-
-  
 
   ${normalize}
 

@@ -11,7 +11,7 @@ export * from './components/Tabs';
 export * from './components/Text';
 export * from './components/TextArea';
 export * from './components/StyleBoundary';
-
+export * from './components/Space';
 export * from './components/List';
 export * from './components/Code';
 export * from './components/DateTime';

@@ -8,8 +8,17 @@ import { Icon } from 'react-icons-kit';
 
 import { ic_people_outline as peopleOutline } from 'react-icons-kit/md/ic_people_outline';
 import { ic_settings as settings } from 'react-icons-kit/md/ic_settings';
-import Annotations, { Header as AnnotationHeader } from '../annotations';
-import Link from './Link';
+import Link from '../Link';
+import IconButton from '../../../components/IconButton';
+
+import {
+  Header as AnnotationHeader,
+  Content as AnnotationContent
+} from '../../annotations';
+import {
+  Header as WorkspaceHeader,
+  Content as WorkspaceContent
+} from '../../workspace';
 
 const Container = styled.div`
   z-index: 2147483000 !important;
@@ -47,22 +56,16 @@ const NavHeader = styled.div`
     div:first-child {
       margin-right: var(--df-space-3);
     }
-    div {
-      padding: 4px;
-      border-radius: 4px;
-      cursor: pointer;
-      color: #fff;
-    }
-
-    div:hover {
-      background: var(--df-hover-color);
-    }
   }
 `;
 
 const ContentBody = styled.div`
   max-height: 512px;
   min-height: 200px;
+  height: 200px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 `;
 
 const ControlPanel = ({ open }) => (
@@ -72,23 +75,21 @@ const ControlPanel = ({ open }) => (
         <NavHeader>
           <Switch>
             <Route path="/annotations*" component={AnnotationHeader} />
+            <Route path="/workspace*" component={WorkspaceHeader} />
           </Switch>
           <div className="iconGroup">
             <Link to="/workspace">
-              <Icon icon={peopleOutline} />
+              <IconButton icon={peopleOutline} color="#fff" />
             </Link>
             <Link to="http://localhost:8000/account">
-              <Icon icon={settings} />
+              <IconButton icon={settings} color="#fff" />
             </Link>
           </div>
         </NavHeader>
         <ContentBody id="df-controlpanel-contentbody">
           <Switch>
-            <Route path="/annotations*" component={Annotations} />
-            <Route
-              path="/workspace"
-              render={() => <div>hello workspace</div>}
-            />
+            <Route path="/annotations*" component={AnnotationContent} />
+            <Route path="/workspace*" component={WorkspaceContent} />
             <Redirect to="/annotations" />
           </Switch>
         </ContentBody>
