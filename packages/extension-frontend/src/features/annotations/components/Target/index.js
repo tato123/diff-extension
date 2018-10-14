@@ -46,7 +46,7 @@ const TargetRow = styled(ItemRow)`
   padding: 16px 8px !important;
   z-index: 1;
 
-  transition: box-shadow 150ms cubic-bezier(0, 0, 0.2, 1);
+  transition: box-shadow 125ms cubic-bezier(0, 0, 0.2, 1);
 
   ${props =>
     props.scrollY > 10 &&
@@ -105,8 +105,13 @@ class List extends React.Component {
   };
 
   scrollListener = evt => {
-    console.log(evt.target.scrollTop);
-    this.setState({ scrollY: evt.target.scrollTop });
+    const val = evt.target.scrollTop > 10 ? 21 : 0;
+    const {
+      state: { scrollY }
+    } = this;
+    if (val !== scrollY) {
+      this.setState({ scrollY: val });
+    }
   };
 
   onValue = context => {
