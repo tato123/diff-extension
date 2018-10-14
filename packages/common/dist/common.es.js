@@ -386,8 +386,19 @@ var commentsFactory = (db => {
       });
     });
   };
+  /**
+   * Creates a new comment for a given selector
+   *
+   *
+   * @param {string} comment
+   * @param {string} selector - id of our selector element
+   * @param {[]<File>} uploadAttachment
+   * @param {string} uid
+   * @param {string|null} workspaceId
+   */
 
-  const addNewComment = async (comment, selector, uploadAttachment, uid, workspaceId) => {
+
+  const addNewComment = async (comment, selector, uploadAttachment = [], uid, workspaceId) => {
     if (_.isNil(uid)) {
       throw new Error('UID cannot be undefined');
     }
@@ -402,13 +413,15 @@ var commentsFactory = (db => {
 
     const attachments = await Promise.all(uploadAttachment.map(file => uploadFile(file, uid)));
     const location = browser.url.location();
+    debugger;
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
     const record = {
       comment,
       selector,
       type: 'comment',
       meta: {
         userId: uid,
-        created: Date.now()
+        created: timestamp
       },
       attachments,
       url: {

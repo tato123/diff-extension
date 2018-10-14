@@ -1,8 +1,16 @@
+import React from 'react';
 import { Icon } from 'react-icons-kit';
 import styled from 'styled-components';
 
-const IconButton = styled(Icon)`
-  padding: 4px;
+const IconButtonStyled = styled.button`
+  display: inline-block;
+  box-shadow: none;
+  outline: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+
   border-radius: 4px;
   cursor: pointer;
   ${props => props.color && `color: ${props.color}`};
@@ -10,6 +18,18 @@ const IconButton = styled(Icon)`
   &:hover {
     background: var(--df-hover-color);
   }
+
+  > div {
+    padding: 4px;
+    margin: 0 !important;
+  }
 `;
+
+const IconButton = ({ children, icon, ...rest }) => (
+  <IconButtonStyled {...rest}>
+    <Icon icon={icon} />
+    {children}
+  </IconButtonStyled>
+);
 
 export default IconButton;

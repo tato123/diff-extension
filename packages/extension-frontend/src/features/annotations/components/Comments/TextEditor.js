@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ic_attach_file as attachFile } from 'react-icons-kit/md/ic_attach_file';
 import { ic_send as send } from 'react-icons-kit/md/ic_send';
 
 import styled from 'styled-components';
+import { Formik } from 'formik';
 import IconButton from '../../../../components/IconButton';
 import Row from '../Row';
 
@@ -23,13 +25,76 @@ const TextArea = styled.textarea`
   resize: none;
 `;
 
-const Editor = () => (
-  <CustomRow>
-    <TextArea placeholder="Write a comment..." />
+export default class Editor extends React.Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool
+  };
 
-    <IconButton icon={attachFile} />
-    <IconButton icon={send} />
-  </CustomRow>
-);
+  static defaultProps = {
+    loading: false
+  };
 
-export default Editor;
+  onSubmit = values => {
+    const {
+      props: { onSubmit }
+    } = this;
+    onSubmit(values.comment, values.file);
+  };
+
+  handleAttachImage = () => {
+    this.file.click();
+  };
+
+  render() {
+    const {
+      props: { loading },
+      onSubmit,
+      handleAttachImage
+    } = this;
+
+    return (
+      <Formik initialValues={{ comment: '', files: [] }} onSubmit={onSubmit}>
+        {({ values, handleChange, handleBlur, handleSubmit, setValues }) => (
+          <form onSubmit={handleSubmit}>
+            <CustomRow>
+              <TextArea
+                placeholder="Write a comment..."
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.comment}
+                name="comment"
+              />
+
+              <IconButton
+                icon={attachFile}
+                onClick={handleAttachImage}
+                type="button"
+              >
+                <input
+                  style={{ visibility: 'hidden', position: 'absolute' }}
+                  type="file"
+                  name="file"
+                  ref={file => {
+                    this.file = file;
+                  }}
+                  onChange={e =>
+                    setValues({
+                      ...values,
+                      [e.currentTarget.name]: [
+                        ...(values.file || []),
+                        e.currentTarget.files
+                      ]
+                    })
+                  }
+                />
+              </IconButton>
+
+              <IconButton icon={send} type="submit" loading={loading} />
+            </CustomRow>
+          </form>
+        )}
+      </Formik>
+    );
+  }
+}
