@@ -27,7 +27,8 @@ const common = {
     'firebase/auth',
     'firebase/storage',
     'lodash-es',
-    'jwt-decode'
+    'jwt-decode',
+    'auth0-js'
   ]
 };
 

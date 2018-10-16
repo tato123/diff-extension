@@ -26,7 +26,7 @@ const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
   webAuthInstance.authorize({
     connection: 'google-oauth2',
     redirectUri,
-    scope: 'openid profile offline_access',
+    scope: 'openid profile email offline_access',
     responseType: 'code',
     state,
     nonce,

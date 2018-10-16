@@ -2,9 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import styled from 'styled-components';
 import TextEditorForm from './TextEditor';
 import CommentList from './CommentList';
 import { actions, selectors } from '../../redux';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 auto;
+  height: inherit;
+`;
 
 class Comments extends React.Component {
   static propTypes = {
@@ -32,10 +40,10 @@ class Comments extends React.Component {
     } = this;
 
     return (
-      <div>
+      <Container>
         <TextEditorForm onSubmit={onSubmit} />
         <CommentList comments={comments} />
-      </div>
+      </Container>
     );
   }
 }

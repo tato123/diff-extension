@@ -23,7 +23,7 @@ const TextContainer = styled.div`
   overflow: hidden;
 `;
 
-class Header extends React.PureComponent {
+export default class Header extends React.PureComponent {
   static propTypes = {
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -66,5 +66,3 @@ class Header extends React.PureComponent {
     );
   }
 }
-
-export default Header;

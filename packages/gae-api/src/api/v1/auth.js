@@ -25,27 +25,34 @@ const jwtCheck = jwt({
   algorithm: 'RS256'
 });
 
-const firstTimeCheck = async (req, res, next) => {
+const userProfileSync = async (req, res, next) => {
   logging.info('------------[first-time check] ----------');
-  const userDoc = await db.collection('users').doc(req.user.sub);
+  console.log('user is', req.user.sub);
+
+  const userRef = db.collection('users').doc(req.user.sub);
+
+  const userDoc = await userRef.get();
+
   if (userDoc.exists) {
-    console.log('user exists');
+    console.log('Syncing profile information');
+    await userRef.update(req.user);
   } else {
     console.log('user does not exists');
     await userCollection.registerUser(req.user);
   }
   console.log(req.user);
   logging.info('-----------------------------------------');
-  res.status(200).send(req._user);
+  next();
 };
 
 // GET object containing Firebase custom token
 export const login = [
   jwtCheck,
+  userProfileSync,
   (req, res) => {
     // Create UID from authenticated Auth0 user
     const uid = req.user.sub;
-    logging.debug(`JWT check uid ${JSON.stringify(req.user.sub)}`);
+    logging.debug(`JWT check uid ${JSON.stringify(req.user)}`);
     // Mint token using Firebase Admin SDK
     admin
       .auth()
@@ -121,13 +128,17 @@ export const codeGrantAuthorize = [
       if (error) {
         next(error);
       }
-      req.headers.authorization = `Bearer ${body.access_token}`;
+
+      req.headers.authorization = `Bearer ${body.id_token}`;
       req._user = body;
       next();
     });
   },
   jwtCheck,
-  firstTimeCheck
+  userProfileSync,
+  (req, res) => {
+    res.status(200).send(req._user);
+  }
 ];
 
 export const renewSession = async (req, res) => {

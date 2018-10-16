@@ -17,6 +17,7 @@ const View = styled.div`
   
   --df-font-size: 16px;
   --df-font-xs: 10px;
+  --df-font-sm-1: 12px;
   --df-font-sm: 14px;
   --df-font-md: 16px;
   --df-font-lg: 18px;
@@ -44,7 +45,12 @@ const View = styled.div`
   --df-space-8: 32px;
 
   --df-hover-color: rgb(67,202,217,0.1);
+  --df-hover-color-2: rgb(67,202,217,0.03); /* ultra-light for unclickable elements */
+
+
   --df-border-color: rgba(112, 112, 112, 0.1);
+
+
   --df-border: 1px solid var(--df-border-color);
   --df-scroll-color: var(--df-border-color);
 

@@ -10,6 +10,9 @@ const IconButtonStyled = styled.button`
   background: transparent;
   padding: 0;
   margin: 0;
+  transition: opacity 120ms ease-in;
+
+  ${props => (props.disabled && 'opacity: 0.5; cursor: disabled;') || ''};
 
   border-radius: 4px;
   cursor: pointer;

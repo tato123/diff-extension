@@ -1,11 +1,24 @@
-import { combineEpics, ofType } from "redux-observable";
-import { of } from "rxjs";
-import { mergeMap, map, catchError } from "rxjs/operators";
-import actions, { FetchUserAction } from "./actions";
-import types from "./types";
-import selectors from "./selectors";
+import { combineEpics, ofType } from 'redux-observable';
+import { of, from } from 'rxjs';
+import { mergeMap, map, catchError } from 'rxjs/operators';
+import actions, { FetchUserAction } from './actions';
 
-const fetchUserEpic = (action$: any, state$: any, { api }: { api: any }) =>
+import types from './types';
+import selectors from './selectors';
+
+interface action {
+  [extraProps: string]: any;
+}
+
+interface state {
+  [extraProps: string]: any;
+}
+
+interface injections {
+  api: any;
+}
+
+const fetchUserEpic = (action$: action, state$: state, { api }: injections) =>
   action$.pipe(
     ofType(types.FETCH_USER_REQUEST),
     mergeMap((action: FetchUserAction) => {
@@ -13,8 +26,8 @@ const fetchUserEpic = (action$: any, state$: any, { api }: { api: any }) =>
       const user = selectors.getUserSelector(action.payload.uid)(state);
 
       if (user) {
-        console.warn("already have uid", action.payload.uid);
-        return of(actions.fetchUserFailed("duplicate"));
+        console.warn('already have uid', action.payload.uid);
+        return of(actions.fetchUserFailed('duplicate'));
       }
 
       return api.user.getUser(action.payload.uid).pipe(

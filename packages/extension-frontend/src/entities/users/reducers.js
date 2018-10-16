@@ -1,3 +1,4 @@
+import _ from 'lodash-es';
 import types from './types';
 
 const initialState = {
@@ -9,20 +10,17 @@ const initialState = {
 };
 
 const addUserById = (state, user) => ({
-    byId: {
-      ...state.byId,
-      [user.uid]: {
-        photoUrl: user.photoUrl,
-        email: user.email,
-        displayName: user.displayName,
-        uid: user.uid
-      }
+  byId: {
+    ...state.byId,
+    [user.sub]: {
+      ...user
     }
-  });
+  }
+});
 
 const addUserAllIds = (state, user) => ({
-    allIds: [...state.allIds, user.uid]
-  });
+  allIds: _.uniq([...state.allIds, user.sub])
+});
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {

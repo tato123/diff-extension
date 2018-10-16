@@ -1,9 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import jwtDecode from 'jwt-decode';
 import { StyleBoundary } from '@diff/shared-components';
 
 import styled from 'styled-components';
-import { checkAndRenewSession, authProvider } from '../authentication';
 import Login from './Login';
 import User from './User';
 
@@ -14,15 +14,23 @@ const Container = styled.div`
 `;
 
 export default class Popup extends React.Component {
+  static propTypes = {
+    authProvider: PropTypes.object.isRequired
+  };
+
   state = {
     accessToken: null
   };
 
   async componentDidMount() {
-    this.webAuth = authProvider();
+    const {
+      props: { authProvider }
+    } = this;
 
     try {
-      const { access_token: accessToken } = await checkAndRenewSession();
+      const {
+        access_token: accessToken
+      } = await authProvider.checkAndRenewSession();
       this.setState({ accessToken });
     } catch (error) {
       console.error('No Session available');
@@ -30,7 +38,12 @@ export default class Popup extends React.Component {
   }
 
   logout = () => {
-    this.webAuth.logout({});
+    const {
+      props: { authProvider }
+    } = this;
+
+    authProvider.logout();
+
     // Remove the idToken from storage
     localStorage.clear();
     this.setState({ accessToken: null });
@@ -42,8 +55,9 @@ export default class Popup extends React.Component {
 
   render() {
     const {
+      props: { authProvider },
       state: { accessToken },
-      webAuth
+      logout
     } = this;
 
     return (
@@ -52,8 +66,8 @@ export default class Popup extends React.Component {
           {accessToken && (
             <User
               accessToken={accessToken}
-              onLogout={this.logout}
-              webAuth={webAuth}
+              onLogout={logout}
+              authProvider={authProvider}
             />
           )}
           {!accessToken && <Login />}

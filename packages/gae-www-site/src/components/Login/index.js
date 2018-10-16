@@ -4,23 +4,33 @@ import browser from '@diff/common/dist/browser';
 import auth0 from 'auth0-js';
 
 export default class Login extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.webAuth = new auth0.WebAuth({
-      domain: process.env.AUTH0_DOMAIN,
-      clientID: process.env.AUTH0_CLIENT_ID
-    });
-  }
+  webAuth = new auth0.WebAuth({
+    domain: process.env.AUTH0_DOMAIN,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    scope: 'openid profile email offline_access'
+  });
 
-  onLoginWithGoogle = () => {
+  onLoginWithGoogle = async () => {
     const urlParams = new URLSearchParams(window.location.search);
 
     const state = urlParams.get('state');
     const nonce = urlParams.get('nonce');
     const redirectUri = urlParams.get('return_to');
 
-    // will redirect page if necessary
-    browser.auth.authorize(this.webAuth, state, nonce, redirectUri);
+    // set browser auth0 authorize from our custom stsate,
+    // not sure that this is even needed
+    await browser.storage.html5.local.set({ 'auth0-authorize': state });
+
+    // authorize with auth0
+    this.webAuth.authorize({
+      connection: 'google-oauth2',
+      redirectUri,
+      scope: 'openid profile email offline_access',
+      responseType: 'code',
+      state,
+      nonce,
+      audience: 'https://api.getdiff.app/v1'
+    });
   };
 
   onLoginWithMagicLink = evt => {

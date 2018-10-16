@@ -23,7 +23,7 @@ export default class User extends React.Component {
   static propTypes = {
     accessToken: PropTypes.string.isRequired,
     onLogout: PropTypes.func.isRequired,
-    webAuth: PropTypes.object.isRequired
+    authProvider: PropTypes.object.isRequired
   };
 
   state = {
@@ -34,18 +34,17 @@ export default class User extends React.Component {
     this.getUserProfile();
   }
 
-  getUserProfile = () => {
+  getUserProfile = async () => {
     const {
-      props: { accessToken, webAuth }
+      props: { accessToken, authProvider }
     } = this;
 
-    webAuth.client.userInfo(accessToken, (err, user) => {
-      if (err) {
-        console.error('Unable to get user profile', err);
-        return;
-      }
+    try {
+      const user = await authProvider.getUserProfile(accessToken);
       this.setState({ user });
-    });
+    } catch (error) {
+      console.error('Unable to get user profile', error.message);
+    }
   };
 
   render() {

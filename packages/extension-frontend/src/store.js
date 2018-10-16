@@ -1,7 +1,7 @@
 import { applyMiddleware, createStore } from 'redux';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
-import { initApi } from '@diff/common';
+import { initApi, AuthProvider } from '@diff/common';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 import { postmessageMiddleware } from './middleware/remote';
@@ -12,11 +12,15 @@ import rootReducer from './rootReducer';
 
 export default function configureStore(preloadedState) {
   const api = initApi();
+  const authProvider = new AuthProvider(
+    process.env.AUTH0_DOMAIN,
+    process.env.AUTH0_CLIENT_ID
+  );
 
   // Setup redux-observable
   const rootEpic = combineEpics(entitiesEpic, featureEpic);
   const epicMiddleware = createEpicMiddleware({
-    dependencies: { api }
+    dependencies: { api, authProvider }
   });
 
   // Setup our middlewares

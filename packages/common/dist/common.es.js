@@ -5,6 +5,7 @@ import { Observable, from } from 'rxjs';
 import jwtDecode from 'jwt-decode';
 import _ from 'lodash-es';
 import 'firebase/storage';
+import auth0 from 'auth0-js';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -308,7 +309,7 @@ const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
   webAuthInstance.authorize({
     connection: 'google-oauth2',
     redirectUri,
-    scope: 'openid profile offline_access',
+    scope: 'openid profile email offline_access',
     responseType: 'code',
     state,
     nonce,
@@ -413,7 +414,6 @@ var commentsFactory = (db => {
 
     const attachments = await Promise.all(uploadAttachment.map(file => uploadFile(file, uid)));
     const location = browser.url.location();
-    debugger;
     const timestamp = firebase.firestore.FieldValue.serverTimestamp();
     const record = {
       comment,
@@ -773,5 +773,83 @@ const getDomains = async token => {
   return response.json();
 };
 
-export { actions, types, sources, index as initApi, browser, getDomains };
+class Authentication {
+  constructor(domain, clientID) {
+    _defineProperty(this, "checkAndRenewSession", async () => {
+      try {
+        // get an access token
+        const {
+          access_token,
+          id_token
+        } = await browser.auth.checkSession();
+
+        if (access_token == null) {
+          // attempt to renew the access token
+          const response = await browser.auth.renewSession();
+          const authResult = await response.json();
+          browser.storage.html5.local.set(_objectSpread({}, authResult));
+
+          if (chrome) {
+            chrome.browserAction.setIcon({
+              path: '../images/icon_128.png'
+            });
+          }
+
+          return {
+            access_token: authResult.access_token,
+            id_token: authResult.id_token
+          };
+        }
+
+        return {
+          access_token,
+          id_token
+        };
+      } catch (error) {
+        // no token has been set at all
+        console.error('[#checkAndRenewSession] - error checking session', error);
+
+        if (chrome) {
+          chrome.browserAction.setIcon({
+            path: '../images/inactive_icon_128.png'
+          });
+        }
+
+        throw new Error(`[#checkAndRenewSession] session is invalid${error}`);
+      }
+    });
+
+    _defineProperty(this, "getUserProfile", async accessToken => new Promise((resolve, reject) => {
+      this.auth.client.userInfo(accessToken, (err, user) => {
+        if (err) {
+          return reject(new Error(err));
+        }
+
+        return resolve(user);
+      });
+    }));
+
+    _defineProperty(this, "logout", () => {
+      this.auth.logout({});
+    });
+
+    this.auth = new auth0.WebAuth({
+      domain,
+      clientID,
+      responseType: 'token',
+      scope: 'openid profile email offline_access'
+    });
+  }
+  /**
+   * Chrome implementation of checking and renewing a session.
+   * This method very purposefully manages the side effects of
+   * setting the chrome browseraction icon in addition to checking the
+   * session.
+   *
+   */
+
+
+}
+
+export { actions, types, sources, index as initApi, browser, Authentication as AuthProvider, getDomains };
 //# sourceMappingURL=common.es.js.map

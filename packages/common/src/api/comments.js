@@ -96,7 +96,6 @@ export default db => {
     );
 
     const location = browser.url.location();
-    debugger;
 
     const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 

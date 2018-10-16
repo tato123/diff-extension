@@ -1,9 +1,13 @@
-import { types, actions, browser } from '@diff/common';
+import { types, actions, browser, AuthProvider } from '@diff/common';
 import normalizeUrl from 'normalize-url';
 import _ from 'lodash-es';
 import { getUserDomains } from './user';
 import { getUserToken, getSitePreference } from './storage';
-import { checkAndRenewSession } from '../authentication';
+
+const authProvider = new AuthProvider(
+  process.env.AUTH0_DOMAIN,
+  process.env.AUTH0_CLIENT_ID
+);
 
 /**
  *
@@ -65,8 +69,7 @@ async function exchangeAndStoreFirebaseToken(token) {
 
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    debugger;
-    const { id_token: idToken } = await checkAndRenewSession();
+    const { id_token: idToken } = await authProvider.checkAndRenewSession();
 
     // do the same for a firebase token
     const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);

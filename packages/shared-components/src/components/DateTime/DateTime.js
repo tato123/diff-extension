@@ -1,20 +1,19 @@
-import React from "react";
-import PropTypes from "prop-types";
-import format from "date-fns/format";
-import Label from "components/Text/Label";
-import styled from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import format from 'date-fns/format';
+import Label from 'components/Text/Label';
+import styled from 'styled-components';
 
-const StyledLabel = styled(Label)`
-  letter-spacing: 1.1px;
-  font-size: 11px;
+const DateTimeStyle = styled.span`
+  font-size: var(--df-font-xs);
+  color: var(--df-text-color-light);
+  display: block;
 `;
 
 const DateTime = ({ date }) => (
-  <div>
-    <StyledLabel as="overline">
-      {date && format(date, "dddd, MMM D, YYYY - h:mm A")}
-    </StyledLabel>
-  </div>
+  <DateTimeStyle>
+    {date && format(date, 'dddd, MMM D, YYYY - h:mm A')}
+  </DateTimeStyle>
 );
 
 DateTime.propTypes = {

@@ -62,7 +62,7 @@ const NavHeader = styled.div`
 const ContentBody = styled.div`
   max-height: 512px;
   min-height: 200px;
-  height: 200px;
+  height: 400px;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -81,7 +81,7 @@ const ControlPanel = ({ open }) => (
             <Link to="/workspace">
               <IconButton icon={peopleOutline} color="#fff" />
             </Link>
-            <Link to="http://localhost:8000/account">
+            <Link to={`${process.env.WEB_HOME}/app/account`}>
               <IconButton icon={settings} color="#fff" />
             </Link>
           </div>

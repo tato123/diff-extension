@@ -90,7 +90,12 @@ export default class Editor extends React.Component {
                 />
               </IconButton>
 
-              <IconButton icon={send} type="submit" loading={loading} />
+              <IconButton
+                icon={send}
+                type="submit"
+                loading={loading}
+                disabled={values.comment.length === 0}
+              />
             </CustomRow>
           </form>
         )}
