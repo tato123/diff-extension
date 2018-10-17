@@ -7,6 +7,7 @@ import MenuBubble from './MenuBubble';
 const LauncherContainer = styled(MenuBubble)`
   z-index: 20;
   will-change: transform, opacity;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06), 0 2px 32px rgba(0, 0, 0, 0.16);
 
   img {
     width: 24px;
