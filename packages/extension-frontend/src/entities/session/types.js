@@ -10,6 +10,11 @@ const LOGIN_TO_FIREBASE_FAILED = '@diff/entities/session/loginToFirebaseFailed';
 
 const SESSION_INIT_FAILED = '@diff/entities/session/initSessionFailed';
 const SESSION_INIT_SUCCESS = '@diff/entities/session/initSessionSuccess';
+const SET_DEFAULT_WORKSPACE = '@diff/entities/session/setDefaultWorkspace';
+const SET_DEFAULT_WORKSPACE_SUCCESS =
+  '@diff/entities/session/setDefaultWorkspace/success';
+const SET_DEFAULT_WORKSPACE_FAILED =
+  '@diff/entities/session/setDefaultWorkspace/failed';
 
 export default {
   GET_FIREBASE_TOKEN,
@@ -18,5 +23,8 @@ export default {
   LOGIN_TO_FIREBASE_SUCCESS,
   SESSION_INIT_FAILED,
   LOGIN_TO_FIREBASE_FAILED,
-  SESSION_INIT_SUCCESS
+  SESSION_INIT_SUCCESS,
+  SET_DEFAULT_WORKSPACE,
+  SET_DEFAULT_WORKSPACE_SUCCESS,
+  SET_DEFAULT_WORKSPACE_FAILED
 };

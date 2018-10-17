@@ -1,9 +1,9 @@
-import { combineEpics, ofType } from "redux-observable";
-import { from, of } from "rxjs";
-import { mergeMap, map, catchError, flatMap } from "rxjs/operators";
+import { combineEpics, ofType } from 'redux-observable';
+import { from, of } from 'rxjs';
+import { mergeMap, map, catchError, flatMap } from 'rxjs/operators';
 
-import types from "./types";
-import actions from "./actions";
+import types from './types';
+import actions from './actions';
 
 const addCollaboratorEpic = (action$, state$, { api }) =>
   action$.pipe(
@@ -34,6 +34,12 @@ const addCollaboratorEpic = (action$, state$, { api }) =>
     )
   );
 
+/**
+ * Attempts to create a new workspace for the current user id
+ * @param {*} action$
+ * @param {*} state$
+ * @param {*} param2
+ */
 const createWorkspaceEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.CREATE_WORKSPACE),

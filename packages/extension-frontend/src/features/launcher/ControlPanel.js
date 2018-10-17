@@ -8,17 +8,17 @@ import { Icon } from 'react-icons-kit';
 
 import { ic_people_outline as peopleOutline } from 'react-icons-kit/md/ic_people_outline';
 import { ic_settings as settings } from 'react-icons-kit/md/ic_settings';
-import Link from '../Link';
-import IconButton from '../../../components/IconButton';
+import Link from '../../components/Link';
+import IconButton from '../../components/IconButton';
 
 import {
   Header as AnnotationHeader,
   Content as AnnotationContent
-} from '../../annotations';
+} from '../annotations';
 import {
   Header as WorkspaceHeader,
   Content as WorkspaceContent
-} from '../../workspace';
+} from '../workspace';
 
 const Container = styled.div`
   z-index: 2147483000 !important;
@@ -81,7 +81,7 @@ const ControlPanel = ({ open }) => (
             <Link to="/workspace">
               <IconButton icon={peopleOutline} color="#fff" />
             </Link>
-            <Link to={`${process.env.WEB_HOME}/app/account`}>
+            <Link to={`${process.env.WEB_HOME}/app/account`} target="_blank">
               <IconButton icon={settings} color="#fff" />
             </Link>
           </div>

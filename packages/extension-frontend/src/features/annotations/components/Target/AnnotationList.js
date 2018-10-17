@@ -4,7 +4,7 @@ import { Space } from '@diff/shared-components';
 import { Icon } from 'react-icons-kit';
 import { ic_mode_comment as commentIcon } from 'react-icons-kit/md/ic_mode_comment';
 import styled from 'styled-components';
-import ItemRow from './ItemRow';
+import ItemRow from '../../../../components/Row';
 
 const StretchyContainer = styled.div`
   display: flex;
@@ -35,7 +35,12 @@ const TargetRow = ({ annotations, onClick, innerRef }) => (
 
 TargetRow.propTypes = {
   annotations: PropTypes.array.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  innerRef: PropTypes.func
+};
+
+TargetRow.defaultProps = {
+  innerRef: null
 };
 
 export default TargetRow;

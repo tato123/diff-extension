@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Mailgun from 'mailgun-js';
-import userManager from '../../firestore/users';
+import * as userManager from '../../firestore/users';
 import logging from '../../logging';
 import mailer from '../../email';
 

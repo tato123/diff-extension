@@ -219,9 +219,18 @@ var userFactory = (db => {
     });
   });
 
+  const setDefaultWorkspace$ = workspaceId => {
+    debugger;
+    const user = db.app.auth().currentUser;
+    return from(db.collection('users').doc(user.uid).update({
+      defaultWorkspaceId: workspaceId
+    }));
+  };
+
   return {
     user$,
-    getUser
+    getUser,
+    setDefaultWorkspace$
   };
 });
 
@@ -453,66 +462,62 @@ var commentsFactory = (db => {
 });
 
 var workspaceFactory = (db => {
-  const workspaceRef = db.collection("workspace");
+  const workspaceRef = db.collection('workspace');
 
-  const workspaces$ = uid => {
-    return Observable.create(observer => {
-      if (_.isNil(uid)) {
-        observer.error("uid cannot be null");
-        observer.complete();
-        return;
-      }
+  const workspaces$ = uid => Observable.create(observer => {
+    if (_.isNil(uid)) {
+      observer.error('uid cannot be null');
+      observer.complete();
+      return;
+    }
 
-      const unsubscribe = workspaceRef.where(`users.${uid}.role`, ">", "").onSnapshot(querySnapshot => {
-        querySnapshot.docChanges().forEach(({
-          doc,
-          type
-        }) => {
-          const data = doc.data();
-          observer.next({
-            data,
-            type,
-            id: doc.id
-          });
+    const unsubscribe = workspaceRef.where(`users.${uid}.role`, '>', '').onSnapshot(querySnapshot => {
+      querySnapshot.docChanges().forEach(({
+        doc,
+        type
+      }) => {
+        const data = doc.data();
+        observer.next({
+          data,
+          type,
+          id: doc.id
         });
-      }, err => {
-        observer.error(err);
       });
-      return unsubscribe;
+    }, err => {
+      observer.error(err);
     });
-  };
+    return unsubscribe;
+  });
 
-  const workspaceForId$ = workspaceId => {
-    return Observable.create(observer => {
-      if (_.isNil(workspaceId)) {
-        observer.error("workspaceId cannot be null");
-        observer.complete();
-        return;
+  const workspaceForId$ = workspaceId => Observable.create(observer => {
+    if (_.isNil(workspaceId)) {
+      observer.error('workspaceId cannot be null');
+      observer.complete();
+      return;
+    }
+
+    const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(doc => {
+      if (doc.exists) {
+        const queryResponse = {
+          data: doc.data(),
+          id: doc.id
+        };
+        observer.next(queryResponse);
+      } else {
+        observer.error('document does not exist');
       }
-
-      const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(doc => {
-        if (doc.exists) {
-          const queryResponse = {
-            data: doc.data(),
-            id: doc.id
-          };
-          observer.next(queryResponse);
-        } else {
-          observer.error("document does not exist");
-        }
-      }, err => {
-        observer.error(err);
-      });
-      return unsubscribe;
+    }, err => {
+      observer.error(err);
     });
-  };
+    return unsubscribe;
+  });
 
   const getIdToken = async () => {
     const user = db.app.auth().currentUser;
     const idToken = user && (await user.getIdToken(true));
 
     if (_.isNil(idToken)) {
-      throw new Error("User Token not retrievable. Is user logged in?");
+      throw new Error('User Token not retrievable. Is user logged in?');
     }
 
     return idToken;
@@ -520,18 +525,18 @@ var workspaceFactory = (db => {
 
   const addCollaborators = async (emails, workspaceId) => {
     if (_.isEmpty(emails) || _.isNil(emails)) {
-      throw new Error("emails is required");
+      throw new Error('emails is required');
     }
 
     if (_.isNil(workspaceId)) {
-      throw new Error("workspace id is required");
+      throw new Error('workspace id is required');
     }
 
     const idToken = await getIdToken();
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
@@ -540,7 +545,7 @@ var workspaceFactory = (db => {
       })
     };
     const response = await fetch(`${process.env.API_SERVER}/invite`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
@@ -554,14 +559,14 @@ var workspaceFactory = (db => {
 
   const createWorkspace = async name => {
     if (_.isNil(name)) {
-      throw new Error("Workspace name is required");
+      throw new Error('Workspace name is required');
     }
 
     const idToken = await getIdToken();
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
@@ -569,7 +574,7 @@ var workspaceFactory = (db => {
       })
     };
     const response = await fetch(`${process.env.API_SERVER}/workspace`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {

@@ -29,8 +29,8 @@ class Comments extends React.Component {
     const {
       props: { match, addComment }
     } = this;
-
-    addComment(comment, match.params.id, files);
+    const id = decodeURIComponent(match.params.id);
+    addComment(comment, id, files);
   };
 
   render() {

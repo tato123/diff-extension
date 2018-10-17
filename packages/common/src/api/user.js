@@ -1,11 +1,12 @@
 import 'firebase/auth';
 
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 
 export default db => {
   const userRef = db.collection('users');
 
-  const user$ = uid => Observable.create(observer => {
+  const user$ = uid =>
+    Observable.create(observer => {
       if (uid == null || uid === undefined) {
         observer.error('uid cannot be null');
         observer.complete();
@@ -20,7 +21,8 @@ export default db => {
       return unsubscribe;
     });
 
-  const getUser = uid => Observable.create(observer => {
+  const getUser = uid =>
+    Observable.create(observer => {
       db.collection('users')
         .doc(uid)
         .get()
@@ -39,8 +41,23 @@ export default db => {
         });
     });
 
+  const setDefaultWorkspace$ = workspaceId => {
+    debugger;
+    const user = db.app.auth().currentUser;
+
+    return from(
+      db
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          defaultWorkspaceId: workspaceId
+        })
+    );
+  };
+
   return {
     user$,
-    getUser
+    getUser,
+    setDefaultWorkspace$
   };
 };

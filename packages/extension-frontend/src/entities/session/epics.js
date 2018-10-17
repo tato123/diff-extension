@@ -7,7 +7,6 @@ import actions from './actions';
 import { actions as userEntityActions } from '../users';
 import { actions as remoteActions } from '../../middleware/remote';
 import { actions as workspaceActions } from '../workspaces';
-import selectors from './selectors';
 
 const getFirebaseCustomTokenRequestEpic = action$ =>
   action$.pipe(
@@ -23,15 +22,28 @@ const useCustomTokenToLoginEpic = (action$, state$, { api }) =>
     catchError(err => of(actions.loginToFirebaseFailed(err.message)))
   );
 
+const setDefaultWorkspaceIdEpic = (action$, state$, { api }) =>
+  action$.pipe(
+    ofType(types.SET_DEFAULT_WORKSPACE),
+    mergeMap(action => api.user
+        .setDefaultWorkspace$(action.payload.workspaceId)
+        .pipe(
+          map(() =>
+            actions.setDefaultWorkspaceSuccess(action.pyaload.workspaceId)
+          )
+        )),
+    catchError(error => of(actions.setDefaultWorkspaceFailed(error.message)))
+  );
+
 const initiateSessionEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.LOGIN_TO_FIREBASE_SUCCESS),
     mergeMap(() => {
-      const user = api.auth.currentUser();
+      const sessionUser = api.auth.currentUser();
 
       // observable action that will
       // fire each time a users profile has been changed
-      return api.user.user$(user.uid).pipe(
+      return api.user.user$(sessionUser.uid).pipe(
         flatMap(user => {
           // we should be update our user here
           const actionMap = [
@@ -43,10 +55,9 @@ const initiateSessionEpic = (action$, state$, { api }) =>
           // user profile if they are new
           if (_.has(user, 'workspaces')) {
             // get all the new workspaces
-            actionMap.push(
-              _.keys(user.workspaces).map(workspaceId =>
-                workspaceActions.getWorkspaceById(workspaceId)
-              )
+
+            _.keys(user.workspaces).forEach(workspaceId =>
+              actionMap.push(workspaceActions.getWorkspaceById(workspaceId))
             );
           }
 
@@ -85,5 +96,6 @@ const initiateSessionEpic = (action$, state$, { api }) =>
 export default combineEpics(
   getFirebaseCustomTokenRequestEpic,
   useCustomTokenToLoginEpic,
-  initiateSessionEpic
+  initiateSessionEpic,
+  setDefaultWorkspaceIdEpic
 );

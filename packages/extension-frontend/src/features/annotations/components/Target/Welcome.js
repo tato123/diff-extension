@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Header, Label, Anchor } from '@diff/shared-components';
+import { Header, Label } from '@diff/shared-components';
 
 const WelcomeContainer = styled.div`
   text-align: center;

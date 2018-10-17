@@ -6,7 +6,10 @@ import { ic_send as send } from 'react-icons-kit/md/ic_send';
 import styled from 'styled-components';
 import { Formik } from 'formik';
 import IconButton from '../../../../components/IconButton';
-import Row from '../Row';
+
+const Row = styled.div`
+  border-bottom: var(--df-border);
+`;
 
 const CustomRow = styled(Row)`
   display: grid;

@@ -38,6 +38,24 @@ const createNewSelector = htmlElement => {
   return newSelector;
 };
 
+const isElementSameAsRule = (cssRule, element) => {
+  if (!_.isString(cssRule)) {
+    console.error('cssrule must be string', cssRule);
+    return false;
+  }
+
+  try {
+    const searchedElement = document.querySelector(cssRule);
+    return searchedElement === null
+      ? false
+      : element.isSameNode(searchedElement);
+  } catch (error) {
+    console.error('Error Searching element', error);
+  }
+
+  return false;
+};
+
 /**
  * Checks if there is an existing selector that matches the element
  * that was passed in
@@ -45,12 +63,9 @@ const createNewSelector = htmlElement => {
  * @param {*} annotations
  */
 const getSelectorForElement = (element, annotations) => {
-  const indexForSelector = _.findIndex(annotations, cssRule => {
-    const searchedElement = document.querySelector(cssRule);
-    return searchedElement === null
-      ? false
-      : element.isSameNode(searchedElement);
-  });
+  const indexForSelector = _.findIndex(annotations, cssRule =>
+    isElementSameAsRule(cssRule, element)
+  );
 
   return indexForSelector !== -1
     ? annotations[indexForSelector]

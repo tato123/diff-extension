@@ -69,7 +69,7 @@ export const acceptInvite = async (user: User) => {
  */
 export const registerUser = async (user: User): Promise<boolean | void> => {
   try {
-    logging.info(`Registering a new user${  user.sub}`);
+    logging.info(`Registering a new user${user.sub}`);
     await db
       .collection('users')
       .doc(user.sub)
@@ -164,7 +164,7 @@ export const inviteUsers = async (
           );
 
           // 2. add the workspace to the user account
-          await UserModel.updateUserWorkspace(userDoc.id, workspaceDoc.id);
+          await updateUserWorkspace(userDoc.id, workspaceDoc.id);
 
           // add to workspace if its an existing user and notify them that they've been added
           logging.info(
@@ -200,13 +200,19 @@ export const updateUserWorkspace = async (uid: string, workspaceId: string) => {
     .collection('users')
     .doc(uid)
     .get();
-  const userRecord = doc.data();
 
-  userRecord.workspaces = Object.assign({}, userRecord.workspaces, {
-    [workspaceId]: true
-  });
+  if (doc.exists) {
+    const userRecord = doc.data();
+    if (userRecord) {
+      userRecord.workspaces = {
+        ...userRecord.workspaces,
+        [workspaceId]: true
+      };
+      return doc.ref.update(userRecord);
+    }
+  }
 
-  return doc.ref.update(userRecord);
+  return Promise.resolve();
 };
 
 export const createWorkspace = async (
@@ -238,7 +244,7 @@ export const createWorkspace = async (
   await workspaceDocRef.set(workspace);
 
   // 2. add the workspace to the user account
-  await UserModel.updateUserWorkspace(uid, workspaceDocRef.id);
+  await updateUserWorkspace(uid, workspaceDocRef.id);
 
   // 2. Upgrade the user
   const upgradedEvents = await workspaceHelper.updateEventsForWorkspaceId(
@@ -298,4 +304,21 @@ export const getDomains = async (
     .value();
 
   return sites;
+};
+
+export const bearerToUid = async (
+  authorizationBearer: string
+): Promise<string | null> => {
+  if (
+    !_.isNil(authorizationBearer) &&
+    authorizationBearer.toLowerCase().startsWith('bearer')
+  ) {
+    const idToken = authorizationBearer.split(' ')[1];
+    return admin
+      .auth()
+      .verifyIdToken(idToken)
+      .then(decodedToken => decodedToken.uid);
+  }
+
+  return null;
 };

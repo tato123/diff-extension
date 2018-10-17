@@ -1,4 +1,4 @@
-import types from "./types";
+import types from './types';
 
 const addWorkspaceUser = (email, workspaceId) => ({
   type: types.ADD_WORKSPACE_USER_REQUEST,
