@@ -49,9 +49,9 @@ class Comments extends React.Component {
 }
 
 const makeMapStateToProps = (state, props) => {
-  const commentsSelector = selectors.makeAllCommentsSelector(
-    props.match.params.id
-  );
+  const id = decodeURIComponent(props.match.params.id);
+
+  const commentsSelector = selectors.makeAllCommentsSelector(id);
 
   return createStructuredSelector({
     comments: commentsSelector

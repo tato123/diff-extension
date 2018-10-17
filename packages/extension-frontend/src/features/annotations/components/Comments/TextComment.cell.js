@@ -9,7 +9,6 @@ import User from '../../../../components/User';
 
 const TextCommentCell = styled.div`
   display: block;
-  height: 100%;
 
   &:hover {
     background: var(--df-hover-color-2);

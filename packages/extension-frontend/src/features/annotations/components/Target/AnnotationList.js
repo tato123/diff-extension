@@ -5,6 +5,7 @@ import { Icon } from 'react-icons-kit';
 import { ic_mode_comment as commentIcon } from 'react-icons-kit/md/ic_mode_comment';
 import styled from 'styled-components';
 import ItemRow from '../../../../components/Row';
+import AnnotationComment from './AnnotationComments';
 
 const StretchyContainer = styled.div`
   display: flex;
@@ -24,7 +25,9 @@ const TargetRow = ({ annotations, onClick, innerRef }) => (
         <span className="annotation-id">{annotation}</span>
         <div className="tags">
           <Space right={1}>
-            <span>0</span>
+            <AnnotationComment annotation={annotation}>
+              {({ comments = [] }) => <span>{comments.length}</span>}
+            </AnnotationComment>
           </Space>
           <Icon icon={commentIcon} />
         </div>

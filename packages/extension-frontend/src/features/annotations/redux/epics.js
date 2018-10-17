@@ -50,7 +50,7 @@ const isElementSameAsRule = (cssRule, element) => {
       ? false
       : element.isSameNode(searchedElement);
   } catch (error) {
-    console.error('Error Searching element', error);
+    console.warn('Error Searching element', error);
   }
 
   return false;
