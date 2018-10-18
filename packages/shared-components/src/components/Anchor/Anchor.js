@@ -1,13 +1,12 @@
-import styled from "styled-components";
-import { get } from "theme";
+import styled from 'styled-components';
 
 const Anchor = styled.a`
   cursor: pointer;
-  color: ${get("colors.white")};
+  color: var(--color-text);
   transition: color 0.25s;
 
   &:hover {
-    color: ${get("colors.white1")};
+    color: var(--color-text);
   }
 `;
 

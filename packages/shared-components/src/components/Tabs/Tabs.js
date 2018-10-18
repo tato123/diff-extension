@@ -1,14 +1,13 @@
-import styled from "styled-components";
-import { Tabs as BluePrintTabs } from "@blueprintjs/core/lib/esm/components/tabs/tabs";
+import styled from 'styled-components';
 
-const Tabs = styled(BluePrintTabs)`
+const Tabs = styled.div`
   min-height: 30px;
   height: 30px;
   max-height: 30px;
   position: relative;
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     height: 1px;
@@ -20,7 +19,7 @@ const Tabs = styled(BluePrintTabs)`
     background-color: #fff;
   }
 
-  .bp3-tab[aria-selected="true"] {
+  .bp3-tab[aria-selected='true'] {
     color: #fff;
   }
 

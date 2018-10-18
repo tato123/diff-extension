@@ -1,29 +1,26 @@
 {
-  "extends": [
-    "standard",
-    "plugin:flowtype/recommended",
-
-    "prettier",
-    "prettier/flowtype",
-
-    "prettier/standard"
-  ],
-  "plugins": ["flowtype", "prettier", "standard"],
   "parser": "babel-eslint",
   "parserOptions": {
+    "ecmaVersion": 2018,
     "sourceType": "module",
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "jsx": false,
+      "jsx": true,
+      "modules": true,
       "sourceType": "module",
-      "allowImportExportEverywhere": false
+      "experimentalObjectRestSpread": true
     }
   },
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["import", "prettier"],
   "env": {
     "es6": true,
-    "node": true
+    "browser": false,
+    "node": true,
+    "jest": true,
+    "webextensions": false
   },
   "rules": {
-    "prettier/prettier": "error"
+    "import/no-unresolved": "off",
+    "consistent-return": "off"
   }
 }

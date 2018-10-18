@@ -1,8 +1,13 @@
-import { storeUserToken, getUserToken, getSitePreference } from './storage';
-import { getUserDomains } from './user';
-import _ from 'lodash';
-import { types, actions } from '@diff/common';
+import { types, actions, browser, AuthProvider } from '@diff/common';
 import normalizeUrl from 'normalize-url';
+import _ from 'lodash-es';
+import { getUserDomains } from './user';
+import { getUserToken, getSitePreference } from './storage';
+
+const authProvider = new AuthProvider(
+  process.env.AUTH0_DOMAIN,
+  process.env.AUTH0_CLIENT_ID
+);
 
 /**
  *
@@ -27,49 +32,73 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
       )
     );
 
+    const { featureFlags = {} } = await browser.storage.local.get([
+      'featureFlags'
+    ]);
+
     if (_.indexOf(sites, action.payload.hostname) !== -1) {
       // combine and send back
-      return postMessageToTab(tabId, actions.fetchUserPreferencesSuccess());
+      return postMessageToTab(
+        tabId,
+        actions.fetchUserPreferencesSuccess({ featureFlags })
+      );
     }
 
     return postMessageToTab(tabId, actions.fetchCacheTokenFailed());
-  } catch (err) {
-    postMessageToTab(tabId, actions.fetchUserPreferencesFailed(err.message));
+  } catch (error) {
+    postMessageToTab(tabId, actions.fetchUserPreferencesFailed(error.message));
+    return error;
   }
 };
 
-const handleCacheTokenRequest = async (tabId, postMessageToTab, action) => {
-  storeUserToken(action.payload.token)
-    .then(() => postMessageToTab(tabId, actions.cacheTokenSuccess()))
-    .catch(() =>
-      postMessageToTab(tabId, actions.cacheTokenFailed('Not able to save'))
-    );
-};
-
-const handleFetchCacheTokenRequest = async (
-  tabId,
-  postMessageToTab,
-  action
-) => {
-  try {
-    const value = await getUserToken();
-    if (!_.isNil(value)) {
-      return postMessageToTab(
-        tabId,
-        actions.fetchCacheTokenSuccess(value.token)
-      );
+async function exchangeAndStoreFirebaseToken(token) {
+  return fetch(`${process.env.API_SERVER}/auth/firebase`, {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-    return postMessageToTab(
-      tabId,
-      actions.fetchCacheTokenFailed('No Token Set')
-    );
-  } catch (err) {
-    postMessageToTab(tabId, actions.fetchCacheTokenFailed(err));
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      throw new Error(response.statusText);
+    })
+    .then(({ firebaseToken }) => firebaseToken);
+}
+
+const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
+  try {
+    const { id_token: idToken } = await authProvider.checkAndRenewSession();
+
+    // do the same for a firebase token
+    const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);
+
+    if (!_.isNil(firebaseToken)) {
+      return postMessageToTab(tabId, {
+        type: types.GET_FIREBASE_TOKEN.SUCCESS,
+        payload: {
+          firebaseToken
+        }
+      });
+    }
+
+    return postMessageToTab(tabId, {
+      type: types.GET_FIREBASE_TOKEN.FAILED,
+      payload: {
+        error: 'Unable to get a new firebase token'
+      }
+    });
+  } catch (error) {
+    postMessageToTab(tabId, {
+      type: types.GET_FIREBASE_TOKEN.FAILED,
+      payload: { error: error.message }
+    });
+    return error;
   }
 };
 
 export default {
   [types.FETCH_USER_PREFERENCES.REQUEST]: handleFetchUserPreferences,
-  [types.CACHE_TOKEN.REQUEST]: handleCacheTokenRequest,
-  [types.FETCH_CACHE_TOKEN.REQUEST]: handleFetchCacheTokenRequest
+  [types.GET_FIREBASE_TOKEN.REQUEST]: handleGetFirebaseToken
 };

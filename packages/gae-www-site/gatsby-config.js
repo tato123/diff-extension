@@ -1,10 +1,13 @@
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Default Starter',
+    title: 'Diff',
+    siteUrl: 'https://www.getdiff.app'
   },
   plugins: [
     'gatsby-plugin-styled-components',
     'gatsby-plugin-react-helmet',
+    'gatsby-plugin-sitemap',
+    'gatsby-plugin-robots-txt',
 
     {
       resolve: `gatsby-plugin-manifest`,
@@ -14,8 +17,8 @@ module.exports = {
         start_url: '/',
         background_color: '#663399',
         theme_color: '#663399',
-        display: 'minimal-ui',
-      },
+        display: 'minimal-ui'
+      }
     },
 
     {
@@ -24,7 +27,9 @@ module.exports = {
         trackingId: 'UA-124426207-2',
         // Puts tracking script in the head instead of the body
         head: false,
-      },
-    },
-  ],
-}
+        // required for gdpr compliance without banner
+        anonymize: true
+      }
+    }
+  ]
+};

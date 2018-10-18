@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\"",
     "styles": "styleguidist server",
     "build:styles": "styleguidist build",
-    "build": "rollup -c rollup.config.js --environment INCLUDE_DEPS,BUILD:production",
+    "build": "rollup -c rollup.config.js --environment BUILD:production",
     "publish": "yarn build",
     "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
   },
@@ -43,7 +43,6 @@
     "styled-components": "3.4.9"
   },
   "dependencies": {
-    "@blueprintjs/core": "^3.6.1",
     "date-fns": "^1.29.0",
     "lodash-es": "^4.17.11"
   }

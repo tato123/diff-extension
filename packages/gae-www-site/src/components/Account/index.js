@@ -1,6 +1,5 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Anchor } from '@diff/shared-components'
+import React from 'react';
+import { Anchor } from '@diff/shared-components';
 
 const Test = () => (
   <div className="container-lg">
@@ -14,6 +13,6 @@ const Test = () => (
       </div>
     </div>
   </div>
-)
+);
 
-export default Test
+export default Test;

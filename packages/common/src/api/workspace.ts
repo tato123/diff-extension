@@ -1,6 +1,6 @@
-import { Observable, Observer } from "rxjs";
-import firebase from "firebase";
-import _ from "lodash-es";
+import { Observable, Observer } from 'rxjs';
+import firebase from 'firebase';
+import _ from 'lodash-es';
 
 export interface QueryResponse {
   data: Object | firebase.firestore.DocumentData | undefined;
@@ -13,18 +13,18 @@ export interface CreateWorkspaceResponse {
 }
 
 export default (db: firebase.firestore.Firestore): Object => {
-  const workspaceRef = db.collection("workspace");
+  const workspaceRef = db.collection('workspace');
 
-  const workspaces$ = (uid: string): Observable<QueryResponse> => {
-    return Observable.create((observer: Observer<QueryResponse>) => {
+  const workspaces$ = (uid: string): Observable<QueryResponse> =>
+    Observable.create((observer: Observer<QueryResponse>) => {
       if (_.isNil(uid)) {
-        observer.error("uid cannot be null");
+        observer.error('uid cannot be null');
         observer.complete();
         return;
       }
 
       const unsubscribe = workspaceRef
-        .where(`users.${uid}.role`, ">", "")
+        .where(`users.${uid}.role`, '>', '')
         .onSnapshot(
           querySnapshot => {
             querySnapshot.docChanges().forEach(({ doc, type }) => {
@@ -39,12 +39,11 @@ export default (db: firebase.firestore.Firestore): Object => {
 
       return unsubscribe;
     });
-  };
 
-  const workspaceForId$ = (workspaceId: string): Observable<QueryResponse> => {
-    return Observable.create((observer: Observer<QueryResponse>) => {
+  const workspaceForId$ = (workspaceId: string): Observable<QueryResponse> =>
+    Observable.create((observer: Observer<QueryResponse>) => {
       if (_.isNil(workspaceId)) {
-        observer.error("workspaceId cannot be null");
+        observer.error('workspaceId cannot be null');
         observer.complete();
         return;
       }
@@ -59,7 +58,7 @@ export default (db: firebase.firestore.Firestore): Object => {
 
             observer.next(queryResponse);
           } else {
-            observer.error("document does not exist");
+            observer.error('document does not exist');
           }
         },
         err => {
@@ -69,14 +68,13 @@ export default (db: firebase.firestore.Firestore): Object => {
 
       return unsubscribe;
     });
-  };
 
   const getIdToken = async () => {
     const user = db.app.auth().currentUser;
     const idToken = user && (await user.getIdToken(true));
 
     if (_.isNil(idToken)) {
-      throw new Error("User Token not retrievable. Is user logged in?");
+      throw new Error('User Token not retrievable. Is user logged in?');
     }
 
     return idToken;
@@ -87,19 +85,19 @@ export default (db: firebase.firestore.Firestore): Object => {
     workspaceId: string
   ): Promise<Object> => {
     if (_.isEmpty(emails) || _.isNil(emails)) {
-      throw new Error("emails is required");
+      throw new Error('emails is required');
     }
 
     if (_.isNil(workspaceId)) {
-      throw new Error("workspace id is required");
+      throw new Error('workspace id is required');
     }
 
     const idToken = await getIdToken();
 
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
@@ -110,7 +108,7 @@ export default (db: firebase.firestore.Firestore): Object => {
 
     const response = await fetch(`${process.env.API_SERVER}/invite`, {
       ...options,
-      method: "POST"
+      method: 'POST'
     });
 
     if (!response.ok) {
@@ -129,15 +127,15 @@ export default (db: firebase.firestore.Firestore): Object => {
     name: string
   ): Promise<CreateWorkspaceResponse> => {
     if (_.isNil(name)) {
-      throw new Error("Workspace name is required");
+      throw new Error('Workspace name is required');
     }
 
     const idToken = await getIdToken();
 
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
@@ -147,7 +145,7 @@ export default (db: firebase.firestore.Firestore): Object => {
 
     const response = await fetch(`${process.env.API_SERVER}/workspace`, {
       ...options,
-      method: "POST"
+      method: 'POST'
     });
 
     if (!response.ok) {

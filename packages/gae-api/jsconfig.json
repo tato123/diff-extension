@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "target": "es6",
-    "baseUrl": ".",
-    "module": "commonjs"
-  },
-  "include": ["api/**/*", "config/*"],
-  "exclude": ["node_modules", "../../node_modules", "**/*.spec.ts"]
-}

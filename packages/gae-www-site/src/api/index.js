@@ -1,18 +1,20 @@
-import * as firebase from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/auth'
+import * as firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/auth';
 
 export default class FirestoreApi {
-  db = null
-  accessToken = null
-  refreshToken = null
+  db = null;
+
+  accessToken = null;
+
+  refreshToken = null;
 
   constructor(db) {
-    this.db = db
+    this.db = db;
   }
 
   static connect() {
-    console.log('[plugin - firebase] initializing connection')
+    console.log('[plugin - firebase] initializing connection');
 
     // connect to firebase
     const config = {
@@ -21,31 +23,31 @@ export default class FirestoreApi {
       databaseURL: process.env.FIREBASE_DATABASE_URL,
       projectId: process.env.FIREBASE_PROJECT_ID,
       storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_SENDER_ID,
-    }
+      messagingSenderId: process.env.FIREBASE_SENDER_ID
+    };
 
-    firebase.initializeApp(config)
+    firebase.initializeApp(config);
 
-    const firestore = firebase.firestore()
-    const settings = { timestampsInSnapshots: true }
-    firestore.settings(settings)
+    const firestore = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    firestore.settings(settings);
 
-    return new FirestoreApi(firestore)
+    return new FirestoreApi(firestore);
   }
 
   get currentPage() {
     if (typeof window !== 'undefined') {
-      return window.location
+      return window.location;
     }
-    return { location: {} }
+    return { location: {} };
   }
 
   get currentUid() {
-    return this.db.app.auth().currentUser && this.db.app.auth().currentUser.uid
+    return this.db.app.auth().currentUser && this.db.app.auth().currentUser.uid;
   }
 
   onCommentAddedToCurrentPage(listenerFn) {
-    const userId = this.currentUid
+    const userId = this.currentUid;
 
     return this.db
       .collection('events')
@@ -56,17 +58,17 @@ export default class FirestoreApi {
           if (!querySnapshot.empty) {
             querySnapshot.docChanges().forEach(({ doc, type }) => {
               if (type === 'added') {
-                listenerFn(doc.data())
+                listenerFn(doc.data());
               }
-            })
+            });
           }
         },
         err => listenerFn(null, err)
-      )
+      );
   }
 
   onAuthStateChanged(cb) {
-    this.db.app.auth().onAuthStateChanged(cb)
+    this.db.app.auth().onAuthStateChanged(cb);
   }
 
   async getCurrentUser() {
@@ -76,86 +78,86 @@ export default class FirestoreApi {
           const userDoc = await this.db
             .collection('users')
             .doc(user.uid)
-            .get()
-          return resolve(userDoc.data())
+            .get();
+          return resolve(userDoc.data());
         }
 
-        resolve(null)
-      })
-    })
+        resolve(null);
+      });
+    });
   }
 
   async getRefreshToken() {
-    const uid = this.currentUid
+    const uid = this.currentUid;
     if (uid == null) {
-      return null
+      return null;
     }
 
     const tokenRef = await this.db
       .collection('refreshToken')
       .doc(uid)
-      .get()
-    return tokenRef.data().token
+      .get();
+    return tokenRef.data().token;
   }
 
   async login(accessToken, refreshToken) {
-    await this.db.app.auth().setPersistence('session')
+    await this.db.app.auth().setPersistence('session');
 
-    const results = this.db.app.auth().signInWithCustomToken(accessToken)
-    this.refreshToken = refreshToken
-    this.accessToken = accessToken
-    return results
+    const results = this.db.app.auth().signInWithCustomToken(accessToken);
+    this.refreshToken = refreshToken;
+    this.accessToken = accessToken;
+    return results;
   }
 
   async isUser(email) {
     const response = await fetch(
       `${process.env.API_SERVER}/validate?email=${email}`
-    )
+    );
 
     if (!response.ok) {
-      return Promise.reject(response.statusText)
+      return Promise.reject(response.statusText);
     }
 
-    return response.text()
+    return response.text();
   }
 
   async signup(email, password, displayName) {
     const options = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email,
         password,
-        displayName,
-      }),
-    }
+        displayName
+      })
+    };
 
     const response = await fetch(`${process.env.API_SERVER}/signup`, {
       ...options,
-      method: 'POST',
-    })
+      method: 'POST'
+    });
 
     if (!response.ok) {
-      return Promise.reject(response.statusText)
+      return Promise.reject(response.statusText);
     }
 
-    return response.json()
+    return response.json();
   }
 
   async updateUser(key, value) {
     /* eslint-disable */
-    debugger
+    debugger;
     return this.db
       .collection('users')
       .doc(this.currentUid)
       .update({ [key]: value })
       .then(() => {
-        console.log('completed succesfully', key, value)
+        console.log('completed succesfully', key, value);
       })
       .catch(error => {
-        console.error(error)
-      })
+        console.error(error);
+      });
   }
 }

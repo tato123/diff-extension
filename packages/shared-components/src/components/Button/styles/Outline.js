@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import Flat from "./Flat";
-import Loading from "./Loading";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import Flat from './Flat';
+import Loading from './Loading';
 
 // prettier-ignore
 const ButtonStyled = styled(Flat)`
@@ -11,7 +11,9 @@ const ButtonStyled = styled(Flat)`
   will-change: transform, opacity, box-shadow, contents;
   font-weight: 200 !important;
   background-color: ${props => props.primary ? '#43cad9' : 'transparent'} !important; 
-  
+  border-radius: 4px;
+  ${props => props.primary && 'color: #fff;'}
+
   &:disabled {
     background-color: ${props => props.primary ? '#29748d' : '#ccc'} !important;
     box-shadow: none !important;

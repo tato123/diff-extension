@@ -1,3 +1,5 @@
-import { Tab } from "@blueprintjs/core/lib/esm/components/tabs/tab";
+import React from 'react';
+
+const Tab = () => <div />;
 
 export default Tab;

@@ -1,6 +1,7 @@
 import _ from 'lodash-es';
+import { browser } from '@diff/common';
 
-export const USER_TOKEN_KEY = 'token';
+export const USER_TOKEN_KEY = 'firebaseToken';
 
 export interface TokenResponse {
   token: {
@@ -8,48 +9,23 @@ export interface TokenResponse {
   };
 }
 
-export const getUserToken = (): Promise<TokenResponse> => get(USER_TOKEN_KEY);
-
-export const storeUserToken = (token: string): Promise<void> =>
-  set(USER_TOKEN_KEY, token);
-
-export const get = (
-  key: string,
-  defaultValue?: any | undefined
-): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get([key], result => {
-      resolve(Object.keys(result).length === 0 ? defaultValue || null : result);
-    });
-  });
-};
-
-export const set = (key: string, value: any): Promise<void> => {
-  const record = { [key]: value };
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set(record, () => {
-      resolve();
-    });
-  });
+export const getUserToken = async (): Promise<TokenResponse> => {
+  const { firebaseToken } = await browser.storage.html5.local.get([
+    'firebaseToken'
+  ]);
+  return Promise.resolve(firebaseToken);
 };
 
 export const addSitePreference = async (value: string) => {
-  const key = 'USER_CLICKED_PREFERENCE';
-  const sites: any = await get(key, []);
-  const innerArray = Array.isArray(sites) ? sites : sites[key];
-
-  if (value) {
-    innerArray.push(value);
-    await set(key, _.uniq(innerArray));
+  const { sites } = await browser.storage.local.get(['sites']);
+  if (_.isNil(sites)) {
+    return browser.storage.local.set({ sites: [value] });
   }
 
-  return innerArray;
+  return browser.storage.local.set({ sites: _.union(sites, [value]) });
 };
 
 export const getSitePreference = async (): Promise<Array<string>> => {
-  const key = 'USER_CLICKED_PREFERENCE';
-  const sites: any = await get(key, []);
-  const innerArray = Array.isArray(sites) ? sites : sites[key];
-
-  return innerArray;
+  const { sites } = await browser.storage.local.get(['sites']);
+  return sites;
 };

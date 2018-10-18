@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const DetailSection = ({ left, right, flexLeft, flexRight, className }) => (
   <div className={`row section ${className}`}>
@@ -14,11 +14,11 @@ const DetailSection = ({ left, right, flexLeft, flexRight, className }) => (
       </div>
     </div>
   </div>
-)
+);
 
 DetailSection.propTypes = {
   left: PropTypes.func.isRequired,
-  right: PropTypes.func.isRequired,
-}
+  right: PropTypes.func.isRequired
+};
 
-export default DetailSection
+export default DetailSection;

@@ -5,33 +5,19 @@ import includePaths from 'rollup-plugin-includepaths';
 import resolve from 'rollup-plugin-node-resolve';
 
 const includePathOptions = {
-  include: {},
   paths: ['src'],
-  external: [],
   extensions: ['.js', '.json', '.ts', '.tsx', '.html']
 };
 
-export default {
-  input: 'src/index.js',
-  output: [
-    {
-      format: 'esm',
-      file: 'dist/common.es.js'
-    }
-  ],
-
+const common = {
   plugins: [
     babel({
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
+      extensions: ['.js', '.ts']
     }),
+    commonjs(),
     includePaths(includePathOptions),
-    filesize(),
-    resolve({
-      jsnext: true,
-      main: true,
-      browser: true
-    }),
-    commonjs()
+    filesize()
   ],
   external: [
     'rxjs',
@@ -40,6 +26,41 @@ export default {
     'firebase/firestore',
     'firebase/auth',
     'firebase/storage',
-    'lodash-es'
+    'lodash-es',
+    'jwt-decode',
+    'auth0-js'
   ]
 };
+
+export default [
+  {
+    input: 'src/_all.js',
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/common.es.js'
+      }
+    ],
+    ...common
+  },
+  {
+    input: 'src/_actionsCreators.js',
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/actions.js'
+      }
+    ],
+    ...common
+  },
+  {
+    input: 'src/browser/index.js',
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/browser.js'
+      }
+    ],
+    ...common
+  }
+];

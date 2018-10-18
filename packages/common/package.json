@@ -7,24 +7,29 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "build": "rollup -c rollup.config.js --environment INCLUDE_DEPS,BUILD:production",
+    "build": "rollup -c rollup.config.js --environment BUILD:production",
     "publish": "yarn build",
-    "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
+    "start:dev": "rollup -c rollup.config.js -m -w --environment BUILD:development"
   },
   "peerDependencies": {
+    "auth0-js": "^9.8.0",
     "firebase": "^5.5.1",
+    "jwt-decode": "^2.2.0",
+    "lodash-es": "^4.17.11",
     "rxjs": "^6.3.2"
   },
   "dependencies": {
-    "lodash-es": "^4.17.11",
     "normalize-url": "^3.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
     "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-export-default-from": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@types/chrome": "^0.0.74",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-filesize": "^4.0.1",

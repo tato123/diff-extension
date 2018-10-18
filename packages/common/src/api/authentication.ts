@@ -1,4 +1,5 @@
-import "firebase/auth";
+import 'firebase/auth';
+import { from, Observable } from 'rxjs';
 
 export interface AuthenticationResponse {
   refresh_token: string;
@@ -23,11 +24,11 @@ export default (db: any) => {
 
     const response = await fetch(`${process.env.API_SERVER}/authenticate`, {
       ...options,
-      method: "POST"
+      method: 'POST'
     });
 
     if (!response.ok) {
-      return Promise.reject("The username or password is incorrect");
+      return Promise.reject('The username or password is incorrect');
     }
 
     return response.json();
@@ -39,9 +40,9 @@ export default (db: any) => {
     displayName: string
   ): Promise<any> => {
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email,
@@ -52,7 +53,7 @@ export default (db: any) => {
 
     const response = await fetch(`${process.env.API_SERVER}/signup`, {
       ...options,
-      method: "POST"
+      method: 'POST'
     });
 
     if (!response.ok) {
@@ -74,25 +75,18 @@ export default (db: any) => {
     return response.text();
   };
 
-  const login = async (
-    username: string,
-    password: string,
-    refreshToken: string
-  ): Promise<any> => {
-    const token = await authenticate(username, password, refreshToken);
-    // login to firebase
+  const tokenLogin = (token: string): Observable<any> =>
+    from(db.app.auth().signInWithCustomToken(token));
 
-    const results = await db.app
-      .auth()
-      .signInWithCustomToken(token.access_token);
-
-    return token;
+  const currentUser = () => {
+    return db.app.auth().currentUser;
   };
 
   return {
-    login,
     authenticate,
     signup,
-    isUser
+    isUser,
+    tokenLogin,
+    currentUser
   };
 };

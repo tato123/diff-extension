@@ -1,14 +1,14 @@
-import "firebase/auth";
+import 'firebase/auth';
 
-import { Observable } from "rxjs";
+import { Observable, from } from 'rxjs';
 
 export default db => {
-  const userRef = db.collection("users");
+  const userRef = db.collection('users');
 
-  const user$ = uid => {
-    return Observable.create(observer => {
+  const user$ = uid =>
+    Observable.create(observer => {
       if (uid == null || uid === undefined) {
-        observer.error("uid cannot be null");
+        observer.error('uid cannot be null');
         observer.complete();
         return;
       }
@@ -20,16 +20,15 @@ export default db => {
 
       return unsubscribe;
     });
-  };
 
-  const getUser = uid => {
-    return Observable.create(observer => {
-      db.collection("users")
+  const getUser = uid =>
+    Observable.create(observer => {
+      db.collection('users')
         .doc(uid)
         .get()
         .then(doc => {
           if (!doc.exists) {
-            observer.error("no user");
+            observer.error('no user');
           } else {
             observer.next(doc.data());
           }
@@ -41,10 +40,24 @@ export default db => {
           observer.complete();
         });
     });
+
+  const setDefaultWorkspace$ = workspaceId => {
+    debugger;
+    const user = db.app.auth().currentUser;
+
+    return from(
+      db
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          defaultWorkspaceId: workspaceId
+        })
+    );
   };
 
   return {
     user$,
-    getUser
+    getUser,
+    setDefaultWorkspace$
   };
 };

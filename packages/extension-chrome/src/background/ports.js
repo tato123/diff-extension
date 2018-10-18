@@ -1,6 +1,6 @@
-import handlers from "./handlers";
-import { postMessageToTabWithDestination } from "./postmessage";
-import { sources } from "@diff/common";
+import handlers from './handlers';
+import { postMessageToTabWithDestination } from './postmessage';
+import { sources } from '@diff/common';
 
 // all of our tabs in the browser
 const ports = {};
@@ -14,7 +14,7 @@ export const registerPort = port => {
   const id = port.sender.tab.id;
 
   if (id in ports) {
-    console.warn("Overwriting tab id", id);
+    console.warn('Overwriting tab id', id);
   }
   ports[id] = port;
   return port.sender.tab.id;
@@ -55,7 +55,7 @@ export const messageListener = tabId => msg => {
     handlers[msg.type](tabId, postDestFrontend, msg);
   } else {
     postDestContentScript(tabId, {
-      err: "No action found for request"
+      err: 'No action found for request'
     });
   }
 };

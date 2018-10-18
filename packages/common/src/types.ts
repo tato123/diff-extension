@@ -1,4 +1,4 @@
-import { AnyAction } from "redux";
+import { AnyAction } from 'redux';
 
 const namespacedAction = (name: string): string => `@diff/common/${name}`;
 
@@ -15,9 +15,11 @@ const asyncAction = (actionType: string): AsyncType => ({
 });
 
 export default {
-  FETCH_USER_PREFERENCES: asyncAction("fetchUserPreferences"),
-  RUN_REQUEST: asyncAction("runRequest"),
-  LOGIN: asyncAction("login"),
-  CACHE_TOKEN: asyncAction("cacheToken"),
-  FETCH_CACHE_TOKEN: asyncAction("fetchCacheToken")
+  FETCH_USER_PREFERENCES: asyncAction('fetchUserPreferences'),
+  RUN_REQUEST: asyncAction('runRequest'),
+  LOGIN: asyncAction('login'),
+  CACHE_TOKEN: asyncAction('cacheToken'),
+  FETCH_CACHE_TOKEN: asyncAction('fetchCacheToken'),
+  FEATURE_FLAGS_UPDATE: 'featureFlagUpdate',
+  GET_FIREBASE_TOKEN: asyncAction('firebaseToken')
 };

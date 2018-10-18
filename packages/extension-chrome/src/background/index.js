@@ -1,9 +1,9 @@
+import { sources, actions } from '@diff/common';
 import { addSitePreference, storeUserToken } from './storage';
 
 import { postMessageToTab } from './postmessage';
 
 import { registerPort, removeListener, messageListener } from './ports';
-import { sources, actions, getFlag } from '@diff/common';
 
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === sources.CONTENT_SCRIPT_PORT_NAME) {

@@ -3,48 +3,53 @@
   "name": "Diff",
   "short_name": "Diff",
   "description": "Track changes, comment, and collaborate on web applications as a team.",
-  "minimum_chrome_version": "49",
-  "version": "0.0.20",
+  "minimum_chrome_version": "60",
+  "version": "0.0.25",
   "permissions": [
     "activeTab",
     "tabs",
     "http://*/",
     "https://*/",
     "storage",
-    "contextMenus"
+    "contextMenus",
+    "identity",
+    "notifications"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
-    "contentScript.js",
+    "js/*",
     "frontend/*",
-    "fonts/*.ttf",
+    "images/*",
+    "html/*",
+    "fonts/*",
     "http://localhost:9000/*",
     "https://api.getdiff.app/*"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["js/background.js"],
     "persistent": false
   },
   "browser_action": {
-    "default_title": "Diff"
+    "default_title": "Diff",
+    "default_icon": "images/icon_128.png",
+    "default_popup": "html/popup.html"
   },
   "icons": {
-    "16": "icon_16.png",
-    "48": "icon_48.png",
-    "128": "icon_128.png"
+    "16": "images/icon_16.png",
+    "48": "images/icon_48.png",
+    "128": "images/icon_128.png"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
+      "js": ["js/contentScript.js"],
       "run_at": "document_end"
     }
   ],
   "options_ui": {
-    "page": "options.html",
+    "page": "html/options.html",
     "open_in_tab": false
   },
   "externally_connectable": {
-    "matches": ["http://localhost:8000/app/", "*://getdiff.app/*"]
+    "matches": ["http://localhost:8000/*", "*://getdiff.app/*"]
   }
 }

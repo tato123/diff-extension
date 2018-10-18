@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Image = styled.img`
   ${({ size }) => {
-    if (size === "sm") {
+    if (size === 'sm') {
       return `
                 width: 32px;
                 height: 32px;

@@ -2,8 +2,10 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 import { Observable, from } from 'rxjs';
+import jwtDecode from 'jwt-decode';
 import _ from 'lodash-es';
 import 'firebase/storage';
+import auth0 from 'auth0-js';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -48,11 +50,13 @@ const asyncAction = actionType => ({
 });
 
 var types = {
-  FETCH_USER_PREFERENCES: asyncAction("fetchUserPreferences"),
-  RUN_REQUEST: asyncAction("runRequest"),
-  LOGIN: asyncAction("login"),
-  CACHE_TOKEN: asyncAction("cacheToken"),
-  FETCH_CACHE_TOKEN: asyncAction("fetchCacheToken")
+  FETCH_USER_PREFERENCES: asyncAction('fetchUserPreferences'),
+  RUN_REQUEST: asyncAction('runRequest'),
+  LOGIN: asyncAction('login'),
+  CACHE_TOKEN: asyncAction('cacheToken'),
+  FETCH_CACHE_TOKEN: asyncAction('fetchCacheToken'),
+  FEATURE_FLAGS_UPDATE: 'featureFlagUpdate',
+  GET_FIREBASE_TOKEN: asyncAction('firebaseToken')
 };
 
 const composeRemoteAction = (action, source, dest) => _objectSpread({
@@ -80,9 +84,7 @@ const fetchUserPreferences = (hostname, pathname) => ({
 
 const fetchUserPreferencesSuccess = preferences => ({
   type: types.FETCH_USER_PREFERENCES.SUCCESS,
-  payload: {
-    preferences: _objectSpread({}, preferences)
-  }
+  payload: _objectSpread({}, preferences)
 });
 
 const fetchUserPreferencesFailed = error => ({
@@ -148,11 +150,11 @@ var actions = {
   fetchCacheTokenSuccess
 };
 
-const CONTENT_SCRIPT_PORT_NAME = "@diff/portname/contentScript";
-const CONTENT_SCRIPT_SOURCE_NAME = "@diff/content";
-const BACKGROUND_SCRIPT_PORT_NAME = "@diff/background";
-const MESSAGES_FRONTEND_SOURCE = "@diff/frontend";
-const MESSAGES_BACKGROUND_SOURCE = "@diff/background";
+const CONTENT_SCRIPT_PORT_NAME = '@diff/portname/contentScript';
+const CONTENT_SCRIPT_SOURCE_NAME = '@diff/content';
+const BACKGROUND_SCRIPT_PORT_NAME = '@diff/background';
+const MESSAGES_FRONTEND_SOURCE = '@diff/frontend';
+const MESSAGES_BACKGROUND_SOURCE = '@diff/background';
 var sources = {
   CONTENT_SCRIPT_PORT_NAME,
   CONTENT_SCRIPT_SOURCE_NAME,
@@ -187,67 +189,77 @@ const initializeFirestore = () => {
 };
 
 var userFactory = (db => {
-  const userRef = db.collection("users");
+  const userRef = db.collection('users');
 
-  const user$ = uid => {
-    return Observable.create(observer => {
-      if (uid == null || uid === undefined) {
-        observer.error("uid cannot be null");
-        observer.complete();
-        return;
+  const user$ = uid => Observable.create(observer => {
+    if (uid == null || uid === undefined) {
+      observer.error('uid cannot be null');
+      observer.complete();
+      return;
+    }
+
+    const unsubscribe = userRef.doc(uid).onSnapshot(doc => {
+      const data = doc.data();
+      observer.next(data);
+    });
+    return unsubscribe;
+  });
+
+  const getUser = uid => Observable.create(observer => {
+    db.collection('users').doc(uid).get().then(doc => {
+      if (!doc.exists) {
+        observer.error('no user');
+      } else {
+        observer.next(doc.data());
       }
-
-      const unsubscribe = userRef.doc(uid).onSnapshot(doc => {
-        const data = doc.data();
-        observer.next(data);
-      });
-      return unsubscribe;
+    }).catch(err => {
+      observer.error(err.message);
+    }).finally(() => {
+      observer.complete();
     });
-  };
+  });
 
-  const getUser = uid => {
-    return Observable.create(observer => {
-      db.collection("users").doc(uid).get().then(doc => {
-        if (!doc.exists) {
-          observer.error("no user");
-        } else {
-          observer.next(doc.data());
-        }
-      }).catch(err => {
-        observer.error(err.message);
-      }).finally(() => {
-        observer.complete();
-      });
-    });
+  const setDefaultWorkspace$ = workspaceId => {
+    debugger;
+    const user = db.app.auth().currentUser;
+    return from(db.collection('users').doc(user.uid).update({
+      defaultWorkspaceId: workspaceId
+    }));
   };
 
   return {
     user$,
-    getUser
+    getUser,
+    setDefaultWorkspace$
   };
 });
 
-const setFlag = async (flag, value) => {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      [flag]: value
-    }, () => {
-      resolve();
-    });
-  });
-};
+const createForStorageType = type => ({
+  get: async keys => new Promise(resolve => {
+    chrome.storage[type].get(keys, resolve);
+  }),
+  set: async items => new Promise(resolve => {
+    chrome.storage[type].set(items, resolve);
+  })
+});
 
-const getFlag = async flag => {
-  return new Promise(resolve => {
-    chrome.storage.local.get([flag], result => {
-      resolve(result[flag]);
-    });
-  });
+const html5Storage = {
+  local: {
+    get: async keys => keys.reduce((acc, key) => _objectSpread({}, acc, {
+      [key]: JSON.parse(localStorage.getItem(key))
+    }), {}),
+    set: async items => {
+      Object.keys(items).forEach(key => {
+        localStorage[key] = JSON.stringify(items[key]);
+      });
+      return null;
+    }
+  }
 };
-
 var storage = {
-  getFlag,
-  setFlag
+  local: createForStorageType('local'),
+  sync: createForStorageType('sync'),
+  html5: html5Storage
 };
 
 const normalizeUrl = require('normalize-url');
@@ -261,52 +273,120 @@ var url = {
   location
 };
 
+const query = async options => new Promise((resolve, reject) => {
+  chrome.tabs.query(options, tabs => tabs.length > 0 ? resolve(tabs[0]) : reject());
+});
+
+var tabs = {
+  query
+};
+
+var runtime = {
+  get id() {
+    return chrome.runtime.id;
+  }
+
+};
+
+const checkSession = async () => {
+  const {
+    id_token,
+    access_token
+  } = await storage.html5.local.get(['id_token', 'access_token']);
+
+  if (!id_token || !access_token) {
+    throw new Error('No token set');
+  }
+
+  const valid = jwtDecode(id_token).exp > Date.now() / 1000;
+  return valid ? {
+    id_token,
+    access_token
+  } : {
+    id_token: null,
+    access_token: null
+  };
+};
+
+const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
+  // set browser auth0 authorize from our custom stsate,
+  // not sure that this is even needed
+  await storage.html5.local.set({
+    'auth0-authorize': state
+  }); // authorize with auth0
+
+  webAuthInstance.authorize({
+    connection: 'google-oauth2',
+    redirectUri,
+    scope: 'openid profile email offline_access',
+    responseType: 'code',
+    state,
+    nonce,
+    audience: 'https://api.getdiff.app/v1'
+  });
+  return Promise.resolve();
+};
+
+const renewSession = async () => {
+  const {
+    refresh_token: refreshToken
+  } = await storage.html5.local.get(['refresh_token']);
+  return fetch(`${process.env.API_SERVER}/auth/renew?refreshToken=${refreshToken}`);
+};
+
+var auth = {
+  renewSession,
+  authorize,
+  checkSession
+};
+
 var browser = {
   storage,
-  url
+  url,
+  tabs,
+  runtime,
+  auth
 };
 
 var commentsFactory = (db => {
   const eventsRef = db.collection('events');
   const commentsRef = eventsRef.where('type', '==', 'comment');
 
-  const comments$ = (uid, workspaceId) => {
-    return Observable.create(observer => {
-      const subject = !_.isNil(workspaceId) ? 'meta.workspaceId' : 'meta.userId';
-      const value = !_.isNil(workspaceId) ? workspaceId : uid;
-      const location = browser.url.location();
-      const unsubscribe = commentsRef.where('url.hostname', '==', location.hostname).where('url.pathname', '==', location.pathname).where(subject, '==', value).onSnapshot(querySnapshot => {
-        if (!querySnapshot.empty) {
-          querySnapshot.docChanges().forEach(({
-            doc,
-            type
-          }) => {
-            const data = doc.data();
-            observer.next({
-              data,
-              type,
-              id: doc.id
-            });
+  const comments$ = (uid, workspaceId) => Observable.create(observer => {
+    const subject = !_.isNil(workspaceId) ? 'meta.workspaceId' : 'meta.userId';
+    const value = !_.isNil(workspaceId) ? workspaceId : uid;
+    const location = browser.url.location();
+    const unsubscribe = commentsRef.where('url.hostname', '==', location.hostname).where('url.pathname', '==', location.pathname).where(subject, '==', value).onSnapshot(querySnapshot => {
+      if (!querySnapshot.empty) {
+        querySnapshot.docChanges().forEach(({
+          doc,
+          type
+        }) => {
+          const data = doc.data();
+          observer.next({
+            data,
+            type,
+            id: doc.id
           });
-        }
-      }, err => observer.err(err));
-      return () => {
-        console.log('Unsubuscribing from comments');
-        unsubscribe();
-      };
-    });
-  };
+        });
+      }
+    }, err => observer.err(err));
+    return () => {
+      console.log('Unsubuscribing from comments');
+      unsubscribe();
+    };
+  });
 
   const uploadFile = async (file, uid) => {
     const storageRef = db.app.storage().ref(`attachments/${uid}/${file.name}`);
     const task = storageRef.put(file);
     return new Promise((resolve, reject) => {
-      task.on('state_changed', function progress(snapshot) {// var percentage =
+      task.on('state_changed', snapshot => {// var percentage =
         //   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         // console.log(percentage);
-      }, function error(error) {
+      }, error => {
         reject(error);
-      }, function complete() {
+      }, () => {
         task.snapshot.ref.getDownloadURL().then(downloadURL => {
           resolve({
             url: downloadURL,
@@ -316,8 +396,19 @@ var commentsFactory = (db => {
       });
     });
   };
+  /**
+   * Creates a new comment for a given selector
+   *
+   *
+   * @param {string} comment
+   * @param {string} selector - id of our selector element
+   * @param {[]<File>} uploadAttachment
+   * @param {string} uid
+   * @param {string|null} workspaceId
+   */
 
-  const addNewComment = async (comment, selector, uploadAttachment, uid, workspaceId) => {
+
+  const addNewComment = async (comment, selector, uploadAttachment = [], uid, workspaceId) => {
     if (_.isNil(uid)) {
       throw new Error('UID cannot be undefined');
     }
@@ -332,13 +423,14 @@ var commentsFactory = (db => {
 
     const attachments = await Promise.all(uploadAttachment.map(file => uploadFile(file, uid)));
     const location = browser.url.location();
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
     const record = {
       comment,
       selector,
       type: 'comment',
       meta: {
         userId: uid,
-        created: Date.now()
+        created: timestamp
       },
       attachments,
       url: {
@@ -370,66 +462,62 @@ var commentsFactory = (db => {
 });
 
 var workspaceFactory = (db => {
-  const workspaceRef = db.collection("workspace");
+  const workspaceRef = db.collection('workspace');
 
-  const workspaces$ = uid => {
-    return Observable.create(observer => {
-      if (_.isNil(uid)) {
-        observer.error("uid cannot be null");
-        observer.complete();
-        return;
-      }
+  const workspaces$ = uid => Observable.create(observer => {
+    if (_.isNil(uid)) {
+      observer.error('uid cannot be null');
+      observer.complete();
+      return;
+    }
 
-      const unsubscribe = workspaceRef.where(`users.${uid}.role`, ">", "").onSnapshot(querySnapshot => {
-        querySnapshot.docChanges().forEach(({
-          doc,
-          type
-        }) => {
-          const data = doc.data();
-          observer.next({
-            data,
-            type,
-            id: doc.id
-          });
+    const unsubscribe = workspaceRef.where(`users.${uid}.role`, '>', '').onSnapshot(querySnapshot => {
+      querySnapshot.docChanges().forEach(({
+        doc,
+        type
+      }) => {
+        const data = doc.data();
+        observer.next({
+          data,
+          type,
+          id: doc.id
         });
-      }, err => {
-        observer.error(err);
       });
-      return unsubscribe;
+    }, err => {
+      observer.error(err);
     });
-  };
+    return unsubscribe;
+  });
 
-  const workspaceForId$ = workspaceId => {
-    return Observable.create(observer => {
-      if (_.isNil(workspaceId)) {
-        observer.error("workspaceId cannot be null");
-        observer.complete();
-        return;
+  const workspaceForId$ = workspaceId => Observable.create(observer => {
+    if (_.isNil(workspaceId)) {
+      observer.error('workspaceId cannot be null');
+      observer.complete();
+      return;
+    }
+
+    const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(doc => {
+      if (doc.exists) {
+        const queryResponse = {
+          data: doc.data(),
+          id: doc.id
+        };
+        observer.next(queryResponse);
+      } else {
+        observer.error('document does not exist');
       }
-
-      const unsubscribe = workspaceRef.doc(workspaceId).onSnapshot(doc => {
-        if (doc.exists) {
-          const queryResponse = {
-            data: doc.data(),
-            id: doc.id
-          };
-          observer.next(queryResponse);
-        } else {
-          observer.error("document does not exist");
-        }
-      }, err => {
-        observer.error(err);
-      });
-      return unsubscribe;
+    }, err => {
+      observer.error(err);
     });
-  };
+    return unsubscribe;
+  });
 
   const getIdToken = async () => {
     const user = db.app.auth().currentUser;
     const idToken = user && (await user.getIdToken(true));
 
     if (_.isNil(idToken)) {
-      throw new Error("User Token not retrievable. Is user logged in?");
+      throw new Error('User Token not retrievable. Is user logged in?');
     }
 
     return idToken;
@@ -437,18 +525,18 @@ var workspaceFactory = (db => {
 
   const addCollaborators = async (emails, workspaceId) => {
     if (_.isEmpty(emails) || _.isNil(emails)) {
-      throw new Error("emails is required");
+      throw new Error('emails is required');
     }
 
     if (_.isNil(workspaceId)) {
-      throw new Error("workspace id is required");
+      throw new Error('workspace id is required');
     }
 
     const idToken = await getIdToken();
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
@@ -457,7 +545,7 @@ var workspaceFactory = (db => {
       })
     };
     const response = await fetch(`${process.env.API_SERVER}/invite`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
@@ -471,14 +559,14 @@ var workspaceFactory = (db => {
 
   const createWorkspace = async name => {
     if (_.isNil(name)) {
-      throw new Error("Workspace name is required");
+      throw new Error('Workspace name is required');
     }
 
     const idToken = await getIdToken();
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
@@ -486,7 +574,7 @@ var workspaceFactory = (db => {
       })
     };
     const response = await fetch(`${process.env.API_SERVER}/workspace`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
@@ -515,11 +603,11 @@ var authenticationFactory = (db => {
       }
     };
     const response = await fetch(`${process.env.API_SERVER}/authenticate`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
-      return Promise.reject("The username or password is incorrect");
+      return Promise.reject('The username or password is incorrect');
     }
 
     return response.json();
@@ -527,9 +615,9 @@ var authenticationFactory = (db => {
 
   const signup = async (email, password, displayName) => {
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email,
@@ -538,7 +626,7 @@ var authenticationFactory = (db => {
       })
     };
     const response = await fetch(`${process.env.API_SERVER}/signup`, _objectSpread({}, options, {
-      method: "POST"
+      method: 'POST'
     }));
 
     if (!response.ok) {
@@ -558,18 +646,18 @@ var authenticationFactory = (db => {
     return response.text();
   };
 
-  const login = async (username, password, refreshToken) => {
-    const token = await authenticate(username, password, refreshToken); // login to firebase
+  const tokenLogin = token => from(db.app.auth().signInWithCustomToken(token));
 
-    const results = await db.app.auth().signInWithCustomToken(token.access_token);
-    return token;
+  const currentUser = () => {
+    return db.app.auth().currentUser;
   };
 
   return {
-    login,
     authenticate,
     signup,
-    isUser
+    isUser,
+    tokenLogin,
+    currentUser
   };
 });
 
@@ -618,11 +706,11 @@ var activityFactory = (db => {
 });
 
 var inviteFactory = (db => {
-  const invitesRef = db.collection("invites");
+  const invitesRef = db.collection('invites');
 
   const invitesForWorkspace$ = workspaceId => {
     return Observable.create(observer => {
-      const unsubscribe = invitesRef.where("workspaceId", "==", workspaceId).where("status", "==", "pending").onSnapshot(querySnapshot => {
+      const unsubscribe = invitesRef.where('workspaceId', '==', workspaceId).where('status', '==', 'pending').onSnapshot(querySnapshot => {
         querySnapshot.docChanges().forEach(({
           doc,
           type
@@ -641,7 +729,7 @@ var inviteFactory = (db => {
 
   const inviteForEmail$ = email => {
     return Observable.create(observer => {
-      const unsubscribe = invitesRef.where(`email`, "==", email).onSnapshot(querySnapshot => {
+      const unsubscribe = invitesRef.where(`email`, '==', email).onSnapshot(querySnapshot => {
         querySnapshot.docChanges().forEach(({
           doc,
           type
@@ -690,5 +778,83 @@ const getDomains = async token => {
   return response.json();
 };
 
-export { actions, types, sources, index as initApi, browser, getDomains };
+class Authentication {
+  constructor(domain, clientID) {
+    _defineProperty(this, "checkAndRenewSession", async () => {
+      try {
+        // get an access token
+        const {
+          access_token,
+          id_token
+        } = await browser.auth.checkSession();
+
+        if (access_token == null) {
+          // attempt to renew the access token
+          const response = await browser.auth.renewSession();
+          const authResult = await response.json();
+          browser.storage.html5.local.set(_objectSpread({}, authResult));
+
+          if (chrome) {
+            chrome.browserAction.setIcon({
+              path: '../images/icon_128.png'
+            });
+          }
+
+          return {
+            access_token: authResult.access_token,
+            id_token: authResult.id_token
+          };
+        }
+
+        return {
+          access_token,
+          id_token
+        };
+      } catch (error) {
+        // no token has been set at all
+        console.error('[#checkAndRenewSession] - error checking session', error);
+
+        if (chrome) {
+          chrome.browserAction.setIcon({
+            path: '../images/inactive_icon_128.png'
+          });
+        }
+
+        throw new Error(`[#checkAndRenewSession] session is invalid${error}`);
+      }
+    });
+
+    _defineProperty(this, "getUserProfile", async accessToken => new Promise((resolve, reject) => {
+      this.auth.client.userInfo(accessToken, (err, user) => {
+        if (err) {
+          return reject(new Error(err));
+        }
+
+        return resolve(user);
+      });
+    }));
+
+    _defineProperty(this, "logout", () => {
+      this.auth.logout({});
+    });
+
+    this.auth = new auth0.WebAuth({
+      domain,
+      clientID,
+      responseType: 'token',
+      scope: 'openid profile email offline_access'
+    });
+  }
+  /**
+   * Chrome implementation of checking and renewing a session.
+   * This method very purposefully manages the side effects of
+   * setting the chrome browseraction icon in addition to checking the
+   * session.
+   *
+   */
+
+
+}
+
+export { actions, types, sources, index as initApi, browser, Authentication as AuthProvider, getDomains };
 //# sourceMappingURL=common.es.js.map

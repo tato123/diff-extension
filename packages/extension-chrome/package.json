@@ -22,26 +22,34 @@
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
     "@types/chrome": "^0.0.72",
     "@types/lodash": "^4.14.116",
+    "babel-loader": "^8.0.4",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "dotenv-webpack": "^1.5.7",
     "prettier": "^1.12.1",
     "typescript": "^3.0.3",
     "webpack": "^4.19.1",
+    "webpack-encoding-plugin": "^0.2.1",
     "write-assets-webpack-plugin": "^1.0.4"
   },
   "dependencies": {
     "@diff/common": "^0.1.0",
+    "auth0-js": "^9.8.0",
     "firebase": "^5.4.2",
+    "jwt-decode": "^2.2.0",
+    "lodash-es": "^4.17.11",
     "normalize-url": "^3.3.0",
+    "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "rxjs": "^6.2.1",
-    "lodash-es": "^4.17.11"
+    "styled-components": "^3.4.9"
   }
 }
