@@ -82,64 +82,112 @@ export const registerUser = async (user: User): Promise<boolean | void> => {
 };
 
 /**
- * Invites a parti
+ *
  */
-export const inviteEmailToWorkspace = async (
-  email: string,
-  firstName: string | undefined,
-  lastName: string | undefined,
-  workspaceId: string,
-  creatorUid: string
-): Promise<void> => {
-  const workspaceRef = await db.collection('workspace').doc(workspaceId);
-  const invitesRef = await db.collection('invites').doc();
-
-  console.log(
-    'Creating an invite for',
-    firstName,
-    lastName,
-    email,
-    'from',
-    creatorUid,
-    'workspace',
-    workspaceId
-  );
-
-  const workspaceDoc = await workspaceRef.get();
+export const inviteUsers = async (
+  emails: Array<String>,
+  workspaceId: String,
+  creatorUid: String
+): Promise<Array<String>> => {
+  const workspaceDoc = await db
+    .collection('workspace')
+    .doc(workspaceId)
+    .get();
 
   if (!workspaceDoc.exists) {
     throw new Error('workspace does not exist');
   }
 
-  const workspace = workspaceDoc.data();
+  const workspaceRecord = workspaceDoc.data();
 
-  await invitesRef.set({
-    email,
-    workspaceId,
-    firstName,
-    lastName,
-    created: admin.firestore.FieldValue.serverTimestamp(),
-    status: 'pending',
-    invitedBy: creatorUid
-  });
+  return Promise.all(
+    emails.map(async email => {
+      // check if we already have an invite for this user and workspace id
+      const inviteEmailToWorkspaceRef = await db
+        .collection('invites')
+        .where('email', '==', email)
+        .where('workspaceId', '==', workspaceId)
+        .get();
 
-  await workspaceRef.update({
-    invites: {
-      ...(workspace.invites || {}),
-      [invitesRef.id]: true
-    }
-  });
+      if (!inviteEmailToWorkspaceRef.empty) {
+        logging.info(
+          `[Already invited to workspace] ${creatorUid} - Attempted to invite user [${email}] to ${workspaceId}`
+        );
+        return;
+      }
 
-  const userDoc = await db
-    .collection('users')
-    .doc(creatorUid)
-    .get();
+      // check if we have a user for this email
+      const userQuerySnapshot = await db
+        .collection('users')
+        .where('email', '==', email)
+        .limit(1)
+        .get();
+      const userExists = !userQuerySnapshot.empty;
 
-  const user = userDoc.data();
-  return emailNotify.inviteNewUserToWorkspace(
-    email,
-    workspace.name,
-    user.given_name
+      // create a new invite for this user
+      const invite = {
+        email,
+        workspaceId,
+        created: admin.firestore.FieldValue.serverTimestamp(),
+        status: userExists ? 'accept.review' : 'pending',
+        invitedBy: creatorUid
+      };
+
+      await db
+        .collection('invites')
+        .doc()
+        .set(invite);
+
+      if (userExists) {
+        userQuerySnapshot.forEach(async userDoc => {
+          const user = await userDoc.data();
+          // this is a secondary check that should be more rare, however
+          // if we no longer have an invite record, at minimum check the workspace to
+          // see if the user is part of it
+          if (_.has(workspaceRecord.users, user.uid)) {
+            logging.info(
+              `[Already in workspace] ${creatorUid} - Attempted to invite user [${email}] to ${workspaceId}`
+            );
+            return;
+          }
+
+          workspaceRecord.users[user.uid] = {
+            role: 'collaborator',
+            created: admin.firestore.FieldValue.serverTimestamp()
+          };
+          await workspaceDoc.ref.update(workspaceRecord);
+
+          // upgrade all of the events
+          await workspaceHelper.updateEventsForWorkspaceId(
+            workspaceDoc.id,
+            userDoc.id
+          );
+
+          // 2. add the workspace to the user account
+          await updateUserWorkspace(userDoc.id, workspaceDoc.id);
+
+          // add to workspace if its an existing user and notify them that they've been added
+          logging.info(
+            `[Existing user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
+          );
+
+          return emailNotify.autoAcceptWorkspaceInvites(
+            email,
+            workspaceRecord.name
+          );
+        });
+      } else {
+        // this is a brand new user, send the appropriate email
+        logging.info(
+          `[New user invited] ${creatorUid} - Added [${email}] to ${workspaceId}`
+        );
+
+        return emailNotify.inviteNewUserToWorkspace(
+          email,
+          workspaceRecord.name
+        );
+      }
+    })
   );
 };
 

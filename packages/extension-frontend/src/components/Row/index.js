@@ -19,6 +19,13 @@ const ItemRow = styled.div`
     cursor: initial;
   }
 
+  ${props =>
+    props.highlight === false &&
+    `
+    background: transparent !important;
+    cursor: initial !important;
+  `};
+
   .annotation-id {
     font-weight: bold;
     color: var(--df-text-color);

@@ -3,8 +3,7 @@ import types from './types';
 
 const initialState = {
   byId: {},
-  allIds: [],
-  invites: []
+  allIds: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -14,7 +13,10 @@ const reducer = (state = initialState, action) => {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: action.payload.data
+          [action.payload.id]: {
+            id: action.payload.id,
+            ...action.payload.data
+          }
         },
         allIds: _.uniq([...state.allIds, action.payload.id])
       };

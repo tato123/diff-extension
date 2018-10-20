@@ -5,32 +5,37 @@ import { mergeMap, map, catchError, flatMap } from 'rxjs/operators';
 import types from './types';
 import actions from './actions';
 
-const addCollaboratorEpic = (action$, state$, { api }) =>
+const inviteToWorkspaceEpic = (action$, state$, { api }) =>
   action$.pipe(
-    ofType(types.ADD_WORKSPACE_USER_REQUEST),
+    ofType(types.INVITE_TO_WORKSPACE_REQUEST),
     mergeMap(action =>
       from(
-        api.workspace.addSingleCollaborator(
+        api.workspace.inviteCollaborator(
           action.payload.email,
+          action.payload.firstName,
+          action.payload.lastName,
           action.payload.workspaceId
         )
       ).pipe(
         map(() =>
-          actions.addWorkspaceUserSuccess(
+          actions.inviteToWorkspaceSuccess(
             action.payload.email,
             action.payload.workspaceId
           )
         ),
         catchError(error =>
           of(
-            actions.addWorkspaceUserFailed(
-              action.payload.workspace,
+            actions.inviteToWorkspaceFailed(
+              action.payload.email,
               action.payload.workspaceId,
-              error
+              error.message
             )
           )
         )
       )
+    ),
+    catchError(error =>
+      of(actions.inviteToWorkspaceFailed(null, null, error.message))
     )
   );
 
@@ -63,4 +68,4 @@ const createWorkspaceEpic = (action$, state$, { api }) =>
     )
   );
 
-export default combineEpics(addCollaboratorEpic, createWorkspaceEpic);
+export default combineEpics(inviteToWorkspaceEpic, createWorkspaceEpic);

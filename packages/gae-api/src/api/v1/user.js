@@ -52,12 +52,16 @@ export const verifyUser = async (req, res) => {
   }
 };
 
-export const inviteUsersToWorkspace = async (req, res) => {
-  if (!req.user) {
-    res.send(401, 'User not specified');
-  }
-
-  const { emails, workspaceId } = req.body;
+/**
+ * Sends an invitation to an email address
+ * enabling someone to opt into a workspace
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+export const inviteToWorkspace = async (req, res) => {
+  const { id: workspaceId } = req.params;
+  const { email, firstName, lastName } = req.body;
   const { authorization } = req.headers;
 
   try {
@@ -65,12 +69,18 @@ export const inviteUsersToWorkspace = async (req, res) => {
     if (!creatorUid) {
       return res.send(401, { message: 'Cannot invite user anonymously' });
     }
-    await userManager.inviteUsers(emails, workspaceId, creatorUid);
+    await userManager.inviteEmailToWorkspace(
+      email,
+      firstName,
+      lastName,
+      workspaceId,
+      creatorUid
+    );
     res.send(200, {
       status: 'invited'
     });
-  } catch (err) {
-    res.send(400, { message: 'not invited' });
+  } catch (error) {
+    res.send(400, { message: 'not invited', error: error.message });
   }
 };
 

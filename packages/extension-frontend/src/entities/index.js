@@ -9,6 +9,7 @@ import users, { epics as userEpics } from './users';
 import activity, { epics as activityEpic } from './activity';
 import workspaces, { epics as workspaceEpics } from './workspaces';
 import session, { epics as sessionEpics } from './session';
+import invites, { epics as inviteEpics } from './invites';
 
 export default combineReducers({
   comments,
@@ -17,7 +18,8 @@ export default combineReducers({
   users,
   activity,
   workspaces,
-  session
+  session,
+  invites
 });
 
 export const epics = combineEpics(
@@ -26,5 +28,6 @@ export const epics = combineEpics(
   diffEpics,
   workspaceEpics,
   userEpics,
-  sessionEpics
+  sessionEpics,
+  inviteEpics
 );

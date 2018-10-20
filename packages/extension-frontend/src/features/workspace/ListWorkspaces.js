@@ -12,7 +12,9 @@ const Content = ({ history }) => (
       {workspaces => (
         <React.Fragment>
           {workspaces.map(workspace => (
-            <Row>{workspace.name}</Row>
+            <Row onClick={() => history.push(`/workspace/${workspace.id}`)}>
+              {workspace.name}
+            </Row>
           ))}
         </React.Fragment>
       )}

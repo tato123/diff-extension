@@ -16,8 +16,10 @@ router.get('/ah/health', healthController.health);
 router.post('/signup', userController.signup);
 router.post('/authenticate', userController.authenticate);
 router.get('/validate', userController.verifyUser);
-router.post('/invite', userController.inviteUsersToWorkspace);
+
+router.post('/workspace/:id/invite', userController.inviteToWorkspace);
 router.post('/workspace', userController.createWorkspace);
+
 router.get('/tokens/:token/domains', userController.getDomains);
 router.post('/notifications/event/add/:eventId', tasksController.addEvent);
 

@@ -1,23 +1,25 @@
 import types from './types';
 
-const addWorkspaceUser = (email, workspaceId) => ({
-  type: types.ADD_WORKSPACE_USER_REQUEST,
+const inviteToWorkspace = (firstName, lastName, email, workspaceId) => ({
+  type: types.INVITE_TO_WORKSPACE_REQUEST,
+  payload: {
+    firstName,
+    lastName,
+    email,
+    workspaceId
+  }
+});
+
+const inviteToWorkspaceSuccess = (email, workspaceId) => ({
+  type: types.INVITE_TO_WORKSPACE_SUCCESS,
   payload: {
     email,
     workspaceId
   }
 });
 
-const addWorkspaceUserSuccess = (email, workspaceId) => ({
-  type: types.ADD_WORKSPACE_USER_SUCCESS,
-  payload: {
-    email,
-    workspaceId
-  }
-});
-
-const addWorkspaceUserFailed = (email, workspaceId, error) => ({
-  type: types.ADD_WORKSPACE_USER_FAILED,
+const inviteToWorkspaceFailed = (email, workspaceId, error) => ({
+  type: types.INVITE_TO_WORKSPACE_FAILED,
   payload: {
     email,
     workspaceId,
@@ -49,9 +51,9 @@ const createWorkspaceFailed = (name, error) => ({
 });
 
 export default {
-  addWorkspaceUser,
-  addWorkspaceUserSuccess,
-  addWorkspaceUserFailed,
+  inviteToWorkspace,
+  inviteToWorkspaceSuccess,
+  inviteToWorkspaceFailed,
   createWorkspace,
   createWorkspaceSuccess,
   createWorkspaceFailed

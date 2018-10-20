@@ -22,9 +22,25 @@ const isCreateWorkspaceSubmitErrorSelector = createSelector(
   workspace => workspace.meta.createWorkspace.submitError
 );
 
+const allCollaboratorsSelectors = createSelector(
+  (state, props) => state.entities.workspaces.byId[props.id],
+  state => state.entities.users.byId,
+  (workspace, users) =>
+    Object.keys(workspace.users).map(userId => users[userId])
+);
+
+const allInviteSelectors = createSelector(
+  (state, props) => state.entities.workspaces.byId[props.id],
+  state => state.entities.invites.byId,
+  (workspace, invites) =>
+    Object.keys(workspace.invites).map(userId => invites[userId])
+);
+
 export default {
   allWorkspacesSelector,
   getCurrentWorkspace,
   isCreateWorkspaceSubmittingSelector,
-  isCreateWorkspaceSubmitErrorSelector
+  isCreateWorkspaceSubmitErrorSelector,
+  allCollaboratorsSelectors,
+  allInviteSelectors
 };

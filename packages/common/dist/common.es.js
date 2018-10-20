@@ -463,6 +463,12 @@ var commentsFactory = (db => {
 
 var workspaceFactory = (db => {
   const workspaceRef = db.collection('workspace');
+  /**
+   * Gets all of the available workspaces
+   * for a given user id
+   *
+   * @param uid
+   */
 
   const workspaces$ = uid => Observable.create(observer => {
     if (_.isNil(uid)) {
@@ -488,6 +494,13 @@ var workspaceFactory = (db => {
     });
     return unsubscribe;
   });
+  /**
+   * For a given workspace id returns a synchornized observer. This means
+   * that we get live updates to that workspace
+   *
+   * @param workspaceId
+   */
+
 
   const workspaceForId$ = workspaceId => Observable.create(observer => {
     if (_.isNil(workspaceId)) {
@@ -511,6 +524,10 @@ var workspaceFactory = (db => {
     });
     return unsubscribe;
   });
+  /**
+   * Gets our current id token (our current session id)
+   */
+
 
   const getIdToken = async () => {
     const user = db.app.auth().currentUser;
@@ -522,9 +539,21 @@ var workspaceFactory = (db => {
 
     return idToken;
   };
+  /**
+   * Invites a person to our workspace, this may be subject
+   * to additional requirements according to your account
+   *
+   * @param email
+   * @param firstName
+   * @param lastName
+   * @param workspaceId
+   */
 
-  const addCollaborators = async (emails, workspaceId) => {
-    if (_.isEmpty(emails) || _.isNil(emails)) {
+
+  const inviteCollaborator = async (email, firstName, lastName, workspaceId) => {
+    debugger;
+
+    if (_.isEmpty(email) || _.isNil(email)) {
       throw new Error('emails is required');
     }
 
@@ -540,11 +569,12 @@ var workspaceFactory = (db => {
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
-        emails,
-        workspaceId
+        email,
+        firstName,
+        lastName
       })
     };
-    const response = await fetch(`${process.env.API_SERVER}/invite`, _objectSpread({}, options, {
+    const response = await fetch(`${process.env.API_SERVER}/workspace/${workspaceId}/invite`, _objectSpread({}, options, {
       method: 'POST'
     }));
 
@@ -554,8 +584,12 @@ var workspaceFactory = (db => {
 
     return response.json();
   };
+  /**
+   * Creates a new workspace
+   *
+   * @param name
+   */
 
-  const addSingleCollaborator = async (email, workspaceId) => addCollaborators([email], workspaceId);
 
   const createWorkspace = async name => {
     if (_.isNil(name)) {
@@ -587,8 +621,7 @@ var workspaceFactory = (db => {
   return {
     workspaces$,
     workspaceForId$,
-    addCollaborators,
-    addSingleCollaborator,
+    inviteCollaborator,
     createWorkspace
   };
 });
@@ -708,44 +741,40 @@ var activityFactory = (db => {
 var inviteFactory = (db => {
   const invitesRef = db.collection('invites');
 
-  const invitesForWorkspace$ = workspaceId => {
-    return Observable.create(observer => {
-      const unsubscribe = invitesRef.where('workspaceId', '==', workspaceId).where('status', '==', 'pending').onSnapshot(querySnapshot => {
-        querySnapshot.docChanges().forEach(({
-          doc,
-          type
-        }) => {
-          const data = doc.data();
-          observer.next({
-            data,
-            type,
-            id: doc.id
-          });
+  const invitesForWorkspace$ = workspaceId => Observable.create(observer => {
+    const unsubscribe = invitesRef.where('workspaceId', '==', workspaceId).onSnapshot(querySnapshot => {
+      querySnapshot.docChanges().forEach(({
+        doc,
+        type
+      }) => {
+        const data = doc.data();
+        observer.next({
+          data,
+          type,
+          id: doc.id
         });
-      }, err => observer.err(err));
-      return unsubscribe;
-    });
-  };
-
-  const inviteForEmail$ = email => {
-    return Observable.create(observer => {
-      const unsubscribe = invitesRef.where(`email`, '==', email).onSnapshot(querySnapshot => {
-        querySnapshot.docChanges().forEach(({
-          doc,
-          type
-        }) => {
-          const data = doc.data();
-          observer.next({
-            data,
-            type
-          });
-        });
-      }, err => {
-        observer.err(err);
       });
-      return unsubscribe;
+    }, err => observer.err(err));
+    return unsubscribe;
+  });
+
+  const inviteForEmail$ = email => Observable.create(observer => {
+    const unsubscribe = invitesRef.where(`email`, '==', email).onSnapshot(querySnapshot => {
+      querySnapshot.docChanges().forEach(({
+        doc,
+        type
+      }) => {
+        const data = doc.data();
+        observer.next({
+          data,
+          type
+        });
+      });
+    }, err => {
+      observer.err(err);
     });
-  };
+    return unsubscribe;
+  });
 
   return {
     invitesForWorkspace$,
