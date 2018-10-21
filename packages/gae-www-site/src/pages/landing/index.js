@@ -10,8 +10,8 @@ import AttachFeature from './features/Attach';
 import TrackFeature from './features/Track';
 
 import DiffHeader from './diff.gif';
-import DiffLogo from './Diff.svg';
-import DiffDarkLogo from './Diff2.svg';
+import DiffLogo from './diff.svg';
+import DiffDarkLogo from './diff2.svg';
 
 const Container = styled.div`
   color: #130c3b;
