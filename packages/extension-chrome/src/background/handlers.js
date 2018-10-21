@@ -7,7 +7,8 @@ import {
 } from '@diff/common';
 import normalizeUrl from 'normalize-url';
 import _ from 'lodash-es';
-import { getUserToken, getSitePreference } from './storage';
+import jwtDecode from 'jwt-decode';
+import { getSitePreference } from './storage';
 
 const authProvider = new AuthProvider(
   process.env.AUTH0_DOMAIN,
@@ -53,6 +54,15 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
 };
 
 async function exchangeAndStoreFirebaseToken(token) {
+  const { firebaseToken: oldToken } = await browser.storage.html5.local.get([
+    'firebaseToken'
+  ]);
+
+  const valid = oldToken ? jwtDecode(oldToken).exp > Date.now() / 1000 : false;
+  if (oldToken && valid) {
+    return oldToken;
+  }
+
   return fetch(`${process.env.API_SERVER}/auth/firebase`, {
     headers: {
       Authorization: `Bearer ${token}`
@@ -65,7 +75,11 @@ async function exchangeAndStoreFirebaseToken(token) {
 
       throw new Error(response.statusText);
     })
-    .then(({ firebaseToken }) => firebaseToken);
+    .then(async ({ firebaseToken }) => {
+      await browser.storage.html5.local.set({ firebaseToken });
+
+      return firebaseToken;
+    });
 }
 
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {

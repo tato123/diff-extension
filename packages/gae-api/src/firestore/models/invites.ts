@@ -100,7 +100,7 @@ export const inviteEmailToWorkspace = async (
   const nonce =
     process.env.NODE_ENV === 'production'
       ? makeNonce(process.env.API_ADDRESS as string)
-      : makeNonce(hosts.getWebHost());
+      : makeNonce(hosts.getApiHost());
 
   if (!existingInviteRef.empty) {
     // we've already got an invite, just add this to history and ignore

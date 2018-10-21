@@ -24,16 +24,19 @@ const isCreateWorkspaceSubmitErrorSelector = createSelector(
 
 const allCollaboratorsSelectors = createSelector(
   (state, props) => state.entities.workspaces.byId[props.id],
-  state => state.entities.users.byId,
-  (workspace, users) =>
-    Object.keys(workspace.users).map(userId => users[userId])
+  state => state.entities.users.byId || {},
+  (workspace, users) => _.keys(workspace.users).map(userId => users[userId])
 );
 
 const allInviteSelectors = createSelector(
   (state, props) => state.entities.workspaces.byId[props.id],
-  state => state.entities.invites.byId,
+  state => state.entities.invites.byId || {},
   (workspace, invites) =>
-    Object.keys(workspace.invites).map(userId => invites[userId])
+    _.keys(workspace.invites).reduce(
+      (acc, userId) =>
+        invites.status === 'pending' ? [...acc, invites[userId]] : acc,
+      []
+    )
 );
 
 export default {

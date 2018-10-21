@@ -5,7 +5,7 @@ const getWebHost = (): string => {
     return process.env.WEB_HOST as string;
   }
 
-  return `http://${myip.getLocalIP4()}:8000`;
+  return `http://localhost:8000`;
 };
 
 const getApiHost = (): string => {
@@ -13,7 +13,7 @@ const getApiHost = (): string => {
     return process.env.API_HOST as string;
   }
 
-  return `http://${myip.getLocalIP4()}:8080`;
+  return `http://localhost:8080`;
 };
 
 export default {

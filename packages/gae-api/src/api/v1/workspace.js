@@ -22,7 +22,7 @@ export const inviteToWorkspace = async (req, res) => {
     if (!creatorUid) {
       return res.send(401, { message: 'Cannot invite user anonymously' });
     }
-    await models.users.inviteEmailToWorkspace(
+    await models.invites.inviteEmailToWorkspace(
       email,
       firstName,
       lastName,

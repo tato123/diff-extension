@@ -47,9 +47,12 @@ const ListCollaborators = ({ match, history }) => (
             <div className="email">{user.email}</div>
           </UserRow>
         ))}
-        <Space top={2} left={3}>
-          <Pending>Pending</Pending>
-        </Space>
+        {invites.length > 0 && (
+          <Space top={2} left={3}>
+            <Pending>Pending</Pending>
+          </Space>
+        )}
+
         {invites.map(user => (
           <UserRow key={user.email} highlight={false}>
             <div>{user.email}</div>
