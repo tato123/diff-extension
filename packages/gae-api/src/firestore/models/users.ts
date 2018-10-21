@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { WriteResult } from '@google-cloud/firestore';
 import * as emailNotify from '../../email/email';
 import emailer from '../../email';
-import * as firestoreWorkspace from '../workspace';
+import * as firestoreWorkspace from './workspace';
 import firestoreClient from '../client';
 import logging from '../../logging';
 

@@ -68,11 +68,12 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           name: Upload to webstore
-          command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
-      # - run:
-      #     name: Publish to webstore
-      #     command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+          command: npx chrome-webstore-upload-cli upload --source packages/extension-chrome/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+      - run:
+          name: Publish to webstore
+          command: npx chrome-webstore-upload-cli publish --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
   deploy-frontend:
+    <<: *defaults
     docker:
       - image: google/cloud-sdk:latest
     steps:
@@ -89,7 +90,7 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension/dist/frontend/ gs://diff-frontend
+            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension-frontend/dist/frontend/ gs://diff-frontend
             gsutil iam ch allUsers:objectViewer gs://diff-frontend
       - run:
           name: Deploy styleguide
@@ -97,6 +98,7 @@ jobs:
             gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/shared-components/styleguide/ gs://diff-styles
             gsutil iam ch allUsers:objectViewer gs://diff-styles
   deploy-api:
+    <<: *defaults
     docker:
       - image: google/cloud-sdk:latest
     steps:
@@ -111,7 +113,25 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            cd packages/api
+            cd packages/gae-api
+            gcloud app deploy app.yaml --quiet
+  deploy-web:
+    <<: *defaults
+    docker:
+      - image: google/cloud-sdk:latest
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+      - run:
+          name: Set project default
+          command: gcloud config set project $GCLOUD_PROJECT
+      - run:
+          name: Deploy to google cloud
+          command: |
+            cd packages/gae-www-site
             gcloud app deploy app.yaml --quiet
 
 workflows:
@@ -137,6 +157,14 @@ workflows:
             tags:
               only: /^v.*/
       - deploy-api:
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - deploy-web:
           requires:
             - test
           filters:

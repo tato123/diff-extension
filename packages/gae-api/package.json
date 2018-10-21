@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node --extensions '.ts,.tsx,.js,.jsx' src/index.js",
-    "build": "babel src --out-dir dist --copy-files --source-maps inline",
+    "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node --extensions \".ts,.tsx,.js,.jsx\"  src/index.js",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir dist --extensions \".ts,.tsx,.js,.jsx\" --copy-files --source-maps inline",
     "deploy": "npm run build && gcloud app deploy",
     "test": "echo \"no test yet\""
   },

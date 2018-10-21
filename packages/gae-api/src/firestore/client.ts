@@ -3,7 +3,9 @@ import * as firebaseAdmin from 'firebase-admin';
 const admin = firebaseAdmin;
 
 // load our key
-const serviceAccount = require('./key.json');
+const path = require('path');
+
+const serviceAccount = require(path.resolve(__dirname, './key.json'));
 
 firebaseAdmin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
