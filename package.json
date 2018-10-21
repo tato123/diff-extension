@@ -24,7 +24,8 @@
     ]
   },
   "scripts": {
-    "start": "lerna run --parallel start:dev"
+    "start": "lerna run --parallel start:dev",
+    "test": "lerna run --parallel test"
   },
   "name": "diff",
   "dependencies": {
