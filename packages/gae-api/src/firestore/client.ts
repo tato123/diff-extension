@@ -1,6 +1,6 @@
 import * as firebaseAdmin from 'firebase-admin';
 
-export const admin = firebaseAdmin;
+const admin = firebaseAdmin;
 
 // load our key
 const serviceAccount = require('./key.json');
@@ -13,4 +13,8 @@ firebaseAdmin.initializeApp({
 const dbInstance = admin.firestore();
 const settings = { timestampsInSnapshots: true };
 dbInstance.settings(settings);
-export { dbInstance as db };
+
+export default {
+  db: dbInstance,
+  admin
+};

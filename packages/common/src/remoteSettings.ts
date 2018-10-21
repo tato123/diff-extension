@@ -2,9 +2,9 @@ export interface DomainResponse {
   domains: Array<string>;
 }
 
-export const getDomains = async (token: any): Promise<DomainResponse> => {
+const getDomains = async (uid: string): Promise<DomainResponse> => {
   const response = await fetch(
-    `${process.env.API_SERVER}/tokens/${token}/domains`,
+    `${process.env.API_SERVER}/user/${uid}/domains`,
     {
       method: 'get'
     }
@@ -15,4 +15,8 @@ export const getDomains = async (token: any): Promise<DomainResponse> => {
   }
 
   return response.json();
+};
+
+export default {
+  getDomains
 };

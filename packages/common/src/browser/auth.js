@@ -17,6 +17,18 @@ const checkSession = async () => {
     : { id_token: null, access_token: null };
 };
 
+const getUserFromAccessToken = async () => {
+  const { access_token: accessToken } = await storage.html5.local.get([
+    'access_token'
+  ]);
+
+  if (!accessToken) {
+    throw new Error('No access token set');
+  }
+
+  return jwtDecode(accessToken);
+};
+
 const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
   // set browser auth0 authorize from our custom stsate,
   // not sure that this is even needed
@@ -49,5 +61,6 @@ const renewSession = async () => {
 export default {
   renewSession,
   authorize,
-  checkSession
+  checkSession,
+  getUserFromAccessToken
 };

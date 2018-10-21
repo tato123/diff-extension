@@ -25,7 +25,22 @@ const welcomeEmail = ({ from = defaultFrom, to }) => {
   return transporter.sendMail(mail);
 };
 
+const inviteEmail = ({ from = defaultFrom, to, workspace, nonce }) => {
+  const mail = {
+    from,
+    to,
+    subject: 'Workspace',
+    template: 'inviteToWorkspace',
+    context: {
+      nonce,
+      workspace
+    }
+  };
+  return transporter.sendMail(mail);
+};
+
 export default {
   signupEmail,
-  welcomeEmail
+  welcomeEmail,
+  inviteEmail
 };

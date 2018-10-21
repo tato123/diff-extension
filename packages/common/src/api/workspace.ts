@@ -110,7 +110,6 @@ export default (db: firebase.firestore.Firestore): Object => {
     lastName: string,
     workspaceId: string
   ): Promise<Object> => {
-    debugger;
     if (_.isEmpty(email) || _.isNil(email)) {
       throw new Error('emails is required');
     }

@@ -1,10 +1,11 @@
 import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 
-import { admin, db } from '../../firestore';
+import { client as firestoreClient } from '../../firestore';
 import logging from '../../logging';
-import * as userCollection from '../../firestore/users';
+import * as userCollection from '../../firestore/models/users';
 
+const { admin, db } = firestoreClient;
 const request = require('request');
 
 const config = {

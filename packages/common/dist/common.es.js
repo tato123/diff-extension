@@ -308,6 +308,18 @@ const checkSession = async () => {
   };
 };
 
+const getUserFromAccessToken = async () => {
+  const {
+    access_token: accessToken
+  } = await storage.html5.local.get(['access_token']);
+
+  if (!accessToken) {
+    throw new Error('No access token set');
+  }
+
+  return jwtDecode(accessToken);
+};
+
 const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
   // set browser auth0 authorize from our custom stsate,
   // not sure that this is even needed
@@ -337,7 +349,8 @@ const renewSession = async () => {
 var auth = {
   renewSession,
   authorize,
-  checkSession
+  checkSession,
+  getUserFromAccessToken
 };
 
 var browser = {
@@ -551,8 +564,6 @@ var workspaceFactory = (db => {
 
 
   const inviteCollaborator = async (email, firstName, lastName, workspaceId) => {
-    debugger;
-
     if (_.isEmpty(email) || _.isNil(email)) {
       throw new Error('emails is required');
     }
@@ -795,8 +806,8 @@ var index = (() => {
   return obs;
 });
 
-const getDomains = async token => {
-  const response = await fetch(`${process.env.API_SERVER}/tokens/${token}/domains`, {
+const getDomains = async uid => {
+  const response = await fetch(`${process.env.API_SERVER}/user/${uid}/domains`, {
     method: 'get'
   });
 
@@ -805,6 +816,10 @@ const getDomains = async token => {
   }
 
   return response.json();
+};
+
+var remoteSettings = {
+  getDomains
 };
 
 class Authentication {
@@ -885,5 +900,5 @@ class Authentication {
 
 }
 
-export { actions, types, sources, index as initApi, browser, Authentication as AuthProvider, getDomains };
+export { actions, types, sources, index as initApi, browser, remoteSettings, Authentication as AuthProvider };
 //# sourceMappingURL=common.es.js.map

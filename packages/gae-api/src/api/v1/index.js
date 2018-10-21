@@ -1,28 +1,27 @@
-import * as authController from './auth';
-import * as healthController from './health';
-import * as tasksController from './tasks';
-import * as userController from './user';
+import * as authRoutes from './auth';
+import * as healthRoutes from './health';
+import * as taskRoutes from './tasks';
+import * as workspaceRoutes from './workspace';
+import * as userRoutes from './user';
 
 const express = require('express');
 
 const router = express.Router();
 
-router.get('/auth/firebase', authController.login);
-router.get('/auth/refresh', authController.refresh);
-router.get('/auth/codegrant', authController.codeGrantAuthorize);
-router.get('/auth/renew', authController.renewSession);
+router.get('/auth/firebase', authRoutes.login);
+router.get('/auth/refresh', authRoutes.refresh);
+router.get('/auth/codegrant', authRoutes.codeGrantAuthorize);
+router.get('/auth/renew', authRoutes.renewSession);
 
-router.get('/ah/health', healthController.health);
-router.post('/signup', userController.signup);
-router.post('/authenticate', userController.authenticate);
-router.get('/validate', userController.verifyUser);
+router.get('/ah/health', healthRoutes.health);
 
-router.post('/workspace/:id/invite', userController.inviteToWorkspace);
-router.post('/workspace', userController.createWorkspace);
+router.get('/workspace/:id/invite/:nonce/accept', workspaceRoutes.acceptInvite);
+router.post('/workspace/:id/invite', workspaceRoutes.inviteToWorkspace);
+router.post('/workspace', workspaceRoutes.createWorkspace);
 
-router.get('/tokens/:token/domains', userController.getDomains);
-router.post('/notifications/event/add/:eventId', tasksController.addEvent);
+router.post('/notifications/event/add/:eventId', taskRoutes.addEvent);
 
-router.post('/user/email/signup', userController.emailListSignup);
+router.get('/user/:uid/domains', userRoutes.getDomains);
+router.post('/user/email/signup', userRoutes.emailListSignup);
 
 export default router;

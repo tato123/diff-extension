@@ -1,7 +1,12 @@
-import { types, actions, browser, AuthProvider } from '@diff/common';
+import {
+  types,
+  actions,
+  browser,
+  AuthProvider,
+  remoteSettings
+} from '@diff/common';
 import normalizeUrl from 'normalize-url';
 import _ from 'lodash-es';
-import { getUserDomains } from './user';
 import { getUserToken, getSitePreference } from './storage';
 
 const authProvider = new AuthProvider(
@@ -16,13 +21,9 @@ const authProvider = new AuthProvider(
  */
 const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   try {
-    // if we dont have a token, domains arent available
-    const value = await getUserToken();
-    if (_.isNil(value) || !value.token) {
-      return postMessageToTab(tabId, actions.fetchUserPreferencesFailed());
-    }
+    const user = await browser.auth.getUserFromAccessToken();
+    const remoteSites = await remoteSettings.getDomains(user.sub);
 
-    const remoteSites = await getUserDomains();
     // get the local sites theyve opened diff for
     const localSites = await getSitePreference();
 

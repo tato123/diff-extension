@@ -49,6 +49,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(logging.requestLogger);
 }
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   logging.info(`App listening on port ${port}!`);
 });
