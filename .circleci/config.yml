@@ -76,6 +76,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: packages
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
@@ -99,6 +101,10 @@ jobs:
       - image: google/cloud-sdk:latest
     steps:
       - checkout
+      - attach_workspace:
+          at: packages
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
@@ -117,6 +123,10 @@ jobs:
       - image: google/cloud-sdk:latest
     steps:
       - checkout
+      - attach_workspace:
+          at: packages
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
