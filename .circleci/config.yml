@@ -19,8 +19,11 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
           paths:
             - node_modules
-            - packages/extension/node_modules
-            - packages/api/node_modules
+            - packages/common/node_modules
+            - packages/extension-chrome/node_modules
+            - packages/extension-frontend/node_modules
+            - packages/gae-api/node_modules
+            - packages/gae-www-site/node_modules
             - packages/shared-components/node_modules
   test:
     <<: *defaults
