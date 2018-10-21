@@ -151,7 +151,7 @@ workflows:
               only: /^v.*/
       - deploy-api:
           requires:
-            - test
+            - build
           filters:
             branches:
               ignore: /.*/
@@ -159,7 +159,7 @@ workflows:
               only: /^v.*/
       - deploy-web:
           requires:
-            - test
+            - build
           filters:
             branches:
               ignore: /.*/
