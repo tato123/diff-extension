@@ -25,6 +25,7 @@
   },
   "scripts": {
     "start": "lerna run --parallel start:dev",
+    "build": "lerna run --parallel build",
     "test": "lerna run --parallel test"
   },
   "name": "diff",

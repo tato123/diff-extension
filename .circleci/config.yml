@@ -37,27 +37,20 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
-
       - run:
-          name: Build Shared Components
+          name: Build Packages in parallel
           command: |
-            yarn install
-            npx lerna run --scope @diff/shared-components build
-      - run:
-          name: Build frontend
-          command: |
-            yarn install
-            npx lerna run --scope @diff/extension build
-      - run:
-          name: Build styles
-          command: |
-            npx lerna run --scope @diff/shared-components build:styles
+            yarn build
       - persist_to_workspace:
           root: packages
           paths:
-            - extension/dist/chrome
-            - extension/dist/frontend
-            - shared-components/styleguide
+            - common/dist
+            - extension-chrome/dist
+            - extension-frontend/dist
+            - gae-api/dist
+            - gae-www-site/public
+            - gae-www-site/.cache
+            - shared-components/dist
   deploy-chrome-extension:
     <<: *defaults
     steps:
