@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension-frontend/dist/frontend/ gs://diff-frontend
+            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension-frontend/dist/ gs://diff-frontend
             gsutil iam ch allUsers:objectViewer gs://diff-frontend
       # - run:
       #     name: Deploy styleguide
