@@ -85,11 +85,11 @@ jobs:
           command: |
             gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension-frontend/dist/frontend/ gs://diff-frontend
             gsutil iam ch allUsers:objectViewer gs://diff-frontend
-      - run:
-          name: Deploy styleguide
-          command: |
-            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/shared-components/styleguide/ gs://diff-styles
-            gsutil iam ch allUsers:objectViewer gs://diff-styles
+      # - run:
+      #     name: Deploy styleguide
+      #     command: |
+      #       gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/shared-components/styleguide/ gs://diff-styles
+      #       gsutil iam ch allUsers:objectViewer gs://diff-styles
   deploy-api:
     <<: *defaults
     docker:
