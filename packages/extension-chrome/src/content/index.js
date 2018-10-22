@@ -1,4 +1,5 @@
-import { actions, browser, types } from '@diff/common';
+import { actions, types } from '@diff/common/dist/actions';
+import browser from '@diff/common/dist/browser';
 import { filter, tap } from 'rxjs/operators';
 
 import {
