@@ -901,3 +901,4 @@ class Authentication {
 }
 
 export { actions, types, sources, index as initApi, browser, remoteSettings, Authentication as AuthProvider };
+//# sourceMappingURL=common.es.js.map
