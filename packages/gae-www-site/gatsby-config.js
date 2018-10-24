@@ -1,3 +1,12 @@
+require('dotenv').config({
+  path: `../../.env.${process.env.NODE_ENV}`
+});
+
+if (process.env.IS_PRESENT !== 'yes') {
+  console.log('loaded incorrectly');
+  process.exit(1);
+}
+
 module.exports = {
   siteMetadata: {
     title: 'Diff',

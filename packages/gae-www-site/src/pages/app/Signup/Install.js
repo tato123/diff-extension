@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ModalStep from './ModalStep'
-import Anchor from './Anchor'
-import ExtensionBridge from '../ExtensionBridge'
+import React from 'react';
+import PropTypes from 'prop-types';
+import ModalStep from './ModalStep';
+import Anchor from './Anchor';
+import ExtensionBridge from '../../../components/ExtensionBridge';
 
 const Install = ({ onInstalled, refreshToken }) => (
   <ExtensionBridge
@@ -23,16 +23,16 @@ const Install = ({ onInstalled, refreshToken }) => (
       </ModalStep>
     )}
   />
-)
+);
 
 Install.propTypes = {
   onInstalled: PropTypes.func,
-  refreshToken: PropTypes.string,
-}
+  refreshToken: PropTypes.string
+};
 
 Install.defaultProps = {
   onInstalled: () => {},
-  refreshToken: null,
-}
+  refreshToken: null
+};
 
-export default Install
+export default Install;

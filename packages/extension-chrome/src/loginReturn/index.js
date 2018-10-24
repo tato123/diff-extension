@@ -69,15 +69,6 @@ async function handleAuthResult(authResult) {
   }
 }
 
-async function onLogin() {
-  const { state, nonce } = await browser.storage.local.get(['state', 'nonce']);
-
-  const authResult = await parseHash(state, nonce);
-  handleAuthResult(authResult);
-}
-
-// onLogin();
-
 async function exchangeCode() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('code')) {

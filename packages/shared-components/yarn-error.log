@@ -1,0 +1,82 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Jonathan\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js run start:dev
+
+PATH: 
+  C:\Users\Jonathan\Repositories\github\tato123\diff\packages\shared-components\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\diff\packages\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\node_modules\.bin;C:\Users\Jonathan\Repositories\github\node_modules\.bin;C:\Users\Jonathan\Repositories\node_modules\.bin;C:\Users\Jonathan\node_modules\.bin;C:\Users\node_modules\.bin;C:\node_modules\.bin;C:\Program Files\nodejs;C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\.bin;C:\Users\Jonathan\AppData\Local\Yarn\Data\link\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\.bin;C:\Users\Jonathan\AppData\Local\Yarn\Data\link\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\.bin;C:\Users\Jonathan\AppData\Local\Yarn\bin;C:\Program Files\libexec\lib\node_modules\npm\bin\node-gyp-bin;C:\Program Files\lib\node_modules\npm\bin\node-gyp-bin;C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\Program Files\nodejs;C:\Users\Jonathan\Downloads\cmder\bin;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files\Java\jdk1.8.0_131\bin;C:\Program Files (x86)\vim\vim80;C:\Program Files (x86)\Windows Kits\10\Windows Performance;C:\Go\bin;C:\WINDOWS\System32\OpenSSH\;C:\Pr;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Users\Jonathan\.windows-build-tools\python27\;C:\Program Files\nodejs\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\.bin;C:\Users\Jonathan\Downloads\cmder\bin;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files\Java\jdk1.8.0_131\bin;C:\Program Files (x86)\vim\vim80;C:\Program Files (x86)\Windows Kits\10\Windows Performance;C:\Go\bin;C:\WINDOWS\System32\OpenSSH\;C:\Pr;C:\Program Files\nodejs\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Yarn\bin\;C:\Users\Jonathan\.windows-build-tools\python27\;C:\Users\Jonathan\AppData\Local\Yarn\Data\global\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jonathan\AppData\Local\Yarn\Data\link\node_modules\.bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\npm\bin\node-gyp-bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\.bin;C:\Users\Jonathan\Downloads\cmder\bin;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu;C:\Users\Jonathan\AppData\Local\Microsoft\WindowsApps;C:\Program Files\NVIDIA GPU Computing;C:\Users\Jonathan\AppData\Local\Microsoft\WindowsApps;C:\Users\Jonathan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\share\vim\vim74;C:\Users\Jonathan\Downloads\cmder\;C:\Users\Jonathan\AppData\Roaming\npm;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\share\vim\vim74;C:\Users\Jonathan\Downloads\cmder\
+
+Yarn version: 
+  1.10.1
+
+Node version: 
+  8.12.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPIPE: broken pipe, write
+      at Socket._write (internal/net.js:23:7)
+      at doWrite (_stream_writable.js:396:12)
+      at writeOrBuffer (_stream_writable.js:382:5)
+      at Socket.Writable.write (_stream_writable.js:290:11)
+      at Socket.write (net.js:711:40)
+      at ConsoleReporter._log (C:\Users\Jonathan\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:86862:17)
+      at ConsoleReporter.log (C:\Users\Jonathan\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:86850:10)
+      at ConsoleReporter.command (C:\Users\Jonathan\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:86879:10)
+      at C:\Users\Jonathan\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:34803:16
+      at Generator.next (<anonymous>)
+
+npm manifest: 
+  {
+    "name": "@diff/shared-components",
+    "version": "0.1.1",
+    "description": "A common library for building out react-components",
+    "module": "dist/bundle.es.js",
+    "sideEffects": false,
+    "scripts": {
+      "test": "echo \"Error: no test specified\"",
+      "build": "rollup -c rollup.config.js --environment BUILD:production",
+      "publish": "yarn build",
+      "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
+    },
+    "author": "Jonathan Fontanez",
+    "license": "ISC",
+    "devDependencies": {
+      "@babel/cli": "^7.0.0",
+      "@babel/core": "^7.0.0",
+      "@babel/plugin-external-helpers": "^7.0.0",
+      "@babel/plugin-proposal-class-properties": "^7.0.0",
+      "@babel/preset-env": "^7.0.0",
+      "@babel/preset-react": "^7.0.0",
+      "@babel/preset-typescript": "^7.1.0",
+      "rollup": "^0.65.0",
+      "rollup-plugin-auto-external": "^2.0.0",
+      "rollup-plugin-babel": " 4.0.0-beta.8",
+      "rollup-plugin-commonjs": "^9.1.6",
+      "rollup-plugin-filesize": "^4.0.1",
+      "rollup-plugin-img": "^1.1.0",
+      "rollup-plugin-includepaths": "^0.2.3",
+      "rollup-plugin-node-resolve": "^3.3.0",
+      "rollup-plugin-visualizer": "^0.9.0",
+      "text-loader": "^0.0.1",
+      "url-loader": "^1.0.1"
+    },
+    "peerDependencies": {
+      "prop-types": "^15.6.2",
+      "react": "^16.4.1",
+      "react-dom": "^16.4.1",
+      "react-icons-kit": "^1.1.5",
+      "react-spring": "^5.4.4",
+      "styled-components": "3.4.9"
+    },
+    "dependencies": {
+      "date-fns": "^1.29.0",
+      "lodash-es": "^4.17.11"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

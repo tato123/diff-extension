@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const EXTENSION_ID = process.env.EXTENSION_ID
+const EXTENSION_ID = process.env.EXTENSION_ID;
 
 export default class ExtensionListener extends React.Component {
   static propTypes = {
@@ -12,8 +12,8 @@ export default class ExtensionListener extends React.Component {
     onInstalled: PropTypes.func,
     onMessage: PropTypes.func,
     render: PropTypes.func.isRequired,
-    refreshToken: PropTypes.string,
-  }
+    refreshToken: PropTypes.string
+  };
 
   static defaultProps = {
     shouldPoll: true,
@@ -21,90 +21,90 @@ export default class ExtensionListener extends React.Component {
     extensionId: EXTENSION_ID,
 
     onInstalled: () => {},
-    onMessage: () => {},
-  }
+    onMessage: () => {}
+  };
 
   state = {
-    intervalId: null,
-  }
+    intervalId: null
+  };
 
   componentDidMount() {
     if (typeof window !== `undefined`) {
-      window.addEventListener('message', this.onMessage)
+      window.addEventListener('message', this.onMessage);
     }
 
-    this.invokeCheck()
+    this.invokeCheck();
     this.timerId = setInterval(() => {
-      this.invokeCheck()
-    }, 250)
+      this.invokeCheck();
+    }, 250);
   }
 
   callChrome = action => {
     const {
-      props: { extensionId },
-    } = this
+      props: { extensionId }
+    } = this;
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(extensionId, action, response => {
         if (response) {
-          return resolve(response)
+          return resolve(response);
         }
-        reject()
-      })
-    })
-  }
+        reject();
+      });
+    });
+  };
 
   invokeCheck = () => {
     const {
-      props: { onInstalled, refreshToken },
-    } = this
+      props: { onInstalled, refreshToken }
+    } = this;
 
     const validateInstalled = {
-      type: 'VERIFY_INSTALLED',
-    }
+      type: 'VERIFY_INSTALLED'
+    };
 
     const storeUid = {
       type: 'STORE_TOKEN',
       payload: {
-        refreshToken,
-      },
-    }
+        refreshToken
+      }
+    };
 
     // normally we let the browser handle injection of content
     // script via manifest, in this case we don't want to wait for a
     // refresh
     const forceInject = {
-      type: 'FORCE_INJECT',
-    }
+      type: 'FORCE_INJECT'
+    };
 
     this.callChrome(validateInstalled)
       .then(() => refreshToken && this.callChrome(storeUid))
       .then(() => this.callChrome(forceInject))
       .then(() => {
-        onInstalled()
-        clearInterval(this.timerId)
+        onInstalled();
+        clearInterval(this.timerId);
       })
-      .catch(() => {})
-  }
+      .catch(() => {});
+  };
 
   componentWillUnmount() {
-    clearInterval(this.timerId)
+    clearInterval(this.timerId);
     if (typeof window !== `undefined`) {
-      window.removeEventListener('message', this.onMessage)
+      window.removeEventListener('message', this.onMessage);
     }
   }
 
   onMessage = evt => {
     if (evt.data && evt.data.source === '@diff/contentScript') {
-      const message = evt.data
-      this.props.onMessage(message)
+      const message = evt.data;
+      this.props.onMessage(message);
     }
-  }
+  };
 
   render() {
     const {
-      props: { render },
-    } = this
+      props: { render }
+    } = this;
 
-    return <React.Fragment>{render()}</React.Fragment>
+    return <React.Fragment>{render()}</React.Fragment>;
   }
 }

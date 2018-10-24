@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Router } from '@reach/router';
-import Layout from '../components/Layout';
+import Layout from '../../components/Layout';
 
-import Signup from '../components/Signup';
-import Account from '../components/Account';
-import Login from '../components/Login';
+import Signup from './Signup';
+import Account from './Account';
+import Login from './Login';
 
 const SubPath = ({ children }) => <React.Fragment>{children}</React.Fragment>;
 

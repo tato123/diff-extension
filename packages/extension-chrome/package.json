@@ -42,6 +42,7 @@
   "dependencies": {
     "@diff/common": "^0.1.0",
     "auth0-js": "^9.8.0",
+    "firebase": "^5.4.2",
     "jwt-decode": "^2.2.0",
     "lodash-es": "^4.17.11",
     "normalize-url": "^3.3.0",

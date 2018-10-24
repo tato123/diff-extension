@@ -30,7 +30,10 @@
   },
   "name": "diff",
   "dependencies": {
-    "node-pre-gyp": "0.6.x"
+    "node-pre-gyp": "0.6.x",
+    "firebase": "^5.4.2",
+    "firebase-admin": "^6.0.0",
+    "gatsby-cli": "^1.1.58"
   },
   "engines": {
     "npm": ">6.4.0",

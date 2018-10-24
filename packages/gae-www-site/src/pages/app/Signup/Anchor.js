@@ -1,5 +1,5 @@
-import { Anchor } from '@diff/shared-components'
-import styled from 'styled-components'
+import { Anchor } from '@diff/shared-components';
+import styled from 'styled-components';
 
 const SignupAnchor = styled(Anchor)`
   padding: 15px 45px;
@@ -18,6 +18,6 @@ const SignupAnchor = styled(Anchor)`
   &:hover {
     text-decoration: none;
   }
-`
+`;
 
-export default SignupAnchor
+export default SignupAnchor;

@@ -1,0 +1,67 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Jonathan\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js install --mutex network:42424 --non-interactive
+
+PATH: 
+  C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\.bin;C:\Users\Jonathan\Repositories\github\tato123\node_modules\.bin;C:\Users\Jonathan\Repositories\github\node_modules\.bin;C:\Users\Jonathan\Repositories\node_modules\.bin;C:\Users\Jonathan\node_modules\.bin;C:\Users\node_modules\.bin;C:\node_modules\.bin;C:\Program Files\nodejs;C:\Users\Jonathan\Downloads\cmder\bin;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files\Java\jdk1.8.0_131\bin;C:\Program Files (x86)\vim\vim80;C:\Program Files (x86)\Windows Kits\10\Windows Performance;C:\Go\bin;C:\WINDOWS\System32\OpenSSH\;C:\Pr;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Users\Jonathan\.windows-build-tools\python27\;C:\Program Files\nodejs\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\.bin;C:\Users\Jonathan\Downloads\cmder\bin;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files\Java\jdk1.8.0_131\bin;C:\Program Files (x86)\vim\vim80;C:\Program Files (x86)\Windows Kits\10\Windows Performance;C:\Go\bin;C:\WINDOWS\System32\OpenSSH\;C:\Pr;C:\Program Files\nodejs\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Yarn\bin\;C:\Users\Jonathan\.windows-build-tools\python27\;C:\Users\Jonathan\AppData\Local\Yarn\Data\global\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jonathan\AppData\Local\Yarn\Data\link\node_modules\.bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\npm\bin\node-gyp-bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jonathan\AppData\Roaming\npm\node_modules\.bin;C:\Users\Jonathan\Downloads\cmder\bin;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5;C:\Users\Jonathan\Downloads\cmder\vendor\conemu-maximus5\ConEmu;C:\Users\Jonathan\AppData\Local\Microsoft\WindowsApps;C:\Program Files\NVIDIA GPU Computing;C:\Users\Jonathan\AppData\Local\Microsoft\WindowsApps;C:\Users\Jonathan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\share\vim\vim74;C:\Users\Jonathan\Downloads\cmder\;C:\Users\Jonathan\AppData\Roaming\npm;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\share\vim\vim74;C:\Users\Jonathan\Downloads\cmder\
+
+Yarn version: 
+  1.10.1
+
+Node version: 
+  8.12.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'C:\Users\Jonathan\Repositories\github\tato123\diff\node_modules\iltorb\build\bindings\iltorb.node'
+
+npm manifest: 
+  {
+    "private": true,
+    "devDependencies": {
+      "babel-eslint": "^9.0.0",
+      "cross-env": "^5.2.0",
+      "eslint": "^5.7.0",
+      "eslint-config-airbnb": "^17.1.0",
+      "eslint-config-prettier": "^3.1.0",
+      "eslint-plugin-import": "^2.14.0",
+      "eslint-plugin-jsx-a11y": "^6.1.1",
+      "eslint-plugin-prettier": "^2.6.2",
+      "eslint-plugin-react": "^7.11.1",
+      "lerna": "^3.4.3",
+      "prettier": "^1.14.3",
+      "prettier-eslint": "^8.8.2"
+    },
+    "workspaces": {
+      "packages": [
+        "packages/*"
+      ],
+      "nohoist": [
+        "**/react-scripts",
+        "**/react-scripts/**"
+      ]
+    },
+    "scripts": {
+      "start": "lerna run --parallel start:dev",
+      "build": "lerna run --parallel build",
+      "test": "lerna run --parallel test"
+    },
+    "name": "diff",
+    "dependencies": {
+      "node-pre-gyp": "0.6.x",
+      "firebase": "^5.4.2",
+      "firebase-admin": "^6.0.0",
+      "gatsby-cli": "^1.1.58"
+    },
+    "engines": {
+      "npm": ">6.4.0",
+      "node": ">8.0.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

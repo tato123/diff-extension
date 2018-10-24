@@ -1,16 +1,16 @@
-import React from 'react'
-import api from '../../api'
-import './signup.css'
+import React from 'react';
+import './signup.css';
 
-import { Redirect } from '@reach/router'
+import { Redirect } from '@reach/router';
 
-import { Icon } from 'react-icons-kit'
-import { ic_check_circle as checkCircle } from 'react-icons-kit/md/ic_check_circle'
-import Template from './Template'
-import SignupForm from './SignupForm'
-import MakeComment from './MakeComment'
-import MakeWorkspace from './Workspace'
-import Install from './Install'
+import { Icon } from 'react-icons-kit';
+import { ic_check_circle as checkCircle } from 'react-icons-kit/md/ic_check_circle';
+import api from '../../../api';
+import Template from './Template';
+import SignupForm from './SignupForm';
+import MakeComment from './MakeComment';
+import MakeWorkspace from './Workspace';
+import Install from './Install';
 
 export default class Signup extends React.Component {
   state = {
@@ -20,75 +20,74 @@ export default class Signup extends React.Component {
     initialized: false,
     complete: false,
     error: null,
-    onboardComplete: false,
-  }
+    onboardComplete: false
+  };
 
   async componentDidMount() {
-    this.api = api.connect()
+    this.api = api.connect();
 
-    const user = await this.api.getCurrentUser()
-    const refreshToken = await this.api.getRefreshToken()
+    const user = await this.api.getCurrentUser();
+    const refreshToken = await this.api.getRefreshToken();
 
     this.setState({
       step: user ? 1 : 0,
       initialized: true,
-      refreshToken: refreshToken,
-      onboardComplete: (user && user.onboardComplete) || false,
-    })
+      refreshToken,
+      onboardComplete: (user && user.onboardComplete) || false
+    });
   }
 
   nextStep = () => {
-    this.setState(state => ({ step: state.step + 1 }))
-  }
+    this.setState(state => ({ step: state.step + 1 }));
+  };
 
   handleSignup = values => {
-    this.setState({ isSubmitting: true })
+    this.setState({ isSubmitting: true });
     this.api
       .signup(values.email, values.password, values.displayName)
       .then(response =>
         this.api.login(response.access_token, response.refresh_token)
       )
       .then(async () => {
-        const refreshToken = await this.api.getRefreshToken()
-        this.setState({ refreshToken })
+        const refreshToken = await this.api.getRefreshToken();
+        this.setState({ refreshToken });
       })
       .then(() => {
-        this.nextStep()
+        this.nextStep();
       })
       .catch(error => {
-        this.setState({ error })
-      })
-  }
+        this.setState({ error });
+      });
+  };
 
   classes = index => {
-    const classes = []
+    const classes = [];
     if (this.state.step === index) {
-      classes.push('active')
+      classes.push('active');
     }
     if (this.state.step > index) {
-      classes.push('completed')
+      classes.push('completed');
     }
-    return classes.join(' ')
-  }
+    return classes.join(' ');
+  };
 
-  isComplete = index => {
-    return this.state.step > index
-  }
+  isComplete = index => this.state.step > index;
 
   onComplete = async () => {
-    await this.api.updateUser('onboardComplete', true)
-    this.nextStep()
-  }
+    await this.api.updateUser('onboardComplete', true);
+    this.nextStep();
+  };
 
   render() {
     const {
-      state: { step, initialized, onboardComplete, refreshToken },
-    } = this
+      state: { step, initialized, onboardComplete, refreshToken }
+    } = this;
 
     if (step === 4 || onboardComplete) {
-      return <Redirect to="/app/account" noThrow />
-    } else if (!initialized) {
-      return null
+      return <Redirect to="/app/account" noThrow />;
+    }
+    if (!initialized) {
+      return null;
     }
 
     return (
@@ -152,6 +151,6 @@ export default class Signup extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
