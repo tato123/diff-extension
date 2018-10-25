@@ -1,6 +1,5 @@
 import React from 'react';
 import browser from '@diff/common/dist/browser';
-import PropTypes from 'prop-types';
 import { StyleBoundary } from '@diff/shared-components';
 
 import styled from 'styled-components';
@@ -18,22 +17,19 @@ export default class Popup extends React.Component {
     user: null
   };
 
-  async componentDidMount() {
-    const user = await browser.auth.getUser();
-    this.setState({
-      user
+  componentDidMount() {
+    // attempt to get our user, if no user
+    // object then we probably encountered a no login
+    // state
+    browser.auth.getUser().then(user => {
+      this.setState({
+        user
+      });
     });
   }
 
-  logout = () => {
-    // const {
-    //   props: { authProvider }
-    // } = this;
-    // authProvider.logout();
-    // // Remove the idToken from storage
-    // localStorage.clear();
-    // this.setState({ accessToken: null });
-    // chrome.browserAction.setIcon({ path: '../images/inactive_icon_128.png' });
+  logout = async () => {
+    await browser.auth.logoutUser();
   };
 
   render() {

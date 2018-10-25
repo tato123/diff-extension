@@ -338,6 +338,10 @@ const getUser = async () => {
   return response.json();
 };
 
+const logoutUser = async () => {
+  console.warn('user wants to logout');
+};
+
 const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
   // set browser auth0 authorize from our custom stsate,
   // not sure that this is even needed
@@ -366,6 +370,7 @@ const renewSession = async () => {
 
 var auth = {
   renewSession,
+  logoutUser,
   authorize,
   checkSession,
   getUserFromAccessToken,

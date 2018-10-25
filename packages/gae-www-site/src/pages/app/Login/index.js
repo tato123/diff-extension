@@ -88,9 +88,10 @@ export default class Login extends React.PureComponent {
   componentDidMount() {
     const urlParams = new URLSearchParams(window.location.search);
 
-    this.state = urlParams.get('state');
-    this.nonce = urlParams.get('nonce');
-    this.redirectUri = `${process.env.API_SERVER}/auth/codegrant`;
+    const origin = urlParams.get('origin') || `${process.env.WEB_HOME}/app`;
+    this.redirectUri = `${
+      process.env.API_SERVER
+    }/auth/codegrant?origin=${origin}`;
 
     this.webAuth = new auth0.WebAuth({
       domain: process.env.AUTH0_DOMAIN,

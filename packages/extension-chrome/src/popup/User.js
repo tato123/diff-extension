@@ -22,7 +22,7 @@ const Avatar = styled(Image)`
 export default class User extends React.PureComponent {
   static propTypes = {
     onLogout: PropTypes.func.isRequired,
-    user: PropTypes.object
+    user: PropTypes.object.isRequired
   };
 
   render() {

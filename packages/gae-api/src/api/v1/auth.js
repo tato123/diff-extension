@@ -141,7 +141,7 @@ export const codeGrantAuthorize = [
         client_id: process.env.AUTH0_CLIENTID,
         client_secret: process.env.AUTH0_CLIENT_SECRET,
         code,
-        redirect_uri: `${process.env.API_SERVER}/auth/callback`
+        redirect_uri: process.env.API_SERVER
       },
       json: true
     };
@@ -162,12 +162,13 @@ export const codeGrantAuthorize = [
   userProfileSync,
   (req, res) => {
     const body = req._user;
+
     res.cookie('_df_id_token', body.id_token, { httpOnly: true });
     res.cookie('_df_access_token', body.access_token, { httpOnly: true });
     res.cookie('_df_refresh_token', body.refresh_token, { httpOnly: true });
     res.cookie('_df_expires_in', body.refresh_token, { httpOnly: true });
     res.cookie('_df_token_type', body.token_type, { httpOnly: true });
-    res.redirect(301, process.env.CHROME_REDIRECT_LOGIN);
+    res.redirect(301, req.query.origin);
   }
 ];
 
