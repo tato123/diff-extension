@@ -5,6 +5,9 @@
  */
 const Dotenv = require('dotenv-webpack');
 
+const config = `../../.env.${process.env.NODE_ENV}`;
+require('dotenv').config({ path: config });
+
 // You can delete this file if you're not using it
 exports.onCreatePage = async ({ page, actions }) => {
   const { createPage } = actions;
@@ -29,7 +32,7 @@ exports.onCreateWebpackConfig = ({
   actions.setWebpackConfig({
     plugins: [
       new Dotenv({
-        path: `../../.env.${process.env.NODE_ENV}`
+        path: config
       })
     ]
   });

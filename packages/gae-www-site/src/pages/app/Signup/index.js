@@ -23,9 +23,12 @@ export default class Signup extends React.Component {
     onboardComplete: false
   };
 
-  async componentDidMount() {
+  constructor(props) {
+    super(props);
     this.api = api.connect();
+  }
 
+  async componentDidMount() {
     const user = await this.api.getCurrentUser();
     const refreshToken = await this.api.getRefreshToken();
 
@@ -62,10 +65,14 @@ export default class Signup extends React.Component {
 
   classes = index => {
     const classes = [];
-    if (this.state.step === index) {
+    const {
+      state: { step }
+    } = this;
+
+    if (step === index) {
       classes.push('active');
     }
-    if (this.state.step > index) {
+    if (step > index) {
       classes.push('completed');
     }
     return classes.join(' ');
@@ -80,7 +87,7 @@ export default class Signup extends React.Component {
 
   render() {
     const {
-      state: { step, initialized, onboardComplete, refreshToken }
+      state: { step, initialized, onboardComplete, refreshToken, isSubmitting }
     } = this;
 
     if (step === 4 || onboardComplete) {
@@ -128,7 +135,7 @@ export default class Signup extends React.Component {
                 {step === 0 && (
                   <SignupForm
                     onSubmit={this.handleSignup}
-                    isSubmitting={this.state.isSubmitting}
+                    isSubmitting={isSubmitting}
                   />
                 )}
                 {step === 1 && (
@@ -138,7 +145,7 @@ export default class Signup extends React.Component {
                   />
                 )}
                 {step === 2 && (
-                  <MakeComment api={this.api} onCommentAdded={this.nextStep} />
+                  <MakeComment api={api} onCommentAdded={this.nextStep} />
                 )}
                 {step === 3 && (
                   <MakeWorkspace

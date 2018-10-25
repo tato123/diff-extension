@@ -4,8 +4,6 @@
   "version": "1.0.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
-    "@diff/shared-components": "^0.1.0",
-    "@diff/common": "latest",
     "@reach/router": "^1.2.1",
     "auth0-js": "^9.8.0",
     "babel-plugin-styled-components": "^1.7.1",

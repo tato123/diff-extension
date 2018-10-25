@@ -1,14 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ModalStep from './ModalStep'
+import React from 'react';
+import PropTypes from 'prop-types';
+import ModalStep from './ModalStep';
 
 const MakeComment = ({ api, onCommentAdded }) => {
+  if (!api || !api.onCommentAddedToCurrentPage) {
+    return <div>Sorry, an error occured </div>;
+  }
+
+  console.log('API is', api);
   api.onCommentAddedToCurrentPage((data, err) => {
     if (err) {
-      return console.error(err)
+      return console.error(err);
     }
-    onCommentAdded(data)
-  })
+    onCommentAdded(data);
+  });
 
   return (
     <ModalStep header="Add your first comment">
@@ -19,16 +24,18 @@ const MakeComment = ({ api, onCommentAdded }) => {
       </p>
       <p>Give it a try by adding a comment to the purple 'Test button'</p>
     </ModalStep>
-  )
-}
+  );
+};
 
 MakeComment.propTypes = {
-  api: PropTypes.object.isRequired,
-  onCommentAdded: PropTypes.func,
-}
+  api: PropTypes.shape({
+    onCommentAddedToCurrentPage: PropTypes.func
+  }).isRequired,
+  onCommentAdded: PropTypes.func
+};
 
 MakeComment.defaultProps = {
-  onCommentAdded: () => {},
-}
+  onCommentAdded: () => {}
+};
 
-export default MakeComment
+export default MakeComment;

@@ -319,6 +319,24 @@ const getUserFromAccessToken = async () => {
 
   return jwtDecode(accessToken);
 };
+/**
+ * Attempts to get a user if one is present in the cookies,
+ * otherwise this will just fail out with an erorr
+ */
+
+
+const getUser = async () => {
+  const response = await fetch(`${process.env.API_SERVER}/auth/profile`, {
+    credentials: 'include',
+    mode: 'cors'
+  });
+
+  if (!response.ok) {
+    throw new Error('No logged in user');
+  }
+
+  return response.json();
+};
 
 const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
   // set browser auth0 authorize from our custom stsate,
@@ -350,7 +368,8 @@ var auth = {
   renewSession,
   authorize,
   checkSession,
-  getUserFromAccessToken
+  getUserFromAccessToken,
+  getUser
 };
 
 var browser = {

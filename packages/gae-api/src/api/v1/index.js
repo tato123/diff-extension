@@ -12,6 +12,7 @@ router.get('/auth/firebase', authRoutes.login);
 router.get('/auth/refresh', authRoutes.refresh);
 router.get('/auth/codegrant', authRoutes.codeGrantAuthorize);
 router.get('/auth/renew', authRoutes.renewSession);
+router.get('/auth/profile', authRoutes.profile);
 
 router.get('/ah/health', healthRoutes.health);
 

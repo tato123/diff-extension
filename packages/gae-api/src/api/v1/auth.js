@@ -105,10 +105,31 @@ export const refresh = (req, res) => {
   });
 };
 
+export const profile = [
+  (req, res, next) => {
+    console.log('cookies', req.cookies._df_id_token);
+    const token = req.cookies._df_id_token;
+    if (!token) {
+      return res.status(401).send('sorry not authorized');
+    }
+
+    req.headers.authorization = `Bearer ${token}`;
+
+    console.log('headers now', req.headers.authorization);
+    next();
+  },
+  jwtCheck,
+  (req, res) => {
+    res.status(200).json(req.user);
+  }
+];
+
 export const codeGrantAuthorize = [
   (req, res, next) => {
+    console.log('received a login event', req.query);
+
     const {
-      query: { code, redirectUri }
+      query: { code }
     } = req;
 
     const options = {
@@ -120,15 +141,17 @@ export const codeGrantAuthorize = [
         client_id: process.env.AUTH0_CLIENTID,
         client_secret: process.env.AUTH0_CLIENT_SECRET,
         code,
-        redirect_uri: redirectUri
+        redirect_uri: `${process.env.API_SERVER}/auth/callback`
       },
       json: true
     };
 
     request(options, (error, response, body) => {
       if (error) {
+        console.error('error', error);
         next(error);
       }
+      console.log(body);
 
       req.headers.authorization = `Bearer ${body.id_token}`;
       req._user = body;
@@ -138,7 +161,13 @@ export const codeGrantAuthorize = [
   jwtCheck,
   userProfileSync,
   (req, res) => {
-    res.status(200).send(req._user);
+    const body = req._user;
+    res.cookie('_df_id_token', body.id_token, { httpOnly: true });
+    res.cookie('_df_access_token', body.access_token, { httpOnly: true });
+    res.cookie('_df_refresh_token', body.refresh_token, { httpOnly: true });
+    res.cookie('_df_expires_in', body.refresh_token, { httpOnly: true });
+    res.cookie('_df_token_type', body.token_type, { httpOnly: true });
+    res.redirect(301, process.env.CHROME_REDIRECT_LOGIN);
   }
 ];
 

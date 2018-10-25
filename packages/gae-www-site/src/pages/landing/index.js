@@ -13,6 +13,17 @@ import DiffHeader from './diff.gif';
 import DiffLogo from './diff.svg';
 import DiffDarkLogo from './diff2.svg';
 
+if (typeof window !== 'undefined') {
+  if (window.navigator && navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    });
+    console.log('Cache cleared');
+  }
+}
+
 const Container = styled.div`
   color: #130c3b;
   padding-top: 32px;

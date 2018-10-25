@@ -90,8 +90,7 @@ export default class Login extends React.PureComponent {
 
     this.state = urlParams.get('state');
     this.nonce = urlParams.get('nonce');
-    this.redirectUri =
-      urlParams.get('return_to') || `${process.env.WEB_HOME}/app/login/token`;
+    this.redirectUri = `${process.env.API_SERVER}/auth/codegrant`;
 
     this.webAuth = new auth0.WebAuth({
       domain: process.env.AUTH0_DOMAIN,
@@ -100,6 +99,21 @@ export default class Login extends React.PureComponent {
       responseType: 'code',
       redirectUri: this.redirectUri
     });
+
+    fetch(`${process.env.API_SERVER}/auth/profile`, {
+      credentials: 'include',
+      mode: 'cors'
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw new Error('Unable to process');
+      })
+      .catch(error => {
+        console.error(error.message);
+      });
   }
 
   onLoginWithGoogle = async () => {

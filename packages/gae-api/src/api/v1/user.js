@@ -1,4 +1,8 @@
+import Mailgun from 'mailgun-js';
 import { models } from '../../firestore';
+
+import logging from '../../logging';
+import mailer from '../../email';
 
 /**
  * Retrieves all of the available domains for a given logged in user
