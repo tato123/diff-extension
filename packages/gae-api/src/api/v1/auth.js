@@ -26,6 +26,19 @@ const jwtCheck = jwt({
   algorithm: 'RS256'
 });
 
+const cookieToken = (req, res, next) => {
+  console.log('cookies', req.cookies._df_id_token);
+  const token = req.cookies._df_id_token;
+  if (!token) {
+    return res.status(401).send('sorry not authorized');
+  }
+
+  req.headers.authorization = `Bearer ${token}`;
+
+  console.log('headers now', req.headers.authorization);
+  next();
+};
+
 const userProfileSync = async (req, res, next) => {
   logging.info('------------[first-time check] ----------');
   console.log('user is', req.user.sub);
@@ -48,6 +61,7 @@ const userProfileSync = async (req, res, next) => {
 
 // GET object containing Firebase custom token
 export const login = [
+  cookieToken,
   jwtCheck,
   userProfileSync,
   (req, res) => {
@@ -106,18 +120,7 @@ export const refresh = (req, res) => {
 };
 
 export const profile = [
-  (req, res, next) => {
-    console.log('cookies', req.cookies._df_id_token);
-    const token = req.cookies._df_id_token;
-    if (!token) {
-      return res.status(401).send('sorry not authorized');
-    }
-
-    req.headers.authorization = `Bearer ${token}`;
-
-    console.log('headers now', req.headers.authorization);
-    next();
-  },
+  cookieToken,
   jwtCheck,
   (req, res) => {
     res.status(200).json(req.user);

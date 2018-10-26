@@ -307,18 +307,6 @@ const checkSession = async () => {
     access_token: null
   };
 };
-
-const getUserFromAccessToken = async () => {
-  const {
-    access_token: accessToken
-  } = await storage.html5.local.get(['access_token']);
-
-  if (!accessToken) {
-    throw new Error('No access token set');
-  }
-
-  return jwtDecode(accessToken);
-};
 /**
  * Attempts to get a user if one is present in the cookies,
  * otherwise this will just fail out with an erorr
@@ -340,6 +328,19 @@ const getUser = async () => {
 
 const logoutUser = async () => {
   console.warn('user wants to logout');
+};
+
+const getFirebaseToken = async () => {
+  const response = await fetch(`${process.env.API_SERVER}/auth/firebase`, {
+    credentials: 'include',
+    mode: 'cors'
+  });
+
+  if (!response.ok) {
+    throw new Error('No logged in user');
+  }
+
+  return response.json();
 };
 
 const authorize = async (webAuthInstance, state, nonce, redirectUri) => {
@@ -373,8 +374,8 @@ var auth = {
   logoutUser,
   authorize,
   checkSession,
-  getUserFromAccessToken,
-  getUser
+  getUser,
+  getFirebaseToken
 };
 
 var browser = {

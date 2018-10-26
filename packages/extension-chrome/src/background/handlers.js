@@ -10,11 +10,6 @@ import _ from 'lodash-es';
 import jwtDecode from 'jwt-decode';
 import { getSitePreference } from './storage';
 
-const authProvider = new AuthProvider(
-  process.env.AUTH0_DOMAIN,
-  process.env.AUTH0_CLIENT_ID
-);
-
 /**
  *
  * @param {Number} tabId
@@ -22,7 +17,7 @@ const authProvider = new AuthProvider(
  */
 const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   try {
-    const user = await browser.auth.getUserFromAccessToken();
+    const user = await browser.auth.getUser();
     const remoteSites = await remoteSettings.getDomains(user.sub);
 
     // get the local sites theyve opened diff for
@@ -53,7 +48,7 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   }
 };
 
-async function exchangeAndStoreFirebaseToken(token) {
+async function getFirebaseToken() {
   const { firebaseToken: oldToken } = await browser.storage.html5.local.get([
     'firebaseToken'
   ]);
@@ -63,31 +58,16 @@ async function exchangeAndStoreFirebaseToken(token) {
     return oldToken;
   }
 
-  return fetch(`${process.env.API_SERVER}/auth/firebase`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-
-      throw new Error(response.statusText);
-    })
-    .then(async ({ firebaseToken }) => {
-      await browser.storage.html5.local.set({ firebaseToken });
-
-      return firebaseToken;
-    });
+  return browser.auth.getFirebaseToken().then(async ({ firebaseToken }) => {
+    await browser.storage.html5.local.set({ firebaseToken });
+    return firebaseToken;
+  });
 }
 
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    const { id_token: idToken } = await authProvider.checkAndRenewSession();
-
     // do the same for a firebase token
-    const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);
+    const firebaseToken = await getFirebaseToken();
 
     if (!_.isNil(firebaseToken)) {
       return postMessageToTab(tabId, {

@@ -5,6 +5,8 @@ import auth0 from 'auth0-js';
 import styled from 'styled-components';
 import { Icon } from 'react-icons-kit';
 import { google } from 'react-icons-kit/icomoon/google';
+import { Redirect } from '@reach/router';
+import { user as userContext } from '../../../utils/auth';
 
 const Container = styled.div`
   color: #231c47;
@@ -84,8 +86,24 @@ const Footer = styled.div`
   margin-top: 16px;
 `;
 
-export default class Login extends React.PureComponent {
-  componentDidMount() {
+export default class Login extends React.Component {
+  state = {
+    user: null
+  };
+
+  async componentDidMount() {
+    // try to get the user, if so skip this
+
+    userContext
+      .hasUser()
+      .then(user => {
+        userContext.setUser(user);
+        this.setState({ user });
+      })
+      .catch(error => {
+        console.warn(error.message);
+      });
+
     const urlParams = new URLSearchParams(window.location.search);
 
     const origin = urlParams.get('origin') || `${process.env.WEB_HOME}/app`;
@@ -100,21 +118,6 @@ export default class Login extends React.PureComponent {
       responseType: 'code',
       redirectUri: this.redirectUri
     });
-
-    fetch(`${process.env.API_SERVER}/auth/profile`, {
-      credentials: 'include',
-      mode: 'cors'
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw new Error('Unable to process');
-      })
-      .catch(error => {
-        console.error(error.message);
-      });
   }
 
   onLoginWithGoogle = async () => {
@@ -158,6 +161,13 @@ export default class Login extends React.PureComponent {
   };
 
   render() {
+    const {
+      state: { user }
+    } = this;
+    if (user) {
+      return <Redirect to="/app/account" />;
+    }
+
     console.log('web home is', process.env.WEB_HOME);
     return (
       <Container className="container">

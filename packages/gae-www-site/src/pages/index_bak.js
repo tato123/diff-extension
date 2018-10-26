@@ -4,7 +4,7 @@ import { Skeleton } from '@diff/shared-components';
 import Layout from '../components/Layout';
 import { Anchor } from '../components/site-components';
 
-import background from '../components/images/background.png';
+import background from '../images/background.png';
 import DetailSection from '../components/DetailSection';
 
 const PSkeleton = () => (

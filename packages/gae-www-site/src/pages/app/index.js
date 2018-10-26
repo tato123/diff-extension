@@ -1,39 +1,29 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Router } from '@reach/router';
+import { StyleBoundary } from '@diff/shared-components';
 import Layout from '../../components/Layout';
 
-import Signup from './Signup';
 import Account from './Account';
 import Login from './Login';
+import serviceworker from '../../utils/serviceworker';
 
-if (typeof window !== 'undefined') {
-  if (window.navigator && navigator.serviceWorker) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      for (const registration of registrations) {
-        registration.unregister();
-      }
-    });
-    console.log('Cache cleared');
-  }
-}
+import PrivateRoute from '../../components/PrivateRoute';
+import UserContext, { user } from '../../utils/auth';
+import Header from './Header';
 
-const SubPath = ({ children }) => <React.Fragment>{children}</React.Fragment>;
-
-SubPath.propTypes = {
-  children: PropTypes.node.isRequired
-};
+serviceworker.deregister();
 
 const App = () => (
-  <Layout client>
-    <Router>
-      <SubPath path="/app">
-        <Signup path="signup" />
-        <Account path="account" />
-        <Login path="login" />
-      </SubPath>
-    </Router>
-  </Layout>
+  <StyleBoundary shadowDom={false}>
+    <Layout Header={Header}>
+      <UserContext.Provider value={user}>
+        <Router>
+          <PrivateRoute default component={Account} path="/app/account" />
+          <Login path="/app/login" />
+        </Router>
+      </UserContext.Provider>
+    </Layout>
+  </StyleBoundary>
 );
 
 export default App;

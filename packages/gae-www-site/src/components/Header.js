@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import mark from './images/mark.png';
+import mark from '../images/mark.png';
 
 const NavContainer = styled.nav`
   height: 78px;
