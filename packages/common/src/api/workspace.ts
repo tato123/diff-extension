@@ -2,58 +2,30 @@ import { Observable, Observer } from 'rxjs';
 import firebase from 'firebase';
 import _ from 'lodash-es';
 
-export interface QueryResponse {
+interface QueryResponse {
   data: Object | firebase.firestore.DocumentData | undefined;
   type?: string | undefined;
   id: string;
 }
 
-export interface CreateWorkspaceResponse {
+interface CreateWorkspaceResponse {
   workspaceId: string;
 }
 
+/**
+ * Models our workspace and provides a set of operations that can
+ * be used to access data from the workspace collection
+ */
 export default (db: firebase.firestore.Firestore): Object => {
   const workspaceRef = db.collection('workspace');
 
   /**
-   * Gets all of the available workspaces
-   * for a given user id
-   *
-   * @param uid
-   */
-  const workspaces$ = (uid: string): Observable<QueryResponse> =>
-    Observable.create((observer: Observer<QueryResponse>) => {
-      if (_.isNil(uid)) {
-        observer.error('uid cannot be null');
-        observer.complete();
-        return;
-      }
-
-      const unsubscribe = workspaceRef
-        .where(`users.${uid}.role`, '>', '')
-        .onSnapshot(
-          querySnapshot => {
-            querySnapshot.docChanges().forEach(({ doc, type }) => {
-              const data = doc.data();
-              observer.next({ data, type, id: doc.id });
-            });
-          },
-          err => {
-            observer.error(err);
-          }
-        );
-
-      return unsubscribe;
-    });
-
-  /**
    * For a given workspace id returns a synchornized observer. This means
    * that we get live updates to that workspace
-   *
-   * @param workspaceId
    */
   const workspaceForId$ = (workspaceId: string): Observable<QueryResponse> =>
     Observable.create((observer: Observer<QueryResponse>) => {
+      debugger;
       if (_.isNil(workspaceId)) {
         observer.error('workspaceId cannot be null');
         observer.complete();
@@ -186,7 +158,6 @@ export default (db: firebase.firestore.Firestore): Object => {
   };
 
   return {
-    workspaces$,
     workspaceForId$,
     inviteCollaborator,
     createWorkspace

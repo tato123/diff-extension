@@ -1,6 +1,7 @@
 import React from 'react';
-import { Anchor, Header, StyleBoundary } from '@diff/shared-components';
+import { Anchor, Header, Space } from '@diff/shared-components';
 import styled from 'styled-components';
+import User from '../../../components/User';
 
 const CardContainer = styled.div`
   > div:first-child {
@@ -20,13 +21,13 @@ const LHeader = styled(Header)`
   color: var(--color-purple-2);
 `;
 
-const Test = () => (
+const Account = () => (
   <div className="container">
     <div className="row">
       <div className="col-md-2">
         <ul className="nav flex-column">
-          <li className="nav-item">
-            <Anchor href="#account">My Account</Anchor>
+          <li className="nav-item active">
+            <Anchor href="#account">My projects</Anchor>
           </li>
           <li className="nav-item">
             <Anchor href="#account">Billing</Anchor>
@@ -38,10 +39,44 @@ const Test = () => (
       </div>
       <CardContainer className="col">
         <Card>
-          <LHeader as="h1">My Account Information</LHeader>
+          <LHeader as="h1">
+            My Projects 
+            {' '}
+            <small>(1 of 1)</small>
+          </LHeader>
+          <Space top={6}>
+            <User>
+              {user =>
+                user ? (
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Role</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.keys(user.workspaces).map(id => (
+                        <tr key={id}>
+                          <td>{user.workspaces[id].name}</td>
+                          <td>{user.workspaces[id].users[user.sub].role}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div />
+                )
+              }
+            </User>
+          </Space>
         </Card>
         <Card>
           <LHeader as="h1">My Billing information</LHeader>
+          <Space top={6}>
+            <div>Current Plan: Free</div>
+            <div>Upgrade Plan</div>
+          </Space>
         </Card>
         <Card>
           <LHeader as="h1">My settings</LHeader>
@@ -51,4 +86,4 @@ const Test = () => (
   </div>
 );
 
-export default Test;
+export default Account;

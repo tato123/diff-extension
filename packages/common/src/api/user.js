@@ -1,6 +1,7 @@
 import 'firebase/auth';
 
 import { Observable, from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 export default db => {
   const userRef = db.collection('users');
@@ -41,8 +42,17 @@ export default db => {
         });
     });
 
+  const getCurrentUser$ = () =>
+    Observable.create(observer => {
+      const unsubscribe = db.app.auth().onAuthStateChanged(user => {
+        if (user) {
+          observer.next(user);
+        }
+      });
+      return unsubscribe;
+    }).pipe(mergeMap(user => getUser(user.uid)));
+
   const setDefaultWorkspace$ = workspaceId => {
-    debugger;
     const user = db.app.auth().currentUser;
 
     return from(
@@ -58,6 +68,7 @@ export default db => {
   return {
     user$,
     getUser,
+    getCurrentUser$,
     setDefaultWorkspace$
   };
 };

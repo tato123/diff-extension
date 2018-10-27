@@ -6,7 +6,6 @@ import Row from '../../components/Row';
 
 const Content = ({ history }) => (
   <div>
-    <Row onClick={() => history.push('/workspace/find')}>Find a workspace</Row>
     <Row onClick={() => history.push('/workspace/create')}>Add a workspace</Row>
     <Workspaces>
       {workspaces => (
