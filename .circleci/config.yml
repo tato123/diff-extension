@@ -51,6 +51,7 @@ jobs:
             - extension-chrome/dist
             - extension-frontend/dist
             - gae-api/dist
+            - gae-api/env
             - gae-www-site/public
             - gae-www-site/.cache
             - shared-components/dist
