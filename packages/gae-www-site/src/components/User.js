@@ -2,22 +2,29 @@ import React from 'react';
 import { initApi } from '@diff/common';
 
 import { zip } from 'rxjs';
-import { mergeMap, map, tap, first } from 'rxjs/operators';
-
-const api = initApi();
+import { mergeMap, map, first } from 'rxjs/operators';
 
 export default class User extends React.Component {
+  constructor(props) {
+    super(props);
+    this.connect();
+  }
+
   state = {
     user: null
   };
 
   componentDidMount() {
-    api.user
+    if (!this.api) {
+      return;
+    }
+
+    this.api.user
       .getCurrentUser$()
       .pipe(
         mergeMap(user => {
           const observables = Object.keys(user.workspaces).map(workspaceId =>
-            api.workspace.workspaceForId$(workspaceId).pipe(first())
+            this.api.workspace.workspaceForId$(workspaceId).pipe(first())
           );
 
           return zip(...observables).pipe(
@@ -39,6 +46,14 @@ export default class User extends React.Component {
           console.error(err);
         }
       );
+  }
+
+  connect() {
+    try {
+      this.api = initApi();
+    } catch (error) {
+      console.warn(error.message);
+    }
   }
 
   render() {

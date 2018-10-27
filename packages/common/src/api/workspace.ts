@@ -25,7 +25,6 @@ export default (db: firebase.firestore.Firestore): Object => {
    */
   const workspaceForId$ = (workspaceId: string): Observable<QueryResponse> =>
     Observable.create((observer: Observer<QueryResponse>) => {
-      debugger;
       if (_.isNil(workspaceId)) {
         observer.error('workspaceId cannot be null');
         observer.complete();
