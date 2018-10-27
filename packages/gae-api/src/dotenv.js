@@ -7,7 +7,7 @@ console.log('Environment is', env);
 
 if (env === 'production') {
   dotenv.config({
-    path: path.resolve(__dirname, `./.env.${env}`)
+    path: path.resolve(__dirname, `../env/.env.${env}`)
   });
 } else {
   dotenv.config({
