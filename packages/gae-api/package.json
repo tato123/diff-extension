@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node --extensions \".ts,.tsx,.js,.jsx\" src/index.js",
-    "build": "npm run build:clean && npm run build:env && npm run build:types && npm run build:js",
+    "build": "npm run build:clean && npm run build:env && npm run build:js",
     "build:clean": "rimraf dist",
     "build:env": "cp ../../.env.production ./dist",
     "build:types": "tsc --emitDeclarationOnly",
