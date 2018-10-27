@@ -6,8 +6,6 @@
   "sideEffects": false,
   "scripts": {
     "test": "echo \"Error: no test specified\"",
-    "styles": "styleguidist server",
-    "build:styles": "styleguidist build",
     "build": "rollup -c rollup.config.js --environment BUILD:production",
     "publish": "yarn build",
     "start:dev": "rollup -c rollup.config.js -m -w --environment INCLUDE_DEPS,BUILD:development"
@@ -21,7 +19,7 @@
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "react-styleguidist": "^7.0.20",
+    "@babel/preset-typescript": "^7.1.0",
     "rollup": "^0.65.0",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-babel": " 4.0.0-beta.8",

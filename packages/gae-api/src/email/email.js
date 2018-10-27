@@ -226,7 +226,7 @@ export const autoAcceptWorkspaceInvites = (to, workspaceName) =>
     `
   );
 
-export const inviteNewUserToWorkspace = (to, workspaceName) =>
+export const inviteNewUserToWorkspace = (to, workspaceName, invitedBy) =>
   sendEmail(
     to,
     'Welcome to Diff workspaces',

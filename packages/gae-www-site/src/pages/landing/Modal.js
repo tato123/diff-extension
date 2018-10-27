@@ -6,7 +6,7 @@ import { Header, Form } from '@diff/shared-components';
 import { Formik } from 'formik';
 import { string, object } from 'yup';
 import { Button } from '../../components/site-components';
-import mark from '../../components/images/mark.png';
+import mark from '../../images/mark.png';
 
 const Container = styled.div`
   h3 {

@@ -1,13 +1,14 @@
-import { types, actions, browser, AuthProvider } from '@diff/common';
+import {
+  types,
+  actions,
+  browser,
+  AuthProvider,
+  remoteSettings
+} from '@diff/common';
 import normalizeUrl from 'normalize-url';
 import _ from 'lodash-es';
-import { getUserDomains } from './user';
-import { getUserToken, getSitePreference } from './storage';
-
-const authProvider = new AuthProvider(
-  process.env.AUTH0_DOMAIN,
-  process.env.AUTH0_CLIENT_ID
-);
+import jwtDecode from 'jwt-decode';
+import { getSitePreference } from './storage';
 
 /**
  *
@@ -16,13 +17,9 @@ const authProvider = new AuthProvider(
  */
 const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   try {
-    // if we dont have a token, domains arent available
-    const value = await getUserToken();
-    if (_.isNil(value) || !value.token) {
-      return postMessageToTab(tabId, actions.fetchUserPreferencesFailed());
-    }
+    const user = await browser.auth.getUser();
+    const remoteSites = await remoteSettings.getDomains(user.sub);
 
-    const remoteSites = await getUserDomains();
     // get the local sites theyve opened diff for
     const localSites = await getSitePreference();
 
@@ -51,28 +48,26 @@ const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   }
 };
 
-async function exchangeAndStoreFirebaseToken(token) {
-  return fetch(`${process.env.API_SERVER}/auth/firebase`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
+async function getFirebaseToken() {
+  const { firebaseToken: oldToken } = await browser.storage.html5.local.get([
+    'firebaseToken'
+  ]);
 
-      throw new Error(response.statusText);
-    })
-    .then(({ firebaseToken }) => firebaseToken);
+  const valid = oldToken ? jwtDecode(oldToken).exp > Date.now() / 1000 : false;
+  if (oldToken && valid) {
+    return oldToken;
+  }
+
+  return browser.auth.getFirebaseToken().then(async ({ firebaseToken }) => {
+    await browser.storage.html5.local.set({ firebaseToken });
+    return firebaseToken;
+  });
 }
 
 const handleGetFirebaseToken = async (tabId, postMessageToTab) => {
   try {
-    const { id_token: idToken } = await authProvider.checkAndRenewSession();
-
     // do the same for a firebase token
-    const firebaseToken = await exchangeAndStoreFirebaseToken(idToken);
+    const firebaseToken = await getFirebaseToken();
 
     if (!_.isNil(firebaseToken)) {
       return postMessageToTab(tabId, {

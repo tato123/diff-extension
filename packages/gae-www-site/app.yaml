@@ -1,39 +1,9 @@
-runtime: python27
-api_version: 1
-threadsafe: true
+runtime: nodejs
+env: flex
 
-handlers:
-  - url: /app/.*
-    static_files: public/app/index.html
-    upload: public/app/index.html
-    secure: always
-    http_headers:
-      Cache-Control: max-age=300
-
-  - url: /landing(.+)
-    static_files: public/landing/index.html
-    upload: public/landing/index.html
-    secure: always
-    http_headers:
-      Cache-Control: max-age=300
-
-  - url: /landing
-    static_files: public/landing/index.html
-    upload: public/landing/index.html
-    secure: always
-    http_headers:
-      Cache-Control: max-age=300
-
-  - url: /
-    static_files: public/index.html
-    upload: public/index.html
-    secure: always
-    http_headers:
-      Cache-Control: max-age=300
-
-  - url: /(.+)
-    static_files: public/\1
-    upload: public/(.*)
-    secure: always
-    http_headers:
-      Cache-Control: max-age=300
+skip_files:
+  - ^node_modules$
+  - node_modules
+  - .cache
+  - src
+  - template

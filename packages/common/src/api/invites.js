@@ -3,11 +3,10 @@ import { Observable } from 'rxjs';
 export default db => {
   const invitesRef = db.collection('invites');
 
-  const invitesForWorkspace$ = workspaceId => {
-    return Observable.create(observer => {
+  const invitesForWorkspace$ = workspaceId =>
+    Observable.create(observer => {
       const unsubscribe = invitesRef
         .where('workspaceId', '==', workspaceId)
-        .where('status', '==', 'pending')
         .onSnapshot(
           querySnapshot => {
             querySnapshot.docChanges().forEach(({ doc, type }) => {
@@ -20,10 +19,9 @@ export default db => {
 
       return unsubscribe;
     });
-  };
 
-  const inviteForEmail$ = email => {
-    return Observable.create(observer => {
+  const inviteForEmail$ = email =>
+    Observable.create(observer => {
       const unsubscribe = invitesRef.where(`email`, '==', email).onSnapshot(
         querySnapshot => {
           querySnapshot.docChanges().forEach(({ doc, type }) => {
@@ -38,7 +36,6 @@ export default db => {
 
       return unsubscribe;
     });
-  };
 
   return {
     invitesForWorkspace$,

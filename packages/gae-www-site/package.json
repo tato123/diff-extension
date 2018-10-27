@@ -1,10 +1,13 @@
 {
   "name": "@diff/gae-www-site",
-  "description": "Gatsby default starter",
+  "description": "Diff Gatsby site",
   "version": "1.0.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Jonathan Fontanez <jfontanez@getdiff.app>",
+  "peerDependencies": {
+    "@diff/common": "^0.1.1",
+    "@diff/shared-components": "^0.1.1"
+  },
   "dependencies": {
-    "@diff/shared-components": "^0.1.0",
     "@reach/router": "^1.2.1",
     "auth0-js": "^9.8.0",
     "babel-plugin-styled-components": "^1.7.1",
@@ -19,6 +22,8 @@
     "gatsby-plugin-robots-txt": "^1.3.0",
     "gatsby-plugin-sitemap": "^2.0.1",
     "gatsby-plugin-styled-components": "^3.0.0",
+    "js-cookie": "^2.2.0",
+    "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
@@ -27,6 +32,9 @@
     "react-responsive-modal": "^3.4.0",
     "react-spring": "^5.9.2",
     "react-waypoint": "^8.0.3",
+    "rxjs": "^6.3.3",
+    "serve": "^10.0.2",
+    "serve-handler": "^5.0.5",
     "styled-components": "3.4.9",
     "yup": "^0.26.6"
   },
@@ -38,10 +46,12 @@
     "build": "gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "yarn develop"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "start:dev": "yarn develop",
+    "start": "node server.js"
   },
   "devDependencies": {
+    "dotenv-webpack": "^1.5.7",
     "eslint-plugin-flowtype": "^2.50.0",
     "prettier": "^1.14.2"
   },

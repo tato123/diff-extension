@@ -25,14 +25,16 @@ const View = styled.div`
   
   --color-purple: #4648b0;
   --color-purple-1: #6848b0;
+  --color-purple-2: #6363be;
   --color-blue-1: #1f1d3f;
   --color-blue-2: #241c49;
+  --color-pink: #EF3B7B;
   --color-white-1: rgba(0, 0, 0, 0.3);
 
   --gradient-purple: linear-gradient(to bottom right, var(--color-purple), var(--color-purple-1) );
   --gradient-header: linear-gradient(to right, var(--color-blue-1), var(--color-blue-2) );
   --border-color: var(--color-white-1);
-
+  --df-text-color-highlight: var(--color-pink);
 
   --df-space-0: 0px;
   --df-space-1: 4px;
@@ -107,7 +109,7 @@ export default class StyleBoundary extends React.PureComponent {
     innerRef: () => {}
   };
 
-  state = { div: null, hasError: false };
+  state = { div: null };
 
   ref = div => {
     if (!div) {
@@ -116,12 +118,6 @@ export default class StyleBoundary extends React.PureComponent {
 
     this.setState({ div });
   };
-
-  componentDidCatch(error, info) {
-    // Display fallback UI
-    this.setState({ hasError: true });
-    console.error('[Widget] error occured while displaying', error, info);
-  }
 
   innerContent = () => {
     const {
@@ -132,7 +128,7 @@ export default class StyleBoundary extends React.PureComponent {
     return (
       <div>
         <style>{styleContent}</style>
-        <div ref={ref} id="jss-insertion-point">
+        <div ref={ref}>
           {div && (
             <StyleSheetManager target={div}>
               <View>{this.props.children}</View>
@@ -145,13 +141,8 @@ export default class StyleBoundary extends React.PureComponent {
 
   render() {
     const {
-      props: { shadowDom, selectable },
-      state: { hasError }
+      props: { shadowDom, selectable }
     } = this;
-
-    if (hasError) {
-      return <div>x</div>;
-    }
 
     return shadowDom ? (
       <ShadowDom innerRef={this.props.innerRef} selectable={selectable}>

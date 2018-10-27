@@ -7,5 +7,5 @@ if (process.env.NODE_ENV === 'production') {
   require('@google-cloud/debug-agent').start();
 }
 
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('./dotenv');
 require('./server');

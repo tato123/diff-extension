@@ -19,8 +19,11 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
           paths:
             - node_modules
-            - packages/extension/node_modules
-            - packages/api/node_modules
+            - packages/common/node_modules
+            - packages/extension-chrome/node_modules
+            - packages/extension-frontend/node_modules
+            - packages/gae-api/node_modules
+            - packages/gae-www-site/node_modules
             - packages/shared-components/node_modules
   test:
     <<: *defaults
@@ -37,27 +40,21 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
-
       - run:
-          name: Build Shared Components
+          name: Build Packages in parallel
           command: |
-            yarn install
-            npx lerna run --scope @diff/shared-components build
-      - run:
-          name: Build frontend
-          command: |
-            yarn install
-            npx lerna run --scope @diff/extension build
-      - run:
-          name: Build styles
-          command: |
-            npx lerna run --scope @diff/shared-components build:styles
+            yarn build
       - persist_to_workspace:
           root: packages
           paths:
-            - extension/dist/chrome
-            - extension/dist/frontend
-            - shared-components/styleguide
+            - common/dist
+            - extension-chrome/dist
+            - extension-frontend/dist
+            - gae-api/dist
+            - gae-api/env
+            - gae-www-site/public
+            - gae-www-site/.cache
+            - shared-components/dist
   deploy-chrome-extension:
     <<: *defaults
     steps:
@@ -68,17 +65,20 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           name: Upload to webstore
-          command: ./node_modules/.bin/webstore upload --source packages/extension/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
-      # - run:
-      #     name: Publish to webstore
-      #     command: ./node_modules/.bin/webstore publish --trusted-testers --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+          command: npx chrome-webstore-upload-cli upload --source packages/extension-chrome/dist/chrome --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
+      - run:
+          name: Publish to webstore
+          command: npx chrome-webstore-upload-cli publish --extension-id $WEBSTORE_EXTENSION_ID --client-id $WEBSTORE_CLIENT_ID --client-secret $WEBSTORE_CLIENT_SECRET --refresh-token $WEBSTORE_REFRESH_TOKEN
   deploy-frontend:
+    <<: *defaults
     docker:
       - image: google/cloud-sdk:latest
     steps:
       - checkout
       - attach_workspace:
           at: packages
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
@@ -89,18 +89,23 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension/dist/frontend/ gs://diff-frontend
+            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/extension-frontend/dist/ gs://diff-frontend
             gsutil iam ch allUsers:objectViewer gs://diff-frontend
-      - run:
-          name: Deploy styleguide
-          command: |
-            gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/shared-components/styleguide/ gs://diff-styles
-            gsutil iam ch allUsers:objectViewer gs://diff-styles
+      # - run:
+      #     name: Deploy styleguide
+      #     command: |
+      #       gsutil -h "Cache-Control:public, max-age=0" rsync -d -r packages/shared-components/styleguide/ gs://diff-styles
+      #       gsutil iam ch allUsers:objectViewer gs://diff-styles
   deploy-api:
+    <<: *defaults
     docker:
       - image: google/cloud-sdk:latest
     steps:
       - checkout
+      - attach_workspace:
+          at: packages
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
       - run:
           command: |
             echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
@@ -111,7 +116,29 @@ jobs:
       - run:
           name: Deploy to google cloud
           command: |
-            cd packages/api
+            cd packages/gae-api
+            gcloud app deploy app.yaml --quiet
+  deploy-web:
+    <<: *defaults
+    docker:
+      - image: google/cloud-sdk:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: packages
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}-{{ checksum "lerna.json"}}
+      - run:
+          command: |
+            echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+      - run:
+          name: Set project default
+          command: gcloud config set project $GCLOUD_PROJECT
+      - run:
+          name: Deploy to google cloud
+          command: |
+            cd packages/gae-www-site
             gcloud app deploy app.yaml --quiet
 
 workflows:
@@ -138,7 +165,15 @@ workflows:
               only: /^v.*/
       - deploy-api:
           requires:
-            - test
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - deploy-web:
+          requires:
+            - build
           filters:
             branches:
               ignore: /.*/

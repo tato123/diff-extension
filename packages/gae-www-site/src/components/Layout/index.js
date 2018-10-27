@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { StaticQuery, graphql } from 'gatsby';
 
-import Header from '../Header';
+import HeaderImpl from '../Header';
 
 import './bootstrap.min.css';
 import './base.css';
@@ -15,20 +15,20 @@ export default class Layout extends React.PureComponent {
     children: PropTypes.node.isRequired,
     extensionUrl: PropTypes.string,
     client: PropTypes.any,
-    showHeader: PropTypes.bool,
+    Header: PropTypes.node,
     rightMenuItem: PropTypes.func
   };
 
   static defaultProps = {
     extensionUrl: process.env.EXTENSION_URL,
     client: null,
-    showHeader: true,
-    rightMenuItem: null
+    rightMenuItem: null,
+    Header: HeaderImpl
   };
 
   render() {
     const {
-      props: { children, extensionUrl, client, showHeader, rightMenuItem }
+      props: { children, extensionUrl, client, Header, rightMenuItem }
     } = this;
 
     return (
@@ -70,13 +70,10 @@ export default class Layout extends React.PureComponent {
               />
               <html lang="en" />
             </Helmet>
-            {showHeader && (
-              <Header
-                siteTitle={data.site.siteMetadata.title}
-                client={client}
-                rightMenuItem={rightMenuItem}
-              />
-            )}
+            <Header
+              siteTitle={data.site.siteMetadata.title}
+              rightMenuItem={rightMenuItem}
+            />
             {children}
           </React.Fragment>
         )}

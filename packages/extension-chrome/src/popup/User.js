@@ -19,38 +19,15 @@ const Avatar = styled(Image)`
   height: 32px;
 `;
 
-export default class User extends React.Component {
+export default class User extends React.PureComponent {
   static propTypes = {
-    accessToken: PropTypes.string.isRequired,
     onLogout: PropTypes.func.isRequired,
-    authProvider: PropTypes.object.isRequired
-  };
-
-  state = {
-    user: null
-  };
-
-  componentDidMount() {
-    this.getUserProfile();
-  }
-
-  getUserProfile = async () => {
-    const {
-      props: { accessToken, authProvider }
-    } = this;
-
-    try {
-      const user = await authProvider.getUserProfile(accessToken);
-      this.setState({ user });
-    } catch (error) {
-      console.error('Unable to get user profile', error.message);
-    }
+    user: PropTypes.object.isRequired
   };
 
   render() {
     const {
-      state: { user },
-      props: { onLogout }
+      props: { onLogout, user }
     } = this;
 
     return (

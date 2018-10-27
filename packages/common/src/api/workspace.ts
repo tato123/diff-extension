@@ -2,44 +2,27 @@ import { Observable, Observer } from 'rxjs';
 import firebase from 'firebase';
 import _ from 'lodash-es';
 
-export interface QueryResponse {
+interface QueryResponse {
   data: Object | firebase.firestore.DocumentData | undefined;
   type?: string | undefined;
   id: string;
 }
 
-export interface CreateWorkspaceResponse {
+interface CreateWorkspaceResponse {
   workspaceId: string;
 }
 
+/**
+ * Models our workspace and provides a set of operations that can
+ * be used to access data from the workspace collection
+ */
 export default (db: firebase.firestore.Firestore): Object => {
   const workspaceRef = db.collection('workspace');
 
-  const workspaces$ = (uid: string): Observable<QueryResponse> =>
-    Observable.create((observer: Observer<QueryResponse>) => {
-      if (_.isNil(uid)) {
-        observer.error('uid cannot be null');
-        observer.complete();
-        return;
-      }
-
-      const unsubscribe = workspaceRef
-        .where(`users.${uid}.role`, '>', '')
-        .onSnapshot(
-          querySnapshot => {
-            querySnapshot.docChanges().forEach(({ doc, type }) => {
-              const data = doc.data();
-              observer.next({ data, type, id: doc.id });
-            });
-          },
-          err => {
-            observer.error(err);
-          }
-        );
-
-      return unsubscribe;
-    });
-
+  /**
+   * For a given workspace id returns a synchornized observer. This means
+   * that we get live updates to that workspace
+   */
   const workspaceForId$ = (workspaceId: string): Observable<QueryResponse> =>
     Observable.create((observer: Observer<QueryResponse>) => {
       if (_.isNil(workspaceId)) {
@@ -69,6 +52,9 @@ export default (db: firebase.firestore.Firestore): Object => {
       return unsubscribe;
     });
 
+  /**
+   * Gets our current id token (our current session id)
+   */
   const getIdToken = async () => {
     const user = db.app.auth().currentUser;
     const idToken = user && (await user.getIdToken(true));
@@ -80,11 +66,22 @@ export default (db: firebase.firestore.Firestore): Object => {
     return idToken;
   };
 
-  const addCollaborators = async (
-    emails: Array<string>,
+  /**
+   * Invites a person to our workspace, this may be subject
+   * to additional requirements according to your account
+   *
+   * @param email
+   * @param firstName
+   * @param lastName
+   * @param workspaceId
+   */
+  const inviteCollaborator = async (
+    email: string,
+    firstName: string,
+    lastName: string,
     workspaceId: string
   ): Promise<Object> => {
-    if (_.isEmpty(emails) || _.isNil(emails)) {
+    if (_.isEmpty(email) || _.isNil(email)) {
       throw new Error('emails is required');
     }
 
@@ -101,15 +98,19 @@ export default (db: firebase.firestore.Firestore): Object => {
         Authorization: `Bearer ${idToken}`
       },
       body: JSON.stringify({
-        emails,
-        workspaceId
+        email,
+        firstName,
+        lastName
       })
     };
 
-    const response = await fetch(`${process.env.API_SERVER}/invite`, {
-      ...options,
-      method: 'POST'
-    });
+    const response = await fetch(
+      `${process.env.API_SERVER}/workspace/${workspaceId}/invite`,
+      {
+        ...options,
+        method: 'POST'
+      }
+    );
 
     if (!response.ok) {
       return Promise.reject(response.statusText);
@@ -118,11 +119,11 @@ export default (db: firebase.firestore.Firestore): Object => {
     return response.json();
   };
 
-  const addSingleCollaborator = async (
-    email: string,
-    workspaceId: string
-  ): Promise<Object> => addCollaborators([email], workspaceId);
-
+  /**
+   * Creates a new workspace
+   *
+   * @param name
+   */
   const createWorkspace = async (
     name: string
   ): Promise<CreateWorkspaceResponse> => {
@@ -156,10 +157,8 @@ export default (db: firebase.firestore.Firestore): Object => {
   };
 
   return {
-    workspaces$,
     workspaceForId$,
-    addCollaborators,
-    addSingleCollaborator,
+    inviteCollaborator,
     createWorkspace
   };
 };

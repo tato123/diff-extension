@@ -4,6 +4,7 @@ import express from 'express';
 import logging from './logging';
 import routes from './api/v1';
 
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 if (process.env.ENV_ACTIVE !== 'yes') {
@@ -17,9 +18,11 @@ const port = process.env.PORT || 8080;
 app.disable('etag');
 app.set('trust proxy', true);
 
+app.use(cookieParser());
 app.use(
   cors({
-    origin: true
+    origin: true,
+    credentials: true
   })
 );
 
@@ -49,6 +52,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(logging.requestLogger);
 }
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   logging.info(`App listening on port ${port}!`);
 });

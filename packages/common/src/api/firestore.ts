@@ -1,11 +1,10 @@
-import firebase from "firebase/app";
-import "firebase/firestore";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
-/**
- * Handles initializion that is required for our firebase application
- */
-export const initializeFirestore = (): firebase.firestore.Firestore => {
-  console.log("[plugin - firebase] initializing connection");
+let firestore: firebase.firestore.Firestore | null = null;
+
+const initIfNew = (): firebase.firestore.Firestore => {
+  console.log('[plugin - firebase] initializing connection');
 
   // connect to firebase
   const config = {
@@ -16,12 +15,18 @@ export const initializeFirestore = (): firebase.firestore.Firestore => {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.FIREBASE_SENDER_ID
   };
-  console.log(firebase);
+
   firebase.initializeApp(config);
 
-  const firestore = firebase.firestore();
+  firestore = firebase.firestore();
   const settings = { timestampsInSnapshots: true };
   firestore.settings(settings);
 
   return firestore;
 };
+
+/**
+ * Handles initializion that is required for our firebase application
+ */
+export const initializeFirestore = (): firebase.firestore.Firestore =>
+  !firebase.apps.length ? initIfNew() : firebase.app().firestore();
