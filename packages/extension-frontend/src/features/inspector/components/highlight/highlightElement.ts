@@ -1,42 +1,43 @@
 import _ from 'lodash-es';
-import { fromEvent, of } from 'rxjs';
+import { fromEvent, of, Observable, race } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
   distinctUntilChanged,
   last,
-  mergeMap,
   catchError,
   filter,
-  tap
+  tap,
+  map
 } from 'rxjs/operators';
 
 import { injectGlobal } from 'styled-components';
 import Inspector from './hoverinspect';
 
-const SELECTION_CLASS = 'diff-selected';
-const HIGHLIGHT_CLASS = 'diff-highlight';
+const SELECTION_CLASS: string = 'diff-selected';
+const HIGHLIGHT_CLASS: string = 'diff-highlight';
 
 injectGlobal`
-
   .diff-selected {
     outline: 2px dashed #000 !important;
   }
 `;
 
+interface HTMLEvent extends MouseEvent {
+  target: HTMLElement;
+  key?: string;
+}
+
 // common selector attribute
-const SELECTABLE_ATTR = 'data-diff-selectable';
+const SELECTABLE_ATTR: string = 'data-diff-selectable';
 const inspector = new Inspector();
 
 /**
  * The target has to specifically opt-in to turn off selectability,
  * we want to maximize the number of elements that can be selected
  * (basically everything on the page)
- *
- * @param {DOMElement}
- * @returns {Bool}
  */
-const isNotSelectableElement = evt =>
+const isNotSelectableElement = (evt: HTMLEvent): boolean =>
   evt.target.hasAttribute(SELECTABLE_ATTR) &&
   evt.target.getAttribute(SELECTABLE_ATTR) === 'false';
 
@@ -44,10 +45,8 @@ const isNotSelectableElement = evt =>
  * Since we are using an opt-out strategy, by default everything is
  * selectable, we want to make sure that if the attribute hasn't been
  * set we default to selectable
- * @param {DOMElement}
- * @returns {Bool}
  */
-const isSelectableElement = evt => {
+const isSelectableElement = (evt: HTMLEvent): boolean => {
   if (!evt.target.hasAttribute(SELECTABLE_ATTR)) {
     return true;
   }
@@ -58,7 +57,7 @@ const isSelectableElement = evt => {
   );
 };
 
-const clearStyles = () => {
+const clearStyles = (): void => {
   document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach(node => {
     node.classList.remove(HIGHLIGHT_CLASS);
   });
@@ -68,48 +67,79 @@ const clearStyles = () => {
   });
 };
 
-const inspect = (tapFn = _.noop) => {
+const inspect = (): Observable<HTMLElement> => {
   clearStyles();
   inspector.activate();
 
-  const clicks = fromEvent(window, 'click', { capture: true }).pipe(
+  const clicks: Observable<Event> = fromEvent(window, 'click', {
+    capture: true
+  }).pipe(
     filter(evt => {
+      const typedEvent = evt as HTMLEvent;
+
       evt.preventDefault();
-      if (isSelectableElement(evt)) {
+      if (isSelectableElement(typedEvent)) {
         return true;
       }
-      if (isNotSelectableElement(evt)) {
+      if (isNotSelectableElement(typedEvent)) {
         return false;
       }
-      if (!evt.target.hasAttribute(SELECTABLE_ATTR)) {
+
+      if (!typedEvent.target.hasAttribute(SELECTABLE_ATTR)) {
         return true;
       }
+
+      return false;
     })
   );
 
-  const move = fromEvent(document.body, 'mousemove', false);
+  const escape: Observable<Event> = fromEvent(window, 'keyup', {
+    capture: true
+  }).pipe(
+    filter(evt => {
+      const typedEvent = evt as HTMLEvent;
+
+      if (typedEvent.key === 'Escape') {
+        // throw new Error('Interrupt');
+        return true;
+      }
+      return false;
+    }),
+    map(e => null)
+  );
+
+  const move = fromEvent(document.body, 'mousemove');
+
+  const stopAndClear = () => {
+    clearStyles();
+    inspector.deactivate();
+  };
 
   const move$ = move.pipe(
     takeUntil(clicks),
-    debounceTime(2),
-    distinctUntilChanged((oldValue, newValue) => {
-      const val = oldValue.target.isSameNode(newValue.target);
+    distinctUntilChanged(
+      (oldValue, newValue): boolean => {
+        if (oldValue == null) {
+          return true;
+        }
 
-      // value is not the same, remove the highlighting
-      // from the previous value
-      if (!val) {
-        oldValue.target.classList.remove(HIGHLIGHT_CLASS);
+        const val = oldValue.target.isSameNode(newValue.target);
+
+        // value is not the same, remove the highlighting
+        // from the previous value
+        if (!val) {
+          oldValue.target.classList.remove(HIGHLIGHT_CLASS);
+        }
+
+        return val;
       }
-
-      return val;
-    }),
-    mergeMap(evt => {
+    ),
+    map((evt: HTMLEvent) => {
       if (isSelectableElement(evt)) {
         evt.target.classList.add(HIGHLIGHT_CLASS);
-        tapFn(evt);
-        return of(evt.target);
+        return evt.target;
       }
-      return of(null);
+      return null;
     }),
     last(),
     catchError(err => {
@@ -118,13 +148,16 @@ const inspect = (tapFn = _.noop) => {
         // errors as a valid state, it is raised on a special condition where
         // the user closes the launcher without ever hovering over an element
         console.error(err.message);
+      } else if (err.message === 'Interrupt') {
+        // an interrupt was registered and we shouldn't allow the observable
+        // to pass through
+        return of(null);
       }
+
       return of(null);
     }),
-    tap(e => {
-      clearStyles();
-
-      inspector.deactivate();
+    tap((e: HTMLElement | null) => {
+      stopAndClear();
 
       if (e) {
         e.classList.add(SELECTION_CLASS);
@@ -132,12 +165,11 @@ const inspect = (tapFn = _.noop) => {
     })
   );
 
-  move$.forceStop = () => {
-    clearStyles();
-    inspector.deactivate();
-  };
+  const interrupts = race(move$, escape);
 
-  return move$;
+  interrupts.forceStop = stopAndClear;
+
+  return interrupts;
 };
 
 export default inspect;
