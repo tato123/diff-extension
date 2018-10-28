@@ -6,7 +6,7 @@ import { createStructuredSelector } from 'reselect';
 import MainMenu from './MainMenu';
 import ControlPanel from './ControlPanel';
 
-import selectors from './selectors';
+import selectors from './redux/selectors';
 
 const LauncherContainer = styled.div`
   position: fixed;

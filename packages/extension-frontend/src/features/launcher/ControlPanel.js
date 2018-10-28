@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Route, Switch, Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
-
-import { Icon } from 'react-icons-kit';
+import { Spring, animated, config } from 'react-spring';
 
 import { ic_people_outline as peopleOutline } from 'react-icons-kit/md/ic_people_outline';
 import { ic_settings as settings } from 'react-icons-kit/md/ic_settings';
+import * as easings from 'd3-ease';
 import Link from '../../components/Link';
 import IconButton from '../../components/IconButton';
 
@@ -21,22 +21,24 @@ import {
 } from '../workspace';
 
 const Container = styled.div`
-  z-index: 2147483000 !important;
-  position: fixed !important;
-  bottom: 20px;
-  right: 20px;
-  width: 376px !important;
-  min-height: 250px !important;
-  max-height: 704px !important;
-  box-shadow: 0 5px 40px rgba(0, 0, 0, 0.16) !important;
-  border-radius: 8px !important;
-  overflow: hidden !important;
-  opacity: 1 !important;
-  background: #fff;
+  .base {
+    z-index: 2147483000;
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 376px;
+    height: 100%;
+    min-height: 250px;
+    max-height: 500px;
+    box-shadow: 0 5px 40px rgba(0, 0, 0, 0.16) !important;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
 
-  display: flex;
-  flex-direction: column;
-  transform: translateY(-124px);
+    display: flex;
+    flex-direction: column;
+    will-change: transform, opacity;
+  }
 `;
 
 const NavHeader = styled.div`
@@ -67,46 +69,100 @@ const ContentBody = styled.div`
   flex: 1;
   flex-direction: column;
 `;
+class ControlPanel extends React.PureComponent {
+  static propTypes = {
+    active: PropTypes.bool,
+    history: PropTypes.shape({
+      push: PropTypes.func
+    }).isRequired
+  };
 
-const ControlPanel = ({ open }) => (
-  <React.Fragment>
-    {open && (
+  static defaultProps = {
+    active: false
+  };
+
+  state = {
+    height: 670,
+    stable: false
+  };
+
+  componentDidMount() {
+    const height = window.innerHeight;
+
+    this.setState({
+      height: height - height * 0.5
+    });
+  }
+
+  handleRest = () => {
+    this.setState({
+      stable: true
+    });
+  };
+
+  render() {
+    const { active } = this.props;
+    const { stable, height } = this.state;
+    const { handleRest } = this;
+    return (
       <Container>
-        <NavHeader>
-          <Switch>
-            <Route path="/annotations*" component={AnnotationHeader} />
-            <Route path="/workspace*" component={WorkspaceHeader} />
-          </Switch>
-          <div className="iconGroup">
-            <Link to="/workspace">
-              <IconButton icon={peopleOutline} color="#fff" />
-            </Link>
-            <Link to={`${process.env.WEB_HOME}/app/account`} target="_blank">
-              <IconButton icon={settings} color="#fff" />
-            </Link>
-          </div>
-        </NavHeader>
-        <ContentBody id="df-controlpanel-contentbody">
-          <Switch>
-            <Route path="/annotations*" component={AnnotationContent} />
-            <Route path="/workspace*" component={WorkspaceContent} />
-            <Redirect to="/annotations" />
-          </Switch>
-        </ContentBody>
+        <Spring
+          native
+          from={{
+            y: 30,
+            o: 0
+          }}
+          to={{
+            y: active ? 0 : 30,
+            o: active ? 1 : 0
+          }}
+          config={{
+            tension: 1200,
+            friction: 40
+          }}
+          onRest={handleRest}
+        >
+          {({ y, o }) => (
+            <animated.div
+              className="base"
+              style={{
+                height,
+                opacity: o,
+                transform: y.interpolate(yV => `translate3d(0,${yV}px,0)`)
+              }}
+            >
+              <NavHeader>
+                <Switch>
+                  <Route path="/annotations*" component={AnnotationHeader} />
+                  <Route path="/workspace*" component={WorkspaceHeader} />
+                  <Redirect to="/annotations" />
+                </Switch>
+                <div className="iconGroup">
+                  <Link to="/workspace">
+                    <IconButton icon={peopleOutline} color="#fff" />
+                  </Link>
+                  <Link
+                    to={`${process.env.WEB_HOME}/app/account`}
+                    target="_blank"
+                  >
+                    <IconButton icon={settings} color="#fff" />
+                  </Link>
+                </div>
+              </NavHeader>
+              {stable && (
+                <ContentBody id="df-controlpanel-contentbody">
+                  <Switch>
+                    <Route path="/annotations*" component={AnnotationContent} />
+                    <Route path="/workspace*" component={WorkspaceContent} />
+                  </Switch>
+                </ContentBody>
+              )}
+            </animated.div>
+          )}
+        </Spring>
       </Container>
-    )}
-  </React.Fragment>
-);
-
-ControlPanel.propTypes = {
-  open: PropTypes.bool,
-  history: PropTypes.shape({
-    push: PropTypes.func
-  }).isRequired
-};
-
-ControlPanel.defaultProps = {
-  open: false
-};
+    );
+  }
+}
 
 export default withRouter(ControlPanel);
