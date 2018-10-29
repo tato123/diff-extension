@@ -25,14 +25,33 @@ const createEventLogFailed = (docId, err) => ({
 const addUserSeenActivity = data => ({
   type: types.ADD_USER_SEEN_ACTIVITY,
   payload: {
-    ...data
+    data
   }
 });
 
-const addUserSeenActivityFailed = err => ({
+const addUserSeenActivityFailed = error => ({
   type: types.ADD_USER_SEEN_ACTIVITY_FAILED,
   payload: {
-    err
+    error
+  }
+});
+
+const createActivityRecord = (recordType, record) => ({
+  type: types.PERSIST_ACTIVITY_RECORD_REQUEST,
+  payload: {
+    recordType,
+    record
+  }
+});
+
+const createActivityRecordSuccess = () => ({
+  type: types.PERSIST_ACTIVITY_RECORD_SUCCESS
+});
+
+const createActivityRecordFailed = error => ({
+  type: types.PERSIST_ACTIVITY_RECORD_REQUEST,
+  payload: {
+    error
   }
 });
 
@@ -41,5 +60,8 @@ export default {
   createEventLogSuccess,
   createEventLogFailed,
   addUserSeenActivity,
-  addUserSeenActivityFailed
+  addUserSeenActivityFailed,
+  createActivityRecord,
+  createActivityRecordSuccess,
+  createActivityRecordFailed
 };

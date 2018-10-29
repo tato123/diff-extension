@@ -12,9 +12,9 @@ const reducer = (state = initialState, action) => {
       return {
         byId: {
           ...state.byId,
-          [action.payload.id]: true
+          [action.payload.data.id]: action.payload.data
         },
-        allIds: _.union(state.allIds, [action.payload.id])
+        allIds: _.union(state.allIds, [action.payload.data.id])
       };
     default:
       return state;

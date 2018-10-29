@@ -1,10 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { StyleBoundary, Button } from '@diff/shared-components';
+import { createStructuredSelector } from 'reselect';
 import actions from '../../redux/actions';
+import { actions as activityActions } from '../../../../entities/activity';
 import SelectElement from '../highlight';
+import selectors from '../../redux/selectors';
 
 const InspectContainer = styled.div`
   position: fixed;
@@ -37,18 +41,14 @@ const InspectorContent = styled.div`
 interface InnerInspectorProps {
   show: boolean;
   onValue: any;
+  helpSeen: boolean;
 }
 
-export default class InnerInspector extends React.Component<
-  InnerInspectorProps
-> {
+class InnerInspector extends React.Component<InnerInspectorProps> {
   static defaultProps = {
     show: false,
-    onCancel: () => {}
-  };
-
-  state = {
-    showHelp: true
+    onCancel: () => {},
+    helpSeen: false
   };
 
   modalRoot = document.getElementById('df-root-inspect');
@@ -67,16 +67,11 @@ export default class InnerInspector extends React.Component<
     }
   }
 
-  handleOncancel = () => {
-    const {
-      props: { onCancel, dispatch }
-    } = this;
-
-    dispatch(actions.setActive(false));
-    onCancel();
-  };
-
   dismissHelp = () => {
+    const { dispatch } = this.props;
+    dispatch(
+      activityActions.createActivityRecord('guide', { name: 'inspector_help' })
+    );
     this.setState({ showHelp: false });
   };
 
@@ -96,8 +91,7 @@ export default class InnerInspector extends React.Component<
 
   render() {
     const {
-      props: { show },
-      state: { showHelp },
+      props: { show, helpSeen },
       onSelectElement,
       onCancelSelect
     } = this;
@@ -106,7 +100,7 @@ export default class InnerInspector extends React.Component<
       <StyleBoundary>
         <div>
           {show &&
-            showHelp && (
+            !helpSeen && (
               <InspectContainer>
                 <InspectorContent>
                   <p>
@@ -121,7 +115,7 @@ export default class InnerInspector extends React.Component<
               </InspectContainer>
             )}
           {show &&
-            !showHelp && (
+            helpSeen && (
               <SelectElement
                 onSelect={onSelectElement}
                 onCancel={onCancelSelect}
@@ -134,3 +128,16 @@ export default class InnerInspector extends React.Component<
     );
   }
 }
+
+const mapStateToProps = () => {
+  const helpSeenSelector = selectors.makeHashActivityRecordSelector({
+    type: 'guide',
+    name: 'inspector_help'
+  });
+
+  return createStructuredSelector({
+    helpSeen: helpSeenSelector
+  });
+};
+
+export default connect(mapStateToProps())(InnerInspector);

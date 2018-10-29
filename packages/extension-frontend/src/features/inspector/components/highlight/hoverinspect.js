@@ -1,29 +1,40 @@
-import Prism from 'prismjs';
+import _ from 'lodash-es';
 import template from './template.html';
 
 export default class Inspector {
   constructor() {
-    this.highlight = this.highlight.bind(this);
-    this.log = this.log.bind(this);
-    this.codeOutput = this.codeOutput.bind(this);
-    this.layout = this.layout.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-
     this.$target = document.body;
     this.$cacheEl = document.body;
     this.$cacheElMain = document.body;
 
     this.serializer = new XMLSerializer();
     this.forbidden = [this.$cacheEl, document.body, document.documentElement];
+
+    this.options = {
+      colors: {
+        margin: 'rgba(255,165,0,0.5)',
+        padding: 'rgba(158,113,221,0.5)',
+        content: 'rgba(73,187,231,0.25)',
+        transparent: 'rgba(0, 0, 0, 0)',
+        modal: 'rgba(0, 0, 0, 0.4)'
+      },
+      mode: 'all'
+    };
   }
 
-  getNodes() {
+  state = {
+    width: 0,
+    height: 0,
+    ctx: null
+  };
+
+  getNodes = () => {
     this.template = template;
     this.createNodes();
     this.registerEvents();
-  }
+  };
 
-  createNodes() {
+  createNodes = () => {
     this.$host = document.createElement('div');
     this.$host.className = 'tl-host';
     this.$host.style.cssText = 'all: initial;';
@@ -36,61 +47,60 @@ export default class Inspector {
     shadow.innerHTML = templateMarkup.querySelector('template').innerHTML;
 
     this.$wrap = shadow.querySelector('.tl-wrap');
-    this.$code = shadow.querySelector('.tl-code');
 
     this.$canvas = shadow.querySelector('#tl-canvas');
-    this.c = this.$canvas.getContext('2d');
-    this.width = this.$canvas.width = window.innerWidth;
-    this.height = this.$canvas.height = window.innerHeight;
+    this.$canvas.width = window.innerWidth;
+    this.$canvas.height = window.innerHeight;
 
-    this.highlight();
-  }
+    this.state = {
+      width: this.$canvas.width,
+      height: this.$canvas.height,
+      ctx: this.$canvas.getContext('2d')
+    };
+  };
 
   registerEvents() {
-    document.addEventListener('mousemove', this.log);
-    document.addEventListener('scroll', this.layout);
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('scroll', this.render);
     window.addEventListener('resize', () => {
       this.handleResize();
-      this.layout();
+      this.render();
     });
   }
 
-  log(e) {
+  handleMouseMove = e => {
     this.$target = e.target;
 
     // check if element cached
     if (this.forbidden.indexOf(this.$target) !== -1) return;
 
-    this.stringified = this.serializer.serializeToString(this.$target);
-
-    this.codeOutput();
-
     this.$cacheEl = this.$target;
-    this.layout();
-  }
+    this.render();
+  };
 
-  codeOutput() {
-    if (this.$cacheElMain === this.$target) return;
-    this.$cacheElMain = this.$target;
+  fixNegatives = input => {
+    const box = _.clone(input);
 
-    const fullCode = this.stringified
-      .slice(0, this.stringified.indexOf('>') + 1)
-      .replace(/ xmlns="[^"]*"/, '');
+    // pluck negatives
+    ['margin', 'padding'].forEach(property => {
+      Object.keys(box[property]).forEach(el => {
+        const val = parseInt(box[property][el], 10);
+        box[property][el] = Math.max(0, val);
+      });
+    });
 
-    this.$code.innerText = fullCode; // set full element code
-    this.highlight(); // highlight element
-  }
+    return box;
+  };
 
   // redraw overlay
-  layout() {
-    let box;
-    let computedStyle;
-    let rect;
-    const c = this.c;
+  render = () => {
+    const {
+      state: { ctx, width, height }
+    } = this;
 
-    rect = this.$target.getBoundingClientRect();
-    computedStyle = window.getComputedStyle(this.$target);
-    box = {
+    const rect = this.$target.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(this.$target);
+    const box = this.fixNegatives({
       width: rect.width,
       height: rect.height,
       top: rect.top,
@@ -107,103 +117,77 @@ export default class Inspector {
         bottom: computedStyle.paddingBottom,
         left: computedStyle.paddingLeft
       }
-    };
-
-    // pluck negatives
-    ['margin', 'padding'].forEach(property => {
-      for (const el in box[property]) {
-        const val = parseInt(box[property][el], 10);
-        box[property][el] = Math.max(0, val);
-      }
     });
 
-    c.clearRect(0, 0, this.width, this.height);
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle =
+      this.options.mode === 'all'
+        ? this.options.colors.transparent
+        : this.options.colors.modal;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'difference-out';
 
     box.left = Math.floor(box.left) + 1.5;
     box.width = Math.floor(box.width) - 1;
 
-    let x;
-    let y;
-    let width;
-    let height;
-
     // margin
-    x = box.left - box.margin.left;
-    y = box.top - box.margin.top;
-    width = box.width + box.margin.left + box.margin.right;
-    height = box.height + box.margin.top + box.margin.bottom;
+    const margin = {
+      x: box.left - box.margin.left,
+      y: box.top - box.margin.top,
+      w: box.width + box.margin.left + box.margin.right,
+      h: box.height + box.margin.top + box.margin.bottom
+    };
 
-    c.fillStyle = 'rgba(255,165,0,0.5)';
-    c.fillRect(x, y, width, height);
+    ctx.fillStyle = this.options.colors.margin;
+    ctx.fillRect(margin.x, margin.y, margin.w, margin.h);
 
     // padding
-    x = box.left;
-    y = box.top;
-    width = box.width;
-    height = box.height;
+    const padding = {
+      x: box.left,
+      y: box.top,
+      w: box.width,
+      h: box.height
+    };
 
-    c.fillStyle = 'rgba(158,113,221,0.5)';
-    c.clearRect(x, y, width, height);
-    c.fillRect(x, y, width, height);
+    ctx.fillStyle = this.options.colors.padding;
+    ctx.clearRect(padding.x, padding.y, padding.w, padding.h);
+    ctx.fillRect(padding.x, padding.y, padding.w, padding.h);
 
     // content
-    x = box.left + box.padding.left;
-    y = box.top + box.padding.top;
-    width = box.width - box.padding.right - box.padding.left;
-    height = box.height - box.padding.bottom - box.padding.top;
+    const content = {
+      x: box.left + box.padding.left,
+      y: box.top + box.padding.top,
+      w: box.width - box.padding.right - box.padding.left,
+      h: box.height - box.padding.bottom - box.padding.top
+    };
 
-    c.fillStyle = 'rgba(73,187,231,0.25)';
-    c.clearRect(x, y, width, height);
-    c.fillRect(x, y, width, height);
+    ctx.fillStyle = this.options.colors.content;
+    ctx.clearRect(content.x, content.y, content.w, content.h);
+    ctx.fillRect(content.x, content.y, content.w, content.h);
 
-    // rulers (horizontal - =)
-    // x = -10;
-    // y = Math.floor(box.top) + 0.5;
-    // width = this.width + 10;
-    // height = box.height - 1;
+    ctx.restore();
+  };
 
-    // c.beginPath();
-    // c.setLineDash([10, 3]);
-    // c.fillStyle = "rgba(0,0,0,0.02)";
-    // c.strokeStyle = "rgba(13, 139, 201, 0.45)";
-    // c.lineWidth = 1;
-    // c.rect(x, y, width, height);
-    // c.stroke();
-    // c.fill();
+  handleResize = () => {
+    this.$canvas.width = window.innerWidth;
+    this.$canvas.height = window.innerHeight;
 
-    // // rulers (vertical - ||)
-    // x = box.left;
-    // y = -10;
-    // width = box.width;
-    // height = this.height + 10;
+    this.state = {
+      ...this.state,
+      width: this.$canvas.width,
+      height: this.$canvas.height
+    };
+  };
 
-    // c.beginPath();
-    // c.setLineDash([10, 3]);
-    // c.fillStyle = "rgba(0,0,0,0.02)";
-    // c.strokeStyle = "rgba(13, 139, 201, 0.45)";
-    // c.lineWidth = 1;
-    // c.rect(x, y, width, height);
-    // c.stroke();
-    // c.fill();
-  }
-
-  handleResize() {
-    this.width = this.$canvas.width = window.innerWidth;
-    this.height = this.$canvas.height = window.innerHeight;
-  }
-
-  // code highlighting
-  highlight() {
-    Prism.highlightElement(this.$code);
-  }
-
-  activate() {
+  activate = () => {
     this.getNodes();
-  }
+  };
 
   deactivate() {
     this.$wrap.classList.add('-out');
-    document.removeEventListener('mousemove', this.log);
+    document.removeEventListener('mousemove', this.handleMouseMove);
     setTimeout(() => {
       try {
         document.body.removeChild(this.$host);
