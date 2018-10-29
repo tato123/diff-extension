@@ -18,6 +18,10 @@ const BadgeContainer = styled(animated.div)`
   will-change: transform;
 `;
 
+const Counter = styled(Label)`
+  font-size: 14px;
+`;
+
 const Badge = ({ active, count, stable }) => {
   const classes = `${active ? '-df-badge--active' : ''}`;
 
@@ -44,7 +48,7 @@ const Badge = ({ active, count, stable }) => {
             )
           }}
         >
-          <Label as="button">{count || 0}</Label>
+          <Counter as="button">{count || 0}</Counter>
         </BadgeContainer>
       )}
     </Spring>

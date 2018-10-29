@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import actions from '../../actions';
+import actions from '../../redux/actions';
 import InnerInspector from './InnerInspector';
 
 export declare function onCancel(values: any): any;

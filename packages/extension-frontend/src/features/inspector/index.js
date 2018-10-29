@@ -1,5 +1,5 @@
 export { default } from './components/Inspector';
 
-export { default as actions } from './actions';
-export { default as reducers } from './reducers';
-export { default as types } from './types';
+export { default as actions } from './redux/actions';
+export { default as reducers } from './redux/reducers';
+export { default as types } from './redux/types';

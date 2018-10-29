@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { StyleBoundary, Button } from '@diff/shared-components';
-import actions from '../../actions';
+import actions from '../../redux/actions';
 import SelectElement from '../highlight';
 
 const InspectContainer = styled.div`

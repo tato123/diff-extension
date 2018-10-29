@@ -11,25 +11,40 @@ class Launcher extends React.Component {
     isInspecting: PropTypes.bool.isRequired
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const { isInspecting } = props;
+    const { active } = state;
+
+    let mode = '';
+    if (isInspecting) {
+      mode = 'inspecting';
+    } else {
+      mode = active ? 'controlpanel' : 'initial';
+    }
+    return {
+      ...state,
+      mode
+    };
+  }
+
   state = {
     active: false
   };
 
   handleClick = () => {
+    console.log('called');
     this.setState(state => ({
       active: !state.active
     }));
   };
 
   render() {
-    const { isInspecting } = this.props;
-    const { active } = this.state;
+    const { mode } = this.state;
 
     return (
       <div>
-        {active ? <ControlPanel active={active && !isInspecting} /> : false}
-
-        <Button active={active} onClick={this.handleClick} />
+        <ControlPanel active={mode === 'controlpanel'} />
+        <Button mode={mode} onClick={this.handleClick} />
       </div>
     );
   }
