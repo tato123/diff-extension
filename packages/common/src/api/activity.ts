@@ -8,7 +8,7 @@ export interface QueryResponse {
 }
 
 export default (db: firebase.firestore.Firestore): Object => {
-  const activityRef = db.collection('activity');
+  const activityRef = db.collection('users_activity');
 
   const userActivity$ = (uid: string) =>
     Observable.create((observer: Observer<QueryResponse>) => {

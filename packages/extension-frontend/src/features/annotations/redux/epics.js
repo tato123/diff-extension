@@ -1,7 +1,7 @@
 import { combineEpics, ofType } from 'redux-observable';
 
 import { from, of } from 'rxjs';
-import { map, mergeMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError, tap } from 'rxjs/operators';
 import _ from 'lodash-es';
 import finder from '@medv/finder';
 import types from './types';
@@ -11,6 +11,7 @@ import { selectors as sessionSelectors } from '../../../entities/session';
 
 import actions from './actions';
 import selectors from './selectors';
+import history from '../../../history';
 
 // --------------------------------------------------------------------
 // Epic Helpers
@@ -93,6 +94,14 @@ const addAnnotationEpic = (action$, state$) =>
         annotations
       );
       return annotationActions.createTransientSelector(newSelector);
+    }),
+    tap(action => {
+      // an epic can have side effects that span outside the lifecyel of
+      // the components, this enables to do delayed transitions, I'll admit
+      // this is a weird one but it gives a somewhat interesting effect that
+      // allows the user to see we kicked off an action for them
+
+      history.push(`/annotations/${encodeURIComponent(action.payload.id)}`);
     })
   );
 

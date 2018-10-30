@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
+import scrollToElement from 'scroll-to-element';
 import TextEditorForm from './TextEditor';
 import CommentList from './CommentList';
 import { actions, selectors } from '../../redux';
+import HoverInspect from '../../../inspector/components/highlight/hoverinspect';
 
 const Container = styled.div`
   display: flex;
@@ -24,6 +26,19 @@ class Comments extends React.Component {
       })
     }).isRequired
   };
+
+  componentDidMount() {
+    const { match } = this.props;
+    const id = decodeURIComponent(match.params.id);
+    const elm = document.querySelector(id);
+    scrollToElement(elm, { duration: 250 });
+    this.hoverInspect = new HoverInspect(elm, { mode: 'target' });
+    this.hoverInspect.activate();
+  }
+
+  componentWillUnmount() {
+    this.hoverInspect.deactivate();
+  }
 
   onSubmit = (comment, files) => {
     const {

@@ -2,24 +2,34 @@ import _ from 'lodash-es';
 import template from './template.html';
 
 export default class Inspector {
-  constructor() {
-    this.$target = document.body;
+  static Modes = {
+    ALL: 'all',
+    TARGET: 'target'
+  };
+
+  constructor(target, options = {}) {
+    this.$target = target || document.body;
     this.$cacheEl = document.body;
     this.$cacheElMain = document.body;
 
     this.serializer = new XMLSerializer();
     this.forbidden = [this.$cacheEl, document.body, document.documentElement];
 
-    this.options = {
-      colors: {
-        margin: 'rgba(255,165,0,0.5)',
-        padding: 'rgba(158,113,221,0.5)',
-        content: 'rgba(73,187,231,0.25)',
-        transparent: 'rgba(0, 0, 0, 0)',
-        modal: 'rgba(0, 0, 0, 0.4)'
+    this.options = Object.assign(
+      {},
+      {
+        colors: {
+          margin: 'rgba(255,165,0,0.5)',
+          padding: 'rgba(158,113,221,0.5)',
+          content: 'rgba(73,187,231,0.25)',
+          transparent: 'rgba(0, 0, 0, 0)',
+          modal: 'rgba(0, 0, 0, 0.4)',
+          outline: '#EF3B7B'
+        },
+        mode: Inspector.Modes.ALL
       },
-      mode: 'all'
-    };
+      options
+    );
   }
 
   state = {
@@ -60,7 +70,10 @@ export default class Inspector {
   };
 
   registerEvents() {
-    document.addEventListener('mousemove', this.handleMouseMove);
+    if (this.options.mode === 'all') {
+      document.addEventListener('mousemove', this.handleMouseMove);
+    }
+
     document.addEventListener('scroll', this.render);
     window.addEventListener('resize', () => {
       this.handleResize();
@@ -92,46 +105,7 @@ export default class Inspector {
     return box;
   };
 
-  // redraw overlay
-  render = () => {
-    const {
-      state: { ctx, width, height }
-    } = this;
-
-    const rect = this.$target.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(this.$target);
-    const box = this.fixNegatives({
-      width: rect.width,
-      height: rect.height,
-      top: rect.top,
-      left: rect.left,
-      margin: {
-        top: computedStyle.marginTop,
-        right: computedStyle.marginRight,
-        bottom: computedStyle.marginBottom,
-        left: computedStyle.marginLeft
-      },
-      padding: {
-        top: computedStyle.paddingTop,
-        right: computedStyle.paddingRight,
-        bottom: computedStyle.paddingBottom,
-        left: computedStyle.paddingLeft
-      }
-    });
-
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle =
-      this.options.mode === 'all'
-        ? this.options.colors.transparent
-        : this.options.colors.modal;
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.save();
-    ctx.globalCompositeOperation = 'difference-out';
-
-    box.left = Math.floor(box.left) + 1.5;
-    box.width = Math.floor(box.width) - 1;
-
+  renderAll = (ctx, box) => {
     // margin
     const margin = {
       x: box.left - box.margin.left,
@@ -166,6 +140,69 @@ export default class Inspector {
     ctx.fillStyle = this.options.colors.content;
     ctx.clearRect(content.x, content.y, content.w, content.h);
     ctx.fillRect(content.x, content.y, content.w, content.h);
+  };
+
+  renderTarget = (ctx, box) => {
+    // content
+    const content = {
+      x: box.left + box.padding.left,
+      y: box.top + box.padding.top,
+      w: box.width - box.padding.right - box.padding.left,
+      h: box.height - box.padding.bottom - box.padding.top
+    };
+
+    ctx.strokeStyle = this.options.colors.outline;
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 3;
+    ctx.clearRect(content.x, content.y, content.w, content.h);
+    ctx.strokeRect(content.x, content.y, content.w, content.h);
+  };
+
+  // redraw overlay
+  render = () => {
+    const {
+      state: { ctx, width, height }
+    } = this;
+
+    const rect = this.$target.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(this.$target);
+    const box = this.fixNegatives({
+      width: rect.width,
+      height: rect.height,
+      top: rect.top,
+      left: rect.left,
+      margin: {
+        top: computedStyle.marginTop,
+        right: computedStyle.marginRight,
+        bottom: computedStyle.marginBottom,
+        left: computedStyle.marginLeft
+      },
+      padding: {
+        top: computedStyle.paddingTop,
+        right: computedStyle.paddingRight,
+        bottom: computedStyle.paddingBottom,
+        left: computedStyle.paddingLeft
+      }
+    });
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle =
+      this.options.mode === Inspector.Modes.ALL
+        ? this.options.colors.transparent
+        : this.options.colors.modal;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'difference-out';
+
+    if (this.options.mode === Inspector.Modes.TARGET) {
+      this.renderTarget(ctx, box);
+    } else {
+      this.renderAll(ctx, box);
+    }
+
+    box.left = Math.floor(box.left) + 1.5;
+    box.width = Math.floor(box.width) - 1;
 
     ctx.restore();
   };
@@ -183,11 +220,14 @@ export default class Inspector {
 
   activate = () => {
     this.getNodes();
+    this.render();
   };
 
   deactivate() {
     this.$wrap.classList.add('-out');
-    document.removeEventListener('mousemove', this.handleMouseMove);
+    if (this.options.mode === 'all') {
+      document.removeEventListener('mousemove', this.handleMouseMove);
+    }
     setTimeout(() => {
       try {
         document.body.removeChild(this.$host);

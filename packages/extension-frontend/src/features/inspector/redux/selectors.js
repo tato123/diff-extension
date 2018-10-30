@@ -7,6 +7,12 @@ const makeHashActivityRecordSelector = predicate =>
     activity => _.find(_.values(activity), predicate)
   );
 
+const inspectorActiveSelector = createSelector(
+  state => state.inspector,
+  inspector => inspector.active
+);
+
 export default {
-  makeHashActivityRecordSelector
+  makeHashActivityRecordSelector,
+  inspectorActiveSelector
 };

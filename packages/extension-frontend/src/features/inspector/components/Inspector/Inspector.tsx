@@ -2,8 +2,12 @@ import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { withRouter } from 'react-router';
+import { createStructuredSelector } from 'reselect';
 import actions from '../../redux/actions';
 import InnerInspector from './InnerInspector';
+import selectors from '../../redux/selectors';
+import { actions as activityActions } from '../../../../entities/activity';
 
 export declare function onCancel(values: any): any;
 export declare function onValue(values: any): any;
@@ -18,6 +22,7 @@ interface InspectorProps {
   dispatch(): {};
   children(arg1: caller, arg2: caller): React.ReactNode;
   show: any;
+  createActivityRecord: any;
 }
 
 /**
@@ -27,23 +32,27 @@ interface InspectorProps {
  * component is needed everything is loaded in.
  */
 const Inspector: React.SFC<InspectorProps> = ({
-  dispatch,
-  show,
+  children,
   setActive,
-  onCancel,
-  onValue,
-  children
+  ...rest
 }) => (
   <React.Fragment>
     {children(() => setActive(true), () => setActive(false))}
-    <InnerInspector
-      dispatch={dispatch}
-      show={show}
-      onCancel={onCancel}
-      onValue={onValue}
-    />
+    <InnerInspector {...rest} />
   </React.Fragment>
 );
+
+const makeMapStateToProps = () => {
+  const helpSeenSelector = selectors.makeHashActivityRecordSelector({
+    type: 'guide',
+    name: 'inspector_help'
+  });
+
+  return createStructuredSelector({
+    helpSeen: helpSeenSelector,
+    show: selectors.inspectorActiveSelector
+  });
+};
 
 const mapStateToProps = (state: {}) => ({
   show: state.inspector.active
@@ -51,6 +60,9 @@ const mapStateToProps = (state: {}) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch, props: InspectorProps) => ({
   setActive: value => dispatch(actions.setActive(value)),
+  createActivityRecord: (recordType: string, record: {}) =>
+    dispatch(activityActions.createActivityRecord(recordType, record)),
+
   onCancel: (...args) => {
     dispatch(actions.setActive(false));
     props.onCancel && props.onCancel(...args);
@@ -61,7 +73,9 @@ const mapDispatchToProps = (dispatch: Dispatch, props: InspectorProps) => ({
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Inspector);
+export default withRouter(
+  connect(
+    makeMapStateToProps(),
+    mapDispatchToProps
+  )(Inspector)
+);
