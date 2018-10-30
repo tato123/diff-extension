@@ -5,10 +5,15 @@ import { createStructuredSelector } from 'reselect';
 import Button from './Button';
 import ControlPanel from '../ControlPanel';
 import selectors from '../redux/selectors';
+import actions from '../../inspector/redux/actions';
 
 class Launcher extends React.Component {
   static propTypes = {
-    isInspecting: PropTypes.bool.isRequired
+    isInspecting: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func
+    }).isRequired
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -28,14 +33,34 @@ class Launcher extends React.Component {
   }
 
   state = {
-    active: false
+    active: false,
+    mode: 'initial'
   };
 
   handleClick = () => {
-    console.log('called');
-    this.setState(state => ({
-      active: !state.active
-    }));
+    const { active, mode } = this.state;
+    const { history, dispatch } = this.props;
+
+    if (mode === 'inspecting' && active) {
+      // when we are inspecting and
+      // we cancel, just return to the control panel
+      dispatch(actions.setActive(false));
+      this.setState({
+        mode: 'controlpanel',
+        active: true
+      });
+    } else {
+      // we are going to close the window, reset
+      // it to the main screen
+      if (active) {
+        history.push('/annotations');
+      }
+
+      // toggle the state like normal
+      this.setState(state => ({
+        active: !state.active
+      }));
+    }
   };
 
   render() {
