@@ -30,7 +30,7 @@
     "react-helmet": "^5.2.0",
     "react-icons-kit": "^1.1.10",
     "react-responsive-modal": "^3.4.0",
-    "react-spring": "^5.9.2",
+    "react-spring": "^6.0.0",
     "react-waypoint": "^8.0.3",
     "rxjs": "^6.3.3",
     "serve": "^10.0.2",

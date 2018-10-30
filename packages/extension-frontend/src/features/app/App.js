@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { StyleBoundary } from '@diff/shared-components';
-import { MemoryRouter, Route } from 'react-router';
+import { Router, Route } from 'react-router';
 import { Provider } from 'react-redux';
 import Launcher from '../launcher';
 import UserSession from '../../components/UserSession';
 
-const App = ({ store }) => (
+const App = ({ store, history }) => (
   <Provider store={store}>
     <UserSession>
       <StyleBoundary>
         <div>
-          <MemoryRouter>
+          <Router history={history}>
             <Route component={Launcher} />
-          </MemoryRouter>
+          </Router>
         </div>
       </StyleBoundary>
     </UserSession>
@@ -22,7 +22,8 @@ const App = ({ store }) => (
 );
 
 App.propTypes = {
-  store: PropTypes.any.isRequired
+  store: PropTypes.any.isRequired,
+  history: PropTypes.any.isRequired
 };
 
 export default App;

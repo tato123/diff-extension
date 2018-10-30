@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import AppRoot from './features';
 
 import configureStore from './store';
+import history from './history';
 
 // Create our new store
 const store = configureStore();
@@ -37,7 +38,7 @@ const bootstrap = () => {
 
 const render = App => {
   ReactDOM.render(
-    <App store={store} />,
+    <App store={store} history={history} />,
 
     document.getElementById(ROOT_ID)
   );
