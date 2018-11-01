@@ -13,6 +13,7 @@ router.get('/auth/refresh', authRoutes.refresh);
 router.get('/auth/codegrant', authRoutes.codeGrantAuthorize);
 router.get('/auth/renew', authRoutes.renewSession);
 router.get('/auth/profile', authRoutes.profile);
+router.get('/auth/logout', authRoutes.logout);
 
 router.get('/ah/health', healthRoutes.health);
 
