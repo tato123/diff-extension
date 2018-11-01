@@ -1,43 +1,19 @@
-import {
-  types,
-  actions,
-  browser,
-  AuthProvider,
-  remoteSettings
-} from '@diff/common';
-import normalizeUrl from 'normalize-url';
+import { types, actions, browser } from '@diff/common';
+
 import _ from 'lodash-es';
 import jwtDecode from 'jwt-decode';
-import { getSitePreference } from './storage';
 
-/**
- *
- * @param {Number} tabId
- * @param {Object} postMessageToTab
- */
+import getUserProfile from './handlers/getUserProfile';
+
 const handleFetchUserPreferences = async (tabId, postMessageToTab, action) => {
   try {
-    const user = await browser.auth.getUser();
-    const remoteSites = await remoteSettings.getDomains(user.sub);
+    const userprofile = await getUserProfile();
 
-    // get the local sites theyve opened diff for
-    const localSites = await getSitePreference();
-
-    const sites = _.uniq(
-      _.union(remoteSites.domains, localSites).map(
-        url => new URL(normalizeUrl(url)).hostname
-      )
-    );
-
-    const { featureFlags = {} } = await browser.storage.local.get([
-      'featureFlags'
-    ]);
-
-    if (_.indexOf(sites, action.payload.hostname) !== -1) {
+    if (_.indexOf(userprofile.sites, action.payload.hostname) !== -1) {
       // combine and send back
       return postMessageToTab(
         tabId,
-        actions.fetchUserPreferencesSuccess({ featureFlags })
+        actions.fetchUserPreferencesSuccess(userprofile)
       );
     }
 

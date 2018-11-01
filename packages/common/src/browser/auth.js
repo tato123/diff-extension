@@ -35,7 +35,16 @@ const getUser = async () => {
 };
 
 const logoutUser = async () => {
-  console.warn('user wants to logout');
+  const response = await fetch(`${process.env.API_SERVER}/auth/logout`, {
+    credentials: 'include',
+    mode: 'cors'
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to logout user');
+  }
+
+  return response.text();
 };
 
 const getFirebaseToken = async () => {

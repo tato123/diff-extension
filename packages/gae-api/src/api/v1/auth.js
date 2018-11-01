@@ -13,6 +13,22 @@ const config = {
   AUTH0_API_AUDIENCE: process.env.AUTH0_API_AUDIENCE
 };
 
+function clearCookies(res) {
+  res.clearCookie('_df_id_token', { httpOnly: true });
+  res.clearCookie('_df_access_token', { httpOnly: true });
+  res.clearCookie('_df_refresh_token', { httpOnly: true });
+  res.clearCookie('_df_expires_in', { httpOnly: true });
+  res.clearCookie('_df_token_type', { httpOnly: true });
+}
+
+function setCookie(res, value) {
+  res.cookie('_df_id_token', value.id_token, { httpOnly: true });
+  res.cookie('_df_access_token', value.access_token, { httpOnly: true });
+  res.cookie('_df_refresh_token', value.refresh_token, { httpOnly: true });
+  res.cookie('_df_expires_in', value.refresh_token, { httpOnly: true });
+  res.cookie('_df_token_type', value.token_type, { httpOnly: true });
+}
+
 // Auth0 athentication middleware
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
@@ -85,6 +101,11 @@ export const login = [
       );
   }
 ];
+
+export const logout = (req, res) => {
+  clearCookies(res);
+  res.send(200);
+};
 
 export const refresh = (req, res) => {
   const {
@@ -164,13 +185,7 @@ export const codeGrantAuthorize = [
   jwtCheck,
   userProfileSync,
   (req, res) => {
-    const body = req._user;
-
-    res.cookie('_df_id_token', body.id_token, { httpOnly: true });
-    res.cookie('_df_access_token', body.access_token, { httpOnly: true });
-    res.cookie('_df_refresh_token', body.refresh_token, { httpOnly: true });
-    res.cookie('_df_expires_in', body.refresh_token, { httpOnly: true });
-    res.cookie('_df_token_type', body.token_type, { httpOnly: true });
+    setCookie(res, req._user);
     res.redirect(301, req.query.origin);
   }
 ];

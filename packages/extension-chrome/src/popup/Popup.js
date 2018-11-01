@@ -1,15 +1,18 @@
 import React from 'react';
 import browser from '@diff/common/dist/browser';
-import { StyleBoundary } from '@diff/shared-components';
+import { StyleBoundary, Space } from '@diff/shared-components';
 
 import styled from 'styled-components';
 import Login from './Login';
 import User from './User';
+import Row from './Row';
+import Anchor from './Anchor';
 
 const Container = styled.div`
-  width: 200px;
+  width: 300px;
+  min-height: 200px;
   max-height: 400px;
-  overflow: auto;
+  overflow: hidden;
 `;
 
 export default class Popup extends React.Component {
@@ -29,7 +32,12 @@ export default class Popup extends React.Component {
   }
 
   logout = async () => {
-    await browser.auth.logoutUser();
+    try {
+      await browser.auth.logoutUser();
+      this.setState({ user: null });
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   render() {
@@ -43,6 +51,12 @@ export default class Popup extends React.Component {
         <Container>
           {user && <User user={user} onLogout={logout} />}
           {!user && <Login />}
+          <Row style={{ textAlign: 'center' }}>
+            <Space style={{ marginBottom: '-6px' }}>
+              <small>Version 0.0.28</small>
+            </Space>
+            <Anchor href="/help">Give us Feedback</Anchor>
+          </Row>
         </Container>
       </StyleBoundary>
     );

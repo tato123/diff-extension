@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Loading = styled.div`
   width: 40px;
@@ -16,12 +16,12 @@ const Loading = styled.div`
     top: 0;
   }
   .sk-child:before {
-    content: "";
+    content: '';
     display: block;
     margin: 0 auto;
     width: 15%;
     height: 15%;
-    background-color: #fff;
+    background-color: var(--color-pink);
     border-radius: 100%;
     -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
     animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
@@ -153,8 +153,8 @@ const Loading = styled.div`
   }
 `;
 
-const Circle = () => (
-  <Loading>
+const Circle = ({ children, ...rest }) => (
+  <Loading {...rest}>
     <div className="sk-circle1 sk-child" />
     <div className="sk-circle2 sk-child" />
     <div className="sk-circle3 sk-child" />
