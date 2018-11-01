@@ -1,22 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image, Logo, Button, HR, Label } from '@diff/shared-components';
+import { Space } from '@diff/shared-components';
 import styled from 'styled-components';
+import browser from '@diff/common/dist/browser';
+import Menu from './Menu';
+import RoundButton from './RoundButton';
+import Row from './Row';
 
-const Menu = styled.div`
+const Container = styled.div`
+  justify-content: center;
   display: flex;
-  flex: 1 auto;
-  justify-content: space-between;
-
-  img {
-    height: 16px;
-    width: auto;
-    align-self: center;
-  }
+  flex-direction: column;
 `;
-const Avatar = styled(Image)`
-  width: 32px;
-  height: 32px;
+
+const P = styled.p`
+  margin: 0;
 `;
 
 export default class User extends React.PureComponent {
@@ -25,27 +23,57 @@ export default class User extends React.PureComponent {
     user: PropTypes.object.isRequired
   };
 
+  state = {
+    addSite: false
+  };
+
+  handleAddSite = async () => {
+    const activeTab = await browser.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+    chrome.runtime.sendMessage(
+      { type: 'run_request', source: 'popup', tab: activeTab },
+      response => {
+        console.log(response);
+        this.setState({
+          addSite: true
+        });
+      }
+    );
+  };
+
   render() {
     const {
-      props: { onLogout, user }
+      props: { onLogout, user },
+      state: { addSite }
     } = this;
 
     return (
-      <div>
-        <Menu>
-          <Logo />
-          <Button primary onClick={onLogout}>
-            Logout
-          </Button>
-        </Menu>
-        <HR />
-        {user && (
-          <div>
-            <Label>{user.name}</Label>
-            <Avatar avatar src={user.picture} alt="user image" />
-          </div>
-        )}
-      </div>
+      <Container>
+        <Menu user={user} onClick={onLogout} actionText="Logout" />
+
+        <Row label="Website">
+          {!addSite && (
+            <React.Fragment>
+              <P>
+                It appears diff isn't set to run for this page, would you like
+                to add it?
+              </P>
+
+              <Space top={4}>
+                <RoundButton
+                  style={{ width: '100%' }}
+                  onClick={this.handleAddSite}
+                >
+                  Run diff for this page
+                </RoundButton>
+              </Space>
+            </React.Fragment>
+          )}
+          {addSite && <P>Diff added to project</P>}
+        </Row>
+      </Container>
     );
   }
 }

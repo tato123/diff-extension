@@ -63,8 +63,4 @@ export default class Authentication {
         return resolve(user);
       });
     });
-
-  logout = () => {
-    this.auth.logout({});
-  };
 }

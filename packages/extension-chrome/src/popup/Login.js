@@ -1,20 +1,9 @@
 import React from 'react';
 import browser from '@diff/common/dist/browser';
 
-import { Logo, Button, HR, Label } from '@diff/shared-components';
-import styled from 'styled-components';
-
-const Menu = styled.div`
-  display: flex;
-  flex: 1 auto;
-  justify-content: space-between;
-
-  img {
-    height: 16px;
-    width: auto;
-    align-self: center;
-  }
-`;
+import { Logo, Space } from '@diff/shared-components';
+import Menu from './Menu';
+import Row from './Row';
 
 export default class Login extends React.Component {
   navigateTo = url =>
@@ -46,26 +35,25 @@ export default class Login extends React.Component {
           nonce
         })
       )
-      .then(() =>
+      .then(() => {
         this.navigateTo(
           `${process.env.WEB_HOME}/app/login?origin=${encodeURIComponent(
             `chrome-extension://${browser.runtime.id}/html/login-return.html`
           )}`
-        )
-      );
+        );
+        window.close();
+      });
   };
 
   render() {
     return (
       <div>
-        <Menu>
-          <Logo />
-          <Button primary onClick={this.handleLogin}>
-            Login
-          </Button>
-        </Menu>
-        <HR />
-        <Label>You are not currently logged in</Label>
+        <Menu onClick={this.handleLogin} actionText="Login / Signup" />
+        <Row style={{ display: 'flex', justifyContent: 'center' }}>
+          <Space top={2} bottom={2}>
+            <Logo style={{ opacity: 0.2 }} />
+          </Space>
+        </Row>
       </div>
     );
   }

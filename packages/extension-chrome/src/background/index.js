@@ -18,28 +18,21 @@ chrome.runtime.onConnect.addListener(port => {
   }
 });
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: 'diff-inspect',
-    title: 'Inspect with diff',
-    contexts: ['all']
-  });
-});
+// one time message from things like popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'run_request' && request.source === 'popup') {
+    const { tab } = request;
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  // only remember the site if we have a token
-  addSitePreference(tab.url);
+    // remember the user clicked this site
+    addSitePreference(tab.url);
 
-  postMessageToTab(tab.id, actions.runRequest());
-  return true;
-});
+    // force run the script
+    chrome.tabs.executeScript(tab.id, {
+      file: 'js/contentScript.js'
+    });
 
-chrome.browserAction.onClicked.addListener(tab => {
-  // remember the user clicked this site
-  addSitePreference(tab.url);
-
-  postMessageToTab(tab.id, actions.runRequest());
-  return true;
+    sendResponse({ type: 'run_request_success' });
+  }
 });
 
 chrome.runtime.onMessageExternal.addListener(
