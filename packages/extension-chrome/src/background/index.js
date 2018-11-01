@@ -1,9 +1,8 @@
-import { sources, actions } from '@diff/common';
+import { sources } from '@diff/common';
 import { addSitePreference, storeUserToken } from './storage';
 
-import { postMessageToTab } from './postmessage';
-
 import { registerPort, removeListener, messageListener } from './ports';
+import getUserProfile from './handlers/getUserProfile';
 
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === sources.CONTENT_SCRIPT_PORT_NAME) {
@@ -32,7 +31,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
 
     sendResponse({ type: 'run_request_success' });
+  } else if (request.type === 'get_profile' && request.source === 'popup') {
+    getUserProfile().then(profile => {
+      sendResponse({ type: 'get_profile_success', profile });
+    });
   }
+  return true;
 });
 
 chrome.runtime.onMessageExternal.addListener(

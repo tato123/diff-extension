@@ -2,6 +2,7 @@ import { actions, types } from '@diff/common/dist/actions';
 import browser from '@diff/common/dist/browser';
 import { filter, tap } from 'rxjs/operators';
 
+import _ from 'lodash-es';
 import {
   sendMessageToFrontend,
   sendMessageToBackground,
@@ -37,7 +38,11 @@ import { runFrontend } from './frontend';
     )
     .subscribe(action => {
       const { type, payload } = action;
-      if (type === types.FETCH_USER_PREFERENCES.SUCCESS) {
+      const { hostname } = browser.url.location();
+      if (
+        type === types.FETCH_USER_PREFERENCES.SUCCESS &&
+        payload.sites.includes(hostname)
+      ) {
         console.log('[content-script] Running frontend');
         runFrontend().then(() => {
           sendMessageToFrontend({
