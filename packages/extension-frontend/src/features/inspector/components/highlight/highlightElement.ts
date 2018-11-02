@@ -77,7 +77,7 @@ const inspect = (): Observable<HTMLElement> => {
     filter(evt => {
       const typedEvent = evt as HTMLEvent;
 
-      evt.preventDefault();
+      evt.stopImmediatePropagation();
       if (isSelectableElement(typedEvent)) {
         return true;
       }
