@@ -52,7 +52,7 @@ export default class Header extends React.PureComponent {
                 onClick={this.goBack}
                 style={{ cursor: 'pointer' }}
               />
-              <TextContainer>Workspaces</TextContainer>
+              <TextContainer>Projects</TextContainer>
             </HeaderDiv>
           )}
         />
