@@ -51,9 +51,12 @@ const ListCollaborators: React.SFC<ListCollaboratorsProp> = ({
           onClick={() =>
             history.push(`/workspace/${match.params.id}/addCollaborator`)
           }
+          style={{ color: '#4648B0' }}
         >
-          <Icon icon={AddCircleIcon} />
-          Add a collaborator
+          <Space right={2} style={{ display: 'inline-block' }}>
+            <Icon icon={AddCircleIcon} />
+          </Space>
+          <span>Add a collaborator</span>
         </Row>
         {collaborators.map(user => (
           <UserRow key={user.sub}>

@@ -4,6 +4,7 @@ import { mergeMap, map, catchError, flatMap } from 'rxjs/operators';
 
 import types from './types';
 import actions from './actions';
+import history from '../../../history';
 
 const inviteToWorkspaceEpic = (action$, state$, { api }) =>
   action$.pipe(
@@ -17,12 +18,13 @@ const inviteToWorkspaceEpic = (action$, state$, { api }) =>
           action.payload.workspaceId
         )
       ).pipe(
-        map(() =>
-          actions.inviteToWorkspaceSuccess(
+        map(() => {
+          history.goBack();
+          return actions.inviteToWorkspaceSuccess(
             action.payload.email,
             action.payload.workspaceId
-          )
-        ),
+          );
+        }),
         catchError(error =>
           of(
             actions.inviteToWorkspaceFailed(

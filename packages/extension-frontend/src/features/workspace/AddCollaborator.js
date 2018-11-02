@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import { Button } from '@diff/shared-components';
 import Row from '../../components/Row';
-import actions from './redux/actions';
+import { actions, selectors } from './redux';
 
 const UserInputRow = styled(Row)`
   padding: 4px 16px;
@@ -57,6 +57,16 @@ class AddCollaborator extends React.Component {
     lastName: '',
     email: ''
   };
+
+  state = {
+    ...this.initialValues
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    return {
+      ...state
+    };
+  }
 
   submitForm = values => {
     const {
@@ -159,10 +169,10 @@ class AddCollaborator extends React.Component {
   }
 }
 
-const mapStateToProps = () => ({
+const mapStateToProps = state => ({
   status: {
-    isSubmitting: false,
-    isSubmitError: false
+    isSubmitting: selectors.isCreateWorkspaceSubmittingSelector(state),
+    isSubmitError: selectors.isCreateWorkspaceSubmitErrorSelector(state)
   }
 });
 
