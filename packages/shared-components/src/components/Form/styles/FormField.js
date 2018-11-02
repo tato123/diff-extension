@@ -27,9 +27,7 @@ const FormFieldContainer = styled.div`
     background: #fff;
     border: 1px solid rgba(34, 36, 38, 0.15);
     color: rgba(0, 0, 0, 0.87);
-    -webkit-box-shadow: 0 0 0 0 transparent inset;
     box-shadow: 0 0 0 0 transparent inset;
-    -webkit-transition: color 0.1s ease, border-color 0.1s ease;
     transition: color 0.1s ease, border-color 0.1s ease;
     transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;

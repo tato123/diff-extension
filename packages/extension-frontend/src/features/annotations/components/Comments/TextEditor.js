@@ -38,11 +38,14 @@ export default class Editor extends React.Component {
     loading: false
   };
 
-  onSubmit = values => {
+  initialValues = { comment: '', files: [] };
+
+  onSubmit = (values, { resetForm }) => {
     const {
       props: { onSubmit }
     } = this;
     onSubmit(values.comment, values.file);
+    resetForm(this.initialValues);
   };
 
   handleAttachImage = () => {
@@ -57,7 +60,7 @@ export default class Editor extends React.Component {
     } = this;
 
     return (
-      <Formik initialValues={{ comment: '', files: [] }} onSubmit={onSubmit}>
+      <Formik initialValues={this.initialValues} onSubmit={onSubmit}>
         {({ values, handleChange, handleBlur, handleSubmit, setValues }) => (
           <form onSubmit={handleSubmit}>
             <CustomRow>

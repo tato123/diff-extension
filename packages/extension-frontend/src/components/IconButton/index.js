@@ -26,6 +26,15 @@ const IconButtonStyled = styled.button`
     padding: 4px;
     margin: 0 !important;
   }
+
+  &:disabled {
+    cursor: disabled;
+  }
+
+  &:focus,
+  &:active {
+    box-shadow: inset 0 0 0px 2px var(--df-text-color-highlight) !important;
+  }
 `;
 
 const IconButton = ({ children, icon, ...rest }) => (
