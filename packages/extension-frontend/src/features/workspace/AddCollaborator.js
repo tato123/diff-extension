@@ -8,6 +8,8 @@ import Row from '../../components/Row';
 import actions from './redux/actions';
 
 const UserInputRow = styled(Row)`
+  padding: 4px 16px;
+
   &:hover {
     background: none;
     cursor: initial;
@@ -21,6 +23,18 @@ const UserInputRow = styled(Row)`
     outline: none;
   }
 `;
+
+const Footer = styled.div`
+  justify-content: flex-end;
+  display: flex;
+  margin-right: var(--df-space-3);
+`;
+
+const maxHeight = {
+  display: 'flex',
+  flex: 1,
+  flexDirection: 'column'
+};
 
 class AddCollaborator extends React.Component {
   static propTypes = {
@@ -36,6 +50,12 @@ class AddCollaborator extends React.Component {
         id: PropTypes.string
       })
     }).isRequired
+  };
+
+  initialValues = {
+    firstName: '',
+    lastName: '',
+    email: ''
   };
 
   submitForm = values => {
@@ -76,43 +96,49 @@ class AddCollaborator extends React.Component {
           handleBlur,
           handleSubmit
         }) => (
-          <form onSubmit={handleSubmit} autoComplete="off">
-            <div>
-              <UserInputRow hover={false}>
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="First name"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.firstName}
-                />
-              </UserInputRow>
-              <UserInputRow hover={false}>
-                <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Last name"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.lastName}
-                />
-              </UserInputRow>
-              <UserInputRow hover={false}>
-                <input
-                  type="text"
-                  name="email"
-                  placeholder="Email"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.email}
-                />
-              </UserInputRow>
-              <div>
-                <Button type="button" onClick={onCancel}>
+          <form
+            onSubmit={handleSubmit}
+            autoComplete="off"
+            style={{ ...maxHeight }}
+          >
+            <div style={{ ...maxHeight }}>
+              <div style={{ ...maxHeight }}>
+                <UserInputRow hover={false}>
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.firstName}
+                  />
+                </UserInputRow>
+                <UserInputRow hover={false}>
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.lastName}
+                  />
+                </UserInputRow>
+                <UserInputRow hover={false}>
+                  <input
+                    type="text"
+                    name="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                  />
+                </UserInputRow>
+              </div>
+              <Footer>
+                <Button.Flat type="button" onClick={onCancel}>
                   Cancel
-                </Button>
-                <Button
+                </Button.Flat>
+                <Button.Flat
                   type="submit"
                   primary
                   disabled={
@@ -123,8 +149,8 @@ class AddCollaborator extends React.Component {
                   loading={isSubmitting}
                 >
                   Invite
-                </Button>
-              </div>
+                </Button.Flat>
+              </Footer>
             </div>
           </form>
         )}

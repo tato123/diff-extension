@@ -6,12 +6,17 @@ import Row from '../../components/Row';
 
 const Content = ({ history }) => (
   <div>
-    <Row onClick={() => history.push('/workspace/create')}>Add a workspace</Row>
+    <Row onClick={() => history.push('/workspace/create')}>
+      Create a new project
+    </Row>
     <Workspaces>
       {workspaces => (
         <React.Fragment>
           {workspaces.map(workspace => (
-            <Row onClick={() => history.push(`/workspace/${workspace.id}`)}>
+            <Row
+              key={workspace.id}
+              onClick={() => history.push(`/workspace/${workspace.id}`)}
+            >
               {workspace.name}
             </Row>
           ))}

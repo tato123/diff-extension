@@ -5,6 +5,9 @@ const Button = styled.button`
   border: none;
   outline: none;
 
+  color: ${props =>
+    props.primary ? 'var(--df-text-color)' : 'rgba(31,30,60, 0.5)'} !important;
+
   cursor: pointer;
   padding: 0 8px;
 
