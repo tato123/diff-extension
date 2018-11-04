@@ -35,6 +35,7 @@ const getUser = async () => {
 };
 
 const logoutUser = async () => {
+  await browser.storage.html5.local.clear();
   const response = await fetch(`${process.env.API_SERVER}/auth/logout`, {
     credentials: 'include',
     mode: 'cors'

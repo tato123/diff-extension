@@ -13,20 +13,26 @@ const config = {
   AUTH0_API_AUDIENCE: process.env.AUTH0_API_AUDIENCE
 };
 
+const cookieOptions = {
+  httpOnly: true,
+  domain: process.env.COOKIE_DOMAIN,
+  path: '/'
+};
+
 function clearCookies(res) {
-  res.clearCookie('_df_id_token', { httpOnly: true });
-  res.clearCookie('_df_access_token', { httpOnly: true });
-  res.clearCookie('_df_refresh_token', { httpOnly: true });
-  res.clearCookie('_df_expires_in', { httpOnly: true });
-  res.clearCookie('_df_token_type', { httpOnly: true });
+  res.clearCookie('_df_id_token', cookieOptions);
+  res.clearCookie('_df_access_token', cookieOptions);
+  res.clearCookie('_df_refresh_token', cookieOptions);
+  res.clearCookie('_df_expires_in', cookieOptions);
+  res.clearCookie('_df_token_type', cookieOptions);
 }
 
 function setCookie(res, value) {
-  res.cookie('_df_id_token', value.id_token, { httpOnly: true });
-  res.cookie('_df_access_token', value.access_token, { httpOnly: true });
-  res.cookie('_df_refresh_token', value.refresh_token, { httpOnly: true });
-  res.cookie('_df_expires_in', value.refresh_token, { httpOnly: true });
-  res.cookie('_df_token_type', value.token_type, { httpOnly: true });
+  res.cookie('_df_id_token', value.id_token, cookieOptions);
+  res.cookie('_df_access_token', value.access_token, cookieOptions);
+  res.cookie('_df_refresh_token', value.refresh_token, cookieOptions);
+  res.cookie('_df_expires_in', value.refresh_token, cookieOptions);
+  res.cookie('_df_token_type', value.token_type, cookieOptions);
 }
 
 // Auth0 athentication middleware
