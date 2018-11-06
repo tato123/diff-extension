@@ -27,7 +27,8 @@ const UserInputRow = styled(Row)`
 const Footer = styled.div`
   justify-content: flex-end;
   display: flex;
-  margin-right: var(--df-space-3);
+  margin-right: var(--df-space-2);
+  padding: 8px 0px;
 `;
 
 const maxHeight = {

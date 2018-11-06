@@ -20,6 +20,8 @@ export default class Popup extends React.Component {
     user: null
   };
 
+  manifestVersion = process.env.MANIFEST_VERSION;
+
   componentDidMount() {
     // attempt to get our user, if no user
     // object then we probably encountered a no login
@@ -43,7 +45,8 @@ export default class Popup extends React.Component {
   render() {
     const {
       state: { user },
-      logout
+      logout,
+      manifestVersion
     } = this;
 
     return (
@@ -53,9 +56,17 @@ export default class Popup extends React.Component {
           {!user && <Login />}
           <Row style={{ textAlign: 'center' }}>
             <Space style={{ marginBottom: '-6px' }}>
-              <small>Version 0.0.28</small>
+              <small>
+                Version
+                {manifestVersion}
+              </small>
             </Space>
-            <Anchor href="/help">Give us Feedback</Anchor>
+            <Anchor
+              href="https://goo.gl/forms/nPqrqIlYUSzCxrCA2"
+              target="_blank"
+            >
+              Give us Feedback
+            </Anchor>
           </Row>
         </Container>
       </StyleBoundary>

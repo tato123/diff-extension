@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Route, Switch, Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
-import { Spring, animated, config } from 'react-spring';
+import { Spring, animated } from 'react-spring';
 
 import { ic_people_outline as peopleOutline } from 'react-icons-kit/md/ic_people_outline';
 import { ic_settings as settings } from 'react-icons-kit/md/ic_settings';
-import * as easings from 'd3-ease';
 import Link from '../../components/Link';
 import IconButton from '../../components/IconButton';
 
@@ -87,12 +86,20 @@ class ControlPanel extends React.PureComponent {
   };
 
   componentDidMount() {
-    const height = window.innerHeight;
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    const height = window.innerHeight;
     this.setState({
       height: height - height * 0.5
     });
-  }
+  };
 
   handleRest = () => {
     this.setState({
@@ -132,11 +139,9 @@ class ControlPanel extends React.PureComponent {
               }}
             >
               <NavHeader>
-                <Switch>
-                  <Route path="/annotations*" component={AnnotationHeader} />
-                  <Route path="/workspace*" component={WorkspaceHeader} />
-                  <Redirect to="/annotations" />
-                </Switch>
+                <Route path="/annotations*" component={AnnotationHeader} />
+                <Route path="/workspace*" component={WorkspaceHeader} />
+
                 <div className="iconGroup">
                   <Link to="/workspace">
                     <IconButton icon={peopleOutline} color="#fff" />
