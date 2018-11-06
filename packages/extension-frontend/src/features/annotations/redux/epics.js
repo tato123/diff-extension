@@ -119,7 +119,6 @@ const addNewCommentEpic = (action$, state$, { api }) =>
       const workspace = sessionSelectors.currentWorkspaceSelector()(
         state$.value
       );
-
       return from(
         api.comments.addNewComment(
           action.payload.comment,

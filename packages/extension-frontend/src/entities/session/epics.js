@@ -25,13 +25,15 @@ const useCustomTokenToLoginEpic = (action$, state$, { api }) =>
 const setDefaultWorkspaceIdEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(types.SET_DEFAULT_WORKSPACE),
-    mergeMap(action => api.user
+    mergeMap(action =>
+      api.user
         .setDefaultWorkspace$(action.payload.workspaceId)
         .pipe(
           map(() =>
             actions.setDefaultWorkspaceSuccess(action.pyaload.workspaceId)
           )
-        )),
+        )
+    ),
     catchError(error => of(actions.setDefaultWorkspaceFailed(error.message)))
   );
 

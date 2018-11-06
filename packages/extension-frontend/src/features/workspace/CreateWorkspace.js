@@ -113,7 +113,7 @@ class CreateWorkspace extends React.Component {
                 <div style={{ ...maxHeight }}>
                   <OverrideRow className="no-hover">
                     <Form.Input
-                      label="Workspace Name"
+                      label="Project Name"
                       name="workspace"
                       type="text"
                       placeholder="The drop zone"
@@ -124,7 +124,10 @@ class CreateWorkspace extends React.Component {
                     />
                   </OverrideRow>
                   <OverrideRow className="no-hover">
-                    <Form.Field label="Collaborators" error={errors.emails}>
+                    <Form.Field
+                      label="Collaborators (emails, comma seperated)"
+                      error={errors.emails}
+                    >
                       <MultiEmail
                         name="emails"
                         emails={values.emails}
@@ -142,7 +145,9 @@ class CreateWorkspace extends React.Component {
                     disabled={isSubmitting || Object.keys(errors).length > 0}
                     loading={isSubmitting}
                   >
-                    Create workspace
+                    {isSubmitting
+                      ? 'Creating, please wait...'
+                      : 'Create workspace'}
                   </Button.Flat>
                 </Footer>
               </div>

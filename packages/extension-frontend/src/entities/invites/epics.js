@@ -7,7 +7,8 @@ import { types as sessionTypes } from '../session';
 const getInvitesEpic = (action$, state$, { api }) =>
   action$.pipe(
     ofType(sessionTypes.SELECT_WORKSPACE),
-    switchMap(action => api.invites.invitesForWorkspace$(action.payload.workspaceId).pipe(
+    switchMap(action =>
+      api.invites.invitesForWorkspace$(action.payload.workspaceId).pipe(
         map(({ data, type, id }) => {
           if (type === 'added' || type === 'modified') {
             return actions.getInvitesByWorkspaceIdSuccess(data, id);
@@ -20,7 +21,8 @@ const getInvitesEpic = (action$, state$, { api }) =>
         catchError(error =>
           of(actions.getInvitesByWorkspaceIdFailed(error.message))
         )
-      ))
+      )
+    )
   );
 
 export default combineEpics(getInvitesEpic);

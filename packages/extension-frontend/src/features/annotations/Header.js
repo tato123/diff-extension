@@ -117,7 +117,7 @@ export default class Header extends React.PureComponent {
                         <BackButton onClick={this.goBack} />
                         <TextContainer>
                           <AnnotationLabel as="body1">
-                            {match.params.id}
+                            {match.params[0].substring(1)}
                           </AnnotationLabel>
                         </TextContainer>
                       </HeaderDiv>
