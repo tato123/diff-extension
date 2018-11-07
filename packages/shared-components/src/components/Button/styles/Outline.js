@@ -10,12 +10,12 @@ const ButtonStyled = styled(Flat)`
   transition: box-shadow 25ms ease-in;
   will-change: transform, opacity, box-shadow, contents;
   font-weight: 200 !important;
-  background-color: ${props => props.primary ? '#43cad9' : 'transparent'} !important; 
+  background-color: ${props => props.primary ? '#43cad9' : 'transparent'}; 
   border-radius: 4px;
   ${props => props.primary && 'color: #fff;'}
 
   &:disabled {
-    background-color: ${props => props.primary ? '#29748d' : '#ccc'} !important;
+    background-color: ${props => props.primary ? '#29748d' : '#ccc'};
     box-shadow: none !important;
     cursor: default;
 
