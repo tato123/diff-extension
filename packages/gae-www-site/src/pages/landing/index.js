@@ -126,6 +126,17 @@ const FloatingLogo = styled.img`
   top: ${props => (props.secondary ? '300px' : '200px')};
 `;
 
+const FancyAnchor = styled.a`
+  background: #4c4ab6;
+  padding: ${props => (props.xl ? '16px 32px' : '8px 16px')};
+  border-radius: ${props => (props.xl ? '48px' : '24px')};
+  color: #fff;
+
+  &:hover {
+    color: #eee;
+  }
+`;
+
 export default class Landing extends React.Component {
   state = {
     open: false,
@@ -173,6 +184,16 @@ export default class Landing extends React.Component {
     </React.Fragment>
   );
 
+  renderBetaAnchor = (xl = false) => (
+    <FancyAnchor
+      href="https://chrome.google.com/webstore/detail/diff/emabkoeopfpoeighgafbhlldiemjdlbk"
+      target="_blank"
+      xl={xl}
+    >
+      Download the beta
+    </FancyAnchor>
+  );
+
   render() {
     const {
       state: { open, feature },
@@ -182,12 +203,7 @@ export default class Landing extends React.Component {
     } = this;
 
     return (
-      <Layout
-        client
-        rightMenuItem={() => (
-          <Button onClick={this.onOpenModal}>Get early access</Button>
-        )}
-      >
+      <Layout client rightMenuItem={this.renderBetaAnchor}>
         <Container className="container">
           <FloatingLogo src={DiffLogo} alt="svg" />
           <FloatingLogo secondary src={DiffDarkLogo} alt="svg" />
@@ -227,11 +243,7 @@ export default class Landing extends React.Component {
               <TrackFeature />
             </Feature>
           </FeatureGridArea>
-          <CTAGridArea>
-            <Button size="xl" onClick={this.onOpenModal}>
-              Get early access
-            </Button>
-          </CTAGridArea>
+          <CTAGridArea>{this.renderBetaAnchor(true)}</CTAGridArea>
           <div style={{ gridArea: 'footer', textAlign: 'center' }}>
             <small className="d-block mb-3 text-muted">
               &copy;2018 getDiff, Inc.
