@@ -4,6 +4,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const EncodingPlugin = require('webpack-encoding-plugin');
+const webpack = require('webpack');
+const manifest = require('./src/shells/chrome/manifest.json');
 
 module.exports = (env, argv) => ({
   mode: argv.mode,
@@ -40,6 +42,9 @@ module.exports = (env, argv) => ({
     new WriteAssetsWebpackPlugin({ force: true, extension: ['js', 'json'] }),
     new Dotenv({
       path: path.resolve(__dirname, `../../.env.${argv.mode}`)
+    }),
+    new webpack.DefinePlugin({
+      'process.env.MANIFEST_VERSION': JSON.stringify(manifest.version)
     })
   ],
   module: {

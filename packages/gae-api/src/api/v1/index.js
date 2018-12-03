@@ -3,6 +3,7 @@ import * as healthRoutes from './health';
 import * as taskRoutes from './tasks';
 import * as workspaceRoutes from './workspace';
 import * as userRoutes from './user';
+import * as emailRoutes from './email';
 
 const express = require('express');
 
@@ -25,5 +26,7 @@ router.post('/notifications/event/add/:eventId', taskRoutes.addEvent);
 
 router.get('/user/:uid/domains', userRoutes.getDomains);
 router.post('/user/email/signup', userRoutes.emailListSignup);
+
+router.get('/email/template/:name', emailRoutes.sendTemplate);
 
 export default router;

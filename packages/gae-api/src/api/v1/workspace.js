@@ -1,8 +1,6 @@
 import _ from 'lodash';
-import Mailgun from 'mailgun-js';
 import { models, auth as firestoreAuth } from '../../firestore';
 import logging from '../../logging';
-import mailer from '../../email';
 import host from '../../host';
 
 /**
@@ -41,12 +39,17 @@ export const createWorkspace = async (req, res) => {
   const { name } = req.body;
   const { authorization } = req.headers;
 
+  logging.debug(`Received name ${name} \n bearer ${authorization}`);
   try {
-    const creatorUid = await models.users.bearerToUid(authorization);
+    const creatorUid = await firestoreAuth.bearerToUid(authorization);
+    logging.debug(`Creator uid is ${creatorUid}`);
     if (!creatorUid) {
       return res.send(401, { message: 'Cannot create workspace anonymously' });
     }
-    const workspaceId = await models.users.createWorkspace(name, creatorUid);
+    const workspaceId = await models.workspace.createWorkspace(
+      name,
+      creatorUid
+    );
     res.send(200, {
       workspaceId
     });

@@ -28,8 +28,23 @@ const Footer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding: 8px;
+  margin-right: var(--df-space-2);
+  padding: 8px 0px;
 `;
+
+const OverrideRow = styled(Row)`
+  padding: 4px 16px;
+`;
+
+const Container = styled.div`
+  overflow: auto;
+`;
+
+const maxHeight = {
+  display: 'flex',
+  flex: 1,
+  flexDirection: 'column'
+};
 
 class CreateWorkspace extends React.Component {
   static propTypes = {
@@ -73,7 +88,7 @@ class CreateWorkspace extends React.Component {
     } = this;
 
     return (
-      <div>
+      <Container style={{ ...maxHeight }}>
         <ErrorLabel>
           {isSubmitError && 'There was an error Creating the workspace'}
         </ErrorLabel>
@@ -89,12 +104,16 @@ class CreateWorkspace extends React.Component {
             handleSubmit,
             setFieldValue
           }) => (
-            <Form onSubmit={handleSubmit} autoComplete="off">
-              <div>
-                <Space bottom={4}>
-                  <Row className="no-hover">
+            <Form
+              onSubmit={handleSubmit}
+              autoComplete="off"
+              style={{ ...maxHeight }}
+            >
+              <div style={{ ...maxHeight }}>
+                <div style={{ ...maxHeight }}>
+                  <OverrideRow className="no-hover">
                     <Form.Input
-                      label="Workspace Name"
+                      label="Project Name"
                       name="workspace"
                       type="text"
                       placeholder="The drop zone"
@@ -103,34 +122,39 @@ class CreateWorkspace extends React.Component {
                       error={errors.workspace}
                       value={values.workspace}
                     />
-                  </Row>
-                </Space>
-                <Row className="no-hover">
-                  <Form.Field label="Collaborators" error={errors.emails}>
-                    <MultiEmail
-                      name="emails"
-                      emails={values.emails}
-                      onChange={setFieldValue}
-                      onBlur={handleBlur}
-                    />
-                  </Form.Field>
-                </Row>
+                  </OverrideRow>
+                  <OverrideRow className="no-hover">
+                    <Form.Field
+                      label="Collaborators (emails, comma seperated)"
+                      error={errors.emails}
+                    >
+                      <MultiEmail
+                        name="emails"
+                        emails={values.emails}
+                        onChange={setFieldValue}
+                        onBlur={handleBlur}
+                      />
+                    </Form.Field>
+                  </OverrideRow>
+                </div>
+                <Footer>
+                  <Button.Flat onClick={onCancel}>Cancel</Button.Flat>
+                  <Button.Flat
+                    type="submit"
+                    primary
+                    disabled={isSubmitting || Object.keys(errors).length > 0}
+                    loading={isSubmitting}
+                  >
+                    {isSubmitting
+                      ? 'Creating, please wait...'
+                      : 'Create workspace'}
+                  </Button.Flat>
+                </Footer>
               </div>
-              <Footer>
-                <Button onClick={onCancel}>Cancel</Button>
-                <Button
-                  type="submit"
-                  primary
-                  disabled={isSubmitting || Object.keys(errors).length > 0}
-                  loading={isSubmitting}
-                >
-                  Create workspace
-                </Button>
-              </Footer>
             </Form>
           )}
         />
-      </div>
+      </Container>
     );
   }
 }

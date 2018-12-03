@@ -54,10 +54,15 @@ export const userForEmail = async (
 export const registerUser = async (user: User): Promise<boolean | void> => {
   try {
     logging.info(`Registering a new user${user.sub}`);
+    const newUser = {
+      ...user,
+      plan: 'free'
+    };
+
     await db
       .collection('users')
       .doc(user.sub)
-      .set(user);
+      .set(newUser);
     return true;
   } catch (error) {
     logging.error(error);

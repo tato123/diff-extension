@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Header, HR } from '@diff/shared-components';
+import { Button, Form, Header, HR, Space } from '@diff/shared-components';
 import browser from '@diff/common/dist/browser';
 import auth0 from 'auth0-js';
 import styled from 'styled-components';
@@ -60,18 +60,28 @@ const Container = styled.div`
 `;
 
 const RoundButton = styled(Button)`
-  border-radius: 25px;
+  border-radius: 25px !important;
   width: 100%;
+  background-color: #43cad9;
 
   font-weight: 500 !important;
   font-size: 1.2rem;
   padding: 8px !important;
-  height: 100%;
+  height: 48px !important;
+  span {
+    color: #fff !important;
+    font-weight: 500;
+  }
 `;
 
 const GoogleButton = styled(RoundButton)`
   margin-top: 16px;
   background-color: #4949b3 !important;
+`;
+
+const MagicLinkButton = styled(RoundButton)`
+  margin-top: 16px;
+  background-color: #43cad9 !important;
 `;
 
 const DarkHR = styled(HR)`
@@ -182,12 +192,15 @@ export default class Login extends React.Component {
           <div className="col right">
             <div>
               <Header as="h1">Create a Diff account....</Header>
-              <div>with Google</div>
-
-              <GoogleButton onClick={this.onLoginWithGoogle} primary>
-                <Icon icon={google} className="leftIcon" />
-                Signin with Google
-              </GoogleButton>
+              <Space top={4}>
+                <p>with Google</p>
+                <GoogleButton onClick={this.onLoginWithGoogle}>
+                  <span>
+                    <Icon icon={google} className="leftIcon" />
+                    Continue with Google
+                  </span>
+                </GoogleButton>
+              </Space>
             </div>
             <div style={{ margin: '32px 0px' }}>
               <DarkHR />
@@ -200,15 +213,10 @@ export default class Login extends React.Component {
                   type="email"
                   placeholder="email@domain.com"
                 />
-                <RoundButton type="submit" primary>
-                  Create Account
-                </RoundButton>
+                <MagicLinkButton type="submit" primary>
+                  <span>Send Magic Link</span>
+                </MagicLinkButton>
               </form>
-              <Footer>
-                Already have an account? 
-                {' '}
-                <a href="#">Log in</a>
-              </Footer>
             </div>
           </div>
         </div>

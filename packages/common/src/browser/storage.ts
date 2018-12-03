@@ -28,6 +28,9 @@ const html5Storage = {
         localStorage[key] = JSON.stringify(items[key]);
       });
       return null;
+    },
+    clear: async () => {
+      localStorage.clear();
     }
   }
 };

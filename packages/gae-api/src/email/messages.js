@@ -39,8 +39,19 @@ const inviteEmail = ({ from = defaultFrom, to, workspace, nonce }) => {
   return transporter.sendMail(mail);
 };
 
+const betaDownload = ({ from = defaultFrom, to }) => {
+  const mail = {
+    from,
+    to,
+    subject: 'Welcome to the Diff Beta',
+    template: 'betaDownload'
+  };
+  return transporter.sendMail(mail);
+};
+
 export default {
   signupEmail,
   welcomeEmail,
-  inviteEmail
+  inviteEmail,
+  betaDownload
 };

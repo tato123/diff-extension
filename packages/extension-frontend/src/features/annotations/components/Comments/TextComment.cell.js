@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash-es';
+import { Icon } from 'react-icons-kit';
+import { ic_attach_file as attachFile } from 'react-icons-kit/md/ic_attach_file';
 
 import { DateTime, Placeholder, Space, Image } from '@diff/shared-components';
 
@@ -43,6 +45,18 @@ const InnerTextCell = styled.div`
   }
 `;
 
+const Attachment = styled.a`
+  font-size: 12px;
+  background-color: var(--df-text-color-highlight);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 6px;
+  margin-right: 8px;
+`;
+
 const CommentCell = ({ item }) => (
   <User id={item.meta.userId}>
     {user => (
@@ -62,6 +76,29 @@ const CommentCell = ({ item }) => (
               )}
             </Space>
             <span className="text">{item.comment}</span>
+
+            {item.attachments.length > 0 && (
+              <div
+                style={{
+                  display: 'flex',
+                  flex: '1 auto',
+                  flexWrap: 'wrap'
+                }}
+              >
+                {item.attachments.map(attach => (
+                  <Attachment
+                    href={attach.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Space right={1} style={{ display: 'inline-block' }}>
+                      <Icon icon={attachFile} size={14} />
+                    </Space>
+                    {attach.name}
+                  </Attachment>
+                ))}
+              </div>
+            )}
           </div>
         </InnerTextCell>
       </TextCommentCell>

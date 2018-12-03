@@ -1,3 +1,4 @@
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import { from, Observable } from 'rxjs';
 
@@ -75,12 +76,14 @@ export default (db: any) => {
     return response.text();
   };
 
-  const tokenLogin = (token: string): Observable<any> =>
-    from(db.app.auth().signInWithCustomToken(token));
+  const tokenLogin = (token: string): Observable<any> => from(
+      db.app
+        .auth()
+        .setPersistence(firebase.auth.Auth.Persistence.NONE)
+        .then(() => db.app.auth().signInWithCustomToken(token))
+    );
 
-  const currentUser = () => {
-    return db.app.auth().currentUser;
-  };
+  const currentUser = () => db.app.auth().currentUser;
 
   return {
     authenticate,

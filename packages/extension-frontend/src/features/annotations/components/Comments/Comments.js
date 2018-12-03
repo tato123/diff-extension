@@ -40,12 +40,13 @@ class Comments extends React.Component {
     this.hoverInspect.deactivate();
   }
 
-  onSubmit = (comment, files) => {
+  onSubmit = (comment, files = []) => {
     const {
       props: { match, addComment }
     } = this;
     const id = decodeURIComponent(match.params.id);
-    addComment(comment, id, files);
+
+    addComment(comment, id, [...files]);
   };
 
   render() {

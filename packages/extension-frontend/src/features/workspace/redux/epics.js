@@ -52,12 +52,15 @@ const createWorkspaceEpic = (action$, state$, { api }) =>
     ofType(types.CREATE_WORKSPACE),
     mergeMap(action =>
       from(api.workspace.createWorkspace(action.payload.name)).pipe(
-        flatMap(({ workspaceId }) => [
-          ...action.payload.emails.map(email =>
-            actions.addWorkspaceUser(email, workspaceId)
-          ),
-          actions.createWorkspaceSuccess(action.payload.name)
-        ]),
+        flatMap(({ workspaceId }) => {
+          history.goBack();
+          return [
+            ...action.payload.emails.map(email =>
+              actions.addWorkspaceUser(email, workspaceId)
+            ),
+            actions.createWorkspaceSuccess(action.payload.name)
+          ];
+        }),
         catchError(error =>
           of(
             actions.createWorkspaceFailed(

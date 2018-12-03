@@ -94,13 +94,9 @@ export const inviteEmailToWorkspace = async (
     .get();
   const invitesRef = await db.collection('invites').doc();
 
-  const makeNonce = (host: string): string =>
-    `${host}/workspace/${workspaceId}/invite/${invitesRef.id}/accept`;
-
-  const nonce =
-    process.env.NODE_ENV === 'production'
-      ? makeNonce(process.env.API_ADDRESS as string)
-      : makeNonce(hosts.getApiHost());
+  const nonce = `${hosts.getApiHost()}/workspace/${workspaceId}/invite/${
+    invitesRef.id
+  }/accept`;
 
   if (!existingInviteRef.empty) {
     // we've already got an invite, just add this to history and ignore

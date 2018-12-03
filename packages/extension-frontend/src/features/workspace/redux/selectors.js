@@ -31,9 +31,12 @@ const allCollaboratorsSelectors = createSelector(
 const allInviteSelectors = createSelector(
   (state, props) => state.entities.workspaces.byId[props.id],
   state => state.entities.invites.byId || {},
-  (workspace, invites) => _.keys(workspace.invites).reduce(
+  (workspace, invites) =>
+    _.keys(workspace.invites).reduce(
       (acc, userId) =>
-        invites[userId].status === 'pending' ? [...acc, invites[userId]] : acc,
+        invites && invites[userId] && invites[userId].status === 'pending'
+          ? [...acc, invites[userId]]
+          : acc,
       []
     )
 );

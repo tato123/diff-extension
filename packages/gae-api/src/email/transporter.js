@@ -1,3 +1,5 @@
+import Mailgun from 'mailgun-js';
+
 const path = require('path');
 const nodemailer = require('nodemailer');
 const mg = require('nodemailer-mailgun-transport');
@@ -12,6 +14,8 @@ const auth = {
     domain
   }
 };
+
+export const mailgun = new Mailgun({ apiKey, domain });
 
 const transporter = nodemailer.createTransport(mg(auth));
 

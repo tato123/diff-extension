@@ -87,10 +87,7 @@ export default class Editor extends React.Component {
                   onChange={e =>
                     setValues({
                       ...values,
-                      [e.currentTarget.name]: [
-                        ...(values.file || []),
-                        e.currentTarget.files
-                      ]
+                      [e.currentTarget.name]: e.currentTarget.files
                     })
                   }
                 />
